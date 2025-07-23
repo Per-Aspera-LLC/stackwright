@@ -1,0 +1,26 @@
+name: Check for Required Changeset
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  check-changeset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install
+
+      - name: Validate Changeset Presence
+        run: node .github/scripts/check-for-changeset.js

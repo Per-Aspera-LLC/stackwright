@@ -1,0 +1,50 @@
+{
+  "siteConfig": {
+    "title": "Theme Test Site",
+    "themeName": "soft",
+    "navigation": [
+      { "label": "Home", "href": "/" },
+      { "label": "About", "href": "/about" }
+    ],
+    "footer": {
+      "copyright": "© 2024 Theme Test. All rights reserved."
+    }
+  },
+  "pageContent": {
+    "content": {
+      "app_bar": {
+        "title": "Theme Test Site",
+        "menuItems": [
+          { "label": "Home", "href": "/" },
+          { "label": "About", "href": "/about" }
+        ]
+      },
+      "footer": {
+        "label": "Footer",
+        "color": "",
+        "background": "",
+        "copyright": "© 2024 Theme Test. All rights reserved.",
+        "buttons": []
+      },
+      "content_items": [
+        {
+          "hero": {
+            "label": "Hero Section",
+            "color": "",
+            "background": "",
+            "heading": {
+              "text": "Welcome to Theme Testing",
+              "size": "h1"
+            },
+            "textBlocks": [
+              {
+                "text": "This page tests if themes are properly applied to components.",
+                "size": "body1"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

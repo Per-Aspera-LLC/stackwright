@@ -1,0 +1,26 @@
+name: Enforce Clean Release on Main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-main-readiness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install
+
+      - name: Verify main branch release state
+        run: node .github/scripts/check-main-clean.js

@@ -1,0 +1,56 @@
+name: Prerelease Dev
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  prerelease:
+    runs-on: ubuntu-latest
+    if: '!contains(github.event.head_commit.message, "[skip ci]")'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+
+      - name: Ensure Changeset prerelease mode is entered
+        run: |
+            if [ ! -f ".changeset/pre.json" ]; then
+            pnpm changeset pre enter alpha
+            git config user.name "github-actions"
+            git config user.email "github-actions@github.com"
+            git add .changeset/pre.json
+            git commit -m "chore: enter prerelease mode [skip ci]"
+            git push origin dev
+            fi
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Set git identity for bump
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Bump prerelease versions
+        run: pnpm changeset version
+
+      - name: Push changes back to dev
+        run: |
+          git add .
+          git commit -m "chore: bump prerelease versions [skip ci]" || echo "No changes to commit"
+          git push origin dev
+
+      - name: Publish prereleases with tag 'next'
+        run: pnpm changeset publish --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,17 @@
+{
+  "yaml.schemas": {
+    "./schemas/content-schema.json": [
+      "**/pages/*/content.yaml",
+    ],
+    "./schemas/theme-schema.json": [
+      "**/themes/*.yaml",
+    ],
+  },
+  "yaml.validate": true,
+  "yaml.completion": true,
+  "yaml.hover": true,
+  "yaml.format.enable": true,
+  "files.associations": {
+    "**/pages/*/content.yaml": "yaml"
+  }
+}

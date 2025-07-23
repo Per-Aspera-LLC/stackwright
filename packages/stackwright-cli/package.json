@@ -1,0 +1,33 @@
+{
+  "name": "@stackwright/cli",
+  "version": "0.3.0",
+  "description": "CLI for Stackwright framework",
+  "main": "dist/cli.js",
+  "bin": {
+    "stackwright": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "npm run generate-reference && npx tsc",
+    "generate-reference": "npx ts-node --project scripts/tsconfig.json scripts/generateContentReference.ts",
+    "dev": "npx tsc --watch"
+  },
+  "dependencies": {
+    "@stackwright/themes": "workspace:*",
+    "@stackwright/core": "workspace:*",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "dotenv": "^16.3.1",
+    "fs-extra": "^11.1.1",
+    "inquirer": "^8.2.6",
+    "js-yaml": "^4.1.0",
+    "openai": "^4.20.1",
+    "ts-morph": "^20.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.0",
+    "@types/inquirer": "^9.0.0",
+    "@types/js-yaml": "^4.0.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}

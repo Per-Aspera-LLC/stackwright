@@ -1,0 +1,36 @@
+name: "Soft"
+colors:
+  primary:
+    50: "#fdf2f8"
+    100: "#fce7f3"
+    500: "#ec4899"
+    600: "#db2777"
+    700: "#be185d"
+  neutral:
+    50: "#fefefe"
+    100: "#f9fafb"
+    700: "#6b7280"
+    800: "#4b5563"
+    900: "#374151"
+  text:
+    primary: "#374151"
+    secondary: "#9ca3af"
+    inverse: "#ffffff"
+
+spacing:
+  section: "py-16"
+  container: "max-w-6xl mx-auto px-6 sm:px-8 lg:px-10"
+
+typography:
+  hero: "text-3xl md:text-5xl font-semibold"
+  subtitle: "text-lg md:text-xl"
+
+components:
+  button:
+    primary: "bg-pink-600 text-white hover:bg-pink-700 px-6 py-2 rounded-full font-medium"
+    secondary: "text-pink-600 border border-pink-600 hover:bg-pink-50 px-6 py-2 rounded-full font-medium"
+  header:
+    background: "bg-neutral-50 shadow-none"
+    border: "border-b border-neutral-200"
+  hero:
+    background: "bg-gradient-to-br from-neutral-100 to-neutral-200"

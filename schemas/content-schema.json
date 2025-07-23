@@ -1,0 +1,800 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Stackwright Content Schema",
+  "description": "Schema for Stackwright content.yaml files",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "object",
+      "properties": {
+        "content_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContentItem"
+          }
+        }
+      },
+      "required": [
+        "content_items"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "content"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "TimelineContentSimple": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        },
+        "background": {
+          "type": "string"
+        },
+        "heading": {
+          "$ref": "#/definitions/TextBlock"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TimelineItem"
+          }
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "MainContentSimple": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        },
+        "background": {
+          "type": "string"
+        },
+        "heading": {
+          "$ref": "#/definitions/TextBlock"
+        },
+        "textBlocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextBlock"
+          }
+        },
+        "graphic": {
+          "$ref": "#/definitions/GraphicContentSimple"
+        },
+        "graphic_position": {
+          "$ref": "#/definitions/GraphicPosition"
+        },
+        "buttons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ButtonContentSimple"
+          }
+        },
+        "textToGraphic": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "heading",
+        "textBlocks"
+      ],
+      "additionalProperties": false
+    },
+    "GraphicContentSimple": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        },
+        "background": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string",
+          "pattern": "^/images/.*\\.(png|jpg|jpeg|gif|svg|webp)$",
+          "description": "Path to image file starting with /images/"
+        },
+        "aspect_ratio": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 10,
+          "description": "Width/height ratio"
+        },
+        "min_size": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 2000,
+          "description": "min_size in pixels"
+        },
+        "max_size": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 2000,
+          "description": "max_size in pixels"
+        },
+        "variant": {
+          "$ref": "#/definitions/GraphicVariant"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "additionalProperties": false
+    },
+    "ButtonContentSimple": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        },
+        "background": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "size": {
+          "$ref": "#/definitions/TypographyVariant"
+        },
+        "variant": {
+          "$ref": "#/definitions/ButtonVariant"
+        },
+        "href": {
+          "type": "string",
+          "description": "URL or page path"
+        },
+        "action": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string",
+          "pattern": "^/images/.*\\.(png|jpg|jpeg|gif|svg|webp)$",
+          "description": "Path to image file starting with /images/"
+        },
+        "alignment": {
+          "$ref": "#/definitions/AlignmentVariant"
+        },
+        "buttonColor": {
+          "type": "string"
+        },
+        "buttonBackground": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "text",
+        "variant"
+      ],
+      "additionalProperties": false
+    },
+    "TabbedContentSimple": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        },
+        "background": {
+          "type": "string"
+        },
+        "heading": {
+          "$ref": "#/definitions/TextBlock"
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContentItem"
+          }
+        }
+      },
+      "required": [
+        "heading",
+        "tabs"
+      ],
+      "additionalProperties": false
+    },
+    "CarouselContentSimple": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        },
+        "background": {
+          "type": "string"
+        },
+        "heading": {
+          "type": "string"
+        },
+        "autoPlaySpeed": {
+          "type": "number"
+        },
+        "infinite": {
+          "type": "boolean"
+        },
+        "autoPlay": {
+          "type": "boolean"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CarouselItem"
+          }
+        }
+      },
+      "required": [
+        "heading",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "GraphicPosition": {
+      "type": "string",
+      "enum": [
+        "left",
+        "right"
+      ],
+      "description": "GraphicPosition options"
+    },
+    "TypographyVariant": {
+      "type": "string",
+      "enum": [
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "subtitle1",
+        "subtitle2",
+        "body1",
+        "body2",
+        "caption",
+        "button",
+        "overline"
+      ],
+      "description": "TypographyVariant options"
+    },
+    "ButtonVariant": {
+      "type": "string",
+      "enum": [
+        "text",
+        "outlined",
+        "contained"
+      ],
+      "description": "ButtonVariant options"
+    },
+    "AlignmentVariant": {
+      "type": "string",
+      "enum": [
+        "left",
+        "center",
+        "right"
+      ],
+      "description": "AlignmentVariant options"
+    },
+    "GraphicVariant": {
+      "type": "string",
+      "enum": [
+        "contained",
+        "overflow"
+      ],
+      "description": "GraphicVariant options"
+    },
+    "BaseContent": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        },
+        "background": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "additionalProperties": false
+    },
+    "CarouselItem": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/GraphicContentSimple"
+        },
+        "background": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "text",
+        "image"
+      ],
+      "additionalProperties": false
+    },
+    "CarouselContent": {
+      "type": "object",
+      "properties": {
+        "heading": {
+          "type": "string"
+        },
+        "autoPlaySpeed": {
+          "type": "number"
+        },
+        "infinite": {
+          "type": "boolean"
+        },
+        "autoPlay": {
+          "type": "boolean"
+        },
+        "background": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CarouselItem"
+          }
+        }
+      },
+      "required": [
+        "heading",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "MainContent": {
+      "type": "object",
+      "properties": {
+        "heading": {
+          "$ref": "#/definitions/TextBlock"
+        },
+        "textBlocks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TextBlock"
+          }
+        },
+        "graphic": {
+          "$ref": "#/definitions/GraphicContentSimple"
+        },
+        "graphic_position": {
+          "$ref": "#/definitions/GraphicPosition"
+        },
+        "buttons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ButtonContentSimple"
+          }
+        },
+        "textToGraphic": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "heading",
+        "textBlocks"
+      ],
+      "additionalProperties": false
+    },
+    "GraphicContent": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "pattern": "^/images/.*\\.(png|jpg|jpeg|gif|svg|webp)$",
+          "description": "Path to image file starting with /images/"
+        },
+        "aspect_ratio": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 10,
+          "description": "Width/height ratio"
+        },
+        "min_size": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 2000,
+          "description": "min_size in pixels"
+        },
+        "max_size": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 2000,
+          "description": "max_size in pixels"
+        },
+        "variant": {
+          "$ref": "#/definitions/GraphicVariant"
+        }
+      },
+      "required": [
+        "image"
+      ],
+      "additionalProperties": false
+    },
+    "TabbedContent": {
+      "type": "object",
+      "properties": {
+        "heading": {
+          "$ref": "#/definitions/TextBlock"
+        },
+        "tabs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ContentItem"
+          }
+        }
+      },
+      "required": [
+        "heading",
+        "tabs"
+      ],
+      "additionalProperties": false
+    },
+    "TextBlock": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "size": {
+          "$ref": "#/definitions/TypographyVariant"
+        },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$|^[a-zA-Z]+$",
+          "description": "Color as hex code (#D4AF37) or color name"
+        }
+      },
+      "required": [
+        "text",
+        "size"
+      ],
+      "additionalProperties": false
+    },
+    "ButtonContent": {
+      "type": "object",
+      "properties": {
+        "variant": {
+          "$ref": "#/definitions/ButtonVariant"
+        },
+        "href": {
+          "type": "string",
+          "description": "URL or page path"
+        },
+        "action": {
+          "type": "string"
+        },
+        "image": {
+          "type": "string",
+          "pattern": "^/images/.*\\.(png|jpg|jpeg|gif|svg|webp)$",
+          "description": "Path to image file starting with /images/"
+        },
+        "alignment": {
+          "$ref": "#/definitions/AlignmentVariant"
+        },
+        "buttonColor": {
+          "type": "string"
+        },
+        "buttonBackground": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "variant"
+      ],
+      "additionalProperties": false
+    },
+    "MenuContent": {
+      "type": "object",
+      "properties": {
+        "menu_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MenuContent"
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "IconGridItem": {
+      "type": "object",
+      "properties": {
+        "iconId": {
+          "type": "string"
+        },
+        "spriteSheet": {
+          "type": "string"
+        },
+        "text": {
+          "$ref": "#/definitions/TextBlock"
+        }
+      },
+      "required": [
+        "iconId",
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "IconGridContent": {
+      "type": "object",
+      "properties": {
+        "heading": {
+          "$ref": "#/definitions/TextBlock"
+        },
+        "icons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/IconGridItem"
+          }
+        },
+        "spriteSheet": {
+          "type": "string"
+        },
+        "iconsPerRow": {
+          "type": "number"
+        },
+        "patternPrefix": {
+          "type": "string"
+        },
+        "patternSuffix": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "icons",
+        "iconsPerRow"
+      ],
+      "additionalProperties": false
+    },
+    "TimelineItem": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "string"
+        },
+        "event": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "year",
+        "event"
+      ],
+      "additionalProperties": false
+    },
+    "TimelineContent": {
+      "type": "object",
+      "properties": {
+        "heading": {
+          "$ref": "#/definitions/TextBlock"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TimelineItem"
+          }
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "ContentItem": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "#/definitions/TimelineContentSimple"
+          },
+          {
+            "$ref": "#/definitions/MainContentSimple"
+          },
+          {
+            "$ref": "#/definitions/GraphicContentSimple"
+          },
+          {
+            "$ref": "#/definitions/ButtonContentSimple"
+          },
+          {
+            "$ref": "#/definitions/TabbedContentSimple"
+          },
+          {
+            "$ref": "#/definitions/CarouselContentSimple"
+          }
+        ]
+      }
+    },
+    "MenuTheme": {
+      "type": "object",
+      "properties": {
+        "colors": {
+          "type": "string",
+          "description": "{ default: MenuColorSet; contained: MenuColorSet; outlined: MenuColorSet; } type"
+        }
+      },
+      "required": [
+        "colors"
+      ],
+      "additionalProperties": false
+    },
+    "MenuColorSet": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "hover": {
+          "type": "string"
+        },
+        "border": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "background",
+        "text",
+        "hover"
+      ],
+      "additionalProperties": false
+    },
+    "AppBarLogo": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "string",
+          "pattern": "^/images/.*\\.(png|jpg|jpeg|gif|svg|webp)$",
+          "description": "Path to image file starting with /images/"
+        },
+        "aspect_ratio": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "image",
+        "aspect_ratio"
+      ],
+      "additionalProperties": false
+    },
+    "AppBarContent": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string",
+          "description": "{ image: string; width?: number type"
+        },
+        "menuItems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NavigationItem"
+          }
+        },
+        "textcolor": {
+          "type": "string"
+        },
+        "backgroundcolor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "additionalProperties": false
+    },
+    "NavigationItem": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "href": {
+          "type": "string",
+          "description": "URL or page path"
+        }
+      },
+      "required": [
+        "label",
+        "href"
+      ],
+      "additionalProperties": false
+    },
+    "FooterContent": {
+      "type": "object",
+      "properties": {
+        "copyright": {
+          "type": "string"
+        },
+        "buttons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ButtonContentSimple"
+          }
+        },
+        "sociallinks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ButtonContentSimple"
+          }
+        },
+        "socialtext": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "copyright",
+        "buttons"
+      ],
+      "additionalProperties": false
+    },
+    "PageContent": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "{ app_bar: ContentItem[]; list_icon?: String type"
+        }
+      },
+      "required": [
+        "content"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
