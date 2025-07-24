@@ -1,109 +1,80 @@
-# 🛠️ Stackwright
+# Stackwright
 
-**A declarative framework for building real web apps from structured content**
+**Build real web applications from human-readable configs**
 
-Stackwright lets you define entire websites — layout, content, and visual design — using simple YAML configuration. It compiles those definitions into a fully-typed, modular React/Next.js application using a real component system and theme engine.
+Stackwright bridges the gap between no-code builders and custom development. Write your site structure in simple YAML files, get a production-ready React application that developers can extend.
 
-This is **not** a static site builder. It's a **domain-specific UI compiler** designed for engineers and consultants who want to move fast without sacrificing long-term flexibility.
+## Why Stackwright?
 
-> ⚠️ Stackwright is currently in alpha.  
-> This project represents my first fully public release after years of building internal platforms in the defense and consulting world.  
-> The architecture is mature — even if the surface is still evolving.
+- **Start Simple**: Non-developers can create and edit sites using YAML configs
+- **Scale Smart**: Outputs real Next.js/React code that developers can customize 
+- **No Lock-in**: Your site is actual TypeScript code, not proprietary formats
+- **Graduation Path**: Begin with configs, add custom components as you grow
 
----
+Perfect for startups who need more than Squarespace but don't want to build from scratch, and design firms delivering working applications to clients.
 
-## 💡 Why Stackwright?
-
-- **Declarative by Default**  
-  Write your content, layout, and theme as structured YAML — versionable, editable, auditable.
-
-- **Outputs Real Code**  
-  Generates fully-typed React/Next.js projects. No runtime lock-in. Extend anything.
-
-- **Theming as a First-Class Citizen**  
-  YAML-defined design tokens (color, spacing, typography, and component styles) drive consistent visual identity.
-
-- **Made for the Operator Class**  
-  Built with the needs of consultants, agencies, and small teams in mind: quick to start, powerful when extended.
-
----
-
-## ⚙️ Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies
 pnpm install
 
-# Build the full Stackwright system
+# Build the framework
 pnpm build
 
-# Run an example project (requires brief folder)
+# Run development example
 pnpm dev:example
 ```
 
-## 🧱 Core Concepts
+## How It Works
 
-🔧 Component Registry
-Every layout and content block in Stackwright maps to a typed React component. YAML simply selects and wires them up. You can register your own components, layouts, or structural primitives.
-
-🧾 YAML-First Content Definition
-Define your content and page structure in a way that writers, strategists, and developers can all read:
+Define your pages in YAML:
 
 ```yaml
 pages:
   - name: home
-    purpose: brand homepage
-    content:
-      - type: hero
-        title: Welcome to Stackwright
-        subtitle: From brief to build in seconds.
-      - type: paragraph
-        body: |
-          This entire page is generated from structured YAML,
-          compiled into real, inspectable TypeScript code.
+    purpose: brand introduction and core value proposition
+    priority: high
+  - name: about  
+    purpose: company story and team
+    priority: medium
 ```
 
-🎨 Theme Engine
-Design tokens and component styles are defined in YAML and applied consistently throughout your site. You can load and swap themes via configuration or provide custom tokens:
+Add content structure and styling through declarative configs. Stackwright renders these as professional React components using Material-UI.
 
-```yaml
-name: "Soft"
-colors:
-  primary:
-    500: "#ec4899"
-  text:
-    primary: "#374151"
-components:
-  button:
-    primary: "bg-pink-600 text-white px-6 py-2 rounded-full"
-```
+## Current Status
 
-## 🧩 Project Structure
+🚧 **Early Development** - Core framework is functional but evolving rapidly.
 
-- packages/stackwright-core – Typed React component system + YAML renderer
-- packages/stackwright-themes – Theme loader, default themes, YAML tokens
-- packages/stackwright-nextjs – Next.js runtime integration (optional)
-- packages/stackwright-cli – CLI tool for bootstrapping, AI pipeline, and brief ingestion
+**Available Now:**
+- YAML-to-React page generation
+- Material-UI component library
+- Theme system for consistent styling
+- CLI with AI-assisted content generation
 
-## 📈 Roadmap
+**Coming Soon:**
+- Expanded component library with advanced layouts
+- Live data integration from OpenAPI specifications  
+- Visual config editor
+- Comprehensive testing and validation
+- Plugin system for custom components
 
-- ✅ YAML → React Compiler MVP
-- ✅ Theme System (YAML + TS)
-- 🚧 AI Content Pipeline
-- 🚧 Plugin System for New Component Types
-- 🚧 Live Preview / Authoring Mode
-- 🚧 Website + Showcase
+## Examples
 
-## 🤝 Contributing
+Check out `test/per-aspera-brief/` for a complete site configuration example.
 
-This is still early, but if you're interested in structured content systems, typed UI frameworks, or declarative developer tooling, reach out or open a PR.
+## Contributing
 
-## 🧠 Philosophy
+This is an active project. We welcome contributions, especially:
+- Additional React components
+- Better TypeScript validation
+- Documentation improvements
+- Real-world usage examples
 
-Stackwright is built on the belief that websites — like software systems — should start from intent, not just layout.
+## License
 
-Start with clarity. Compile to code.
-Make tools for people who care about both structure and aesthetics.
+MIT - Build something amazing.
 
-## 📜 License
-MIT
+---
+
+*Stackwright: Where configuration meets code.*
