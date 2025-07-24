@@ -4,7 +4,7 @@ const fs = require("fs");
 function getChangedFiles() {
   try {
     const base = process.env.GITHUB_BASE_REF || "origin/dev";
-    const diff = execSync(`git diff --name-only ${base}...HEAD`, {
+    const diff = execSync(`git diff --name-only ${base}`, {
       encoding: "utf-8",
     });
     return diff.split("\n").filter(Boolean);
