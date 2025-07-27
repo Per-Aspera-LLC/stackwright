@@ -351,5 +351,5 @@
     "app_bar": "content:\n  - app_bar:\n      title: \"example value\"\n      logo: \"example value\"\n      textcolor: \"example value\"\n      backgroundcolor: \"example value\"",
     "footer": "content:\n  - footer:\n      copyright: \"example value\"\n      socialtext: \"example value\""
   },
-  "lastGenerated": "2025-07-23T20:33:14.307Z"
+  "lastGenerated": "2025-07-27T15:26:16.954Z"
 }

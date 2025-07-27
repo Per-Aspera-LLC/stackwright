@@ -27,14 +27,14 @@ importers:
         specifier: ^5.0.0
         version: 5.8.3
 
-  packages/stackwright-cli:
+  packages/cli:
     dependencies:
       '@stackwright/core':
         specifier: workspace:*
-        version: link:../stackwright-core
+        version: link:../core
       '@stackwright/themes':
         specifier: workspace:*
-        version: link:../stackwright-themes
+        version: link:../themes
       chalk:
         specifier: ^4.1.2
         version: 4.1.2
@@ -76,7 +76,7 @@ importers:
         specifier: ^5.0.0
         version: 5.8.3
 
-  packages/stackwright-core:
+  packages/core:
     dependencies:
       '@emotion/cache':
         specifier: 11.14.0
@@ -98,7 +98,7 @@ importers:
         version: 6.2.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react@18.3.1))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@stackwright/themes':
         specifier: workspace:*
-        version: link:../stackwright-themes
+        version: link:../themes
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.1
@@ -131,11 +131,11 @@ importers:
         specifier: ^5.0.0
         version: 5.8.3
 
-  packages/stackwright-nextjs:
+  packages/nextjs:
     dependencies:
       '@stackwright/core':
         specifier: workspace:*
-        version: link:../stackwright-core
+        version: link:../core
       next:
         specifier: ^14.0.0
         version: 14.2.30(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -162,7 +162,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  packages/stackwright-themes:
+  packages/themes:
     dependencies:
       js-yaml:
         specifier: ^4.1.0
