@@ -23,7 +23,6 @@
   "scripts": {
     "build": "tsup && npx tsc --emitDeclarationOnly",
     "dev": "tsup --watch",
-    "test": "echo \"No tests yet\"",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -37,7 +36,8 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest":"^3.2.4"
   },
   "peerDependencies": {
     "next": "^13.0.0 || ^14.0.0",
