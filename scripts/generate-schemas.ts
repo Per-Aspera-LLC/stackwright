@@ -40,14 +40,14 @@ async function generateJsonSchemas() {
   console.log('🔧 Generating JSON Schemas from TypeScript types...');
 
   const project = new Project({
-    tsConfigFilePath: path.join(__dirname, '../packages/stackwright-core/tsconfig.json'),
+    tsConfigFilePath: path.join(__dirname, '../packages/core/tsconfig.json'),
   });
 
   // Discover components dynamically
   const components = await discoverComponents();
   console.log(`🔍 Discovered ${components.length} components`);
 
-  const sourceFile = project.getSourceFileOrThrow('./packages/stackwright-core/src/types/content.tsx');
+  const sourceFile = project.getSourceFileOrThrow('./packages/core/src/types/content.tsx');
   
   // Get all interfaces and types
   const interfaces = sourceFile.getInterfaces();
@@ -279,16 +279,16 @@ function mapTypeToSchema(typeText: string, propName: string): SchemaProperty {
 async function discoverComponents(): Promise<ComponentInfo[]> {
   const components: ComponentInfo[] = [];
   const componentDirs = [
-    './packages/stackwright-core/src/components/narrative',
-    './packages/stackwright-core/src/components/structural',
+    './packages/core/src/components/narrative',
+    './packages/core/src/components/structural',
     './plugins' // Future extensibility
   ];
 
   // Get all actual Content interfaces from the types file
   const project = new Project({
-    tsConfigFilePath: path.join(__dirname, '../packages/stackwright-core/tsconfig.json'),
+    tsConfigFilePath: path.join(__dirname, '../packages/core/tsconfig.json'),
   });
-  const sourceFile = project.getSourceFileOrThrow('./packages/stackwright-core/src/types/content.tsx');
+  const sourceFile = project.getSourceFileOrThrow('./packages/core/src/types/content.tsx');
   const availableInterfaces = sourceFile.getInterfaces()
     .filter(iface => iface.getName().endsWith('Content'))
     .map(iface => iface.getName());

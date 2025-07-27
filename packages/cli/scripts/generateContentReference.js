@@ -11,7 +11,7 @@ async function generateContentReference() {
     console.log('🔧 Generating Stackwright content type reference...');
     // Debug the paths
     const scriptDir = __dirname;
-    const coreDir = path_1.default.join(scriptDir, '../../stackwright-core');
+    const coreDir = path_1.default.join(scriptDir, '../../core');
     const tsConfigPath = path_1.default.join(coreDir, 'tsconfig.json');
     const contentTypesPath = path_1.default.join(coreDir, 'src/types/content.tsx');
     console.log('📁 Script directory:', scriptDir);
