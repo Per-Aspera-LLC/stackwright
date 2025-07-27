@@ -1,5 +1,6 @@
 {
   "name": "@stackwright/core",
+  "type": "module",
   "version": "0.3.0",
   "description": "Core framework for building applications from YAML configuration",
   "main": "dist/index.js",
@@ -28,7 +29,9 @@
   "scripts": {
     "build": "tsup && tsc --emitDeclarationOnly",
     "dev": "tsup --watch",
-    "test": "echo \"No tests yet\"",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -38,19 +41,23 @@
     "@fontsource/montserrat-alternates": "5.1.1",
     "@mui/icons-material": "6.2.0",
     "@mui/material": "6.2.0",
-    "@types/node": "^20.0.0",
+    "@stackwright/themes": "workspace:*",
     "js-yaml": "^4.1.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "@stackwright/themes": "workspace:*",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@swc/core": "^1.7.0",
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/node": "^20.19.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "@vitest/ui": "^2.0.0",
     "tsup": "^8.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^2.1.9"
   },
   "peerDependencies": {
     "react": "^18.0.0",

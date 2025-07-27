@@ -153,8 +153,8 @@ export interface FooterContent extends BaseContent {
 
 export interface PageContent {
     content: {
-        app_bar: AppBarContent
-        footer: FooterContent
+        app_bar?: AppBarContent
+        footer?: FooterContent
         content_items: ContentItem[],
         list_icon?: String
     }

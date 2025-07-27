@@ -16,7 +16,9 @@
     "generate-schemas": "npx ts-node scripts/generate-schemas.ts",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "test": "pnpm -r test",
+    "test:core": "pnpm --filter @stackwright/core test"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

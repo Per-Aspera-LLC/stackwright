@@ -49,7 +49,8 @@ class StackwrightComponentRegistryImpl implements StackwrightComponentRegistry {
 }
 
 // Singleton instance
-export const stackwrightRegistry: StackwrightComponentRegistry = new StackwrightComponentRegistryImpl();
+export const stackwrightRegistry = new StackwrightComponentRegistryImpl();
+
 
 // Convenience functions for easier access
 export const getStackwrightImage = () => stackwrightRegistry.get('Image');

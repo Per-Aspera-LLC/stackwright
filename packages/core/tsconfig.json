@@ -17,10 +17,11 @@
     "jsx": "react-jsx",
     "declaration": true,
     "outDir": "./dist",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "test/**/*"
   ],
   "exclude": [
     "node_modules",

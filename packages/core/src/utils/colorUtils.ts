@@ -89,8 +89,14 @@ export function getHoverColor(color: string, factor: number = 0.15): string {
  * Resolve theme color names to hex values
  */
 export function resolveColor(colorValue: string, themeColors: Record<string, string>): string {
+   if (typeof colorValue !== 'string') {
+    console.warn(`Invalid color value: ${colorValue}. Defaulting to 'transparent'.`);
+    return 'transparent';
+  }
+ 
   if (colorValue.startsWith('#')) {
     return colorValue; // Already a hex code
   }
   return themeColors[colorValue] || colorValue;
 }
+
