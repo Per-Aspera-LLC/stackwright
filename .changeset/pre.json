@@ -1,0 +1,11 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@stackwright/cli": "0.3.0",
+    "@stackwright/core": "0.3.0",
+    "@stackwright/nextjs": "0.2.0",
+    "@stackwright/themes": "0.3.0"
+  },
+  "changesets": []
+}
