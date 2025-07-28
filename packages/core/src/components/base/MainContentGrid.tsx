@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { MainContent, GraphicPosition } from '@stackwright/types';
 import { TextGrid } from './TextGrid';
 import { ThemedButton } from './ThemedButton';
