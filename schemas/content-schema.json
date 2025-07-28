@@ -788,7 +788,7 @@
       "properties": {
         "content": {
           "type": "string",
-          "description": "{ app_bar: ContentItem[]; list_icon?: String type"
+          "description": "{ app_bar?: ContentItem[]; list_icon?: String type"
         }
       },
       "required": [

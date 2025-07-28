@@ -3,9 +3,10 @@
   "version": "0.3.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "build": "tsup",
+    "dev": "tsup --watch"
   },
   "dependencies": {
     "react": "^18.0.0",
@@ -15,6 +16,7 @@
     "@types/react": "^18.0.0",
     "@types/js-yaml": "^4.0.0",
     "typescript": "^5.0.0",
+    "tsup": "^8.0.0",
     "vitest": "^3.2.4"
   }
 }

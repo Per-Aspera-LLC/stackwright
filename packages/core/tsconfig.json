@@ -16,6 +16,7 @@
     "noEmit": false,
     "jsx": "react-jsx",
     "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist",
     "baseUrl": "./src",
     "types": ["vitest/globals", "@testing-library/jest-dom"]

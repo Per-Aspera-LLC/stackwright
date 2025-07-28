@@ -1,5 +1,6 @@
 {
   "name": "@stackwright/nextjs",
+  "type": "module",
   "version": "0.2.0",
   "description": "Next.js implementations for Stackwright components",
   "main": "dist/index.js",
@@ -21,7 +22,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup && npx tsc --emitDeclarationOnly",
+    "build": "tsup ",
     "dev": "tsup --watch",
     "prepublishOnly": "npm run build"
   },

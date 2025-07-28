@@ -72,6 +72,9 @@ importers:
       '@types/node':
         specifier: ^20.0.0
         version: 20.19.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.0(@swc/core@1.12.11)(postcss@8.5.6)(typescript@5.8.3)
       typescript:
         specifier: ^5.0.0
         version: 5.8.3
@@ -198,6 +201,9 @@ importers:
       '@types/react':
         specifier: ^18.0.0
         version: 18.3.23
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.0(@swc/core@1.12.11)(postcss@8.5.6)(typescript@5.8.3)
       typescript:
         specifier: ^5.0.0
         version: 5.8.3
