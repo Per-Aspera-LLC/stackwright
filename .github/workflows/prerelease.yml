@@ -22,6 +22,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
 
+      - run: pnpm install --frozen-lockfile
       - name: Ensure Changeset prerelease mode is entered
         run: |
             if [ ! -f ".changeset/pre.json" ]; then
@@ -33,7 +34,6 @@ jobs:
             git push origin dev
             fi
 
-      - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
       - name: Set git identity for bump
