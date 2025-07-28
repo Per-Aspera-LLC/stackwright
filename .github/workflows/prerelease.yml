@@ -56,7 +56,6 @@ jobs:
           git push origin dev
 
       - name: Publish prereleases with tag 'alpha'
-        run: pnpm changeset publish 
+        run: pnpm changeset publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_ACCESS: public
