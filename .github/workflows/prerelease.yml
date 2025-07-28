@@ -55,7 +55,7 @@ jobs:
           git commit -m "chore: bump prerelease versions [skip ci]" || echo "No changes to commit"
           git push origin dev
 
-      - name: Publish prereleases with tag 'next'
-        run: pnpm changeset publish --tag next
+      - name: Publish prereleases with tag 'alpha'
+        run: pnpm changeset publish 
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
