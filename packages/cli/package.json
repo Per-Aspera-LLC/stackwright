@@ -16,20 +16,20 @@
     "@stackwright/core": "workspace:*",
     "chalk": "^5.4.0",
     "commander": "^14.0.0",
-    "dotenv": "^17.0.0",
-    "fs-extra": "^11.0.0",
-    "inquirer": "^12.0.0",
+    "dotenv": "^17.2",
+    "fs-extra": "^11.3",
+    "inquirer": "^12.8",
     "js-yaml": "^4.1.0",
-    "openai": "^5.0.0",
-    "ts-morph": "^26.0.0"
+    "openai": "^5.10",
+    "ts-morph": "^26.0"
   },
   "devDependencies": {
-    "@types/fs-extra": "^11.0.0",
-    "@types/inquirer": "^9.0.0",
-    "@types/js-yaml": "^4.0.0",
-    "@types/node": "^24.0.0",
-    "typescript": "^5.0.0",
-    "tsup": "^8.0.0",
+    "@types/fs-extra": "^11.0",
+    "@types/inquirer": "^9.0",
+    "@types/js-yaml": "^4.0",
+    "@types/node": "^24.0",
+    "typescript": "^5.0",
+    "tsup": "^8.5",
     "vitest": "^3.2.4"
   }
 }

@@ -8,14 +8,14 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
-    "react": "^19.0.0",
-    "js-yaml": "^4.1.0"
+    "react": "^19",
+    "js-yaml": "^4"
   },
   "devDependencies": {
-    "@types/react": "^19.0.0",
-    "@types/js-yaml": "^4.0.0",
-    "typescript": "^5.0.0",
-    "tsup": "^8.0.0",
-    "vitest": "^3.2.4"
+    "@types/react": "^19",
+    "@types/js-yaml": "^4",
+    "typescript": "^5",
+    "tsup": "^8",
+    "vitest": "^3"
   }
 }
