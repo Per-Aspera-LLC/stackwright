@@ -1,5 +1,13 @@
 # @stackwright/nextjs
 
+## 0.2.1-alpha.3
+
+### Patch Changes
+
+- e4fbf2f: Update all dependencies
+- Updated dependencies [e4fbf2f]
+  - @stackwright/core@0.3.1-alpha.3
+
 ## 0.2.1-alpha.2
 
 ### Patch Changes
