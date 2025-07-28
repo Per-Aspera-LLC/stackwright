@@ -16,11 +16,13 @@
     "noEmit": false,
     "jsx": "react-jsx",
     "declaration": true,
+    "declarationMap": true,
     "outDir": "./dist",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "test/**/*"
   ],
   "exclude": [
     "node_modules",
