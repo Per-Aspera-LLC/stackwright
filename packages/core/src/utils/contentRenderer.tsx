@@ -6,12 +6,19 @@ import { getComponentByType } from './componentRegistry';
 
 // Type guard to check if content is PageContent
 function isPageContent(content: PageContent | ContentItem): content is PageContent {
-    return 'content' in content && 
-           typeof content.content === 'object' && 
+    return content != null &&
+           'content' in content &&
+           typeof content.content === 'object' &&
            content.content !== null;
 }
 
 export function renderContent(content: PageContent | ContentItem, config?: StackwrightConfig, key?: string) {
+    // Add null check at the beginning
+    if (!content) {
+        console.log('ContentRenderer: No content provided');
+        return null;
+    }
+    
     // If it's a PageContent type, process the full page structure (NERD MODE)
     if (isPageContent(content)) {
         const elements = [];
