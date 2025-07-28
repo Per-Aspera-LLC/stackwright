@@ -5,11 +5,13 @@
     "@stackwright/cli": "0.3.0",
     "@stackwright/core": "0.3.0",
     "@stackwright/nextjs": "0.2.0",
-    "@stackwright/themes": "0.3.0"
+    "@stackwright/themes": "0.3.0",
+    "@stackwright/types": "0.1.0"
   },
   "changesets": [
     "fine-cloths-brush",
     "funny-keys-build",
+    "itchy-cameras-prove",
     "lucky-months-fetch",
     "pink-days-reply"
   ]

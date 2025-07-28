@@ -1,5 +1,13 @@
 # @stackwright/nextjs
 
+## 0.2.1-alpha.1
+
+### Patch Changes
+
+- 51dbbc9: Refactor types out of core into own package.
+- Updated dependencies [51dbbc9]
+  - @stackwright/core@0.3.1-alpha.1
+
 ## 0.2.1-alpha.0
 
 ### Patch Changes
