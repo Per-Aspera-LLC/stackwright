@@ -1,5 +1,13 @@
 # @stackwright/nextjs
 
+## 0.2.1-alpha.4
+
+### Patch Changes
+
+- cc761ce: More version updates
+- Updated dependencies [cc761ce]
+  - @stackwright/core@0.3.1-alpha.4
+
 ## 0.2.1-alpha.3
 
 ### Patch Changes

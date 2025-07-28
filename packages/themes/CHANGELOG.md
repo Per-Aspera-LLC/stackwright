@@ -1,5 +1,11 @@
 # @stackwright/themes
 
+## 0.3.1-alpha.4
+
+### Patch Changes
+
+- cc761ce: More version updates
+
 ## 0.3.1-alpha.3
 
 ### Patch Changes

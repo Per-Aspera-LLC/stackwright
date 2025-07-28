@@ -1,5 +1,14 @@
 # @stackwright/cli
 
+## 0.3.1-alpha.4
+
+### Patch Changes
+
+- cc761ce: More version updates
+- Updated dependencies [cc761ce]
+  - @stackwright/themes@0.3.1-alpha.4
+  - @stackwright/core@0.3.1-alpha.4
+
 ## 0.3.1-alpha.3
 
 ### Patch Changes

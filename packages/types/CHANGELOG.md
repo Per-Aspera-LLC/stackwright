@@ -1,5 +1,13 @@
 # @stackwright/types
 
+## 0.1.1-alpha.3
+
+### Patch Changes
+
+- cc761ce: More version updates
+- Updated dependencies [cc761ce]
+  - @stackwright/themes@0.3.1-alpha.4
+
 ## 0.1.1-alpha.2
 
 ### Patch Changes
