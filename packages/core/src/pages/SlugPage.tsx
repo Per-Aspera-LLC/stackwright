@@ -1,4 +1,4 @@
-import DynamicPage from 'components/DynamicPage';
+import DynamicPage from '../components/DynamicPage';
 import {  PageContent, SiteConfig } from '@stackwright/types';
 import { getStackwrightStaticGeneration } from '../utils/stackwrightComponentRegistry';
 

@@ -6,6 +6,12 @@ const config: Options = {
   dts: true,
   clean: true,
   sourcemap: true,
+  outExtension({ format }) {
+    return {
+      js: format === 'cjs' ? '.js' : '.mjs',
+    }
+  }
 }
+
 
 export default defineConfig(config)

@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import * as TJS from 'typescript-json-schema';
+import { ThemeConfig } from '@stackwright/themes';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -57,12 +58,36 @@ export async function generateSchemas() {
     throw new Error('Could not generate schema for PageContent');
   }
 
+  const themeSchema = generator.getSchemaForSymbol('ThemeConfig');
+
+  if (!themeSchema) {
+    throw new Error('Could not generate schema for ThemeConfig');
+  }
+
+  const siteConfigSchema = generator.getSchemaForSymbol('SiteConfig');
+
+  if (!siteConfigSchema) {
+    throw new Error('Could not generate schema for SiteConfig');
+  }
+
   const outputDir = path.join(__dirname, '../dist/schemas');
   await fs.ensureDir(outputDir);
   
   await fs.writeJSON(
     path.join(outputDir, 'content-schema.json'),
     contentSchema,
+    { spaces: 2 }
+  );
+
+  await fs.writeJson(
+    path.join(outputDir, 'theme-schema.json'),
+    themeSchema,
+    { spaces: 2 }
+  );
+
+  await fs.writeJson(
+    path.join(outputDir, 'site-config-schema.json'),
+    siteConfigSchema,
     { spaces: 2 }
   );
   
