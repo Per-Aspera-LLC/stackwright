@@ -4,8 +4,8 @@
   "version": "0.3.0",
   "description": "Core framework for building applications from YAML configuration",
   "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -32,7 +32,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@emotion/cache": "11.14.0",
@@ -41,6 +41,7 @@
     "@fontsource/montserrat-alternates": "5.1.1",
     "@mui/icons-material": "6.2.0",
     "@mui/material": "6.2.0",
+    "@stackwright/types": "workspace:*",
     "@stackwright/themes": "workspace:*",
     "js-yaml": "^4.1.0",
     "react": "^18.0.0",

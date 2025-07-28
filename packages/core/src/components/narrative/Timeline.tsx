@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { TimelineContent } from '../../types/content';
+import { TimelineContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 
 export function Timeline(content: TimelineContent) {

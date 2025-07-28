@@ -3,7 +3,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import  SlugPage  from '../src/pages/SlugPage';
 import { describe, expect, it } from 'vitest';
-import { ButtonVariant, TypographyVariant } from 'index';
+import { ButtonVariant, TypographyVariant } from '@stackwright/types';
 
 describe('Integration Tests', () => {
   it('should render SlugPage with DynamicPage content', () => {

@@ -1,5 +1,5 @@
 import { Card, Stack, Box, Typography } from '@mui/material'
-import { CarouselItem } from '../../../types/content'
+import { CarouselItem } from '@stackwright/types'
 import { useSafeTheme } from '../../../hooks/useSafeTheme'
 import { Graphic } from '../../base'
 

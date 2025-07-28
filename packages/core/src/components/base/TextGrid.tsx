@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Divider, Typography } from '@mui/material';
-import { TextBlock } from '../../types/content';
+import { TextBlock } from '@stackwright/types';
 import { v4 as uuidv4 } from 'uuid';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 

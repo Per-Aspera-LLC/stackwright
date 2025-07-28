@@ -1,6 +1,5 @@
 import React from 'react';
-import { PageContent } from '../types/content';
-import { SiteConfig } from '../types/siteConfig';
+import { PageContent, SiteConfig } from '@stackwright/types';
 import PageLayout from './structural/PageLayout';
 import { ThemeProvider, ThemeLoader } from '@stackwright/themes';
 import { CssBaseline, Box, styled } from '@mui/material';

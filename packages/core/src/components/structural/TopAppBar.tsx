@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, Typography, Box } from '@mui/material';
-import { AppBarContent } from '../../types/content';
+import { AppBarContent } from '@stackwright/types';
 import { ThemedButton } from '../base/ThemedButton';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';

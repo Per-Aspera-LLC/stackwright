@@ -1,5 +1,5 @@
 import { Stack, Box } from '@mui/material';
-import { PageContent } from '../../types/content';
+import { PageContent } from '@stackwright/types';
 import { renderContent } from '../../utils/contentRenderer';
 
 // This is now a simple wrapper - consider deprecating in favor of PageLayout

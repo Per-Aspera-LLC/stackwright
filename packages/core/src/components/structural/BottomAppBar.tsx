@@ -1,6 +1,6 @@
 import { Box, Typography, Link, Stack } from '@mui/material';
 import Grid from '@mui/material/Grid2'
-import { FooterConfig } from '../../types/siteConfig';
+import { FooterConfig } from '../../../../types/src/types/siteConfig';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { ThemedButton } from '../base/ThemedButton';
 interface BottomAppBarProps {

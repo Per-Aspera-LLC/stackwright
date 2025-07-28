@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid2';
-import { GraphicContent } from '../../types/content';
+import { GraphicContent } from '@stackwright/types';
 import { getStackwrightImage } from '../../utils/stackwrightComponentRegistry';
 
 export function Graphic(content: GraphicContent) {

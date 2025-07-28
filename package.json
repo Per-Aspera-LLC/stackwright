@@ -3,7 +3,8 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "build": "pnpm generate-schemas && pnpm -r --filter='!./examples/**' build",
+    "build": "pnpm -r --filter='!./examples/**' build",
+    "build:types": "pnpm --filter @stackwright/types build",
     "build:all": "pnpm -r build",
     "build:examples": "pnpm -r --filter='examples/*' build",
     "dev": "pnpm -r dev",
@@ -13,7 +14,6 @@
     "build:nextjs": "pnpm --filter @stackwright/nextjs build",
     "dev:example": "pnpm --filter per-aspera-site dev",
     "build:example": "pnpm --filter per-aspera-site build",
-    "generate-schemas": "npx ts-node scripts/generate-schemas.ts",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "pnpm build && changeset publish",
@@ -21,11 +21,6 @@
     "test:core": "pnpm --filter @stackwright/core test"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.1",
-    "@types/fs-extra": "^11.0.4",
-    "fs-extra": "^11.3.0",
-    "ts-morph": "^20.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.0.0"
+    "@changesets/cli": "^2.29.5"
   }
 }

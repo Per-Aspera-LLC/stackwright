@@ -1,5 +1,6 @@
 
-import { ButtonContent, NavigationItem } from './content'
+import { NavigationItem } from './navigation';
+import { ButtonContent } from './base';
 import { Theme } from '@stackwright/themes';
 
 export interface SiteConfig {

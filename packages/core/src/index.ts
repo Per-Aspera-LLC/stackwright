@@ -1,9 +1,6 @@
 // Export the main content renderer
 export * from './utils/contentRenderer'
 
-// Export types 
-export * from './types/content'
-
 // Export all base components
 export * from './components/base'
 
@@ -26,7 +23,7 @@ export type { StackwrightConfig } from './config/defaults'
 export { default as DynamicPage } from './components/DynamicPage'
 
 // Add the new types to exports
-export * from './types/siteConfig'
+export * from '../../types/src/types/siteConfig'
 
 // Make sure PageLayout is exported
 export { default as PageLayout } from './components/structural/PageLayout'
