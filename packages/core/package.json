@@ -35,26 +35,26 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@emotion/cache": "11.14.0",
-    "@emotion/react": "11.14.0",
-    "@emotion/styled": "11.14.0",
-    "@fontsource/montserrat-alternates": "5.1.1",
-    "@mui/icons-material": "6.2.0",
-    "@mui/material": "6.2.0",
+    "@emotion/cache": "^11.0.0",
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "@fontsource/montserrat-alternates": "5.2.6",
+    "@mui/icons-material": "7.2.0",
+    "@mui/material": "7.2.0",
     "@stackwright/types": "workspace:*",
     "@stackwright/themes": "workspace:*",
     "js-yaml": "^4.1.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@swc/core": "^1.7.0",
+    "@swc/core": "^1.13.2",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^16.0.0",
-    "@types/node": "^20.19.1",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@stackwright/types": "workspace:*",
     "@vitest/ui": "^3.2.4",
     "jsdom": "^26.1.0",
@@ -63,7 +63,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }
