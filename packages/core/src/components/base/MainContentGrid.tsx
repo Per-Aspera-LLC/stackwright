@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { MainContent, GraphicPosition } from '../../types/content';
+import { MainContent, GraphicPosition } from '@stackwright/types';
 import { TextGrid } from './TextGrid';
 import { ThemedButton } from './ThemedButton';
 import { useSafeTheme } from '../../hooks/useSafeTheme';

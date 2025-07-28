@@ -2,7 +2,7 @@
 
 import { Typography, Box } from '@mui/material'
 import Grid from '@mui/material/Grid2'
-import { IconGridContent } from '../../types/content';
+import { IconGridContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getStackwrightImage } from '../../utils/stackwrightComponentRegistry';
 interface IconGridProps {

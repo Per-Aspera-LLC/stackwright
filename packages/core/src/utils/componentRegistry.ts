@@ -1,7 +1,6 @@
 import { ComponentType } from 'react';
 import { Carousel } from '../components/narrative/Carousel/Carousel';
 import { MainContentGrid, TabbedContentGrid, Graphic, IconGrid } from '../components/base/';
-import { CarouselContent, MainContent, TabbedContent, GraphicContent, IconGridContent, TimelineContent } from '../types/content';
 import { Timeline } from '../components/narrative/Timeline';
 import { stackwrightRegistry, getStackwrightImage, getStackwrightLink, getStackwrightRouter, getStackwrightRoute } from './stackwrightComponentRegistry';
 

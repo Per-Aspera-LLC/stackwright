@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Box, Tabs, Tab, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { TabbedContent, ContentItem } from '../../types/content';
+import { TabbedContent, ContentItem } from '@stackwright/types';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 

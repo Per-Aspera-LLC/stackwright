@@ -5,7 +5,7 @@ import { IconButton, Stack, Paper, Typography, Box } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { OverflowImageCard } from './OverFlowImageCard';
-import { CarouselContent } from '../../../types/content';
+import { CarouselContent } from '@stackwright/types'
 import { useSafeTheme } from '../../../hooks/useSafeTheme';
 import { useBreakpoints } from '../../../hooks/useBreakpoints';
 

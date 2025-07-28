@@ -1,6 +1,6 @@
 import { Box, IconButton, Menu } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { MenuContent } from '../../../types/content';
+import { MenuContent } from '@stackwright/types';
 
 interface CompressedMenuProps {
   menuItems: MenuContent[];

@@ -1,4 +1,4 @@
-import { MenuContent } from '../../../types/content';
+import { MenuContent } from '@stackwright/types';
 import { MenuItem, Typography } from '@mui/material';
 import { MenuThemeConfig } from './menuTheme';
 interface MenuItemProps {

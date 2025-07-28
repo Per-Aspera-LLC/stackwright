@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { ContentItem, PageContent } from '../types/content';
+import { ContentItem, PageContent } from '@stackwright/types'
 import { TopAppBar, BottomAppBar } from '../components/structural/';
 import { StackwrightConfig } from 'config/defaults';
 import { getComponentByType } from './componentRegistry';

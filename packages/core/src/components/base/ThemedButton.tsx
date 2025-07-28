@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@mui/material';
-import { ButtonContent } from '../../types/content';
+import { ButtonContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getHoverColor, resolveColor } from '../../utils/colorUtils';
 import { getStackwrightImage } from '../../utils/stackwrightComponentRegistry';

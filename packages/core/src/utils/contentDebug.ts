@@ -1,4 +1,4 @@
-import { PageContent } from '../types/content';
+import { PageContent } from '@stackwright/types';
 
 export const debugContent = (content: PageContent): string => {
     return JSON.stringify(content, (key, value) => {
