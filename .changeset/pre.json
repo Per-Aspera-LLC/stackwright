@@ -1,6 +1,7 @@
 {
   "mode": "pre",
   "tag": "alpha",
+  "access": "public",
   "initialVersions": {
     "@stackwright/cli": "0.3.0",
     "@stackwright/core": "0.3.0",
