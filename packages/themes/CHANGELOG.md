@@ -1,5 +1,11 @@
 # @stackwright/themes
 
+## 0.3.1-alpha.2
+
+### Patch Changes
+
+- 46df7ac: Documentation updates
+
 ## 0.3.1-alpha.1
 
 ### Patch Changes

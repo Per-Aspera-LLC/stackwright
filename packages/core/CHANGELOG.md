@@ -1,5 +1,14 @@
 # @stackwright/core
 
+## 0.3.1-alpha.2
+
+### Patch Changes
+
+- 46df7ac: Documentation updates
+- Updated dependencies [46df7ac]
+  - @stackwright/themes@0.3.1-alpha.2
+  - @stackwright/types@0.1.1-alpha.1
+
 ## 0.3.1-alpha.1
 
 ### Patch Changes
