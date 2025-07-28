@@ -1,5 +1,13 @@
 # @stackwright/nextjs
 
+## 0.2.1-alpha.5
+
+### Patch Changes
+
+- dc2db25: Adding null checks to core
+- Updated dependencies [dc2db25]
+  - @stackwright/core@0.3.1-alpha.5
+
 ## 0.2.1-alpha.4
 
 ### Patch Changes

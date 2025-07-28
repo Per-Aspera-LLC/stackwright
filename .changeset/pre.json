@@ -10,6 +10,7 @@
     "@stackwright/types": "0.1.0"
   },
   "changesets": [
+    "all-shoes-tap",
     "fine-cloths-brush",
     "funny-keys-build",
     "itchy-cameras-prove",

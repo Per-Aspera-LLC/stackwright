@@ -1,5 +1,14 @@
 # @stackwright/core
 
+## 0.3.1-alpha.5
+
+### Patch Changes
+
+- dc2db25: Adding null checks to core
+- Updated dependencies [dc2db25]
+  - @stackwright/themes@0.3.1-alpha.5
+  - @stackwright/types@0.1.1-alpha.4
+
 ## 0.3.1-alpha.4
 
 ### Patch Changes
