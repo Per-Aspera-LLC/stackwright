@@ -7,5 +7,10 @@
     "@stackwright/nextjs": "0.2.0",
     "@stackwright/themes": "0.3.0"
   },
-  "changesets": []
+  "changesets": [
+    "fine-cloths-brush",
+    "funny-keys-build",
+    "lucky-months-fetch",
+    "pink-days-reply"
+  ]
 }
