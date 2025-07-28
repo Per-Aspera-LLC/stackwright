@@ -102,10 +102,14 @@ stackwright-workspace/
 
 ### Key Packages
 
+#### @stackwright/types
+- **Purpose**: Shared TypeScript types and schemas
+- **Key Exports**: Stackwright Types and schema validators for YAML and React components
+
 #### @stackwright/core
 - **Purpose**: Core YAML-to-React transformation engine
 - **Key Exports**: `DynamicPage`, `SlugPage`, component system
-- **Dependencies**: Material-UI, Emotion, themes package
+- **Dependencies**: Material-UI, Emotion, themes & types packages
 
 #### @stackwright/nextjs  
 - **Purpose**: Next.js integration and setup utilities
@@ -115,7 +119,7 @@ stackwright-workspace/
 #### @stackwright/themes
 - **Purpose**: YAML-configurable theme system
 - **Key Exports**: Theme definitions, styling utilities
-- **Dependencies**: React, js-yaml
+- **Dependencies**: React, js-yaml, type package
 
 #### @stackwright/cli
 - **Purpose**: Developer tooling and project scaffolding
@@ -124,7 +128,6 @@ stackwright-workspace/
 
 ### Important Configuration Files
 - `pnpm-workspace.yaml`: Monorepo package definitions
-- `scripts/generate-schemas.ts`: TypeScript schema generation
 - `.changeset/`: Version management configuration
 - `.github/workflows/`: CI/CD pipeline definitions
 
