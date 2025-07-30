@@ -1,4 +1,5 @@
 # Stackwright
+<img width="256" height="256" alt="stackwright" src="https://github.com/user-attachments/assets/181b6fd5-0442-4345-a7d0-88f4858c5721" />
 
 **Build real web applications from human-readable configs**
 
