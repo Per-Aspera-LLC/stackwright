@@ -23,9 +23,10 @@ export interface ButtonContent extends BaseContent, TextBlock {
 }
 
 export interface GraphicContent extends BaseContent {
-    image: string
-    aspect_ratio?: number
-    min_size?: number
-    max_size?: number
-    variant?: GraphicVariant
+    image: string;
+    alt?: string;
+    aspect_ratio?: number;
+    min_size?: number;
+    max_size?: number;
+    variant?: GraphicVariant;
 }

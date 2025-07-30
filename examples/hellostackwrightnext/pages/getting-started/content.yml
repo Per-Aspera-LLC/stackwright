@@ -1,0 +1,55 @@
+content:
+  content_items:
+    - main:
+        label: "getting-started-hero"
+        heading:
+          text: "Getting Started with Stackwright"
+          size: "h1"
+        textBlocks:
+          - text: "Learn how to build your first Stackwright application in minutes."
+            size: "h6"
+          - text: "Follow this step-by-step guide to create dynamic, YAML-driven React applications."
+            size: "body1"
+
+    - main:
+        label: "installation-section"
+        heading:
+          text: "1. Installation"
+          size: "h2"
+        textBlocks:
+          - text: "Install the Stackwright CLI and create your first project:"
+            size: "body1"
+          - text: "npm install -g @stackwright/cli\nstackwright create my-app\ncd my-app\nnpm run dev"
+            size: "body2"
+        background: "#f8f9fa"
+
+    - main:
+        label: "yaml-config-section"
+        heading:
+          text: "2. Create YAML Content"
+          size: "h2"
+        textBlocks:
+          - text: "Define your page structure using simple YAML configuration:"
+            size: "body1"
+          - text: "Create content/pages/home.yaml and define your page structure with headings, text blocks, buttons, and graphics."
+            size: "body1"
+
+    - main:
+        label: "next-steps"
+        heading:
+          text: "Next Steps"
+          size: "h2"
+        textBlocks:
+          - text: "Explore more advanced features and customization options."
+            size: "body1"
+        buttons:
+          - label: "docs-btn"
+            text: "View Documentation"
+            size: "body1"
+            variant: "contained"
+            href: "/docs"
+          - label: "examples-btn"
+            text: "See Examples"
+            size: "body1"
+            variant: "outlined"
+            href: "/examples"

@@ -1,0 +1,40 @@
+content:
+  content_items:
+    - main:
+        label: "hero-section"
+        heading:
+          text: "Welcome to Stackwright"
+          size: "h1"
+          color: "secondary"
+        textBlocks:
+          - text: "Build beautiful, responsive applications using YAML configuration files instead of writing React components from scratch."
+            size: "h6"
+          - text: "Stackwright is a YAML-driven React framework that enables rapid development through a 'content as code' approach. Define your UI structure, styling, and behavior in simple YAML files."
+            size: "body1"
+        buttons:
+          - label: "get-started-btn"
+            text: "Get Started"
+            size: "body1"
+            variant: "contained"
+            href: "/getting-started"
+          - label: "learn-more-btn"
+            text: "Learn More"
+            size: "body1"
+            variant: "outlined"
+            href: "/about"
+        graphic:
+          label: "hero-graphic"
+          image: "./stackwright-digital.png"
+          aspect_ratio: 1
+          variant: "standard"
+        graphic_position: "right"
+
+    # - main:
+    #     label: "features-section"
+    #     heading:
+    #       text: "Key Features"
+    #       size: "h2"
+    #     textBlocks:
+    #       - text: "Everything you need to build modern web applications"
+    #         size: "h6"
+    #     background: "#f5f5f5"

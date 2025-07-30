@@ -1,6 +1,6 @@
 import DynamicPage from '../components/DynamicPage';
 import {  PageContent, SiteConfig } from '@stackwright/types';
-import { getStackwrightStaticGeneration } from '../utils/stackwrightComponentRegistry';
+import { getStackwrightStaticGeneration } from '../utils/stackwrightUtilityRegistry';
 
 interface SlugPageProps {
   pageContent: PageContent;
@@ -12,8 +12,14 @@ export default function SlugPage({ pageContent, siteConfig }: SlugPageProps) {
 }
 
 // Export the static generation functions from stackwright registry
-export const getSlugStaticPaths = () => getStackwrightStaticGeneration().getStaticPaths;
-export const getSlugStaticProps = () => getStackwrightStaticGeneration().getStaticProps;
+// These are lazily evaluated to ensure registry is populated first
+export const getSlugStaticPaths = (...args: any[]) => {
+  return getStackwrightStaticGeneration().getStaticPaths(...args);
+};
+
+export const getSlugStaticProps = (...args: any[]) => {
+  return getStackwrightStaticGeneration().getStaticProps(...args);
+};
 
 // Export the props interface for reuse
 export type { SlugPageProps };

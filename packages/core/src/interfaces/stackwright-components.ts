@@ -55,11 +55,18 @@ export interface StackwrightStaticGeneration {
 
 // Platform-specific component implementations
 export interface StackwrightComponents {
-  Image: ComponentType<StackwrightImageProps>;
+  Image: ComponentType<StackwrightImageProps>;  
   Link: ComponentType<StackwrightLinkProps>;
   Router: ComponentType<StackwrightRouterProps>;
   Route: ComponentType<StackwrightRouteProps>;
-  StaticGeneration: StackwrightStaticGeneration;
+}
+
+// Create separate interface for utilities
+export interface StackwrightUtilities {
+  StaticGeneration: {
+    getStaticProps: (...args: any[]) => any;
+    getStaticPaths: (...args: any[]) => any;
+  };
 }
 
 // Registry for stackwright components

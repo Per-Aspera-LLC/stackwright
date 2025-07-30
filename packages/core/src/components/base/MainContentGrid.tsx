@@ -38,6 +38,7 @@ export function MainContentGrid(content: MainContent) {
           sx={{ width: '100%', height: '100%' }}>
           <Graphic
             image={content.graphic.image}
+            alt={content.graphic.alt}
             label={`${content.heading?.text} graphic`}
             aspect_ratio={content.graphic.aspect_ratio}
             variant={content.graphic.variant}

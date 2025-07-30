@@ -37,4 +37,5 @@ export * from './pages/SlugPage'
 // Stackwright component system exports
 export * from './interfaces/stackwright-components'
 export { stackwrightRegistry, registerStackwrightComponents } from './utils/stackwrightComponentRegistry'
+export { stackwrightUtilityRegistry, registerStackwrightUtilities } from './utils/stackwrightUtilityRegistry'
 export { defaultStackwrightComponents } from './components/stackwright/DefaultStackwrightComponents'

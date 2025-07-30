@@ -3,7 +3,7 @@ import { Button } from '@mui/material';
 import { ButtonContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getHoverColor, resolveColor } from '../../utils/colorUtils';
-import { getStackwrightImage } from '../../utils/stackwrightComponentRegistry';
+import { Graphic } from './Graphic';
 
 interface ThemedButtonProps {
   button: ButtonContent;
@@ -21,7 +21,6 @@ export function ThemedButton({
   className 
 }: ThemedButtonProps) {
   const theme = useSafeTheme();
-  const StackwrightImage = getStackwrightImage();
   
   // Simple color resolution: use theme colors if name matches, otherwise use as-is
   const resolveColor = (colorValue: string) => {
@@ -60,11 +59,11 @@ export function ThemedButton({
         textTransform: 'none'
       }}
       startIcon={button.image && (
-        <StackwrightImage 
-          src={button.image} 
+        <Graphic
+          image={button.image} 
           alt={button.label || button.text} 
-          width={24} 
-          height={24}
+          label={button.label}
+          variant='contained'
         />
       )}
     >
