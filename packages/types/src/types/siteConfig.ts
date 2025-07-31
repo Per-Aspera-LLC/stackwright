@@ -33,6 +33,8 @@ export interface BreakpointsConfig {
 }
 
 export interface FooterConfig {
+  backgroundColor?: string;
+  textColor?: string;
   copyright?: string;
   links?: NavigationItem[];
   socialLinks?: ButtonContent[];

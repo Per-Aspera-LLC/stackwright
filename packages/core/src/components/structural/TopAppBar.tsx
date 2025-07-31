@@ -6,9 +6,9 @@ import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
 
 export default function TopAppBar({ title, logo, menuItems, textcolor, backgroundcolor }: AppBarContent) {
   const theme = useSafeTheme();
-   ;
+  
   const headerBgColor = backgroundcolor ? resolveColor(backgroundcolor, theme.colors) : theme.colors.primary;
-   const headerTextColor = textcolor ? resolveColor(textcolor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor)
+  const headerTextColor = textcolor ? resolveColor(textcolor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor)
 
 
   return (

@@ -2,6 +2,7 @@ import { Box, Typography, Link, Stack } from '@mui/material';
 import Grid from '@mui/material/Grid'
 import { FooterConfig } from '../../../../types/src/types/siteConfig';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
 import { ThemedButton } from '../base/ThemedButton';
 interface BottomAppBarProps {
   footer?: FooterConfig;
@@ -10,6 +11,11 @@ interface BottomAppBarProps {
 export default function BottomAppBar({ footer }: BottomAppBarProps) {
   const theme = useSafeTheme();
   const currentYear = new Date().getFullYear();
+
+    const backgroundColor = footer?.backgroundColor ? resolveColor(footer?.backgroundColor, theme.colors) : theme.colors.primary;
+    const textColor = footer?.textColor ? resolveColor(footer.textColor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, backgroundColor)
+  
+
   let columns = 0;
   if(footer?.socialLinks)
     columns++;
@@ -20,8 +26,8 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
     <Box
       component="footer"
       sx={{
-        backgroundColor: theme.colors.surface,
-        color: theme.colors.text,
+        backgroundColor: backgroundColor ,
+        color: textColor,
         py: 4,
         px: 2,
         mt: 'auto',
@@ -29,7 +35,7 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
         minHeight: 32
       }}
     >
-      <Grid columns={columns} >
+      {/* <Grid columns={columns} >
 
      
           <Grid alignItems="center" columns={4}>
@@ -61,9 +67,9 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
               </Grid>
             </Stack>
           )}
-      </Grid>
+      </Grid> */}
       <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-        <Typography variant="body2" sx={{ color: theme.colors.text, textAlign: 'center' }}>
+        <Typography variant="body2" sx={{ textAlign: 'center' }}>
           {footer?.copyright || `© ${currentYear} All rights reserved.`}
         </Typography>
       </Box>

@@ -4,7 +4,7 @@
     titleText: "Hello Stackwright"
     textColor: "secondary"
     logo:
-      image: "/stackwright-digital.png"
+      image: "stackwright-digital.png"
       width: 40
       height: 40
 
@@ -17,6 +17,8 @@
       href: "/about"
 
   footer:
+    backgroundColor: "primary"
+    textColor: "secondary"
     copyright: "© 2025 Hello Stackwright Example"
     links:
       - label: "Github"
