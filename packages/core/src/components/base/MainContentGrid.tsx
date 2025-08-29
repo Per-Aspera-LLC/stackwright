@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { MainContent, GraphicPosition } from '@stackwright/types';
+import { MainContent, GraphicPosition, ImageContent } from '@stackwright/types';
 import { TextGrid } from './TextGrid';
 import { ThemedButton } from './ThemedButton';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
-import { Graphic } from './Graphic';
+import { Media } from '../media/Media';
 import { resolveColor } from '../../utils/colorUtils';
 
 export function MainContentGrid(content: MainContent) {
@@ -19,10 +19,11 @@ export function MainContentGrid(content: MainContent) {
     // Calculate mobile graphic size (constrained to 6-10 columns for better mobile UX)
     const graphicColumnsXs = Math.max(6, Math.min(10, graphicColumns));
 
-    const headerColor = resolveColor(content.heading.color ? content.heading.color : theme.colors.primary, theme.colors);
+    const headerColor = resolveColor(content.heading.textColor ? content.heading.textColor : theme.colors.primary, theme.colors);
 
     
-    const imageGrid = content.graphic && (
+    
+    const imageGrid = content.media && (
 
       <Grid
         container
@@ -36,13 +37,14 @@ export function MainContentGrid(content: MainContent) {
       >
         <Box
           sx={{ width: '100%', height: '100%' }}>
-          <Graphic
-            image={content.graphic.image}
-            alt={content.graphic.alt}
+          <Media
+            src={content.media.src}
+            alt={content.media.alt}
+            height={content.media.height || undefined}
+            width={content.media.width || undefined}
+            aspect_ratio={(content.media as ImageContent).aspect_ratio}
             label={`${content.heading?.text} graphic`}
-            aspect_ratio={content.graphic.aspect_ratio}
-            variant={content.graphic.variant}
-            max_size={content.graphic.max_size}
+            
           />
         </Box>
       </Grid>
@@ -61,7 +63,7 @@ export function MainContentGrid(content: MainContent) {
         }}>
         {content.heading?.text && (
           <Typography 
-            variant={content.heading.size} 
+            variant={content.heading.textSize} 
             sx={{
               color: headerColor
             }}
@@ -112,7 +114,7 @@ export function MainContentGrid(content: MainContent) {
         }}
       >
   
-        {content.graphic ? (
+        {content.media ? (
           content.graphic_position === GraphicPosition.LEFT ? (
             <>
               {imageGrid}

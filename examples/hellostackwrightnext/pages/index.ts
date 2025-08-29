@@ -1,13 +1,9 @@
 import { GetStaticProps } from 'next';
 import { NextStackwrightStaticGeneration } from '@stackwright/nextjs';
-
+import { registerDefaultIcons } from '@stackwright/icons';
+   
 // Import the same page component used by [...slug].tsx
 import SlugPage from './[slug]';
-
-/**
- * Root index page that loads pages/content.yaml
- * Reuses the existing getStaticProps logic from NextStackwrightStaticGeneration
- */
 
 /**
  * getStaticProps for the root index page

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTheme } from '@stackwright/themes';
 import Box from '@mui/material/Box';
 import { DefaultStackwrightImage } from 'components/stackwright/DefaultStackwrightComponents';
-import { Graphic } from 'components/base';
+import {  Media } from '../media/Media';
 import { Typography } from '@mui/material';
 
 interface HeroProps {
@@ -27,10 +27,10 @@ const Hero: React.FC<HeroProps> = ({
   return (
     <Box>
         if(backgroundImage){
-            <Graphic
-                image={backgroundImage || ""}
+            <Media
+                src={backgroundImage || ""}
                 label={title}
-                variant='contained'
+                style='contained'
             />
         }
         <Typography>

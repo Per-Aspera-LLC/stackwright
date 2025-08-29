@@ -2,11 +2,13 @@
   title: "Hello Stackwright"
   appBar:
     titleText: "Hello Stackwright"
+    backgroundColor: "primary"
     textColor: "secondary"
     logo:
-      image: "stackwright-digital.png"
-      width: 40
-      height: 40
+      src: "./stackwright-logo.png"
+      label: "Stackwright Logo"
+      height: '56px'
+      width: '56px'
 
   navigation:
     - label: "Home"
@@ -19,17 +21,26 @@
   footer:
     backgroundColor: "primary"
     textColor: "secondary"
-    copyright: "© 2025 Hello Stackwright Example"
+    copyright: "All Right Reserved. Per Aspera Sapientia."
     links:
       - label: "Github"
         href: "https://github.com/Per-Aspera-LLC/stackwright/"
+      - label: "Privacy Policy"
+        href: "/privacy-policy"
+      - label: "Terms of Service"
+        href: "/terms-of-service"
+
     socialLinks:
-      - label: "twitter-link"
-        text: "Twitter"
-        size: "body2"
+      - text: "Bluesky"
+        textSize: "body2"
+        icon: 
+          src: "bluesky"
+          label: "bluesky Logo"
         variant: "text"
-        href: "https://twitter.com/stackwright"
-    socialText: "Follow us on social media"
+        variantSize: "small"
+        textColor: "secondary"
+        href: "https://bsky.app/profile/stackwright.bsky.social"
+    socialText: "Come be Sociable!"
 
   customTheme:
     id: per-aspera-sapientia-custom

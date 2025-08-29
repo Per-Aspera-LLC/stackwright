@@ -45,7 +45,7 @@ export const getStaticProps = getSlugStaticProps;`;
       "@emotion/styled": "^11.0.0"
     },
     devDependencies: {
-      "@types/node": "^20.0.0",
+      "@types/node": "^24.1",
       "@types/react": "^18.0.0",
       "@types/react-dom": "^18.0.0",
       "typescript": "^5.0.0",

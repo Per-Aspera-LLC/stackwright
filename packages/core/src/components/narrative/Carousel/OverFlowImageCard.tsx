@@ -1,7 +1,7 @@
 import { Card, Stack, Box, Typography } from '@mui/material'
 import { CarouselItem } from '@stackwright/types'
 import { useSafeTheme } from '../../../hooks/useSafeTheme'
-import { Graphic } from '../../base'
+import { Media } from '../../media/Media'
 
 interface OverflowImageCardProps {
   item: CarouselItem,
@@ -32,13 +32,10 @@ export const OverflowImageCard = ({ item, minWidth, sx }: OverflowImageCardProps
       <Stack justifyContent="center" width={'100%'} height={'100%'} top={0} left={0}
       >
         <Box width={'100%'} height={'100%'} sx={{backgroundColor: backgroundColor}}>
-          <Graphic
-            image={item.image.image}
-            aspect_ratio={item.image.aspect_ratio ? item.image.aspect_ratio : 1}
-            min_size={item.image.min_size ? item.image.min_size : 50}
-            max_size={item.image.max_size ? item.image.max_size : 150}
+          <Media
+            src={item.media.src}
             label={item.title}
-            variant={item.image.variant ? item.image.variant : 'contained'}
+            style={item.media.style ? item.media.style : 'contained'}
          />
           
         <Typography 

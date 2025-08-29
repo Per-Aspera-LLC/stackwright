@@ -1,38 +1,49 @@
-import { AppBar, Toolbar, Typography, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, imageListClasses } from '@mui/material';
 import { AppBarContent } from '@stackwright/types';
 import { ThemedButton } from '../base/ThemedButton';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
+import { Media } from '../media/Media'
 
 export default function TopAppBar({ title, logo, menuItems, textcolor, backgroundcolor }: AppBarContent) {
   const theme = useSafeTheme();
   
   const headerBgColor = backgroundcolor ? resolveColor(backgroundcolor, theme.colors) : theme.colors.primary;
   const headerTextColor = textcolor ? resolveColor(textcolor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor)
-
+    
 
   return (
     <AppBar position="sticky" sx={{ 
-      backgroundColor: theme.colors.primary,
+      backgroundColor: headerBgColor,
       color: headerTextColor,
-      width: '100%'
-
+      width: '100%',
+      height: '100%'
     }}>
-      <Toolbar >
+      <Toolbar sx={{ height: '100%', width: '100%', display: 'flex'}}>
         {logo ? (
-          <><Box sx={{ mr: 2 }}>
-            <img
-              src={logo.image}
-              alt={`${title} logo`}
-              width={logo.width || 100}
-              height={logo.height || 50}
-              style={{ objectFit: 'contain' }} />
-          </Box>
-          <Typography  variant="h6" component="div" sx={{  mr: 4 }}>
+          <>
+            <Box 
+              sx={{
+                paddingRight: 1.5,
+                height: 'auto'
+              }}
+              >
+              <Media
+                src={logo.src}
+                style='contained'
+                color={logo.color}
+                height={logo?.height || '48px'}
+                width={logo?.width || '48px'}
+                label={`${title} logo`}
+                
+                />
+              </Box>
+            <Typography  variant="h4" component="div" sx={{  mr: 4 }}>
               {title}
-          </Typography></>
+            </Typography>
+          </>
         ): (
-          <Typography  variant="h6" component="div" sx={{  mr: 4 }}>
+          <Typography  variant="h4" component="div" sx={{  mr: 4 }}>
             {title}
           </Typography>
         )}
@@ -47,10 +58,9 @@ export default function TopAppBar({ title, logo, menuItems, textcolor, backgroun
                 text: item.label,
                 href: item.href,
                 variant: 'text',
-                label: item.label,
-                buttonBackground: 'transparent',
-                buttonColor: headerTextColor,
-                size: 'button'
+                bgColor: headerBgColor,
+                textColor: headerTextColor,
+                textSize: 'h6'
               }}
               size="medium"
             />

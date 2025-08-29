@@ -11,6 +11,7 @@ export interface StackwrightComponentProps {
 export interface StackwrightImageProps extends StackwrightComponentProps {
   src: string;
   alt: string;
+  aspect_ratio: number;
   width?: number | string;
   height?: number | string;
   priority?: boolean;

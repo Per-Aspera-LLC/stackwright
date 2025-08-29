@@ -11,6 +11,8 @@ import { NextStackwrightLink } from './components/NextStackwrightLink';
 import { NextStackwrightRouter, NextStackwrightRoute } from './components/NextStackwrightRouter';
 import { NextStackwrightStaticGeneration } from './components/NextStackwrightStaticGeneration';
 
+import { createStackwrightNextConfig } from './config/NextStackwrightConfig';
+
 export function registerNextJSComponents() {
   // Register components
   registerStackwrightComponents({
@@ -48,3 +50,7 @@ stackwrightUtilityRegistry.register({
   }
 });
 console.log('🔧 Stackwright Next.js utilities registered')
+
+export {
+  createStackwrightNextConfig
+};

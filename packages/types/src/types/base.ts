@@ -1,4 +1,5 @@
-import { TypographyVariant, ButtonVariant, AlignmentVariant, GraphicVariant } from './enums';
+import { TypographyVariant, ButtonVariant, AlignmentVariant, MediaStyleVariant, MediaVariant } from './enums';
+import { MediaItem } from './media';
 
 export interface BaseContent {
     label: string
@@ -8,25 +9,17 @@ export interface BaseContent {
 
 export interface TextBlock {
     text: string
-    size: TypographyVariant
-    color?: string
+    textSize: TypographyVariant
+    textColor?: string
 }
 
-export interface ButtonContent extends BaseContent, TextBlock {
+export interface ButtonContent extends TextBlock {
     variant: ButtonVariant
+    variantSize?: "small" | "medium" | "large"
     href?: string
     action?: string
-    image?: string
+    icon?: MediaItem
     alignment?: AlignmentVariant
-    buttonColor?: string
-    buttonBackground?: string
+    bgColor?: string
 }
 
-export interface GraphicContent extends BaseContent {
-    image: string;
-    alt?: string;
-    aspect_ratio?: number;
-    min_size?: number;
-    max_size?: number;
-    variant?: GraphicVariant;
-}

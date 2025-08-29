@@ -1,6 +1,6 @@
-
 import { NavigationItem } from './navigation';
 import { ButtonContent } from './base';
+import { MediaItem } from './media';
 import { Theme } from '@stackwright/themes';
 
 export interface SiteConfig {
@@ -17,12 +17,11 @@ export interface AppBarConfig {
   titleText: string,
   backgroundColor?: string,
   textColor?: string,
-  logo?: {
-    image: string;
-    width?: number;
-    height?: number;
-  };
+  logo?: MediaItem,
+  height?: string,
+  menuItems?: NavigationItem[]
 }
+
 
 export interface BreakpointsConfig {
   xs: string;
@@ -36,7 +35,9 @@ export interface FooterConfig {
   backgroundColor?: string;
   textColor?: string;
   copyright?: string;
+  itemsPerColumn?: number;
   links?: NavigationItem[];
   socialLinks?: ButtonContent[];
   socialText?: string;
 }
+

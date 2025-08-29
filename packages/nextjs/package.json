@@ -33,6 +33,7 @@
     "@swc/core": "^1.13.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/js-yaml": "^4.0",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"

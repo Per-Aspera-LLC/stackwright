@@ -16,11 +16,11 @@ export function Timeline(content: TimelineContent) {
     }}>
       {content.heading && (
         <Typography 
-          variant={content.heading.size} 
+          variant={content.heading.textSize} 
           sx={{ 
             mb: 4, 
             textAlign: 'center',
-            color: content.heading.color || theme.colors.text
+            color: content.heading.textColor || theme.colors.text
           }}
         >
           {content.heading.text}

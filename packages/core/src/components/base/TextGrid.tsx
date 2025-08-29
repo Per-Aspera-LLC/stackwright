@@ -32,19 +32,19 @@ export function TextGrid({ content, config }: TextGridProps) {
     }
     switch(textBlock.text){
       case '%DIVIDER%':
-        return <Divider sx={{ color: textBlock.color || theme.colors.textSecondary }}/>
+        return <Divider sx={{ color: textBlock.textColor || theme.colors.textSecondary }}/>
       case '%SPACER%':
         return <Box height={16} />
       default:
         return <Typography 
-        variant={textBlock.size} 
+        variant={textBlock.textSize} 
         sx={{
           fontSize: {
             xs: '0.8em',
             sm: '1em',
             md: '1.2em'
           },
-          color: textBlock.color || theme.colors.text
+          color: textBlock.textColor || theme.colors.text
         }}
       >
         {textBlock.text}
@@ -71,7 +71,7 @@ export function TextGrid({ content, config }: TextGridProps) {
             >
               {startsWithBullet(line) && listIcon && (
                 <Typography 
-                variant={textItem.size} 
+                variant={textItem.textSize} 
                 sx={{
                   fontSize: {
                     xs: '0.8em',
@@ -87,7 +87,7 @@ export function TextGrid({ content, config }: TextGridProps) {
 
               {startsWithListNumber(line) && (
                 <Typography 
-                  variant={textItem.size} 
+                  variant={textItem.textSize} 
                   sx={{
                     fontSize: {
                       xs: '0.8em',

@@ -1,0 +1,30 @@
+{
+  "name": "@stackwright/icons",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "dependencies": {
+    "@mui/icons-material": "^7.2.0",
+    "@mui/material": "^7.2.0",
+    "@stackwright/icons": "link:",
+    "react": "^19"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@testing-library/jest-dom": "^6.6",
+    "tsup": "^8",
+    "typescript": "^5",
+    "vitest": "^3"
+  }
+}

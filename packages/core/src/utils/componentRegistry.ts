@@ -1,6 +1,7 @@
 import { ComponentType } from 'react';
 import { Carousel } from '../components/narrative/Carousel/Carousel';
-import { MainContentGrid, TabbedContentGrid, Graphic, IconGrid } from '../components/base/';
+import { MainContentGrid, TabbedContentGrid } from '../components/base/';
+import { Media } from '../components/media/Media'
 import { Timeline } from '../components/narrative/Timeline';
 import { stackwrightRegistry, getStackwrightImage, getStackwrightLink, getStackwrightRouter, getStackwrightRoute } from './stackwrightComponentRegistry';
 
@@ -9,8 +10,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   carousel: Carousel,
   main: MainContentGrid,
   tabbed_content: TabbedContentGrid,
-  graphic: Graphic,
-  icon_grid: IconGrid,
+  media: Media,
   timeline: Timeline,
   // Stackwright components (will be resolved dynamically)
   'stackwright-image': () => getStackwrightImage(),

@@ -4,43 +4,109 @@ import { PageContent, SiteConfig } from '@stackwright/types';
 import path from 'path';
 import yaml from 'js-yaml';
 
-    /**
-   * Helper function to find content file with either .yml or .yaml extension
-   */
-  function findContentFile(basePath: string): string | null {
-    const fs = require('fs');
-    const path = require('path');
-    
-    const yamlPath = path.join(basePath, 'content.yaml');
-    const ymlPath = path.join(basePath, 'content.yml');
-    
-    if (fs.existsSync(yamlPath)) {
-      return yamlPath;
-    } else if (fs.existsSync(ymlPath)) {
-      return ymlPath;
-    }
-    
-    return null;
+/**
+ * Helper function to find content file with either .yml or .yaml extension
+ */
+function findContentFile(basePath: string): string | null {
+  const fs = require('fs');
+  const path = require('path');
+  
+  const yamlPath = path.join(basePath, 'content.yaml');
+  const ymlPath = path.join(basePath, 'content.yml');
+  
+  if (fs.existsSync(yamlPath)) {
+    return yamlPath;
+  } else if (fs.existsSync(ymlPath)) {
+    return ymlPath;
+  }
+  
+  return null;
+}
+
+/**
+ * Helper function to find config file with either .yml or .yaml extension
+ */
+function findConfigFile(): string | null {
+  const fs = require('fs');
+  const path = require('path');
+  
+  const yamlPath = path.join(process.cwd(), 'stackwright.yaml');
+  const ymlPath = path.join(process.cwd(), 'stackwright.yml');
+  
+  if (fs.existsSync(yamlPath)) {
+    return yamlPath;
+  } else if (fs.existsSync(ymlPath)) {
+    return ymlPath;
+  }
+  
+  return null;
+}
+
+/**
+ * Check if a file path appears to be an image
+ */
+function isImageFile(filePath: string): boolean {
+  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico'];
+  const ext = path.extname(filePath.toLowerCase());
+  return imageExtensions.includes(ext);
+}
+
+/**
+ * Process images in site config, copying from root directory to public/images/config
+ */
+function processImagesInConfig(config: any): any {
+  const fs = require('fs');
+  const path = require('path');
+  const rootDir = process.cwd();
+
+  if (typeof config === 'string') {
+    // Check if it's a relative image path or just a filename
+    if ((config.startsWith('./') || (!config.includes('/') && !config.startsWith('http'))) && isImageFile(config)) {
+      const sourcePath = path.resolve(rootDir, config.startsWith('./') ? config : `./${config}`);
+
+      if (fs.existsSync(sourcePath)) {
+        // Create destination path in public/images/config
+        const fileName = path.basename(config);
+        const destDir = path.join(rootDir, 'public', 'images', 'config');
+        const destPath = path.join(destDir, fileName);
+
+        // Ensure destination directory exists
+        if (!fs.existsSync(destDir)) {
+          fs.mkdirSync(destDir, { recursive: true });
+        }
+
+        // Copy image if it doesn't exist or source is newer
+        if (!fs.existsSync(destPath) ||
+            fs.statSync(sourcePath).mtime > fs.statSync(destPath).mtime) {
+          fs.copyFileSync(sourcePath, destPath);
+          console.log(`📸 Copied config image: ${sourcePath} -> ${destPath}`);
+        }
+
+        // Return public URL path
+        return `/images/config/${fileName}`;
+      } else {
+        console.warn(`⚠️ Config image file not found: ${sourcePath}`);
+        // Return original path as fallback - don't break the build
+    return config;
+  }
+  }
+  return config;
+}
+
+  if (Array.isArray(config)) {
+    return config.map(item => processImagesInConfig(item));
   }
 
-  /**
-   * Helper function to find config file with either .yml or .yaml extension
-   */
-  function findConfigFile(): string | null {
-    const fs = require('fs');
-    const path = require('path');
-    
-    const yamlPath = path.join(process.cwd(), 'stackwright.yaml');
-    const ymlPath = path.join(process.cwd(), 'stackwright.yml');
-    
-    if (fs.existsSync(yamlPath)) {
-      return yamlPath;
-    } else if (fs.existsSync(ymlPath)) {
-      return ymlPath;
+  if (config && typeof config === 'object') {
+    const processed: any = {};
+    for (const [key, value] of Object.entries(config)) {
+      processed[key] = processImagesInConfig(value);
     }
-    
-    return null;
+    return processed;
   }
+
+  return config;
+}
 
 /**
  * Process and copy images from content directory to public/images
@@ -58,7 +124,11 @@ function processImagesInContent(content: any, contentDir: string): any {
         // Create destination path maintaining directory structure
         const relativePath = path.relative(path.join(process.cwd(), 'pages'), contentDir);
         const fileName = path.basename(content);
-        const destDir = path.join(process.cwd(), 'public', 'images', relativePath);
+
+        // For root pages directory, don't add extra path segment
+        const destDir = relativePath
+          ? path.join(process.cwd(), 'public', 'images', relativePath)
+          : path.join(process.cwd(), 'public', 'images');
         const destPath = path.join(destDir, fileName);
 
         // Ensure destination directory exists
@@ -70,18 +140,24 @@ function processImagesInContent(content: any, contentDir: string): any {
         if (!fs.existsSync(destPath) ||
             fs.statSync(sourcePath).mtime > fs.statSync(destPath).mtime) {
           fs.copyFileSync(sourcePath, destPath);
-          console.log(`📸 Copied image: ${sourcePath} -> ${destPath}`);
+          console.log(`📸 Copied content image: ${sourcePath} -> ${destPath}`);
         }
 
         // Return public URL path
-        const publicPath = path.join('/images', relativePath, fileName).replace(/\\/g, '/');
+        const publicPath = relativePath
+          ? path.join('/images', relativePath, fileName).replace(/\\/g, '/')
+          : `/images/${fileName}`;
+
+        console.log(`📸 Processed content image: ${content} -> ${publicPath}`);
         return publicPath;
           } else {
-        console.warn(`⚠️ Image file not found: ${sourcePath}`);
+        console.warn(`⚠️ Content image file not found: ${sourcePath}`);
+        // Return original path as fallback
+        return content;
           }
         }
     return content;
-      }
+  }
 
   if (Array.isArray(content)) {
     return content.map(item => processImagesInContent(item, contentDir));
@@ -97,15 +173,6 @@ function processImagesInContent(content: any, contentDir: string): any {
 
   return content;
 }
-  /**
- * Check if a file path appears to be an image
-   */
-function isImageFile(filePath: string): boolean {
-  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp'];
-  const ext = path.extname(filePath.toLowerCase());
-  return imageExtensions.includes(ext);
-}
-
 /**
  * Next.js implementation of Stackwright Static Generation
  * Provides Next.js-specific static generation functions for slug-based pages
@@ -237,13 +304,14 @@ export const NextStackwrightStaticGeneration: StackwrightStaticGeneration = {
 
       let siteConfig: SiteConfig;
       try {
-        const parsedYaml = yaml.load(stackwrightConfigContent);
+        const parsedConfigYaml = yaml.load(stackwrightConfigContent);
 
-        if (!parsedYaml || typeof parsedYaml !== 'object') {
+        if (!parsedConfigYaml || typeof parsedConfigYaml !== 'object') {
           throw new Error('Invalid YAML structure: expected object at root level');
         }
 
-        siteConfig = parsedYaml as SiteConfig;
+        // Process images in config before assigning to siteConfig
+        siteConfig = processImagesInConfig(parsedConfigYaml) as SiteConfig;
 
       } catch (yamlError) {
         console.error(`Error parsing YAML content in ${configPath}:`, yamlError);

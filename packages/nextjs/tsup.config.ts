@@ -7,7 +7,7 @@ export default defineConfig({
   dts: true, // We use tsc for declarations
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', 'next'],
+  external: ['react', 'react-dom'],
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.js' : '.mjs',

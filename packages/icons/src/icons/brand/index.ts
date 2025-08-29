@@ -1,0 +1,1 @@
+export { StackwrightIcon } from './StackwrightIcon';

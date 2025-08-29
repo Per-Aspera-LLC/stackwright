@@ -1,4 +1,5 @@
 import { ButtonContent } from './base';
+import { MediaContent } from './media';
 
 export interface MenuContent extends ButtonContent {
     menu_items?: MenuContent[]
@@ -24,19 +25,11 @@ export interface NavigationItem {
     href: string;
 }
 
-export interface AppBarLogo {
-    image: string
-    aspect_ratio: string
-}
-
 export interface AppBarContent {
-    title: string;
-    logo?: {
-        image: string;
-        width?: number;
-        height?: number;
-    };
-    menuItems?: NavigationItem[]; 
-    textcolor?: string
-    backgroundcolor?: string
+  title: string;
+  logo?: MediaContent;
+  menuItems?: NavigationItem[];
+  textcolor?: string;
+  backgroundcolor?: string;
+  height?: string | number;
 }

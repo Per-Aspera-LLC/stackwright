@@ -7,7 +7,7 @@ import { TabbedContent, ContentItem } from '@stackwright/types';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 
-export function TabbedContentGrid(content: TabbedContent) {
+export function TabbedContentGrid( content: TabbedContent) {
   const theme = useSafeTheme();
   const [value, setValue] = useState(0);
 
@@ -36,7 +36,7 @@ export function TabbedContentGrid(content: TabbedContent) {
       >
         <Grid size={{xs: 12}} container sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
           <Typography 
-            variant={content?.heading?.size || 'body1'} 
+            variant={content?.heading?.textSize || 'body1'} 
             gutterBottom
             sx={{ 
               width: '100%', 
@@ -72,7 +72,7 @@ export function TabbedContentGrid(content: TabbedContent) {
               return (
                 <Tab 
                   key={index}
-                  label={contentData?.label ?? 'Missing Tab Lable'}
+                  label={`${tab.label}`}
                   id={`tab-${index}`}
                   aria-controls={`tabpanel-${index}`}
                 />
