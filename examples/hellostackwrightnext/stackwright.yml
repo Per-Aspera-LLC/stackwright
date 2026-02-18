@@ -77,24 +77,3 @@ customTheme:
         lg: 1.5rem
         xl: 2rem
         2xl: 3rem
-    components:
-        button:
-            base: px-4 py-2 rounded-md font-medium transition-colors
-            primary: bg-[#0B1F3A] text-white hover:opacity-90
-            secondary: >-
-                border border-[#0B1F3A] text-[#0B1F3A] hover:bg-[#0B1F3A]
-                hover:text-white
-            outline: >-
-                border border-[#0B1F3A] text-[#0B1F3A] bg-transparent
-                hover:bg-[#0B1F3A] hover:text-white
-        card:
-            base: rounded-lg shadow-sm
-            primary: bg-[#f7f7f7] border border-gray-200
-            secondary: bg-white border border-[#0B1F3A]
-        header:
-            background: "#ffffff"
-            text: "#1f2937"
-            border: border-b border-[#0B1F3A]
-        footer:
-            background: "#f7f7f7"
-            text: "#445a79"
