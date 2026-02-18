@@ -11,10 +11,11 @@ export { BlueSkyIcon } from './icons/social/BlueSkyIcon';
 export { StackwrightIcon } from './icons/brand/StackwrightIcon';
 
 // Convenient presets
-export { 
-  defaultStackwrightIcons, 
-  registerDefaultIcons 
+export {
+  defaultStackwrightIcons,
+  registerDefaultIcons
 } from './presets/defaultIcons';
+export { muiIconPreset, registerMuiIcons } from './presets/muiIcons';
 
 // Organized exports
 export * from './icons/brand';

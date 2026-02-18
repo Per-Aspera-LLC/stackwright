@@ -13,13 +13,14 @@ export interface MediaContent extends BaseContent {
 }
 
 export interface IconContent extends MediaContent {
-  // Icons can have typography-based sizing
-  size?: number | TypographyVariant;
-  color?: string; // Inherited from BaseContent but commonly used for icons
+    type: "icon";
+    size?: number | TypographyVariant;
+    color?: string;
 }
 
 export interface ImageContent extends MediaContent {
-  aspect_ratio?: number;
+    type: "image";
+    aspect_ratio?: number;
 }
 
 // Union type for schemas 

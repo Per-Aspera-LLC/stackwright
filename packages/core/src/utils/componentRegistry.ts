@@ -4,6 +4,7 @@ import {
     MainContentGrid,
     TabbedContentGrid,
     CodeBlock,
+    IconGrid,
 } from "../components/base/";
 import { Media } from "../components/media/Media";
 import { Timeline } from "../components/narrative/Timeline";
@@ -25,6 +26,7 @@ export const componentRegistry: Record<
     tabbed_content: TabbedContentGrid,
     media: Media,
     timeline: Timeline,
+    icon_grid: IconGrid,
     code_block: CodeBlock,
     // Stackwright components (will be resolved dynamically)
     "stackwright-image": () => getStackwrightImage(),

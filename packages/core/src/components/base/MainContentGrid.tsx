@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import { MainContent, GraphicPosition, ImageContent } from "@stackwright/types";
+import { MainContent, GraphicPosition } from "@stackwright/types";
 import { TextGrid } from "./TextGrid";
 import { ThemedButton } from "./ThemedButton";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
@@ -39,11 +39,7 @@ export function MainContentGrid(content: MainContent) {
         >
             <Box sx={{ width: "100%", height: "100%" }}>
                 <Media
-                    src={content.media.src}
-                    alt={content.media.alt}
-                    height={content.media.height || undefined}
-                    width={content.media.width || undefined}
-                    aspect_ratio={(content.media as ImageContent).aspect_ratio}
+                    {...content.media}
                     label={`${content.heading?.text} graphic`}
                 />
             </Box>

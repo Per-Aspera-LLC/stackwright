@@ -138,6 +138,7 @@ content:
               language: "yaml"
               code: |
                   media:
+                    type: "image"
                     src: ./my-image.png
                     alt: "Description of the image"
                     height: 350
@@ -187,8 +188,40 @@ content:
                   text: "icon_grid"
                   textSize: "h3"
               textBlocks:
-                  - text: "A grid of icons with an optional heading. Icons can be referenced by name from the registry or as image paths."
+                  - text: "A grid of icons with labels and an optional heading. Icons can be referenced by MUI icon name or as image paths. Great for feature lists, tech stacks, and service overviews."
                     textSize: "body1"
+              background: "#f8f9fa"
+
+        - icon_grid:
+              label: "icon-grid-demo"
+              heading:
+                  text: "Example: Feature Highlights"
+                  textSize: "h4"
+              icons:
+                  - type: "icon"
+                    label: "Fast Builds"
+                    src: "Speed"
+                    color: "primary"
+                  - type: "icon"
+                    label: "Type Safe"
+                    src: "VerifiedUser"
+                    color: "primary"
+                  - type: "icon"
+                    label: "Static Output"
+                    src: "CloudDone"
+                    color: "primary"
+                  - type: "icon"
+                    label: "YAML Driven"
+                    src: "Description"
+                    color: "primary"
+                  - type: "icon"
+                    label: "MUI Themed"
+                    src: "Palette"
+                    color: "primary"
+                  - type: "icon"
+                    label: "Open Source"
+                    src: "Code"
+                    color: "primary"
               background: "#f8f9fa"
 
         - main:

@@ -175,14 +175,8 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
     try {
         let element;
         
-        // Handle special case for IconGrid which expects 'content' prop
-        if (contentType === 'icon_grid') {
-            debugLog('Creating IconGrid with content prop');
-            element = <Component key={itemKey} content={contentData} />;
-        } else {
-            debugLog('Creating component with spread props');
-            element = <Component key={itemKey} {...contentData} />;
-        }
+        debugLog('Creating component with spread props');
+        element = <Component key={itemKey} {...contentData} />;
         
         debugLog(`Successfully created React element for ${contentType}`);
         return element;

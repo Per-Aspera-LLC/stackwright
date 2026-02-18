@@ -63,8 +63,9 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 |---|---|
 | `TextBlock` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string) |
 | `ButtonContent` | `text`, `textSize`, `variant` (`text`\|`outlined`\|`contained`), `href`?, `bgColor`?, `textColor`?, `variantSize`? (`small`\|`medium`\|`large`), `icon`? (MediaItem), `alignment`? (`left`\|`center`\|`right`) |
-| `MediaItem` | `src` (string), `alt`?, `height`?, `width`?, `aspect_ratio`? (number), `style`? (`contained`\|`overflow`) |
-| `IconContent` | extends MediaItem + `size`? (number \| TypographyVariant), `color`? |
+| `ImageContent` | `type: "image"` (required), `label` (string), `src` (file path or URL), `alt`?, `height`?, `width`?, `aspect_ratio`? (number), `style`? (`contained`\|`overflow`) |
+| `IconContent` | `type: "icon"` (required), `label` (string), `src` (registry key — see `@stackwright/icons` AGENTS.md for valid names), `color`?, `height`? (px, default 24), `size`? (number \| TypographyVariant) |
+| `MediaItem` | Union of `ImageContent` \| `IconContent`. Always include `type` to avoid heuristic fallback. |
 | `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? |
 | `TimelineItem` | `year` (string), `event` (string) |
 

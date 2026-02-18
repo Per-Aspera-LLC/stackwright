@@ -4,6 +4,7 @@ appBar:
     backgroundColor: "primary"
     textColor: "secondary"
     logo:
+        type: "image"
         src: "./stackwright-logo.png"
         label: "Stackwright Logo"
         height: "56px"
@@ -33,6 +34,7 @@ footer:
         - text: "Bluesky"
           textSize: "body2"
           icon:
+              type: "icon"
               src: "bluesky"
               label: "bluesky Logo"
           variant: "text"

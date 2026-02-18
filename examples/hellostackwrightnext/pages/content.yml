@@ -29,10 +29,10 @@ content:
             bgColor: "secondary"
             size: "small"
         media:
+          type: "image"
           label: "hero-graphic"
           src: "./otterficer-digital.png"
           aspect_ratio: 1
           height: 350
-          variant: "standard"
         graphic_position: "right"
 
