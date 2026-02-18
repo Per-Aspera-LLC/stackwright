@@ -16,8 +16,30 @@ Welcome to Stackwright! This is a YAML-driven React application framework that e
     - Core framework components are in `src/components` of `@stackwright/core` package
     - Themes are defined in YAML files within the `themes` directory of the same package
   - **Naming Conventions**
-    - Kebab-case for file names (e.g., `dynamicPage.tsx`)
+    - Kebab-case for file names (e.g., `main-content-grid.tsx`)
     - PascalCase for components (e.g., `DynamicPage`)
+
+### Component Registration
+
+The `stackwrightRegistry` is a singleton that must be populated before rendering. In Next.js apps:
+- Call `registerNextJSComponents()` from `@stackwright/nextjs` in `pages/_app.tsx` (Pages Router) or `app/layout.tsx` (App Router)
+- Call `registerDefaultIcons()` from `@stackwright/icons` in the same location
+- Do **not** rely on module import side effects for registration — it must be explicit
+
+`createStackwrightNextConfig()` from `@stackwright/nextjs` should be used in `next.config.js` instead of manual webpack configuration.
+
+### Build System Notes
+
+- Each package uses **tsup** for dual-format output (ESM `.mjs` + CJS `.js`)
+- Do **NOT** add `"type": "module"` to any `packages/*` package.json. tsup's `.mjs`/`.js` extension convention handles format signaling. Adding `"type": "module"` breaks `require()` calls in Next.js config files.
+
+### Image Co-location Pipeline
+
+Images can be placed alongside their page YAML files in `content/pages/`. Use `./relative` paths in YAML — these are automatically processed at `getStaticProps` time by `processImagesInContent()` and `processImagesInConfig()` in `packages/nextjs/src/components/NextStackwrightStaticGeneration.ts`:
+1. File is copied to `public/images/` preserving directory structure
+2. Path is rewritten to `/images/...` for rendering
+
+No prebuild step is needed.
 
 ### Integration Points and Cross-Component Communication
 - **Service Boundaries**: No obvious service boundaries, all code resides within the project's monorepo
@@ -31,7 +53,9 @@ Welcome to Stackwright! This is a YAML-driven React application framework that e
 
 ### Troubleshooting
 - **Common Issues**
-  - "Cannot find module" ESM Errors: Missing `.js` extensions in ESM imports. Ensure all imports include file extensions in built output.
+  - "Cannot find module" ESM Errors: Missing `.js` extensions in ESM imports. Also verify no `packages/*` package.json has `"type": "module"`.
+  - `module is not defined in ES module scope`: A package has `"type": "module"` set. Remove it.
+  - Components not rendering / blank page: `registerNextJSComponents()` was not called before first render.
   - Schema Generation Fails: TypeScript compilation errors in source files. Fix TypeScript errors before running `pnpm generate-schemas`.
   - Changeset Validation Fails: Modified packages without changeset. Run `pnpm changeset` and commit the generated file.
   - Build Fails After Dependencies Update: Version mismatches in monorepo. Run `pnpm install` from root to resolve dependencies.
@@ -39,7 +63,6 @@ Welcome to Stackwright! This is a YAML-driven React application framework that e
   - Check package versions: Use `pnpm list` to verify installations
   - Clear build cache: Delete `packages/*/dist` directories
   - Regenerate schemas: Run `pnpm generate-schemas` after changes
-  - Reference [Troubleshooting](#troubleshooting) section in the main documentation for additional tips.
 
 ### References
 - **Framework Documentation**

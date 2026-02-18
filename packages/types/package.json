@@ -1,47 +1,46 @@
 {
-  "name": "@stackwright/types",
-  "version": "0.1.1-alpha.4",
-  "type": "module",
-  "description": "TypeScript types and JSON schemas for Stackwright",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+    "name": "@stackwright/types",
+    "version": "0.1.1-alpha.4",
+    "description": "TypeScript types and JSON schemas for Stackwright",
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        },
+        "./schemas/theme-schema.json": "./dist/schemas/theme-schema.json",
+        "./schemas/content-schema.json": "./dist/schemas/content-schema.json",
+        "./schemas/siteconfig-schema.json": "./dist/schemas/siteconfig-schema.json"
     },
-    "./schemas/theme-schema.json": "./dist/schemas/theme-schema.json",
-    "./schemas/content-schema.json": "./dist/schemas/content-schema.json",
-    "./schemas/siteconfig-schema.json": "./dist/schemas/siteconfig-schema.json"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsup && pnpm generate-schemas",
-    "generate-schemas": "tsx src/generate-schemas.ts",
-    "dev": "tsup --watch"
-  },
-  "dependencies": {
-    "@stackwright/themes": "workspace:*",
-    "@stackwright/types": "link:",
-    "js-yaml": "^4.1.0"
-  },
-  "devDependencies": {
-    "@types/fs-extra": "11.0.4",
-    "@types/js-yaml": "^4.0.5",
-    "@types/react": "^19",
-    "fs-extra": "^11.3.0",
-    "tsup": "^8.0.0",
-    "tsx": "^4.0.0",
-    "typescript": "^5.6.0",
-    "typescript-json-schema": "^0.65.1",
-    "vitest": "^3.2.4",
-    "zod": "^4.1.12"
-  },
-  "peerDependencies": {
-    "react": "19.1.1"
-  }
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup && pnpm generate-schemas",
+        "generate-schemas": "tsx src/generate-schemas.ts",
+        "dev": "tsup --watch"
+    },
+    "dependencies": {
+        "@stackwright/themes": "workspace:*",
+        "@stackwright/types": "link:",
+        "js-yaml": "^4.1.0"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "11.0.4",
+        "@types/js-yaml": "^4.0.5",
+        "@types/react": "^19",
+        "fs-extra": "^11.3.0",
+        "tsup": "^8.0.0",
+        "tsx": "^4.0.0",
+        "typescript": "^5.6.0",
+        "typescript-json-schema": "^0.65.1",
+        "vitest": "^3.2.4",
+        "zod": "^4.1.12"
+    },
+    "peerDependencies": {
+        "react": "19.1.1"
+    }
 }

@@ -18,14 +18,14 @@ This example demonstrates Stackwright's YAML-driven React application framework.
 ```
 examples/hellostackwrightnext/
 ├── content/                  # YAML content files
-│   ├── pages/               # Page content definitions
+│   ├── pages/               # Page content definitions (images can be co-located here)
 │   └── site.yaml            # Global site configuration
-├── src/                     # Application source code
-│   ├── app/                 # Next.js app structure
-│   │   ├── layout.tsx       # Main layout with theme provider
-│   │   └── globals.css      # Global styles
-│   └── components/          # Custom React components
-├── public/                  # Static assets
+├── pages/                   # Next.js Pages Router
+│   ├── _app.tsx             # Registers Next.js components and icons
+│   ├── index.tsx            # Home page (static props)
+│   └── [slug].tsx           # Dynamic slug-based routing
+├── public/                  # Static assets (images copied here automatically from content/)
+├── next.config.js           # Uses createStackwrightNextConfig()
 └── package.json             # Project configuration
 ```
 
@@ -86,7 +86,7 @@ rm -rf .next && pnpm build
 ## Troubleshooting
 
 ### Common Issues
-- **Missing Components**: Verify component registration in `src/app/layout.tsx`
+- **Missing Components**: Verify `registerNextJSComponents()` is called in `pages/_app.tsx`
 - **Type Errors**: Check YAML content against `@stackwright/types`
 - **Build Failures**: Clear cache and regenerate schemas
 
@@ -103,9 +103,9 @@ rm -rf .next && pnpm build
 3. Page automatically available at corresponding URL
 
 ### Customizing Themes
-1. Edit theme configuration in `src/app/layout.tsx`
-2. Modify Material-UI theme object
-3. Update color palette and typography
+1. Edit theme colors, typography, and spacing in `content/site.yaml` under the `theme` key
+2. The YAML theme config is resolved at runtime by `useSafeTheme()` in `@stackwright/themes`
+3. For MUI-level overrides, modify `customTheme.components` in `content/site.yaml`
 
 ### Extending Components
 1. Create new React components in `src/components/`

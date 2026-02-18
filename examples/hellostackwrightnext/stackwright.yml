@@ -1,16 +1,15 @@
-
-  title: "Hello Stackwright"
-  appBar:
+title: "Hello Stackwright"
+appBar:
     titleText: "Hello Stackwright"
     backgroundColor: "primary"
     textColor: "secondary"
     logo:
-      src: "./stackwright-logo.png"
-      label: "Stackwright Logo"
-      height: '56px'
-      width: '56px'
+        src: "./stackwright-logo.png"
+        label: "Stackwright Logo"
+        height: "56px"
+        width: "56px"
 
-  navigation:
+navigation:
     - label: "Home"
       href: "/"
     - label: "Getting Started"
@@ -18,84 +17,84 @@
     - label: "About"
       href: "/about"
 
-  footer:
+footer:
     backgroundColor: "primary"
     textColor: "secondary"
     copyright: "All Right Reserved. Per Aspera Sapientia."
     links:
-      - label: "Github"
-        href: "https://github.com/Per-Aspera-LLC/stackwright/"
-      - label: "Privacy Policy"
-        href: "/privacy-policy"
-      - label: "Terms of Service"
-        href: "/terms-of-service"
+        - label: "Github"
+          href: "https://github.com/Per-Aspera-LLC/stackwright/"
+        - label: "Privacy Policy"
+          href: "https://github.com/Per-Aspera-LLC/stackwright/"
+        - label: "Terms of Service"
+          href: "https://github.com/Per-Aspera-LLC/stackwright/"
 
     socialLinks:
-      - text: "Bluesky"
-        textSize: "body2"
-        icon: 
-          src: "bluesky"
-          label: "bluesky Logo"
-        variant: "text"
-        variantSize: "small"
-        textColor: "secondary"
-        href: "https://bsky.app/profile/stackwright.bsky.social"
+        - text: "Bluesky"
+          textSize: "body2"
+          icon:
+              src: "bluesky"
+              label: "bluesky Logo"
+          variant: "text"
+          variantSize: "small"
+          textColor: "secondary"
+          href: "https://bsky.app/profile/stackwright.bsky.social"
     socialText: "Come be Sociable!"
 
-  customTheme:
+customTheme:
     id: per-aspera-sapientia-custom
     name: Per Aspera Sapientia Custom
     description: Custom theme for Per Aspera Sapientia
     backgroundImage:
-      url: 'wave-tile.png'
-      repeat: 'repeat'
-      scale: 1.75
-      animation: 'shimmer-float'
+        url: "wave-tile.png"
+        repeat: "repeat"
+        scale: 1.75
+        animation: "shimmer-float"
     colors:
-      primary: "#fdc13c"
-      accent: "#cf6118"
-      secondary: "#1a9fd4"   
-      background: "#fdfdfd"  
-      surface: "#7ce1f1"
-      text: "#393837"
-      textSecondary: "#787772" 
+        primary: "#fdc13c"
+        accent: "#cf6118"
+        secondary: "#1a9fd4"
+        background: "#fdfdfd"
+        surface: "#7ce1f1"
+        text: "#393837"
+        textSecondary: "#787772"
     typography:
-      fontFamily:
-        primary: Inter
-        secondary: Cinzel
-      scale:
-        xs: 0.75rem
-        sm: 0.875rem
-        base: 1rem
-        lg: 1.125rem
-        xl: 1.25rem
-        2xl: 1.5rem
-        3xl: 1.875rem
+        fontFamily:
+            primary: Inter
+            secondary: Cinzel
+        scale:
+            xs: 0.75rem
+            sm: 0.875rem
+            base: 1rem
+            lg: 1.125rem
+            xl: 1.25rem
+            2xl: 1.5rem
+            3xl: 1.875rem
     spacing:
-      xs: 0.5rem
-      sm: 0.75rem
-      md: 1rem
-      lg: 1.5rem
-      xl: 2rem
-      2xl: 3rem
+        xs: 0.5rem
+        sm: 0.75rem
+        md: 1rem
+        lg: 1.5rem
+        xl: 2rem
+        2xl: 3rem
     components:
-      button:
-        base: px-4 py-2 rounded-md font-medium transition-colors
-        primary: bg-[#0B1F3A] text-white hover:opacity-90
-        secondary: >-
-          border border-[#0B1F3A] text-[#0B1F3A] hover:bg-[#0B1F3A]
-          hover:text-white
-        outline: >-
-          border border-[#0B1F3A] text-[#0B1F3A] bg-transparent
-          hover:bg-[#0B1F3A] hover:text-white
-      card:
-        base: rounded-lg shadow-sm
-        primary: bg-[#f7f7f7] border border-gray-200
-        secondary: bg-white border border-[#0B1F3A]
-      header:
-        background: '#ffffff'
-        text: '#1f2937'
-        border: border-b border-[#0B1F3A]
-      footer:
-        background: '#f7f7f7'
-        text: '#445a79'
+        button:
+            base: px-4 py-2 rounded-md font-medium transition-colors
+            primary: bg-[#0B1F3A] text-white hover:opacity-90
+            secondary: >-
+                border border-[#0B1F3A] text-[#0B1F3A] hover:bg-[#0B1F3A]
+                hover:text-white
+            outline: >-
+                border border-[#0B1F3A] text-[#0B1F3A] bg-transparent
+                hover:bg-[#0B1F3A] hover:text-white
+        card:
+            base: rounded-lg shadow-sm
+            primary: bg-[#f7f7f7] border border-gray-200
+            secondary: bg-white border border-[#0B1F3A]
+        header:
+            background: "#ffffff"
+            text: "#1f2937"
+            border: border-b border-[#0B1F3A]
+        footer:
+            background: "#f7f7f7"
+            text: "#445a79"
