@@ -114,6 +114,37 @@ rm -rf .next && pnpm build
 
 ## Content Type Reference
 
+### YAML Key Reference
+
+**AGENTS: This table must stay in sync with `packages/types/src/types/` in the monorepo root. If you add, remove, or change any content type fields, update this table AND the matching table in the root `AGENTS.md`.**
+
+The YAML key is the key used inside `content_items` entries. All types inherit `label` (required), `color` (optional), and `background` (optional) from `BaseContent`.
+
+| YAML key | Required fields | Optional fields |
+|---|---|---|
+| `main` | `label`, `heading` (TextBlock), `textBlocks` (TextBlock[]) | `media` (MediaItem), `graphic_position` (`left`\|`right`), `buttons` (ButtonContent[]), `textToGraphic` (0-100, default 58), `background` |
+| `carousel` | `label`, `heading` (string), `items` (CarouselItem[]) | `autoPlay` (bool), `autoPlaySpeed` (ms), `infinite` (bool), `background` |
+| `timeline` | `label`, `items` (TimelineItem[]) | `heading` (TextBlock) |
+| `icon_grid` | `label`, `icons` (IconContent[]) | `heading` (TextBlock) |
+| `tabbed_content` | `label`, `heading` (TextBlock), `tabs` (ContentItem[]) | — |
+| `media` | `label`, `src` (string) | `alt`, `height`, `width`, `style` (`contained`\|`overflow`) |
+| `code_block` | `label`, `code` (string) | `language` (string), `lineNumbers` (bool, default false), `background` |
+
+**Sub-type reference:**
+
+| Type | Fields |
+|---|---|
+| `TextBlock` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string) |
+| `ButtonContent` | `text`, `textSize`, `variant` (`text`\|`outlined`\|`contained`), `href`?, `bgColor`?, `textColor`?, `variantSize`? (`small`\|`medium`\|`large`), `icon`? (MediaItem), `alignment`? (`left`\|`center`\|`right`) |
+| `MediaItem` | `src` (string), `alt`?, `height`?, `width`?, `aspect_ratio`? (number), `style`? (`contained`\|`overflow`) |
+| `IconContent` | extends MediaItem + `size`? (number \| TypographyVariant), `color`? |
+| `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? |
+| `TimelineItem` | `year` (string), `event` (string) |
+
+**TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
+
+### YAML Examples
+
 ### Main Content Sections
 ```yaml
 - main:
