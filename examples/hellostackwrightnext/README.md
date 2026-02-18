@@ -12,7 +12,21 @@ This is a simple example application demonstrating the Stackwright framework's Y
 
 ## Project Structure
 
+The project is organized as follows:
 
+```
+examples/hellostackwrightnext/
+├── content/
+│   ├── pages/               # YAML files defining page content
+│   └── site.yaml            # Global site configuration
+├── src/
+│   ├── app/                 # Next.js application structure
+│   │   ├── layout.tsx       # Main layout with theme provider
+│   │   └── globals.css      # Global styles
+│   └── components/          # Custom React components
+├── public/                  # Static assets
+└── package.json             # Project configuration
+```
 
 ## Content Structure
 
@@ -100,6 +114,44 @@ For example, `content/pages/services/consulting.yaml` becomes `/services/consult
 ## Next Steps
 
 - Explore the [main documentation](../../README.md) for advanced features
-- Try modifying the YAML files to see changes in real-time  
+- Try modifying the YAML files to see changes in real-time
 - Add new pages by creating additional YAML files
 - Experiment with different content types and layouts
+
+## Framework Architecture
+
+This example demonstrates the core Stackwright architecture:
+
+1. **YAML Content**: Pages and site configuration defined in YAML
+2. **Content Rendering**: Stackwright core transforms YAML into React components
+3. **Next.js Integration**: `@stackwright/nextjs` provides Next.js-specific implementations
+4. **Theme System**: Material-UI theming with `@stackwright/themes`
+5. **Type Safety**: Full TypeScript support with `@stackwright/types`
+
+## Integration Points
+
+- **Core Framework**: `@stackwright/core` handles YAML parsing and component rendering
+- **Next.js Adapter**: `@stackwright/nextjs` provides Next.js-specific components and utilities
+- **Theme System**: `@stackwright/themes` manages theme configuration and resolution
+- **Type System**: `@stackwright/types` ensures type safety across the application
+
+## Development Workflow
+
+1. **Content Creation**: Define pages and content in YAML files
+2. **Configuration**: Set up site-wide settings in `content/site.yaml`
+3. **Theming**: Customize the theme in `src/app/layout.tsx`
+4. **Build**: Run `pnpm build` to compile the application
+5. **Development**: Use `pnpm dev` for hot-reloading development
+
+## Troubleshooting
+
+- **Missing Components**: Ensure all required components are registered in the component registry
+- **Type Errors**: Verify YAML content matches the expected types from `@stackwright/types`
+- **Build Issues**: Clear build cache and regenerate schemas if needed
+
+## References
+
+- [Stackwright Core Documentation](../../packages/core/AGENTS.md)
+- [Next.js Adapter Documentation](../../packages/nextjs/AGENTS.md)
+- [Theme System Documentation](../../packages/themes/AGENTS.md)
+- [Type System Documentation](../../packages/types/AGENTS.md)
