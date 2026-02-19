@@ -33,7 +33,6 @@ export interface StackwrightLinkProps extends StackwrightComponentProps {
   prefetch?: boolean;
   replace?: boolean;
   scroll?: boolean;
-  shallow?: boolean;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 }
 

@@ -10,7 +10,6 @@ export const NextStackwrightLink: React.FC<StackwrightLinkProps> = ({
   prefetch = true,
   replace = false,
   scroll = true,
-  shallow = false,
   className,
   style,
   onClick,
@@ -41,7 +40,6 @@ export const NextStackwrightLink: React.FC<StackwrightLinkProps> = ({
       prefetch={prefetch}
       replace={replace}
       scroll={scroll}
-      shallow={shallow}
       className={className}
       style={style}
       onClick={onClick}
