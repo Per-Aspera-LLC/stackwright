@@ -20,6 +20,7 @@ pnpm build:types
 pnpm build:themes
 pnpm build:nextjs
 pnpm build:cli
+pnpm build:build-scripts
 
 # Run development mode (watch all packages)
 pnpm dev
@@ -118,12 +119,20 @@ Each package uses **tsup** to produce dual-format output (ESM `.mjs` + CJS `.js`
 
 ### Image Co-location Pipeline
 
-Images can be co-located with their page YAML files in `content/pages/`. Using a relative path starting with `./` in YAML (e.g., `src: ./hero-image.png`) triggers automatic processing at `getStaticProps` time:
+Images can be co-located with their page YAML files in `pages/`. Using a relative path starting with `./` in YAML (e.g., `src: ./hero-image.png`) triggers automatic processing during the prebuild step:
 
-1. The image is copied to `public/images/` preserving directory structure
-2. The path is rewritten to `/images/...` for the rendered page
+1. `stackwright-prebuild` (from `@stackwright/build-scripts`) runs before `next build` / `next dev`
+2. Images are copied to `public/images/` preserving directory structure
+3. Paths are rewritten to `/images/...` in the processed JSON
+4. `getStaticProps` reads from `public/stackwright-content/*.json` — no `fs` work at render time
 
-This is implemented in `packages/nextjs/src/components/NextStackwrightStaticGeneration.ts` via `processImagesInContent()` and `processImagesInConfig()`. No prebuild step is needed.
+Site config images (in `stackwright.yml`) that use bare filenames (e.g., `wave-tile.png`) must be in the project root. Images referenced with `./` can be anywhere relative to the config file.
+
+Add these hooks to the example app's `package.json` (already done in `hellostackwrightnext`):
+```json
+"prebuild": "stackwright-prebuild",
+"predev": "stackwright-prebuild"
+```
 
 ### Component Registration
 

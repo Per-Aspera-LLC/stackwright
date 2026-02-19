@@ -1,27 +1,13 @@
-import { GetStaticProps } from 'next';
-import { NextStackwrightStaticGeneration } from '@stackwright/nextjs';
-import { registerDefaultIcons } from '@stackwright/icons';
-   
-// Import the same page component used by [...slug].tsx
-import SlugPage from './[slug]';
+import { DynamicPage } from "@stackwright/core";
+import type { GetStaticProps } from "next";
+import fs from "fs";
+import path from "path";
 
-/**
- * getStaticProps for the root index page
- * Creates a mock context to reuse the existing slug-based getStaticProps logic
- */
-export const getStaticProps: GetStaticProps = async (context) => {
-  console.log('getStaticProps called for root index page');
-  
-  // Create a mock context that represents the root route
-  // This allows us to reuse the existing getStaticProps logic
-  const mockContext = {
-    ...context,
-    params: { slug: [] }, // Empty slug array represents root route
-  };
+export default DynamicPage;
 
-  // Delegate to the existing getStaticProps implementation
-  return await NextStackwrightStaticGeneration.getStaticProps(mockContext);
+export const getStaticProps: GetStaticProps = async () => {
+    const dir = path.join(process.cwd(), "public", "stackwright-content");
+    const pageContent = JSON.parse(fs.readFileSync(path.join(dir, "_root.json"), "utf8"));
+    const siteConfig = JSON.parse(fs.readFileSync(path.join(dir, "_site.json"), "utf8"));
+    return { props: { pageContent, siteConfig } };
 };
-
-// Export the same component used by [...slug].tsx
-export default SlugPage;

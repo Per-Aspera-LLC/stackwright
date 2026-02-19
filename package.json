@@ -1,31 +1,33 @@
 {
-  "name": "stackwright-workspace",
-  "version": "0.2.0",
-  "private": true,
-  "scripts": {
-    "build": "pnpm -r --filter='!./examples/**' build",
-    "build:types": "pnpm --filter @stackwright/types build",
-    "build:all": "pnpm -r build",
-    "build:examples": "pnpm -r --filter='examples/*' build",
-    "dev": "pnpm -r dev",
-    "build:core": "pnpm --filter @stackwright/core build",
-    "build:cli": "pnpm --filter @stackwright/cli build",
-    "build:themes": "pnpm --filter @stackwright/themes build",
-    "build:nextjs": "pnpm --filter @stackwright/nextjs build",
-    "dev:example": "pnpm --filter per-aspera-site dev",
-    "build:example": "pnpm --filter per-aspera-site build",
-    "changeset": "changeset",
-    "version-packages": "changeset version",
-    "release": "pnpm build && changeset publish",
-    "test": "pnpm -r test",
-    "test:core": "pnpm --filter @stackwright/core test"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.29.5"
-  },
-  "pnpm": {
-    "overrides": {
-      "@types/node": "^24.1.0"
+    "name": "stackwright-workspace",
+    "version": "0.2.0",
+    "private": true,
+    "scripts": {
+        "build": "pnpm -r --filter='!./examples/**' build",
+        "build:types": "pnpm --filter @stackwright/types build",
+        "build:all": "pnpm -r build",
+        "build:examples": "pnpm -r --filter='examples/*' build",
+        "dev": "pnpm -r dev",
+        "build:core": "pnpm --filter @stackwright/core build",
+        "build:cli": "pnpm --filter @stackwright/cli build",
+        "build:themes": "pnpm --filter @stackwright/themes build",
+        "build:nextjs": "pnpm --filter @stackwright/nextjs build",
+        "build:build-scripts": "pnpm --filter @stackwright/build-scripts build",
+        "dev:example": "pnpm --filter examples/hellostackwrightnext dev",
+        "build:example": "pnpm --filter examples/hellostackwrightnext build",
+        "changeset": "changeset",
+        "version-packages": "changeset version",
+        "release": "pnpm build && changeset publish",
+        "test": "pnpm -r test",
+        "test:core": "pnpm --filter @stackwright/core test"
+    },
+    "devDependencies": {
+        "@changesets/cli": "^2.29.5"
+    },
+    "pnpm": {
+        "overrides": {
+            "@types/node": "^24.1.0",
+            "csstype": "^3.2.0"
+        }
     }
-  }
 }

@@ -15,9 +15,14 @@
 # production
 /build
 
+# stackwright prebuild output (generated, not committed)
+/public/stackwright-content/
+
 # misc
 .DS_Store
 *.pem
+# Windows/WSL metadata sidecar files
+*:Zone.Identifier
 
 # debug
 npm-debug.log*
