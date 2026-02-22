@@ -233,6 +233,73 @@ content:
                   - text: "Wraps any other content types in a tabbed interface. Useful for comparisons or categorized content without separate pages."
                     textSize: "body1"
 
+        - tabbed_content:
+              label: "tabbed-content-demo"
+              heading:
+                  text: "Live Demo: tabbed_content"
+                  textSize: "h4"
+              tabs:
+                  - icon_grid:
+                        label: "Icons Tab"
+                        heading:
+                            text: "Tech Stack"
+                            textSize: "h5"
+                        icons:
+                            - type: "icon"
+                              label: "React"
+                              src: "Code"
+                              color: "primary"
+                            - type: "icon"
+                              label: "Next.js"
+                              src: "RocketLaunch"
+                              color: "primary"
+                            - type: "icon"
+                              label: "TypeScript"
+                              src: "VerifiedUser"
+                              color: "primary"
+                            - type: "icon"
+                              label: "MUI"
+                              src: "Palette"
+                              color: "primary"
+                  - timeline:
+                        label: "Timeline Tab"
+                        heading:
+                            text: "Project Milestones"
+                            textSize: "h5"
+                        items:
+                            - year: "2024"
+                              event: "Stackwright project started — YAML-driven React framework concept"
+                            - year: "2025"
+                              event: "Core content types, themes, and Next.js adapter stabilized"
+                            - year: "2026"
+                              event: "Prebuild pipeline, Turbopack support, and icon_grid added"
+                  - code_block:
+                        label: "YAML Tab"
+                        language: "yaml"
+                        code: |
+                            - tabbed_content:
+                                label: "my-tabs"
+                                heading:
+                                  text: "My Tabs"
+                                  textSize: "h3"
+                                tabs:
+                                  - main:
+                                      label: "First Tab"
+                                      heading:
+                                        text: "Tab One"
+                                        textSize: "h4"
+                                      textBlocks:
+                                        - text: "Content for the first tab."
+                                          textSize: "body1"
+                                  - main:
+                                      label: "Second Tab"
+                                      heading:
+                                        text: "Tab Two"
+                                        textSize: "h4"
+                                      textBlocks:
+                                        - text: "Content for the second tab."
+                                          textSize: "body1"
+
         - main:
               label: "content-type-code-block"
               heading:

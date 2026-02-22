@@ -1,38 +1,37 @@
 content:
-  content_items:
-    - main:
-        label: "hero-section"
-        heading:
-          text: "Welcome to Stackwright"
-          textSize: "h1"
-          textColor: "secondary"
-        textBlocks:
-          - text: "Build beautiful, responsive applications using YAML configuration files instead of writing React components from scratch."
-            textSize: "h6"
-          - text: "Stackwright is a YAML-driven React framework that enables rapid development through a 'content as code' approach. Define your UI structure, styling, and behavior in simple YAML files."
-            textSize: "body1"
-        buttons:
-          - label: "get-started-btn"
-            text: "Get Started"
-            textSize: "h5"
-            variant: "contained"
-            href: "/getting-started"
-            textColor: "primary"
-            size: "large"
-            bgColor: "secondary"
-          - label: "learn-more-btn"
-            text: "Learn More"
-            textSize: "h5"
-            variant: "contained"
-            href: "/about"
-            textColor: "primary"
-            bgColor: "secondary"
-            size: "small"
-        media:
-          type: "image"
-          label: "hero-graphic"
-          src: "./otterficer-digital.png"
-          aspect_ratio: 1
-          height: 350
-        graphic_position: "right"
-
+    content_items:
+        - main:
+              label: "hero-section"
+              heading:
+                  text: "Welcome to Stackwright"
+                  textSize: "h1"
+                  textColor: "secondary"
+              textBlocks:
+                  - text: "Build beautiful, responsive applications using YAML configuration files instead of writing React components from scratch."
+                    textSize: "h6"
+                  - text: "Stackwright is a YAML-driven React framework that enables rapid development through a 'content as code' approach. Define your UI structure, styling, and behavior in simple YAML files."
+                    textSize: "body1"
+              buttons:
+                  - label: "get-started-btn"
+                    text: "Get Started"
+                    textSize: "h5"
+                    variant: "contained"
+                    href: "/getting-started"
+                    textColor: "primary"
+                    size: "large"
+                    bgColor: "secondary"
+                  - label: "learn-more-btn"
+                    text: "Learn More"
+                    textSize: "h5"
+                    variant: "contained"
+                    href: "/about"
+                    textColor: "primary"
+                    bgColor: "secondary"
+                    size: "small"
+              media:
+                  type: "image"
+                  label: "hero-graphic"
+                  src: "./otterficer-digital.png"
+                  aspect_ratio: 1
+                  height: 350
+              graphic_position: "right"

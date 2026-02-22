@@ -26,7 +26,7 @@ pnpm build:build-scripts
 pnpm dev
 
 # Run the example application
-pnpm dev:example
+pnpm dev:hellostackwright
 
 # Run all tests
 pnpm test

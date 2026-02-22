@@ -25,7 +25,7 @@ This file tracks planned work across the project. Items are roughly ordered by p
 ## Medium-term: Framework
 
 - [ ] **UI adapter abstraction** — Extract MUI-specific code from `@stackwright/core` into a `@stackwright/ui-mui` package, mirroring the existing `@stackwright/nextjs` adapter pattern. This unblocks `@stackwright/ui-shadcn` and other UI layer swaps without touching core.
-- [ ] **`tabbed_content` — verify and document** — The type exists and is registered but has no example usage in the hellostackwrightnext site. Needs a real usage example and visual confirmation it renders correctly.
+- [x] **`tabbed_content` — verify and document** — Live demo added to the getting-started page with three tabs: icon_grid, timeline, and code_block.
 - [ ] **Dark mode support** — Theme system supports color definitions; needs a `darkColors` block in `ThemeConfig` and a toggle mechanism in `ThemesProvider`.
 - [ ] **Internationalization** — Multi-language content support via per-locale content directories or inline locale maps in YAML.
 
