@@ -42,80 +42,68 @@ export class ThemeLoader {
   private static getEmbeddedTheme(name: string): string {
     const themes: Record<string, string> = {
       corporate: `
+id: "corporate"
 name: "Corporate"
+description: "A professional amber-toned corporate theme"
 colors:
-  primary:
-    50: "#fef7ee"
-    100: "#fdedd3"
-    500: "#f59e0b"
-    600: "#d97706"
-    700: "#b45309"
-  neutral:
-    50: "#f8fafc"
-    100: "#f1f5f9"
-    700: "#334155"
-    800: "#1e293b"
-    900: "#0f172a"
-  text:
-    primary: "#1f2937"
-    secondary: "#6b7280"
-    inverse: "#ffffff"
-
-spacing:
-  section: "py-20"
-  container: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-
+  primary: "#f59e0b"
+  secondary: "#334155"
+  accent: "#d97706"
+  background: "#f8fafc"
+  surface: "#ffffff"
+  text: "#1f2937"
+  textSecondary: "#6b7280"
 typography:
-  hero: "text-4xl md:text-6xl font-bold"
-  subtitle: "text-xl md:text-2xl"
-
-components:
-  button:
-    primary: "bg-amber-600 text-white hover:bg-amber-700 px-8 py-3 rounded-lg font-semibold"
-    secondary: "text-amber-600 border border-amber-600 hover:bg-amber-50 px-8 py-3 rounded-lg font-semibold"
-  header:
-    background: "bg-white shadow-sm"
-    border: "border-b border-gray-200"
-  hero:
-    background: "bg-gradient-to-br from-slate-900 to-slate-800"
+  fontFamily:
+    primary: "Roboto, sans-serif"
+    secondary: "Roboto, sans-serif"
+  scale:
+    xs: "0.75rem"
+    sm: "0.875rem"
+    base: "1rem"
+    lg: "1.125rem"
+    xl: "1.25rem"
+    2xl: "1.5rem"
+    3xl: "1.875rem"
+spacing:
+  xs: "0.5rem"
+  sm: "0.75rem"
+  md: "1rem"
+  lg: "1.5rem"
+  xl: "2rem"
+  2xl: "3rem"
 `,
       soft: `
+id: "soft"
 name: "Soft"
+description: "A gentle pink-toned soft theme"
 colors:
-  primary:
-    50: "#fdf2f8"
-    100: "#fce7f3"
-    500: "#ec4899"
-    600: "#db2777"
-    700: "#be185d"
-  neutral:
-    50: "#fefefe"
-    100: "#f9fafb"
-    700: "#6b7280"
-    800: "#4b5563"
-    900: "#374151"
-  text:
-    primary: "#374151"
-    secondary: "#9ca3af"
-    inverse: "#ffffff"
-
-spacing:
-  section: "py-16"
-  container: "max-w-6xl mx-auto px-6 sm:px-8 lg:px-10"
-
+  primary: "#ec4899"
+  secondary: "#6b7280"
+  accent: "#db2777"
+  background: "#f9fafb"
+  surface: "#ffffff"
+  text: "#374151"
+  textSecondary: "#9ca3af"
 typography:
-  hero: "text-3xl md:text-5xl font-semibold"
-  subtitle: "text-lg md:text-xl"
-
-components:
-  button:
-    primary: "bg-pink-600 text-white hover:bg-pink-700 px-6 py-2 rounded-full font-medium"
-    secondary: "text-pink-600 border border-pink-600 hover:bg-pink-50 px-6 py-2 rounded-full font-medium"
-  header:
-    background: "bg-neutral-50 shadow-none"
-    border: "border-b border-neutral-200"
-  hero:
-    background: "bg-gradient-to-br from-neutral-100 to-neutral-200"
+  fontFamily:
+    primary: "Roboto, sans-serif"
+    secondary: "Roboto, sans-serif"
+  scale:
+    xs: "0.75rem"
+    sm: "0.875rem"
+    base: "1rem"
+    lg: "1.125rem"
+    xl: "1.25rem"
+    2xl: "1.5rem"
+    3xl: "1.875rem"
+spacing:
+  xs: "0.5rem"
+  sm: "0.75rem"
+  md: "1rem"
+  lg: "1.5rem"
+  xl: "2rem"
+  2xl: "3rem"
 `
     };
 
