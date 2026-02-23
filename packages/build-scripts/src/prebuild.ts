@@ -217,5 +217,7 @@ export function runPrebuild(projectRoot = process.cwd()): void {
   console.log('\n✅ Stackwright prebuild complete.\n');
 }
 
-// Run when executed directly as a CLI
-runPrebuild();
+// Run when executed directly as a CLI (not when required as a module)
+if (require.main === module) {
+  runPrebuild();
+}

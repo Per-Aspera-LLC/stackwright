@@ -13,7 +13,7 @@
         },
         "./schemas/theme-schema.json": "./dist/schemas/theme-schema.json",
         "./schemas/content-schema.json": "./dist/schemas/content-schema.json",
-        "./schemas/siteconfig-schema.json": "./dist/schemas/siteconfig-schema.json"
+        "./schemas/siteconfig-schema.json": "./dist/schemas/site-config-schema.json"
     },
     "files": [
         "dist"
