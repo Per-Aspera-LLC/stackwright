@@ -1,5 +1,12 @@
 # @stackwright/cli
 
+## 0.3.1-alpha.6
+
+### Patch Changes
+
+- Updated dependencies [8910585]
+  - @stackwright/core@0.3.1-alpha.6
+
 ## 0.3.1-alpha.5
 
 ### Patch Changes
