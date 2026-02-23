@@ -1,0 +1,81 @@
+title: "Hello Stackwright"
+appBar:
+    titleText: "Hello Stackwright"
+    backgroundColor: "primary"
+    textColor: "secondary"
+    logo:
+        type: "image"
+        src: "./stackwright-logo.png"
+        label: "Stackwright Logo"
+        height: "56px"
+        width: "56px"
+
+navigation:
+    - label: "Home"
+      href: "/"
+    - label: "Getting Started"
+      href: "/getting-started"
+    - label: "About"
+      href: "/about"
+
+footer:
+    backgroundColor: "primary"
+    textColor: "secondary"
+    copyright: "All Right Reserved. Per Aspera Sapientia."
+    links:
+        - label: "Github"
+          href: "https://github.com/Per-Aspera-LLC/stackwright/"
+        - label: "Privacy Policy"
+          href: "/privacy-policy"
+        - label: "Terms of Service"
+          href: "/terms-of-service"
+
+    socialLinks:
+        - text: "Bluesky"
+          textSize: "body2"
+          icon:
+              type: "icon"
+              src: "bluesky"
+              label: "bluesky Logo"
+          variant: "text"
+          variantSize: "small"
+          textColor: "secondary"
+          href: "https://bsky.app/profile/stackwright.bsky.social"
+    socialText: "Come be Sociable!"
+
+customTheme:
+    id: per-aspera-sapientia-custom
+    name: Per Aspera Sapientia Custom
+    description: Custom theme for Per Aspera Sapientia
+    backgroundImage:
+        url: "wave-tile.png"
+        repeat: "repeat"
+        scale: 1.75
+        animation: "shimmer-float"
+    colors:
+        primary: "#fdc13c"
+        accent: "#cf6118"
+        secondary: "#1a9fd4"
+        background: "#fdfdfd"
+        surface: "#7ce1f1"
+        text: "#393837"
+        textSecondary: "#787772"
+    typography:
+        fontFamily:
+            primary: Inter
+            secondary: Cinzel
+        scale:
+            xs: 0.75rem
+            sm: 0.875rem
+            base: 1rem
+            lg: 1.125rem
+            xl: 1.25rem
+            2xl: 1.5rem
+            3xl: 1.875rem
+    spacing:
+        xs: 0.5rem
+        sm: 0.75rem
+        md: 1rem
+        lg: 1.5rem
+        xl: 2rem
+        2xl: 3rem

@@ -1,11 +1,19 @@
 {
   "yaml.schemas": {
-    "./schemas/content-schema.json": [
+    "./packages/types/dist/schemas/content-schema.json": [
       "**/pages/*/content.yaml",
+      "**pages/*/content.yml"
     ],
-    "./schemas/theme-schema.json": [
+    "./packages/types/dist/schemas/theme-schema.json": [
       "**/themes/*.yaml",
+      "**/themes/*.yml"
     ],
+    "./packages/types/dist/schemas/site-config-schema.json": [
+      "**/stackwright.yaml",
+      "**/stackwright.yml",
+      "**/site-config.yaml",
+      "**/site-config.yml"
+    ]
   },
   "yaml.validate": true,
   "yaml.completion": true,

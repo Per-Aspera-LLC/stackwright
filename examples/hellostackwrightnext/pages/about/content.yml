@@ -1,0 +1,62 @@
+content:
+  content_items:
+    - main:
+        label: "about-hero"
+        heading:
+          text: "About Stackwright"
+          textSize: "h1"
+        textBlocks:
+          - text: "A modern framework for building React applications with YAML configuration."
+            textSize: "h6"
+        media:
+          type: "image"
+          label: "about-graphic"
+          src: "./resilience-8739268_1280.png"
+          aspect_ratio: 1.778
+          height: 350
+        graphic_position: "left"
+
+    - timeline:
+        label: "framework-timeline"
+        heading:
+          text: "Framework Evolution"
+          textSize: "h2"
+        items:
+          - year: "2024"
+            event: "Initial release with core YAML-to-React transformation"
+          - year: "2024"
+            event: "Added Material-UI integration and theme system"
+          - year: "2024"
+            event: "Introduced CLI tools and AI-powered generation"
+          - year: "Future"
+            event: "Advanced component library and visual editor"
+
+    - main:
+        label: "philosophy-section"
+        heading:
+          text: "Our Philosophy"
+          textSize: "h2"
+        textBlocks:
+          - text: "Content as Code"
+            textSize: "h5"
+          - text: "We believe in treating content configuration as code, with version control, validation, and collaborative editing capabilities."
+            textSize: "body1"
+          - text: "Developer Experience"
+            textSize: "h5" 
+          - text: "Stackwright prioritizes developer productivity by reducing boilerplate and enabling rapid prototyping through declarative configuration."
+            textSize: "body1"
+        background: "#f5f5f5"
+
+    - main:
+        label: "cta-section"
+        heading:
+          text: "Ready to Get Started?"
+          textSize: "h2"
+        textBlocks:
+          - text: "Join the growing community of developers building with Stackwright."
+            textSize: "body1"
+        buttons:
+          - text: "Start Building"
+            textSize: "body1"
+            variant: "contained"
+            href: "/getting-started"

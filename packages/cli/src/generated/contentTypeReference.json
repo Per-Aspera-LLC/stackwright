@@ -1,0 +1,355 @@
+{
+  "contentTypes": {
+    "BaseContent": {
+      "properties": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "background",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "base"
+    },
+    "CarouselContent": {
+      "properties": [
+        {
+          "name": "heading",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "autoPlaySpeed",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "infinite",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "autoPlay",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "background",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "items",
+          "type": "CarouselItem[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "yamlKey": "carousel"
+    },
+    "MainContent": {
+      "properties": [
+        {
+          "name": "heading",
+          "type": "TextBlock",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "textBlocks",
+          "type": "TextBlock[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "graphic",
+          "type": "GraphicContent",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "graphic_position",
+          "type": "GraphicPosition",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "buttons",
+          "type": "ButtonContent[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "textToGraphic",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "main"
+    },
+    "GraphicContent": {
+      "properties": [
+        {
+          "name": "image",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "aspect_ratio",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "min_size",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "max_size",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "type": "GraphicVariant",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "graphic"
+    },
+    "TabbedContent": {
+      "properties": [
+        {
+          "name": "heading",
+          "type": "TextBlock",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "tabs",
+          "type": "ContentItem[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "yamlKey": "tabbed"
+    },
+    "ButtonContent": {
+      "properties": [
+        {
+          "name": "variant",
+          "type": "ButtonVariant",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "href",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "action",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "image",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignment",
+          "type": "AlignmentVariant",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "buttonColor",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "buttonBackground",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "button"
+    },
+    "MenuContent": {
+      "properties": [
+        {
+          "name": "menu_items",
+          "type": "MenuContent[]",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "menu"
+    },
+    "IconGridContent": {
+      "properties": [
+        {
+          "name": "heading",
+          "type": "TextBlock",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "icons",
+          "type": "IconGridItem[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "spriteSheet",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "iconsPerRow",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "patternPrefix",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "patternSuffix",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "icon_grid"
+    },
+    "TimelineContent": {
+      "properties": [
+        {
+          "name": "heading",
+          "type": "TextBlock",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "items",
+          "type": "TimelineItem[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "yamlKey": "timeline"
+    },
+    "AppBarContent": {
+      "properties": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "logo",
+          "type": "{\n    image: string;\n    width?: number;\n    height?: number;\n  }",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "menuItems",
+          "type": "NavigationItem[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "textcolor",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "backgroundcolor",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "app_bar"
+    },
+    "FooterContent": {
+      "properties": [
+        {
+          "name": "copyright",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "buttons",
+          "type": "ButtonContent[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "sociallinks",
+          "type": "ButtonContent[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "socialtext",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "yamlKey": "footer"
+    }
+  },
+  "examples": {
+    "base": "content:\n  - base:\n      label: \"example value\"\n      color: \"example value\"\n      background: \"example value\"",
+    "carousel": "content:\n  - carousel:\n      label: \"testimonials\"\n      slides:\n        - heading: \"Client Success\"\n          content: \"Amazing results achieved\"\n        - heading: \"Another Win\"\n          content: \"More success stories\"",
+    "main": "content:\n  - main:\n      label: \"section_name\"\n      background: \"whitesmoke\"\n      heading:\n        text: \"Your Headline\"\n        size: \"h2\"\n        color: \"inherit\"\n      textBlocks:\n        - text: \"Your compelling content goes here.\"\n          size: \"body1\"\n      graphic:\n        image: \"/images/your-image.svg\"\n        aspect_ratio: \"16/9\"\n        max_size: 100\n        min_size: 50\n      graphic_position: \"right\"\n      buttons:\n        - text: \"Call to Action\"\n          href: \"/contact\"\n          variant: \"contained\"\n          color: \"primary\"",
+    "graphic": "content:\n  - graphic:\n      image: \"example value\"\n      aspect_ratio: 100\n      min_size: 100\n      max_size: 100",
+    "tabbed": "content:\n  - tabbed:",
+    "button": "content:\n  - button:\n      href: \"example value\"\n      action: \"example value\"\n      image: \"example value\"",
+    "menu": "content:\n  - menu:",
+    "icon_grid": "content:\n  - icon_grid:\n      label: \"features\"\n      heading:\n        text: \"How It Works\"\n        size: \"h2\"\n      iconsPerRow: 3\n      icons:\n        - iconId: \"/images/icons/feature1.svg\"\n          text:\n            text: \"Feature description\"\n            size: \"body1\"\n        - iconId: \"/images/icons/feature2.svg\"\n          text:\n            text: \"Another feature\"\n            size: \"body1\"",
+    "timeline": "content:\n  - timeline:",
+    "app_bar": "content:\n  - app_bar:\n      title: \"example value\"\n      logo: \"example value\"\n      textcolor: \"example value\"\n      backgroundcolor: \"example value\"",
+    "footer": "content:\n  - footer:\n      copyright: \"example value\"\n      socialtext: \"example value\""
+  },
+  "lastGenerated": "2025-07-27T15:26:16.954Z"
+}

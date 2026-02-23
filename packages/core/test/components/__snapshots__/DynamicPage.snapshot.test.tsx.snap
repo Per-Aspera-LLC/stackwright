@@ -1,0 +1,152 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DynamicPage Snapshots > matches the snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="MuiBox-root css-1brzuf6"
+  >
+    <div
+      class="MuiBox-root css-2g8de1"
+    >
+      <header
+        class="MuiPaper-root MuiPaper-elevation MuiPaper-elevation4 MuiAppBar-root MuiAppBar-colorPrimary MuiAppBar-positionSticky css-1frd03p-MuiPaper-root-MuiAppBar-root"
+        style="--Paper-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);"
+      >
+        <div
+          class="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular css-wkw60i-MuiToolbar-root"
+        >
+          <div
+            class="MuiTypography-root MuiTypography-h4 css-vl5bl6-MuiTypography-root"
+          >
+            Stackwright Hello World
+          </div>
+          <div
+            class="MuiBox-root css-i9gxme"
+          />
+          <div
+            class="MuiBox-root css-10egq61"
+          >
+            <a
+              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-lnk3q0-MuiButtonBase-root-MuiButton-root"
+              href="/"
+              tabindex="0"
+            >
+              <h6
+                class="MuiTypography-root MuiTypography-h6 css-1t4xfz1-MuiTypography-root"
+              >
+                Home
+              </h6>
+            </a>
+            <a
+              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-lnk3q0-MuiButtonBase-root-MuiButton-root"
+              href="/about"
+              tabindex="0"
+            >
+              <h6
+                class="MuiTypography-root MuiTypography-h6 css-1t4xfz1-MuiTypography-root"
+              >
+                About
+              </h6>
+            </a>
+            <a
+              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-lnk3q0-MuiButtonBase-root-MuiButton-root"
+              href="/services"
+              tabindex="0"
+            >
+              <h6
+                class="MuiTypography-root MuiTypography-h6 css-1t4xfz1-MuiTypography-root"
+              >
+                Services
+              </h6>
+            </a>
+            <a
+              class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-lnk3q0-MuiButtonBase-root-MuiButton-root"
+              href="/contact"
+              tabindex="0"
+            >
+              <h6
+                class="MuiTypography-root MuiTypography-h6 css-1t4xfz1-MuiTypography-root"
+              >
+                Contact
+              </h6>
+            </a>
+          </div>
+        </div>
+      </header>
+      <main
+        class="MuiBox-root css-6ruso2"
+      >
+        <div
+          class="MuiBox-root css-tj1yus"
+        >
+          <div
+            class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-2 css-abd7q8-MuiGrid-root"
+          >
+            <div
+              class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-grid-xs-12 MuiGrid-grid-md-7 MuiGrid-spacing-xs-2 css-108ws2l-MuiGrid-root"
+            >
+              <div
+                class="MuiBox-root css-ducv57"
+              >
+                <p
+                  class="MuiTypography-root MuiTypography-body1 css-s8bhyc-MuiTypography-root"
+                >
+                  Welcome to Stackwright
+                </p>
+                <div
+                  class="MuiBox-root css-0"
+                >
+                  <div
+                    class="MuiBox-root css-syu8eu"
+                  >
+                    <p
+                      class="MuiTypography-root MuiTypography-body1 css-7m6oao-MuiTypography-root"
+                    >
+                      Your React stack development accelerator
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-2 css-hfgr24-MuiGrid-root"
+                >
+                  <div
+                    class="MuiGrid-root MuiGrid-direction-xs-row css-17fpwt7-MuiGrid-root"
+                  >
+                    <a
+                      class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary MuiButton-root MuiButton-contained MuiButton-containedPrimary MuiButton-sizeMedium MuiButton-containedSizeMedium MuiButton-colorPrimary css-w8z041-MuiButtonBase-root-MuiButton-root"
+                      href="/docs"
+                      tabindex="0"
+                    >
+                      <p
+                        class="MuiTypography-root MuiTypography-body1 css-hnfzja-MuiTypography-root"
+                      >
+                        Get Started
+                      </p>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer
+        class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-2 css-gn1n57-MuiGrid-root"
+      >
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row MuiGrid-spacing-xs-1 css-tr7c4t-MuiGrid-root"
+        />
+        <div
+          class="MuiGrid-root MuiGrid-container MuiGrid-direction-xs-row css-oum1ei-MuiGrid-root"
+        >
+          <p
+            class="MuiTypography-root MuiTypography-body2 css-9yqdmv-MuiTypography-root"
+          >
+            @ 2026 © 2026 Stackwright. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </div>
+</DocumentFragment>
+`;

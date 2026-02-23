@@ -2,17 +2,23 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 
 function getChangedFiles() {
+  const base = process.env.GITHUB_BASE_REF || "origin/dev";
+
   try {
-    const base = process.env.GITHUB_BASE_REF || "origin/dev";
+    // Ensure the base branch exists locally
+    execSync(`git fetch origin ${base}:${base}`, { stdio: "inherit" });
+
     const diff = execSync(`git diff --name-only ${base}...HEAD`, {
       encoding: "utf-8",
     });
     return diff.split("\n").filter(Boolean);
   } catch (err) {
-    console.error("Could not determine changed files", err);
+    console.error(`❌ Could not determine changed files from ${base}`, err.message);
     process.exit(1);
   }
 }
+
+
 
 function hasPackageChanges(files) {
   return files.some((file) => file.startsWith("packages/"));

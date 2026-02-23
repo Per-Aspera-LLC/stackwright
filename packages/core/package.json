@@ -1,0 +1,70 @@
+{
+    "name": "@stackwright/core",
+    "version": "0.4.0",
+    "description": "Core framework for building applications from YAML configuration",
+    "main": "./dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.mjs",
+            "require": "./dist/index.js"
+        },
+        "./DynamicPage": {
+            "types": "./dist/components/DynamicPage.d.ts",
+            "import": "./dist/components/DynamicPage.mjs",
+            "require": "./dist/components/DynamicPage.js"
+        },
+        "./pages/slug": {
+            "types": "./dist/pages/SlugPage.d.ts",
+            "import": "./dist/pages/SlugPage.mjs",
+            "require": "./dist/pages/SlugPage.js"
+        }
+    },
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "test": "vitest",
+        "test:run": "vitest run",
+        "test:coverage": "vitest run --coverage",
+        "prepublishOnly": "npm run build"
+    },
+    "dependencies": {
+        "@emotion/cache": "^11.14",
+        "@emotion/react": "^11.14",
+        "@emotion/styled": "^11.14",
+        "@fontsource/montserrat-alternates": "5.2.6",
+        "@mui/icons-material": "7.2.0",
+        "@mui/material": "7.2.0",
+        "@stackwright/types": "workspace:*",
+        "@stackwright/themes": "workspace:*",
+        "js-yaml": "^4.1.0",
+        "react": "^19",
+        "react-dom": "^19",
+        "uuid": "^11.1.0"
+    },
+    "devDependencies": {
+        "@swc/core": "^1.13.2",
+        "@testing-library/jest-dom": "^6.6",
+        "@testing-library/react": "^16.3",
+        "@types/node": "^24.1",
+        "@types/react": "^19.1",
+        "@types/react-dom": "^19.1",
+        "@stackwright/types": "workspace:*",
+        "@vitest/ui": "^3.2.4",
+        "jsdom": "^26.1.0",
+        "tsup": "^8.5",
+        "typescript": "^5.8",
+        "vitest": "^3.2.4"
+    },
+    "peerDependencies": {
+        "react": "^19",
+        "react-dom": "^19",
+        "@mui/material": "7.2.0",
+        "@mui/icons-material": "7.2.0"
+    }
+}
