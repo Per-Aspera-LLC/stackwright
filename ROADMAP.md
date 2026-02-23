@@ -7,10 +7,10 @@ This file tracks planned work across the project. Items are roughly ordered by p
 ## Near-term: Stabilization
 
 - [x] **Content type: `code_block`** — A dedicated code block content type that renders with monospace font and background. Implemented in `packages/core/src/components/base/CodeBlock.tsx`.
-- [ ] **Real Privacy Policy and Terms of Service pages** — Currently both footer links point to GitHub as a placeholder.
+- [x] **Real Privacy Policy and Terms of Service pages** — Currently both footer links point to GitHub as a placeholder.
 - [x] **Regenerate JSON schemas** — Run `pnpm generate-schemas` after recent type changes (`components` made optional in `ThemeConfig`).
 - [x] **Next.js 16 / Turbopack compatibility** — Prebuild pipeline (`@stackwright/build-scripts`) eliminates `fs` from `@stackwright/nextjs`; `createStackwrightNextConfig` adds `turbopack: {}` for Next.js 16+.
-- [ ] **Fix About page timeline** — Timeline items use `year`/`event` fields but the about page content was written with `date`/`title`/`description`. Audit and align.
+- [x] **Fix About page timeline** — Timeline items use `year`/`event` fields but the about page content was written with `date`/`title`/`description`. Audit and align.
 
 ---
 

@@ -26,9 +26,9 @@ footer:
         - label: "Github"
           href: "https://github.com/Per-Aspera-LLC/stackwright/"
         - label: "Privacy Policy"
-          href: "https://github.com/Per-Aspera-LLC/stackwright/"
+          href: "/privacy-policy"
         - label: "Terms of Service"
-          href: "https://github.com/Per-Aspera-LLC/stackwright/"
+          href: "/terms-of-service"
 
     socialLinks:
         - text: "Bluesky"
