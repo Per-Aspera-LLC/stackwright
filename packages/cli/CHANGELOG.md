@@ -1,5 +1,32 @@
 # @stackwright/cli
 
+## 0.3.1
+
+### Patch Changes
+
+- dc2db25: Adding null checks to core
+- bd7cd6e: Internal packagename refactor.
+- ca71410: Core testing implemented
+- 51dbbc9: Refactor types out of core into own package.
+- f195337: Adding test dependencies to all packages.
+- 5ff20a6: Fixing mixed compilation tooling (tsup/tsc) to only tsup
+- 46df7ac: Documentation updates
+- e4fbf2f: Update all dependencies
+- cc761ce: More version updates
+- Updated dependencies [dc2db25]
+- Updated dependencies [bd7cd6e]
+- Updated dependencies [ca71410]
+- Updated dependencies [51dbbc9]
+- Updated dependencies [f195337]
+- Updated dependencies [8910585]
+- Updated dependencies [5ff20a6]
+- Updated dependencies [46df7ac]
+- Updated dependencies [e4fbf2f]
+- Updated dependencies [ae26492]
+- Updated dependencies [cc761ce]
+  - @stackwright/themes@0.3.1
+  - @stackwright/core@0.4.0
+
 ## 0.3.1-alpha.6
 
 ### Patch Changes

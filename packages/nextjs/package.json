@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.2.1-alpha.6",
+    "version": "0.2.1",
     "description": "Next.js implementations for Stackwright components",
     "main": "dist/index.js",
     "module": "dist/index.mjs",

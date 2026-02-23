@@ -1,5 +1,19 @@
 # @stackwright/themes
 
+## 0.3.1
+
+### Patch Changes
+
+- dc2db25: Adding null checks to core
+- bd7cd6e: Internal packagename refactor.
+- ca71410: Core testing implemented
+- 51dbbc9: Refactor types out of core into own package.
+- f195337: Adding test dependencies to all packages.
+- 5ff20a6: Fixing mixed compilation tooling (tsup/tsc) to only tsup
+- 46df7ac: Documentation updates
+- e4fbf2f: Update all dependencies
+- cc761ce: More version updates
+
 ## 0.3.1-alpha.5
 
 ### Patch Changes

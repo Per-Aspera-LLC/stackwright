@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/core",
-    "version": "0.3.1-alpha.6",
+    "version": "0.4.0",
     "description": "Core framework for building applications from YAML configuration",
     "main": "./dist/index.js",
     "module": "dist/index.mjs",
