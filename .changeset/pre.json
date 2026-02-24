@@ -1,0 +1,26 @@
+{
+  "mode": "exit",
+  "tag": "alpha",
+  "access": "public",
+  "initialVersions": {
+    "@stackwright/build-scripts": "0.1.0",
+    "@stackwright/cli": "0.3.0",
+    "@stackwright/core": "0.3.0",
+    "@stackwright/icons": "0.1.0",
+    "@stackwright/nextjs": "0.2.0",
+    "@stackwright/themes": "0.3.0",
+    "@stackwright/types": "0.1.0"
+  },
+  "changesets": [
+    "all-shoes-tap",
+    "fine-cloths-brush",
+    "funny-keys-build",
+    "itchy-cameras-prove",
+    "lucky-months-fetch",
+    "pink-days-reply",
+    "sharp-ants-report",
+    "slimy-brooms-end",
+    "teal-icons-discriminate",
+    "wild-masks-build"
+  ]
+}

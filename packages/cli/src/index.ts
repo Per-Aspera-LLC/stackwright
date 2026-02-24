@@ -1,31 +1,24 @@
-#!/usr/bin/env node
+// Public API for plugin authors and programmatic use (e.g. future MCP server)
 
-import { Command } from 'commander';
-import { createProject } from './commands/create';
-import chalk from 'chalk';
+export type { PluginRegistrar } from './types';
 
-const program = new Command();
+// Output helpers — plugin authors can use these for consistent UX
+export { outputResult, outputError } from './utils/json-output';
 
-program
-  .name('Stackwright')
-  .description('CLI for Stackwright - craft websites with structured content')
-  .version('0.2.1');
+// Pure command functions — callable as a library without spawning a subprocess
+export { scaffold } from './commands/scaffold';
+export { listPages, addPage, validatePages } from './commands/page';
+export { validateSite } from './commands/site';
+export { getTypes } from './commands/types';
+export { runPrebuildCommand } from './commands/prebuild';
+export { listThemes } from './commands/theme';
+export { getInfo } from './commands/info';
 
-program
-  .command('create <project-name>')
-  .description('Create a new Stackwright project')
-  .action(async (projectName: string) => {
-    try {
-      await createProject(projectName);
-    } catch (error) {
-      console.error(chalk.red('❌ Error creating project:'), error);
-      process.exit(1);
-    }
-  });
-
-// Show help if no command provided
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
-
-program.parse();
+// Result types
+export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
+export type { PageSummary, PageListResult, PageValidateResult, AddPageResult } from './commands/page';
+export type { SiteValidateResult, SiteValidationError } from './commands/site';
+export type { TypesResult, ContentTypeEntry, FieldEntry } from './commands/types';
+export type { PrebuildResult } from './commands/prebuild';
+export type { ThemeListResult } from './commands/theme';
+export type { InfoResult, PackageVersions } from './commands/info';

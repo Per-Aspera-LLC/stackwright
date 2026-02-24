@@ -1,35 +1,54 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { createProject } from './commands/create';
+import { loadPlugins } from './utils/plugin-loader';
+import { registerScaffold } from './commands/scaffold';
+import { registerPage } from './commands/page';
+import { registerSite } from './commands/site';
+import { registerTypes } from './commands/types';
+import { registerPrebuild } from './commands/prebuild';
+import { registerTheme } from './commands/theme';
+import { registerInfo } from './commands/info';
 
-const program = new Command();
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { version } = require('../package.json') as { version: string };
 
-program
-  .name('Stackwright')
-  .description('CLI for creating Stackwright projects')
-  .version('0.2.1');
+async function main(): Promise<void> {
+  const program = new Command();
 
-program
-  .command('create <project-name>')
-  .description('Create a new Stackwright project')
-  .option('--from-dir <path>', 'Create from content brief directory')
-  .option('--ai-pipeline', 'Use AI to generate enhanced content')
-  .option('--api-key <key>', 'OpenAI API key (or use OPENAI_API_KEY env var)')
-  .action(async (projectName, options) => {
-    try {
-      const createOptions = {
-        projectName,
-        fromDir: options.fromDir,
-        aiPipeline: options.aiPipeline,
-        apiKey: options.apiKey || process.env.OPENAI_API_KEY,
-        ...options
-      };
-      
-      await createProject(projectName, createOptions);
-    } catch (error) {
-      console.error('Error creating project:', error);
-      process.exit(1);
-    }
-  });
+  program
+    .name('stackwright')
+    .description('CLI for the Stackwright framework')
+    .version(version)
+    .option('--plugin-dir <path>', 'Load additional commands from a plugin directory');
 
-program.parse();
+  // Register built-in commands
+  registerScaffold(program);
+  registerPage(program);
+  registerSite(program);
+  registerTypes(program);
+  registerPrebuild(program);
+  registerTheme(program);
+  registerInfo(program);
+
+  // Pre-parse to extract global options (including --plugin-dir) before full dispatch.
+  // parseOptions() does NOT dispatch commands — it only extracts options.
+  program.parseOptions(process.argv.slice(2));
+  const globalOpts = program.opts<{ pluginDir?: string }>();
+
+  if (globalOpts.pluginDir) {
+    await loadPlugins(globalOpts.pluginDir, program);
+  }
+
+  // Show help if no command provided
+  if (process.argv.slice(2).length === 0) {
+    program.outputHelp();
+    process.exit(0);
+  }
+
+  await program.parseAsync(process.argv);
+}
+
+main().catch((err: unknown) => {
+  process.stderr.write(`Internal error: ${String(err)}\n`);
+  process.exit(2);
+});

@@ -24,6 +24,8 @@ This file tracks planned work across the project. Items are roughly ordered by p
 
 ## Medium-term: Framework
 
+- [ ] **Migrate `@stackwright/types` to Zod** — Replace `typescript-json-schema` + hand-written TypeScript interfaces with Zod schemas as the single source of truth. Infer TypeScript types via `z.infer<>`. Generate JSON schemas for IDE YAML validation via `zod-to-json-schema` (replaces the `generate-schemas` script). Benefits: runtime validation without AJV, more ergonomic type authoring, CLI and MCP tools can introspect schemas directly via `.shape` rather than parsing JSON Schema `definitions`. Note: JSON schema generation must be retained for IDE YAML validation (`.vscode/settings.json` references).
+
 - [ ] **UI adapter abstraction** — Extract MUI-specific code from `@stackwright/core` into a `@stackwright/ui-mui` package, mirroring the existing `@stackwright/nextjs` adapter pattern. This unblocks `@stackwright/ui-shadcn` and other UI layer swaps without touching core.
 - [x] **`tabbed_content` — verify and document** — Live demo added to the getting-started page with three tabs: icon_grid, timeline, and code_block.
 - [ ] **Dark mode support** — Theme system supports color definitions; needs a `darkColors` block in `ThemeConfig` and a toggle mechanism in `ThemesProvider`.
