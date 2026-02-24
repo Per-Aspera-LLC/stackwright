@@ -1,5 +1,5 @@
 import { ButtonContent } from './base';
-import { MediaContent } from './media';
+import { MediaItem } from './media';
 
 export interface MenuContent extends ButtonContent {
     menu_items?: MenuContent[]
@@ -27,7 +27,7 @@ export interface NavigationItem {
 
 export interface AppBarContent {
   title: string;
-  logo?: MediaContent;
+  logo?: MediaItem;
   menuItems?: NavigationItem[];
   textcolor?: string;
   backgroundcolor?: string;

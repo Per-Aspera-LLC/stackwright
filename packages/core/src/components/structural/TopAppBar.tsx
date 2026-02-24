@@ -29,13 +29,11 @@ export default function TopAppBar({ title, logo, menuItems, textcolor, backgroun
               }}
               >
               <Media
-                src={logo.src}
+                {...logo}
                 style='contained'
-                color={logo.color}
-                height={logo?.height || '48px'}
-                width={logo?.width || '48px'}
+                height={logo.height || '48px'}
+                width={logo.width || '48px'}
                 label={`${title} logo`}
-                
                 />
               </Box>
             <Typography  variant="h4" component="div" sx={{  mr: 4 }}>

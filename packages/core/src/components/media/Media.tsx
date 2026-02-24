@@ -76,31 +76,46 @@ export function Media(content: MediaItem) {
         return <Typography>No src set for Media</Typography>;
     }
 
-    // Discriminator-first: explicit type field wins
-    if ('type' in content) {
-        if (content.type === 'icon') {
-            const sizePx = typeof content.height === 'number' ? content.height : 24;
-            return (
-                <MediaContainer height={sizePx} width={sizePx} style={content.style}>
-                    {renderIcon(content.src, sizePx, content.color)}
-                </MediaContainer>
-            );
-        }
-        if (content.type === 'image') {
-            return (
-                <MediaContainer height={content.height} width={content.width} style={content.style}>
-                    {renderImage(content)}
-                </MediaContainer>
-            );
-        }
-    }
-
-    // Heuristic fallback for YAML without explicit type
-    if (isIconSource(content.src)) {
+    // Discriminator-first: all three types now carry a required `type` field.
+    if (content.type === 'icon') {
         const sizePx = typeof content.height === 'number' ? content.height : 24;
         return (
             <MediaContainer height={sizePx} width={sizePx} style={content.style}>
                 {renderIcon(content.src, sizePx, content.color)}
+            </MediaContainer>
+        );
+    }
+    if (content.type === 'image') {
+        return (
+            <MediaContainer height={content.height} width={content.width} style={content.style}>
+                {renderImage(content)}
+            </MediaContainer>
+        );
+    }
+    if (content.type === 'media') {
+        // Bare media: fall back to heuristics on src to decide icon vs image.
+        if (isIconSource(content.src)) {
+            const sizePx = typeof content.height === 'number' ? content.height : 24;
+            return (
+                <MediaContainer height={sizePx} width={sizePx} style={content.style}>
+                    {renderIcon(content.src, sizePx)}
+                </MediaContainer>
+            );
+        }
+        return (
+            <MediaContainer height={content.height || 'auto'} width={content.width || '100%'} style={content.style}>
+                {renderImage(content)}
+            </MediaContainer>
+        );
+    }
+
+    // Legacy fallback: YAML written before discriminators were required.
+    // Deprecated — add type: "image", type: "icon", or type: "media" to YAML.
+    if (isIconSource(content.src)) {
+        const sizePx = typeof content.height === 'number' ? content.height : 24;
+        return (
+            <MediaContainer height={sizePx} width={sizePx} style={content.style}>
+                {renderIcon(content.src, sizePx, (content as any).color)}
             </MediaContainer>
         );
     }
@@ -113,6 +128,6 @@ export function Media(content: MediaItem) {
         );
     }
 
-    console.warn(`Cannot determine media type for "${content.src}". Add type: "image" or type: "icon" to your YAML.`);
-    return <Typography variant="caption">❓ Unknown media: {content.src}</Typography>;
+    console.warn(`Cannot determine media type for "${content.src}". Add type: "image", type: "icon", or type: "media" to your YAML.`);
+    return <Typography variant="caption">Unknown media: {content.src}</Typography>;
 }

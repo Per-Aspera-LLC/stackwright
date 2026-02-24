@@ -127,7 +127,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `timeline` | `label`, `items` (TimelineItem[]) | `heading` (TextBlock) |
 | `icon_grid` | `label`, `icons` (IconContent[]) | `heading` (TextBlock) |
 | `tabbed_content` | `label`, `heading` (TextBlock), `tabs` (ContentItem[]) | — |
-| `media` | `label`, `src` (string) | `alt`, `height`, `width`, `style` (`contained`\|`overflow`) |
+| `media` | `label`, `type: "media"`, `src` (string) | `alt`, `height`, `width`, `style` (`contained`\|`overflow`) |
 | `code_block` | `label`, `code` (string) | `language` (string), `lineNumbers` (bool, default false), `background` |
 
 **Sub-type reference:**
@@ -136,9 +136,10 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 |---|---|
 | `TextBlock` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string) |
 | `ButtonContent` | `text`, `textSize`, `variant` (`text`\|`outlined`\|`contained`), `href`?, `bgColor`?, `textColor`?, `variantSize`? (`small`\|`medium`\|`large`), `icon`? (MediaItem), `alignment`? (`left`\|`center`\|`right`) |
+| `MediaContent` | `type: "media"` (required), `label` (string), `src` (file path or URL), `alt`?, `height`?, `width`?, `style`? (`contained`\|`overflow`) |
 | `ImageContent` | `type: "image"` (required), `label` (string), `src` (file path or URL), `alt`?, `height`?, `width`?, `aspect_ratio`? (number), `style`? (`contained`\|`overflow`) |
 | `IconContent` | `type: "icon"` (required), `label` (string), `src` (registry key — see `@stackwright/icons` AGENTS.md for valid names), `color`?, `height`? (px, default 24), `size`? (number \| TypographyVariant) |
-| `MediaItem` | Union of `ImageContent` \| `IconContent`. Always include `type` to avoid heuristic fallback. |
+| `MediaItem` | Union of `MediaContent` \| `ImageContent` \| `IconContent`. `type` is required on all three and acts as the discriminator. |
 | `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? |
 | `TimelineItem` | `year` (string), `event` (string) |
 
@@ -152,28 +153,30 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
     label: "section-identifier"
     heading:
       text: "Section Title"
-      size: "h1"
+      textSize: "h1"
     textBlocks:
       - text: "Description text"
-        size: "body1"
+        textSize: "body1"
     buttons:
-      - label: "button-identifier"
-        text: "Button Text"
+      - text: "Button Text"
+        textSize: "body1"
         variant: "contained"
         href: "/target-page"
 ```
 
 ### Icon Grids
 ```yaml
-- iconGrid:
+- icon_grid:
     label: "features-grid"
     heading:
       text: "Features"
-      size: "h2"
-    items:
-      - icon: "icon-name"
-        title: "Feature Title"
-        description: "Feature description"
+      textSize: "h2"
+    icons:
+      - type: "icon"
+        label: "feature-icon"
+        src: "CheckCircle"
+        color: "#4caf50"
+        height: 48
 ```
 
 ### Timelines
@@ -181,9 +184,8 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 - timeline:
     label: "history-timeline"
     items:
-      - date: "2024"
-        title: "Event Title"
-        description: "Event description"
+      - year: "2024"
+        event: "Event description"
 ```
 
 ## Best Practices

@@ -1,10 +1,9 @@
-import React from 'react';
 import { BaseContent } from './base';
 import { MediaStyleVariant, TypographyVariant } from './enums';
 
-// Simple, focused media types
-export interface MediaContent extends BaseContent {
-  // Use 'src' instead of 'source' to match HTML/Next.js conventions
+// Shared fields for all media types (no `type` discriminator here).
+interface MediaBase extends BaseContent {
+    // Use 'src' instead of 'source' to match HTML/Next.js conventions
     src: string;
     alt?: string;
     height?: number | string;
@@ -12,16 +11,21 @@ export interface MediaContent extends BaseContent {
     style?: MediaStyleVariant;
 }
 
-export interface IconContent extends MediaContent {
+// Bare media — path/URL only, let the renderer heuristically decide icon vs image.
+export interface MediaContent extends MediaBase {
+    type: "media";
+}
+
+export interface IconContent extends MediaBase {
     type: "icon";
     size?: number | TypographyVariant;
     color?: string;
 }
 
-export interface ImageContent extends MediaContent {
+export interface ImageContent extends MediaBase {
     type: "image";
     aspect_ratio?: number;
 }
 
-// Union type for schemas 
+// Properly discriminated union — `type` is required on all three members.
 export type MediaItem = MediaContent | IconContent | ImageContent;

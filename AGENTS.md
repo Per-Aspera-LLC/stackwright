@@ -9,7 +9,7 @@ Welcome to Stackwright! This is a YAML-driven React application framework that e
   - `packages/themes/src/ThemesProvider.tsx`: Theme provider for theme handling
 - **Developer Workflows**
   - Build: Run `pnpm build` from the project root
-  - Test (currently not implemented): See [Troubleshooting](#troubleshooting) section below
+  - Test: Run `pnpm test` from the project root (runs vitest across all packages)
 - **Project Conventions**: Note these important patterns that differ from common practices
   - **File Organization**
     - All source code is in `packages` directory
@@ -35,11 +35,17 @@ The `stackwrightRegistry` is a singleton that must be populated before rendering
 
 ### Image Co-location Pipeline
 
-Images can be placed alongside their page YAML files in `content/pages/`. Use `./relative` paths in YAML — these are automatically processed at `getStaticProps` time by `processImagesInContent()` and `processImagesInConfig()` in `packages/nextjs/src/components/NextStackwrightStaticGeneration.ts`:
-1. File is copied to `public/images/` preserving directory structure
-2. Path is rewritten to `/images/...` for rendering
+Images can be placed alongside their page YAML files in `content/pages/`. Use `./relative` paths in YAML (e.g. `src: ./hero.png`). These are processed by the `stackwright-prebuild` script (from `@stackwright/build-scripts`) which runs before `next build` and `next dev`:
+1. Image is copied to `public/images/` preserving directory structure
+2. Path is rewritten to `/images/...` in the processed JSON
+3. `getStaticProps` reads from the processed JSON — no `fs` work at render time
 
-No prebuild step is needed.
+**Required:** Add these hooks to the Next.js app's `package.json`:
+```json
+"prebuild": "stackwright-prebuild",
+"predev": "stackwright-prebuild"
+```
+Without these hooks, co-located images will not be found at runtime.
 
 ### Content Type Reference
 
@@ -54,7 +60,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `timeline` | `label`, `items` (TimelineItem[]) | `heading` (TextBlock) |
 | `icon_grid` | `label`, `icons` (IconContent[]) | `heading` (TextBlock) |
 | `tabbed_content` | `label`, `heading` (TextBlock), `tabs` (ContentItem[]) | — |
-| `media` | `label`, `src` (string) | `alt`, `height`, `width`, `style` (`contained`\|`overflow`) |
+| `media` | `label`, `type: "media"`, `src` (string) | `alt`, `height`, `width`, `style` (`contained`\|`overflow`) |
 | `code_block` | `label`, `code` (string) | `language` (string), `lineNumbers` (bool, default false), `background` |
 
 **Sub-type reference:**
@@ -63,9 +69,10 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 |---|---|
 | `TextBlock` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string) |
 | `ButtonContent` | `text`, `textSize`, `variant` (`text`\|`outlined`\|`contained`), `href`?, `bgColor`?, `textColor`?, `variantSize`? (`small`\|`medium`\|`large`), `icon`? (MediaItem), `alignment`? (`left`\|`center`\|`right`) |
+| `MediaContent` | `type: "media"` (required), `label` (string), `src` (file path or URL), `alt`?, `height`?, `width`?, `style`? (`contained`\|`overflow`) |
 | `ImageContent` | `type: "image"` (required), `label` (string), `src` (file path or URL), `alt`?, `height`?, `width`?, `aspect_ratio`? (number), `style`? (`contained`\|`overflow`) |
 | `IconContent` | `type: "icon"` (required), `label` (string), `src` (registry key — see `@stackwright/icons` AGENTS.md for valid names), `color`?, `height`? (px, default 24), `size`? (number \| TypographyVariant) |
-| `MediaItem` | Union of `ImageContent` \| `IconContent`. Always include `type` to avoid heuristic fallback. |
+| `MediaItem` | Union of `MediaContent` \| `ImageContent` \| `IconContent`. `type` is required on all three and acts as the discriminator. |
 | `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? |
 | `TimelineItem` | `year` (string), `event` (string) |
 
