@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/types",
-    "version": "0.1.1-alpha.4",
+    "version": "0.2.0",
     "description": "TypeScript types and JSON schemas for Stackwright",
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
