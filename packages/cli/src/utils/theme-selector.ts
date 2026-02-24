@@ -30,6 +30,9 @@ export function getBuiltInThemes(): ThemeSummary[] {
 
 export async function promptThemeSelection(): Promise<string> {
   const themes = getBuiltInThemes();
+  if (themes.length === 0) {
+    throw new Error('No themes available. Ensure @stackwright/themes is installed.');
+  }
   const themeId = await select({
     message: 'Select a theme:',
     choices: themes.map((t) => ({

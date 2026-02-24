@@ -5,7 +5,7 @@ import yaml from 'js-yaml';
 import Ajv from 'ajv';
 import { detectProject } from '../utils/project-detector';
 import { loadSiteConfigSchema } from '../utils/schema-loader';
-import { outputResult, outputError } from '../utils/json-output';
+import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
 // Pure function
@@ -74,11 +74,11 @@ export function registerSite(program: Command): void {
         });
         if (!result.valid) process.exit(1);
       } catch (err: unknown) {
-        const e = err as NodeJS.ErrnoException;
-        if (e.code === 'NOT_A_PROJECT') {
-          outputError(e.message, 'NOT_A_PROJECT', { json });
+        if (getErrorCode(err) === 'NOT_A_PROJECT') {
+          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+        } else {
+          outputError(formatError(err), 'VALIDATE_FAILED', { json }, 2);
         }
-        outputError(String(err), 'VALIDATE_FAILED', { json }, 2);
       }
     });
 }

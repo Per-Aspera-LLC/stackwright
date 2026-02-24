@@ -7,7 +7,7 @@ import yaml from 'js-yaml';
 import Ajv from 'ajv';
 import { detectProject } from '../utils/project-detector';
 import { loadContentSchema } from '../utils/schema-loader';
-import { outputResult, outputError } from '../utils/json-output';
+import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
 // Pure functions
@@ -90,20 +90,22 @@ export function validatePages(pagesDir: string, slug?: string): PageValidateResu
   const errors: ValidationError[] = [];
 
   for (const page of targets) {
+    let raw: unknown;
     try {
-      const raw = yaml.load(fs.readFileSync(page.path, 'utf8'));
-      const content = (raw as Record<string, unknown>)?.content;
-      const valid = validate(raw);
-      if (!valid && validate.errors) {
-        for (const e of validate.errors) {
-          errors.push({
-            slug: page.slug,
-            message: `${e.instancePath || '(root)'} ${e.message ?? 'invalid'}`,
-          });
-        }
-      }
+      raw = yaml.load(fs.readFileSync(page.path, 'utf8'));
     } catch (err) {
-      errors.push({ slug: page.slug, message: `Failed to parse YAML: ${String(err)}` });
+      errors.push({ slug: page.slug, message: `YAML parse error: ${formatError(err)}` });
+      continue;
+    }
+
+    const valid = validate(raw);
+    if (!valid && validate.errors) {
+      for (const e of validate.errors) {
+        errors.push({
+          slug: page.slug,
+          message: `${e.instancePath || '(root)'} ${e.message ?? 'invalid'}`,
+        });
+      }
     }
   }
 
@@ -120,7 +122,14 @@ export async function addPage(
   slug: string,
   opts: { heading?: string; json?: boolean }
 ): Promise<AddPageResult> {
-  const cleanSlug = slug.replace(/^\//, '');
+  const cleanSlug = slug.replace(/^\//, '').replace(/\\/g, '/');
+
+  // Prevent path traversal: slug must not escape the pages directory
+  const resolvedTarget = path.resolve(pagesDir, cleanSlug);
+  if (!resolvedTarget.startsWith(path.resolve(pagesDir) + path.sep)) {
+    outputError(`Invalid slug: "${slug}"`, 'INVALID_SLUG', { json: Boolean(opts.json) });
+  }
+
   const contentPath = path.join(pagesDir, cleanSlug, 'content.yml');
 
   if (fs.existsSync(contentPath)) {
@@ -176,11 +185,11 @@ export function registerPage(program: Command): void {
           console.log(chalk.green(`Created ${result.path}`));
         });
       } catch (err: unknown) {
-        const e = err as NodeJS.ErrnoException;
-        if (e.code === 'NOT_A_PROJECT') {
-          outputError(e.message, 'NOT_A_PROJECT', { json });
+        if (getErrorCode(err) === 'NOT_A_PROJECT') {
+          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+        } else {
+          outputError(formatError(err), 'ADD_PAGE_FAILED', { json }, 2);
         }
-        outputError(String(err), 'ADD_PAGE_FAILED', { json }, 2);
       }
     });
 
@@ -204,11 +213,11 @@ export function registerPage(program: Command): void {
           }
         });
       } catch (err: unknown) {
-        const e = err as NodeJS.ErrnoException;
-        if (e.code === 'NOT_A_PROJECT') {
-          outputError(e.message, 'NOT_A_PROJECT', { json });
+        if (getErrorCode(err) === 'NOT_A_PROJECT') {
+          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+        } else {
+          outputError(formatError(err), 'LIST_FAILED', { json }, 2);
         }
-        outputError(String(err), 'LIST_FAILED', { json }, 2);
       }
     });
 
@@ -232,11 +241,11 @@ export function registerPage(program: Command): void {
         });
         if (!result.valid) process.exit(1);
       } catch (err: unknown) {
-        const e = err as NodeJS.ErrnoException;
-        if (e.code === 'NOT_A_PROJECT') {
-          outputError(e.message, 'NOT_A_PROJECT', { json });
+        if (getErrorCode(err) === 'NOT_A_PROJECT') {
+          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+        } else {
+          outputError(formatError(err), 'VALIDATE_FAILED', { json }, 2);
         }
-        outputError(String(err), 'VALIDATE_FAILED', { json }, 2);
       }
     });
 }
