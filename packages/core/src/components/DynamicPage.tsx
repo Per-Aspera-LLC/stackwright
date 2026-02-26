@@ -84,11 +84,13 @@ class DynamicPageErrorBoundary extends React.Component<
 interface DynamicPageProps {
     pageContent: PageContent;
     siteConfig?: SiteConfig;
+    slug?: string;
 }
 
 export default function DynamicPage({
     pageContent,
     siteConfig,
+    slug,
 }: DynamicPageProps) {
     // Load theme from siteConfig or default to 'corporate'
     const themeName = siteConfig?.themeName || "corporate";
@@ -190,7 +192,7 @@ export default function DynamicPage({
                         }}
                     >
                         {showShimmer && <ShimmerOverlay />}
-                        <DynamicPageErrorBoundary pageName={pageContent?.slug}>
+                        <DynamicPageErrorBoundary pageName={slug}>
                             <PageLayout
                                 pageContent={pageContent}
                                 siteConfig={siteConfig}
