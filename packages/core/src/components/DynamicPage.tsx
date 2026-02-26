@@ -10,6 +10,77 @@ import {
     createTheme,
 } from "@mui/material";
 
+// Defined at module scope so styled() is not called on every render.
+const ShimmerOverlay = styled(Box)({
+    position: "absolute",
+    top: 0,
+    left: "-100%",
+    width: "100%",
+    height: "100%",
+    background:
+        "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+    animation: "sf-shimmer 2s ease-in-out infinite",
+    pointerEvents: "none",
+    "@keyframes sf-shimmer": {
+        "0%": { left: "-100%" },
+        "100%": { left: "100%" },
+    },
+});
+
+interface ErrorBoundaryState {
+    hasError: boolean;
+    error: Error | null;
+}
+
+class DynamicPageErrorBoundary extends React.Component<
+    React.PropsWithChildren<{ pageName?: string }>,
+    ErrorBoundaryState
+> {
+    state: ErrorBoundaryState = { hasError: false, error: null };
+
+    static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+        return { hasError: true, error };
+    }
+
+    componentDidCatch(error: Error, info: React.ErrorInfo) {
+        console.error("[Stackwright] DynamicPage render error:", error, info);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <Box
+                    sx={{
+                        p: 4,
+                        m: 2,
+                        border: "1px solid",
+                        borderColor: "error.main",
+                        borderRadius: 1,
+                        backgroundColor: "error.light",
+                        color: "error.contrastText",
+                    }}
+                >
+                    <Box component="strong" sx={{ display: "block", mb: 1 }}>
+                        Page render error
+                    </Box>
+                    <Box
+                        component="pre"
+                        sx={{
+                            fontFamily: "monospace",
+                            fontSize: "0.8rem",
+                            whiteSpace: "pre-wrap",
+                            m: 0,
+                        }}
+                    >
+                        {this.state.error?.message ?? "Unknown error"}
+                    </Box>
+                </Box>
+            );
+        }
+        return this.props.children;
+    }
+}
+
 interface DynamicPageProps {
     pageContent: PageContent;
     siteConfig?: SiteConfig;
@@ -53,23 +124,6 @@ export default function DynamicPage({
                   siteConfig.customTheme.backgroundImage.attachment || "scroll",
           }
         : {};
-
-    // Styled shimmer overlay component
-    const ShimmerOverlay = styled(Box)(({ theme }) => ({
-        position: "absolute",
-        top: 0,
-        left: "-100%",
-        width: "100%",
-        height: "100%",
-        background:
-            "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
-        animation: "sf-shimmer 2s ease-in-out infinite",
-        pointerEvents: "none",
-        "@keyframes sf-shimmer": {
-            "0%": { left: "-100%" },
-            "100%": { left: "100%" },
-        },
-    }));
 
     const showShimmer =
         siteConfig?.customTheme?.backgroundImage?.animation === "shimmer" ||
@@ -136,10 +190,12 @@ export default function DynamicPage({
                         }}
                     >
                         {showShimmer && <ShimmerOverlay />}
-                        <PageLayout
-                            pageContent={pageContent}
-                            siteConfig={siteConfig}
-                        />
+                        <DynamicPageErrorBoundary pageName={pageContent?.slug}>
+                            <PageLayout
+                                pageContent={pageContent}
+                                siteConfig={siteConfig}
+                            />
+                        </DynamicPageErrorBoundary>
                     </Box>
                 </CssBaseline>
             </ThemeProvider>

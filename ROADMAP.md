@@ -14,9 +14,9 @@ This file tracks planned work across the project. Items are roughly ordered by p
 
 ### Sprint 2 — Reliability and silent failure modes
 
-- [ ] **Add React error boundaries to `DynamicPage`** — A single component throwing (invalid YAML prop, missing theme, bad icon) crashes the entire page with no fallback UI. Wrap the content render tree in an error boundary that shows a degraded state instead.
-- [ ] **Fix `styled()` call inside `DynamicPage` render body** — `DynamicPage.tsx:58` creates `ShimmerOverlay` via `styled(Box)(...)` inside the component function. This generates a new CSS class on every render and breaks memoization. Move it to module scope.
-- [ ] **Fix image filename collisions in prebuild** — `packages/build-scripts/src/prebuild.ts:119` uses only `path.basename(str)` as the destination filename when copying co-located images. Two pages with identically-named images (e.g. both having `hero.png`) will silently overwrite each other in `public/images/`. Include the slug in the destination path.
+- [x] **Add React error boundaries to `DynamicPage`** — A single component throwing (invalid YAML prop, missing theme, bad icon) crashes the entire page with no fallback UI. Wrap the content render tree in an error boundary that shows a degraded state instead.
+- [x] **Fix `styled()` call inside `DynamicPage` render body** — `DynamicPage.tsx:58` creates `ShimmerOverlay` via `styled(Box)(...)` inside the component function. This generates a new CSS class on every render and breaks memoization. Move it to module scope.
+- [x] **Fix image filename collisions in prebuild** — `packages/build-scripts/src/prebuild.ts:119` uses only `path.basename(str)` as the destination filename when copying co-located images. Two pages with identically-named images (e.g. both having `hero.png`) will silently overwrite each other in `public/images/`. Include the slug in the destination path.
 
 ### Sprint 3 — Error handling and type safety
 
