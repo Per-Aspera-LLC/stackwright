@@ -195,8 +195,9 @@ export function runPrebuild(projectRoot = process.cwd()): void {
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
 
-    const imageDestDir = slug ? path.join(imagesDir, slug) : imagesDir;
-    const publicPrefix = slug ? `/images/${slug}` : '/images';
+    const slugDir = slug ?? '_root';
+    const imageDestDir = path.join(imagesDir, slugDir);
+    const publicPrefix = `/images/${slugDir}`;
 
     const processedContent = processPageContent(
       rawContent,

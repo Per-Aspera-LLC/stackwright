@@ -14,9 +14,9 @@ This file tracks planned work across the project. Items are roughly ordered by p
 
 ### Sprint 2 — Reliability and silent failure modes
 
-- [ ] **Add React error boundaries to `DynamicPage`** — A single component throwing (invalid YAML prop, missing theme, bad icon) crashes the entire page with no fallback UI. Wrap the content render tree in an error boundary that shows a degraded state instead.
-- [ ] **Fix `styled()` call inside `DynamicPage` render body** — `DynamicPage.tsx:58` creates `ShimmerOverlay` via `styled(Box)(...)` inside the component function. This generates a new CSS class on every render and breaks memoization. Move it to module scope.
-- [ ] **Fix image filename collisions in prebuild** — `packages/build-scripts/src/prebuild.ts:119` uses only `path.basename(str)` as the destination filename when copying co-located images. Two pages with identically-named images (e.g. both having `hero.png`) will silently overwrite each other in `public/images/`. Include the slug in the destination path.
+- [x] **Add React error boundaries to `DynamicPage`** — A single component throwing (invalid YAML prop, missing theme, bad icon) crashes the entire page with no fallback UI. Wrap the content render tree in an error boundary that shows a degraded state instead.
+- [x] **Fix `styled()` call inside `DynamicPage` render body** — `DynamicPage.tsx:58` creates `ShimmerOverlay` via `styled(Box)(...)` inside the component function. This generates a new CSS class on every render and breaks memoization. Move it to module scope.
+- [x] **Fix image filename collisions in prebuild** — `packages/build-scripts/src/prebuild.ts:119` uses only `path.basename(str)` as the destination filename when copying co-located images. Two pages with identically-named images (e.g. both having `hero.png`) will silently overwrite each other in `public/images/`. Include the slug in the destination path.
 
 ### Sprint 3 — Error handling and type safety
 
@@ -26,6 +26,20 @@ This file tracks planned work across the project. Items are roughly ordered by p
 - [ ] **Fix `uuidv4()` as React reconciliation key** — `packages/core/src/utils/contentRenderer.tsx:148` calls `uuidv4()` as a fallback key when none is provided. A new UUID on every render means React treats every element as a new mount, destroying state and preventing reconciliation. Use a stable fallback (index, label, or slug).
 - [ ] **Remove dead `validateComponent` debug function** — `contentRenderer.tsx:15–35` defines `validateComponent()` which does nothing except log debug output. It is called before the `!Component` null guard (line 168), so the null check ordering is wrong. Remove the function and reorder the guard.
 - [ ] **Expand test coverage beyond `packages/core`** — CLI commands, the prebuild pipeline, theme loader, and the nextjs adapter have zero or near-zero test coverage. Add tests for at minimum: `addPage`, `validatePages`, `runPrebuild` (image collision, missing images), and `useSafeTheme` (missing provider, real errors).
+
+### Sprint 4 — Dependency security and CI hardening
+
+Driven by open Dependabot and CodeQL alerts in the GitHub repo. These do not require application logic changes; they are version bumps and CI config fixes. Do them together so the repo goes from "many open alerts" to "clean" in one sweep.
+
+- [ ] **Upgrade `next` to latest patch release** — Multiple critical/high Dependabot alerts open against the `next` package in `examples/hellostackwrightnext`: RCE in React flight protocol (critical, #29), authorization bypass in middleware (critical, #23), DoS with Server Components (#30, #33), Server Actions source code exposure (#31), and several medium-severity cache/image/SSRF issues (#22–#28). The fix for all of them is upgrading to the current Next.js patch release. Run `pnpm --filter hellostackwrightnext up next --latest` and verify the example app builds and runs cleanly.
+- [ ] **Upgrade `rollup` to ≥4.22.4** — Dependabot alert #41: arbitrary file write via path traversal (high severity). Rollup is a transitive dependency of Vite/tsup across the build toolchain. Run `pnpm up rollup --recursive` and re-run `pnpm build` to confirm nothing breaks.
+- [ ] **Upgrade `minimatch` to ≥9.0.5** — Dependabot alerts #39 and #40: ReDoS via repeated wildcards (high severity, two instances). Likely transitive via glob/minimatch usage in CLI or build tools. Run `pnpm up minimatch --recursive`.
+- [ ] **Upgrade `glob` to ≥10.4.1** — Dependabot alert #10: command injection via `-c/--cmd` flag when `shell: true` (high severity). Direct or transitive dependency of CLI/build scripts. Run `pnpm up glob --recursive`.
+- [ ] **Upgrade `js-yaml` to ≥4.x or pin ≥3.13.2** — Dependabot alert #9: prototype pollution in YAML merge keys (medium severity). This is a direct dependency of `@stackwright/core` (the YAML parsing layer). Verify that the upgrade does not change parse behavior for Stackwright YAML content.
+- [ ] **Replace or upgrade `lodash`** — Dependabot alert #15: prototype pollution in `_.unset`/`_.omit` (medium severity). Audit which lodash functions are actually used; replace with native ES equivalents where possible, otherwise upgrade to lodash 4.17.21+.
+- [ ] **Address `vite` and `ajv` transitive alerts** — Dependabot alerts #34–#36 (Vite `server.fs` bypass and HTML file serving issues, low/medium) and #38 (ajv ReDoS on `$data`, medium). These are build-tool transitive deps; upgrade Vite across the monorepo (`pnpm up vite --recursive`) and let ajv follow. Low urgency since these only affect the dev server, not the production output.
+- [ ] **Fix CodeQL: add `permissions` blocks to GitHub Actions workflows** — CodeQL alerts #3–#7: four workflow files (`.github/workflows/ci.yml`, `release.yml`, `check-changeset.yml`, `check-main-release.yml`) have no `permissions:` block, giving workflows overly broad default permissions. Add a top-level `permissions: read-all` to each, then grant only what each job actually needs (e.g., `contents: write` for the release job, `pull-requests: write` for the changeset checker).
+- [ ] **Fix CodeQL error: uncontrolled data in path expression** — CodeQL alert #6 (error severity): `examples/hellostackwrightnext/pages/[slug].tsx` uses the URL slug directly in a file path without sanitization. Sanitize the slug before it is used as a filesystem path (strip `..`, null bytes, and characters outside `[a-z0-9-_]`) or validate it against the known set of slugs returned by `getStaticPaths`.
 
 ---
 
