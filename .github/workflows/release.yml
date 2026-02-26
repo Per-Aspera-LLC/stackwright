@@ -47,5 +47,3 @@ jobs:
 
       - name: Publish to npm
         run: pnpm changeset publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
