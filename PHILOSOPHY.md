@@ -106,11 +106,33 @@ This is not a workaround for not having built a GUI. It is a deliberate product 
 
 ---
 
+## The Extension Model and Paid Components
+
+The `registerComponent()` API in `@stackwright/core` is intentionally open. It is the primary extension mechanism for the framework, and premium component libraries are a first-class and expected use of it — not a workaround or a violation of the "constrain first" principle.
+
+A paid `@stackwright/components-pro` package (or similar) registers its components exactly like any other extension:
+
+```ts
+// in _app.tsx, after registerNextJSComponents()
+import { registerProComponents } from '@stackwright/components-pro';
+registerProComponents();
+```
+
+Each pro component follows the same contract as a free component: a YAML key, a typed schema, a React implementation. The difference is the level of complexity those components can handle — dynamic data fetching, OpenAPI spec rendering, form handling, interactive charts — things that are too specialized or maintenance-intensive for the free tier, but that fit naturally into the YAML-driven authoring model.
+
+**"Not a CMS for dynamic content" applies to the core framework, not to pro components.** The core is and should remain a static site framework. Pro components can consume external APIs and dynamic data by virtue of being React components — they are not constrained to static rendering. The YAML for a pro component simply describes *which* data source and *how* to display it; the component handles the fetch.
+
+**The "constrain first" principle applies to the free tier.** It is a guideline for what belongs in `@stackwright/core` and `@stackwright/types` — not a ceiling on what the ecosystem can express. Pro components exist precisely to serve use cases that are too specialized for the open-source core.
+
+**Agents and contributors should not remove or discourage pro component types** on the grounds that they exceed the static site scope. If a component type is in a pro package, its presence there is deliberate. Scope questions about whether something belongs in the free tier vs. a pro tier are product decisions, not correctness issues.
+
+---
+
 ## What Stackwright Is Not
 
 These boundaries are as important as the principles above:
 
-**Not a CMS replacement in the traditional sense.** Stackwright does not have a content API, a headless delivery layer, or a media asset management system. It is a static site framework. Dynamic, user-generated, or frequently-updated content belongs in a different layer (a database, an API, a separate service) that developer-written React components can consume.
+**Not a CMS replacement in the traditional sense.** The core framework does not have a content API, a headless delivery layer, or a media asset management system. It is a static site framework. Dynamic, user-generated, or frequently-updated content is the domain of pro components or developer-written React components — not something to push into the core YAML schema.
 
 **Not a design tool.** Themes provide color, typography, and spacing. Stackwright does not attempt to give users pixel-level layout control. Users who need that level of control should use developer-written React components, not try to push the YAML schema to accommodate it.
 
@@ -134,4 +156,4 @@ For contributors and agents making implementation decisions:
 
 5. **Agent-facing docs are part of the build.** The content type reference tables in AGENTS.md must be kept in sync with the TypeScript types. This is as important as keeping the JSON schemas in sync. Stale agent docs produce exactly the same class of bugs as stale type definitions.
 
-6. **Constrain first, extend later.** When in doubt about whether to add a new content type or field, wait. The cost of adding something is low; the cost of maintaining it, keeping it in the schema reference, making it agent-writable, and eventually removing it is high. The right answer to "I need something the schema doesn't support" is usually a developer-written React component, not a schema extension.
+6. **Constrain first, extend later — in the free tier.** When in doubt about whether to add a new content type or field to `@stackwright/core`, wait. The cost of adding something is low; the cost of maintaining it, keeping it in the schema reference, making it agent-writable, and eventually removing it is high. The right answer to "I need something the core schema doesn't support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.
