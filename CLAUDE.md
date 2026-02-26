@@ -28,6 +28,13 @@ pnpm dev
 # Run the example application
 pnpm dev:hellostackwright
 
+# Run CLI commands (from monorepo root — note the --)
+pnpm stackwright -- --help
+pnpm stackwright -- types
+pnpm stackwright -- info
+# Project-aware commands must be run from inside a Stackwright project:
+# cd examples/hellostackwrightnext && pnpm stackwright -- page list
+
 # Run all tests
 pnpm test
 
