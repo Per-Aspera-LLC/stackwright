@@ -4,6 +4,31 @@ This file tracks planned work across the project. Items are roughly ordered by p
 
 ---
 
+## Immediate: Bug Fixes (top priority over all unchecked items below)
+
+### Sprint 1 — Correctness crashes and contract violations
+
+- [ ] **Fix `debugLogStackwright` temporal dead zone crash** — In `packages/core/src/utils/stackwrightComponentRegistry.ts`, the `debugLogStackwright` const arrow function is declared at line 82 but called starting at line 7. This is a `ReferenceError` at module load time if any `register()` call happens during initialization. Move the function declaration above the class.
+- [ ] **Fix cross-package source import in `PageLayout`** — `packages/core/src/components/structural/PageLayout.tsx:4` imports `SiteConfig` directly from `../../../../types/src/types/siteConfig` (the other package's `src/` directory). This breaks for downstream consumers who only have `dist/`. Change to `import { SiteConfig } from '@stackwright/types'`.
+- [ ] **Remove auto-registration side effect from `@stackwright/nextjs`** — `packages/nextjs/src/index.ts` calls `registerNextJSComponents()` as a module side effect, violating the documented contract ("Do not rely on module import side effects"). This causes double-registration when users also call it explicitly in `_app.tsx` as instructed. Remove the auto-call; explicit registration is sufficient.
+
+### Sprint 2 — Reliability and silent failure modes
+
+- [ ] **Add React error boundaries to `DynamicPage`** — A single component throwing (invalid YAML prop, missing theme, bad icon) crashes the entire page with no fallback UI. Wrap the content render tree in an error boundary that shows a degraded state instead.
+- [ ] **Fix `styled()` call inside `DynamicPage` render body** — `DynamicPage.tsx:58` creates `ShimmerOverlay` via `styled(Box)(...)` inside the component function. This generates a new CSS class on every render and breaks memoization. Move it to module scope.
+- [ ] **Fix image filename collisions in prebuild** — `packages/build-scripts/src/prebuild.ts:119` uses only `path.basename(str)` as the destination filename when copying co-located images. Two pages with identically-named images (e.g. both having `hero.png`) will silently overwrite each other in `public/images/`. Include the slug in the destination path.
+
+### Sprint 3 — Error handling and type safety
+
+- [ ] **Narrow `useSafeTheme` error catch** — `packages/core/src/hooks/useSafeTheme.ts` catches all errors from `useTheme()` and silently falls back to the hardcoded corporate theme. A real bug in theme resolution becomes invisible. Catch only the specific "must be used within ThemeProvider" error; re-throw others.
+- [ ] **Unify icon registry with `stackwrightRegistry`** — `IconGrid.tsx` and `Media.tsx` access icons via `(globalThis as any).__stackwright_icon_registry__`, bypassing the type-safe `stackwrightRegistry` singleton that already exists. This is a parallel informal registry with no type safety. Unify into the main registry or expose a typed accessor.
+- [ ] **Wire theme switching or remove documentation for it** — `ThemeProvider.tsx` exposes a `setTheme?` slot in its context type but the `ThemeProvider` component never provides it. AGENTS.md documents "dynamic theme switching via `ThemesProvider`" as a feature. Either wire up state management to make it work, or remove the misleading documentation.
+- [ ] **Fix `uuidv4()` as React reconciliation key** — `packages/core/src/utils/contentRenderer.tsx:148` calls `uuidv4()` as a fallback key when none is provided. A new UUID on every render means React treats every element as a new mount, destroying state and preventing reconciliation. Use a stable fallback (index, label, or slug).
+- [ ] **Remove dead `validateComponent` debug function** — `contentRenderer.tsx:15–35` defines `validateComponent()` which does nothing except log debug output. It is called before the `!Component` null guard (line 168), so the null check ordering is wrong. Remove the function and reorder the guard.
+- [ ] **Expand test coverage beyond `packages/core`** — CLI commands, the prebuild pipeline, theme loader, and the nextjs adapter have zero or near-zero test coverage. Add tests for at minimum: `addPage`, `validatePages`, `runPrebuild` (image collision, missing images), and `useSafeTheme` (missing provider, real errors).
+
+---
+
 ## Near-term: Stabilization
 
 - [x] **Content type: `code_block`** — A dedicated code block content type that renders with monospace font and background. Implemented in `packages/core/src/components/base/CodeBlock.tsx`.
