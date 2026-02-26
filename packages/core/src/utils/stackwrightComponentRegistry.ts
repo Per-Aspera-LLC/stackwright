@@ -1,5 +1,12 @@
 import { StackwrightComponents, StackwrightComponentRegistry } from '../interfaces/stackwright-components';
 
+// Debug logging utility for stackwright registry
+const debugLogStackwright = (message: string, data?: any) => {
+  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
+    console.log(`🚀 StackwrightRegistry Debug: ${message}`, data ? data : '');
+  }
+};
+
 class StackwrightComponentRegistryImpl implements StackwrightComponentRegistry {
   private components: Partial<StackwrightComponents> = {};
 
@@ -76,14 +83,6 @@ class StackwrightComponentRegistryImpl implements StackwrightComponentRegistry {
 
 // Singleton instance
 export const stackwrightRegistry = new StackwrightComponentRegistryImpl();
-
-
-// Debug logging utility for stackwright registry
-const debugLogStackwright = (message: string, data?: any) => {
-  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
-    console.log(`🚀 StackwrightRegistry Debug: ${message}`, data ? data : '');
-  }
-};
 
 // Convenience functions for easier access
 export const getStackwrightImage = () => {
