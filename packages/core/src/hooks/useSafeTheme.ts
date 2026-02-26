@@ -23,14 +23,18 @@ const defaultTheme = {
 };
 
 /**
- * Safe theme hook that provides fallback values if ThemeProvider is not available
+ * Safe theme hook that provides fallback values if ThemeProvider is not available.
+ * Only swallows the "must be used within a ThemeProvider" error; re-throws all others.
  */
 export function useSafeTheme() {
   try {
     const { theme } = useTheme();
     return theme;
   } catch (error) {
-    console.warn('ThemeProvider not found, using default theme');
-    return defaultTheme;
+    if (error instanceof Error && error.message.includes('must be used within a ThemeProvider')) {
+      console.warn('ThemeProvider not found, using default theme');
+      return defaultTheme;
+    }
+    throw error;
   }
 }
