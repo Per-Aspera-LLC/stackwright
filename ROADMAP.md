@@ -8,9 +8,9 @@ This file tracks planned work across the project. Items are roughly ordered by p
 
 ### Sprint 1 — Correctness crashes and contract violations
 
-- [ ] **Fix `debugLogStackwright` temporal dead zone crash** — In `packages/core/src/utils/stackwrightComponentRegistry.ts`, the `debugLogStackwright` const arrow function is declared at line 82 but called starting at line 7. This is a `ReferenceError` at module load time if any `register()` call happens during initialization. Move the function declaration above the class.
-- [ ] **Fix cross-package source import in `PageLayout`** — `packages/core/src/components/structural/PageLayout.tsx:4` imports `SiteConfig` directly from `../../../../types/src/types/siteConfig` (the other package's `src/` directory). This breaks for downstream consumers who only have `dist/`. Change to `import { SiteConfig } from '@stackwright/types'`.
-- [ ] **Remove auto-registration side effect from `@stackwright/nextjs`** — `packages/nextjs/src/index.ts` calls `registerNextJSComponents()` as a module side effect, violating the documented contract ("Do not rely on module import side effects"). This causes double-registration when users also call it explicitly in `_app.tsx` as instructed. Remove the auto-call; explicit registration is sufficient.
+- [x] **Fix `debugLogStackwright` temporal dead zone crash** — In `packages/core/src/utils/stackwrightComponentRegistry.ts`, the `debugLogStackwright` const arrow function is declared at line 82 but called starting at line 7. This is a `ReferenceError` at module load time if any `register()` call happens during initialization. Move the function declaration above the class.
+- [x] **Fix cross-package source import in `PageLayout`** — `packages/core/src/components/structural/PageLayout.tsx:4` imports `SiteConfig` directly from `../../../../types/src/types/siteConfig` (the other package's `src/` directory). This breaks for downstream consumers who only have `dist/`. Change to `import { SiteConfig } from '@stackwright/types'`.
+- [x] **Remove auto-registration side effect from `@stackwright/nextjs`** — `packages/nextjs/src/index.ts` calls `registerNextJSComponents()` as a module side effect, violating the documented contract ("Do not rely on module import side effects"). This causes double-registration when users also call it explicitly in `_app.tsx` as instructed. Remove the auto-call; explicit registration is sufficient.
 
 ### Sprint 2 — Reliability and silent failure modes
 

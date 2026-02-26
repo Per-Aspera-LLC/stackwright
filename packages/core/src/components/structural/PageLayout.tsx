@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import TopAppBar from "./TopAppBar";
 import { PageContent } from "@stackwright/types";
-import { SiteConfig } from "../../../../types/src/types/siteConfig";
+import { SiteConfig } from "@stackwright/types";
 import BottomAppBar from "./BottomAppBar";
 import { renderContent } from "../../utils/contentRenderer";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
