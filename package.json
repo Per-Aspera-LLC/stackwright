@@ -19,7 +19,8 @@
         "version-packages": "changeset version",
         "release": "pnpm build && changeset publish",
         "test": "pnpm -r test",
-        "test:core": "pnpm --filter @stackwright/core test"
+        "test:core": "pnpm --filter @stackwright/core test",
+        "stackwright": "node packages/cli/dist/cli.js"
     },
     "devDependencies": {
         "@changesets/cli": "^2.29.5"

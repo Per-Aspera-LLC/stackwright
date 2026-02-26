@@ -11,14 +11,14 @@ import type { PageContent } from '@stackwright/types';
 const VERSIONS = {
   emotionReact: '^11.14.0',
   emotionStyled: '^11.14.1',
-  muiIconsMaterial: '^7.3.0',
-  muiMaterial: '^7.3.0',
+  muiIconsMaterial: '^7.3.8',
+  muiMaterial: '^7.3.8',
   stackwright: 'latest',
   jsYaml: '^4.1.0',
   next: '^16.0.0',
   react: '^19.0.0',
   reactDom: '^19.0.0',
-  typesJsYaml: '^4.0.0',
+  typesJsYaml: '^4.0.9',
   typesNode: '^24.0.0',
   typesReact: '^19.0.0',
   typesReactDom: '^19.0.0',
@@ -91,10 +91,22 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const slug = Array.isArray(params?.slug)
+    const rawSlug = Array.isArray(params?.slug)
         ? params.slug.join("/")
         : (params?.slug ?? "");
     const dir = path.join(process.cwd(), "public", "stackwright-content");
+
+    // Validate slug against known content files to prevent path traversal
+    const knownSlugs = fs
+        .readdirSync(dir)
+        .filter(f => f.endsWith(".json") && f !== "_site.json" && f !== "_root.json")
+        .map(f => f.replace(/\\.json$/, ""));
+    const slug = knownSlugs.includes(rawSlug) ? rawSlug : null;
+
+    if (!slug && rawSlug !== "") {
+        return { notFound: true };
+    }
+
     const contentFile = slug ? \`\${slug}.json\` : "_root.json";
     const pageContent = JSON.parse(fs.readFileSync(path.join(dir, contentFile), "utf8"));
     const siteConfig = JSON.parse(fs.readFileSync(path.join(dir, "_site.json"), "utf8"));
@@ -125,6 +137,7 @@ const GITIGNORE = `# See https://help.github.com/articles/ignoring-files/ for mo
 # misc
 .DS_Store
 *.pem
+# Windows/WSL metadata sidecar files
 *:Zone.Identifier
 
 # debug
@@ -143,8 +156,10 @@ yarn-error.log*
 next-env.d.ts
 `;
 
-const ENV_LOCAL_EXAMPLE = `# Stackwright debug mode — set to "true" to enable verbose logging from
-# component registry, content renderer, and image pipeline.
+const ENV_LOCAL_EXAMPLE = `# Copy this file to .env.local to configure local development options.
+
+# Enable verbose debug logging from Stackwright internals (component registry,
+# content renderer, image pipeline). Off by default — only enable when debugging.
 # STACKWRIGHT_DEBUG=true
 `;
 
@@ -152,7 +167,7 @@ const ENV_LOCAL_EXAMPLE = `# Stackwright debug mode — set to "true" to enable 
 // Typed object builders for YAML files
 // ---------------------------------------------------------------------------
 
-function buildSiteConfig(siteTitle: string, themeId: string, year: number): SiteConfig {
+function buildSiteConfig(siteTitle: string, year: number): SiteConfig {
   return {
     title: siteTitle,
     appBar: {
@@ -162,13 +177,52 @@ function buildSiteConfig(siteTitle: string, themeId: string, year: number): Site
     },
     navigation: [
       { label: 'Home', href: '/' },
+      { label: 'Getting Started', href: '/getting-started' },
     ],
     footer: {
       backgroundColor: 'primary',
       textColor: 'secondary',
       copyright: `© ${year} ${siteTitle}. All rights reserved.`,
+      links: [
+        { label: 'GitHub', href: 'https://github.com/Per-Aspera-LLC/stackwright/' },
+      ],
     },
-    themeName: themeId,
+    customTheme: {
+      id: 'custom',
+      name: `${siteTitle} Theme`,
+      colors: {
+        primary: '#1976d2',
+        secondary: '#ffffff',
+        accent: '#ff9800',
+        background: '#fdfdfd',
+        surface: '#f5f5f5',
+        text: '#1a1a1a',
+        textSecondary: '#666666',
+      },
+      typography: {
+        fontFamily: {
+          primary: 'Inter',
+          secondary: 'Inter',
+        },
+        scale: {
+          xs: '0.75rem',
+          sm: '0.875rem',
+          base: '1rem',
+          lg: '1.125rem',
+          xl: '1.25rem',
+          '2xl': '1.5rem',
+          '3xl': '1.875rem',
+        },
+      },
+      spacing: {
+        xs: '0.5rem',
+        sm: '0.75rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem',
+        '2xl': '3rem',
+      },
+    },
   };
 }
 
@@ -186,10 +240,106 @@ function buildRootPageContent(siteTitle: string): PageContent {
             },
             textBlocks: [
               {
-                text: 'Your new Stackwright site is ready. Edit pages/content.yml to get started.',
+                text: 'Your new Stackwright site is ready. Pages are YAML files — edit pages/content.yml to update this page.',
+                textSize: 'h6',
+              },
+              {
+                text: 'Add more pages by creating subdirectories under pages/. Each directory with a content.yml becomes a route.',
                 textSize: 'body1',
               },
             ],
+            buttons: [
+              {
+                label: 'get-started-btn',
+                text: 'Get Started',
+                textSize: 'body1',
+                variant: 'contained',
+                href: '/getting-started',
+                bgColor: 'secondary',
+                textColor: 'primary',
+                size: 'large',
+              },
+            ],
+          },
+        },
+      ],
+    },
+  };
+}
+
+function buildGettingStartedPageContent(): PageContent {
+  return {
+    content: {
+      content_items: [
+        {
+          main: {
+            label: 'gs-hero',
+            heading: {
+              text: 'Getting Started',
+              textSize: 'h1',
+              textColor: 'secondary',
+            },
+            textBlocks: [
+              {
+                text: 'This page lives at pages/getting-started/content.yml. The directory name becomes the URL slug.',
+                textSize: 'body1',
+              },
+            ],
+          },
+        },
+        {
+          main: {
+            label: 'gs-add-page',
+            heading: {
+              text: 'Adding Pages',
+              textSize: 'h2',
+            },
+            textBlocks: [
+              {
+                text: 'Use the CLI to add a new page, or create the directory and content.yml manually:',
+                textSize: 'body1',
+              },
+            ],
+            background: '#f5f5f5',
+          },
+        },
+        {
+          code_block: {
+            label: 'gs-add-page-code',
+            language: 'bash',
+            code: 'stackwright page add my-page --heading "My New Page"',
+            background: '#f5f5f5',
+          },
+        },
+        {
+          main: {
+            label: 'gs-content-types',
+            heading: {
+              text: 'Content Types',
+              textSize: 'h2',
+            },
+            textBlocks: [
+              {
+                text: 'Each entry in content_items uses a key that maps to a component: main, timeline, carousel, icon_grid, tabbed_content, code_block.',
+                textSize: 'body1',
+              },
+            ],
+          },
+        },
+        {
+          main: {
+            label: 'gs-theme',
+            heading: {
+              text: 'Customizing the Theme',
+              textSize: 'h2',
+            },
+            textBlocks: [
+              {
+                text: 'Edit the customTheme block in stackwright.yml to change colors and typography across every page instantly.',
+                textSize: 'body1',
+              },
+            ],
+            background: '#f5f5f5',
           },
         },
       ],
@@ -240,7 +390,9 @@ function buildPackageJson(projectName: string): object {
     },
     engines: {
       node: '>=20.0.0',
+      pnpm: '>=10.0.0',
     },
+    packageManager: 'pnpm@10.0.0',
   };
 }
 
@@ -285,7 +437,7 @@ export interface ScaffoldConfig {
  * Returns a list of written paths relative to targetDir.
  */
 export async function writeScaffold(config: ScaffoldConfig): Promise<string[]> {
-  const { projectName, siteTitle, themeId, targetDir } = config;
+  const { projectName, siteTitle, targetDir } = config;
   const written: string[] = [];
   const year = new Date().getFullYear();
 
@@ -301,11 +453,12 @@ export async function writeScaffold(config: ScaffoldConfig): Promise<string[]> {
   await write('tsconfig.json', JSON.stringify(buildTsConfig(), null, 2) + '\n');
   await write('.gitignore', GITIGNORE);
   await write('.env.local.example', ENV_LOCAL_EXAMPLE);
-  await write('stackwright.yml', yaml.dump(buildSiteConfig(siteTitle, themeId, year), { lineWidth: 120 }));
+  await write('stackwright.yml', yaml.dump(buildSiteConfig(siteTitle, year), { lineWidth: 120 }));
   await write('pages/_app.tsx', APP_TSX);
   await write('pages/index.ts', INDEX_TS);
   await write('pages/[slug].tsx', SLUG_TSX);
   await write('pages/content.yml', yaml.dump(buildRootPageContent(siteTitle), { lineWidth: 120 }));
+  await write('pages/getting-started/content.yml', yaml.dump(buildGettingStartedPageContent(), { lineWidth: 120 }));
 
   return written;
 }
