@@ -2,7 +2,7 @@ import React from 'react';
 import { ImageContent, MediaItem } from '@stackwright/types';
 import { MediaContainer } from './MediaContainer';
 import { Typography } from '@mui/material';
-import { getStackwrightImage } from '../../utils/stackwrightComponentRegistry';
+import { getStackwrightImage, getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
 // Heuristic fallbacks for YAML that omits the explicit type field.
 // Prefer adding type: "icon" or type: "image" to YAML instead of relying on these.
@@ -32,8 +32,7 @@ const isImageSource = (src: string): boolean => {
 
 const renderIcon = (src: string, sizePx: number | string, color?: string) => {
     // Registry lookup only — no require(). See packages/icons/AGENTS.md for why.
-    const iconRegistry = (globalThis as any).__stackwright_icon_registry__;
-    const IconComponent = iconRegistry?.get?.(src);
+    const IconComponent = getIconRegistry()?.get(src);
 
     if (IconComponent) {
         return (

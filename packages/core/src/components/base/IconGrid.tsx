@@ -5,10 +5,10 @@ import Grid from "@mui/material/Grid";
 import { IconGridContent } from "@stackwright/types";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
 import { resolveColor } from "../../utils/colorUtils";
+import { getIconRegistry } from "../../utils/stackwrightComponentRegistry";
 
 function renderIcon(src: string, sizePx: number, color: string) {
-    const iconRegistry = (globalThis as any).__stackwright_icon_registry__;
-    const IconComponent = iconRegistry?.get?.(src);
+    const IconComponent = getIconRegistry()?.get(src);
     if (IconComponent) {
         return <IconComponent sx={{ fontSize: sizePx, color }} />;
     }

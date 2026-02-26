@@ -115,3 +115,21 @@ export const getStackwrightRoute = () => stackwrightRegistry.get('Route');
 export function registerStackwrightComponents(components: Partial<StackwrightComponents>) {
   stackwrightRegistry.register(components);
 }
+
+// ---------------------------------------------------------------------------
+// Typed accessor for the icon registry.
+//
+// @stackwright/icons cannot be a direct dependency of @stackwright/core (it
+// sits higher in the package graph), so the icon registry bridges packages via
+// a well-known global set by StackwrightIconRegistryImpl's constructor.
+// This accessor wraps that global with a typed interface so call sites don't
+// need to cast globalThis themselves.
+// ---------------------------------------------------------------------------
+
+export interface IconRegistryAccessor {
+  get(name: string): import('react').ComponentType<any> | undefined;
+}
+
+export function getIconRegistry(): IconRegistryAccessor | undefined {
+  return (globalThis as any).__stackwright_icon_registry__ as IconRegistryAccessor | undefined;
+}
