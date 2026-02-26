@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ContentItem, PageContent } from '@stackwright/types'
 import { TopAppBar, BottomAppBar } from '../components/structural/';
 import { StackwrightConfig } from 'config/defaults';
@@ -134,18 +133,20 @@ export function renderContent(content: PageContent | ContentItem, config?: Stack
 // Helper function to handle individual content item rendering
 const renderContentItem = (contentItem: ContentItem, key?: string) => {
     debugLog('renderContentItem called', { contentItem, key });
-    
+
     const entries = Object.entries(contentItem);
     debugLog('Content item entries:', entries);
     const firstEntry = entries[0];
-    
+
     if (!firstEntry) {
         debugLog('No content entries found, returning null');
         return null;
     }
-    
+
     const [contentType, contentData] = firstEntry;
-    const itemKey = key || uuidv4();
+    // Use the caller-provided key (index-based) or the content type as a stable fallback.
+    // Never generate a random key here — a new value on every render breaks reconciliation.
+    const itemKey = key || contentType;
     
     debugLog(`Processing content type: ${contentType}`, {
         contentType,
