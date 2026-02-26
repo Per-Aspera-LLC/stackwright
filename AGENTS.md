@@ -85,7 +85,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
   - Material-UI: Provides pre-built UI components and styles
   - Emotion: Allows for dynamic styling of components
 - **Cross-Component Communication**
-  - Themes can be changed dynamically using the `ThemesProvider` component
+  - Themes can be changed dynamically: `ThemeProvider` exposes `setTheme` via context (call `useTheme().setTheme(newTheme)` from any child component)
   - Custom events (e.g., `onChange`) can be registered by child components to interact with parents
 
 ### Troubleshooting
