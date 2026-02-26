@@ -1,49 +1,51 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 permissions:
-  contents: write
-  id-token: write
+    contents: write
+    id-token: write
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
+            - uses: pnpm/action-setup@v3
+              with:
+                  version: 10
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
-                 
-      - name: Exit prerelease mode if active
-        run: |
-            if [ -f ".changeset/pre.json" ]; then
-            pnpm changeset pre exit
-            git config user.name "github-actions"
-            git config user.email "github-actions@github.com"
-            git add .
-            git commit -m "chore: exit prerelease mode [skip ci]" || echo "No changes"
-            git push origin main
-            fi
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  registry-url: "https://registry.npmjs.org"
+                  cache: "pnpm"
 
+            - name: Upgrade npm for OIDC provenance support
+              run: npm install -g npm@latest
 
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+            - name: Exit prerelease mode if active
+              run: |
+                  if [ -f ".changeset/pre.json" ]; then
+                  pnpm changeset pre exit
+                  git config user.name "github-actions"
+                  git config user.email "github-actions@github.com"
+                  git add .
+                  git commit -m "chore: exit prerelease mode [skip ci]" || echo "No changes"
+                  git push origin main
+                  fi
 
-      - name: Create versions and changelogs
-        run: pnpm changeset version
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm build
 
-      - name: Publish to npm
-        run: pnpm changeset publish
+            - name: Create versions and changelogs
+              run: pnpm changeset version
+
+            - name: Publish to npm
+              run: pnpm publish -r --provenance --access public
