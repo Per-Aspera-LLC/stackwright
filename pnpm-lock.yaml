@@ -101,6 +101,9 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.10.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)(tsx@4.20.3)
 
   packages/cli:
     dependencies:
@@ -5570,7 +5573,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.14
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@24.2.1)(@vitest/ui@3.2.4)(jsdom@26.1.0)(tsx@4.20.3)
+      vitest: 3.2.4(@types/node@24.10.13)(@vitest/ui@3.2.4)(jsdom@26.1.0)(tsx@4.20.3)
 
   '@vitest/utils@3.2.4':
     dependencies:

@@ -1,9 +1,9 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Theme } from './types';
 
 interface ThemeContextType {
   theme: Theme;
-  setTheme?: (theme: Theme) => void;
+  setTheme: (theme: Theme) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -13,9 +13,10 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ theme, children }) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ theme: initialTheme, children }) => {
+  const [theme, setTheme] = useState<Theme>(initialTheme);
   return (
-    <ThemeContext.Provider value={{ theme }}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   );

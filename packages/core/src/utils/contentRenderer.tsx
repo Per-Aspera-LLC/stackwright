@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { ContentItem, PageContent } from '@stackwright/types'
 import { TopAppBar, BottomAppBar } from '../components/structural/';
 import { StackwrightConfig } from 'config/defaults';
@@ -9,29 +8,6 @@ const debugLog = (message: string, data?: any) => {
     if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
         console.log(`🐛 ContentRenderer Debug: ${message}`, data ? data : '');
     }
-};
-
-// Detailed component validation
-const validateComponent = (Component: any, contentType: string) => {
-    debugLog(`Validating component for type: ${contentType}`);
-    debugLog(`Component type: ${typeof Component}`);
-    debugLog(`Component constructor name: ${Component?.constructor?.name}`);
-    debugLog(`Component name: ${Component?.name}`);
-    debugLog(`Is function: ${typeof Component === 'function'}`);
-    debugLog(`Is object: ${typeof Component === 'object'}`);
-    debugLog(`Is null: ${Component === null}`);
-    debugLog(`Is undefined: ${Component === undefined}`);
-    
-    if (typeof Component === 'object' && Component !== null) {
-        debugLog(`Object keys: ${Object.keys(Component)}`);
-        debugLog(`Has default export: ${'default' in Component}`);
-        if ('default' in Component) {
-            debugLog(`Default export type: ${typeof Component.default}`);
-            debugLog(`Default export name: ${Component.default?.name}`);
-        }
-    }
-    
-    return Component;
 };
 
 // Type guard to check if content is PageContent
@@ -134,18 +110,20 @@ export function renderContent(content: PageContent | ContentItem, config?: Stack
 // Helper function to handle individual content item rendering
 const renderContentItem = (contentItem: ContentItem, key?: string) => {
     debugLog('renderContentItem called', { contentItem, key });
-    
+
     const entries = Object.entries(contentItem);
     debugLog('Content item entries:', entries);
     const firstEntry = entries[0];
-    
+
     if (!firstEntry) {
         debugLog('No content entries found, returning null');
         return null;
     }
-    
+
     const [contentType, contentData] = firstEntry;
-    const itemKey = key || uuidv4();
+    // Use the caller-provided key (index-based) or the content type as a stable fallback.
+    // Never generate a random key here — a new value on every render breaks reconciliation.
+    const itemKey = key || contentType;
     
     debugLog(`Processing content type: ${contentType}`, {
         contentType,
@@ -154,21 +132,17 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
     });
     
     const Component = getComponentByType(contentType);
-    debugLog(`Retrieved component for ${contentType}:`, {
-        componentType: typeof Component,
-        componentName: Component?.name,
-        isFunction: typeof Component === 'function',
-        isObject: typeof Component === 'object',
-        component: Component
-    });
-    
-    // Validate the component before using it
-    validateComponent(Component, contentType);
-    
+
     if (!Component) {
         debugLog(`No component found for content type: ${contentType}`);
         return null;
     }
+
+    debugLog(`Retrieved component for ${contentType}:`, {
+        componentType: typeof Component,
+        componentName: Component?.name,
+        isFunction: typeof Component === 'function',
+    });
     
     debugLog(`Creating React element for ${contentType}`);
     
