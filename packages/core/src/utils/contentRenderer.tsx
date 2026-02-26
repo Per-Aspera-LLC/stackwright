@@ -10,29 +10,6 @@ const debugLog = (message: string, data?: any) => {
     }
 };
 
-// Detailed component validation
-const validateComponent = (Component: any, contentType: string) => {
-    debugLog(`Validating component for type: ${contentType}`);
-    debugLog(`Component type: ${typeof Component}`);
-    debugLog(`Component constructor name: ${Component?.constructor?.name}`);
-    debugLog(`Component name: ${Component?.name}`);
-    debugLog(`Is function: ${typeof Component === 'function'}`);
-    debugLog(`Is object: ${typeof Component === 'object'}`);
-    debugLog(`Is null: ${Component === null}`);
-    debugLog(`Is undefined: ${Component === undefined}`);
-    
-    if (typeof Component === 'object' && Component !== null) {
-        debugLog(`Object keys: ${Object.keys(Component)}`);
-        debugLog(`Has default export: ${'default' in Component}`);
-        if ('default' in Component) {
-            debugLog(`Default export type: ${typeof Component.default}`);
-            debugLog(`Default export name: ${Component.default?.name}`);
-        }
-    }
-    
-    return Component;
-};
-
 // Type guard to check if content is PageContent
 function isPageContent(content: PageContent | ContentItem): content is PageContent {
     return content != null &&
@@ -155,21 +132,17 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
     });
     
     const Component = getComponentByType(contentType);
-    debugLog(`Retrieved component for ${contentType}:`, {
-        componentType: typeof Component,
-        componentName: Component?.name,
-        isFunction: typeof Component === 'function',
-        isObject: typeof Component === 'object',
-        component: Component
-    });
-    
-    // Validate the component before using it
-    validateComponent(Component, contentType);
-    
+
     if (!Component) {
         debugLog(`No component found for content type: ${contentType}`);
         return null;
     }
+
+    debugLog(`Retrieved component for ${contentType}:`, {
+        componentType: typeof Component,
+        componentName: Component?.name,
+        isFunction: typeof Component === 'function',
+    });
     
     debugLog(`Creating React element for ${contentType}`);
     
