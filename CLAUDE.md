@@ -21,6 +21,10 @@ pnpm build:themes
 pnpm build:nextjs
 pnpm build:cli
 pnpm build:build-scripts
+pnpm build:mcp
+
+# Run the MCP server (stdio — for use with Claude Code or Claude for Desktop)
+pnpm stackwright-mcp
 
 # Run development mode (watch all packages)
 pnpm dev

@@ -13,6 +13,7 @@
         "build:themes": "pnpm --filter @stackwright/themes build",
         "build:nextjs": "pnpm --filter @stackwright/nextjs build",
         "build:build-scripts": "pnpm --filter @stackwright/build-scripts build",
+        "build:mcp": "pnpm --filter @stackwright/mcp build",
         "dev:hellostackwright": "pnpm --filter stackwright-example-app dev",
         "build:hellostackwright": "pnpm --filter stackwright-example-app build",
         "changeset": "changeset",
@@ -20,7 +21,8 @@
         "release": "pnpm build && changeset publish",
         "test": "pnpm -r test",
         "test:core": "pnpm --filter @stackwright/core test",
-        "stackwright": "node packages/cli/dist/cli.js"
+        "stackwright": "node packages/cli/dist/cli.js",
+        "stackwright-mcp": "node packages/mcp/dist/server.js"
     },
     "devDependencies": {
         "@changesets/cli": "^2.29.5"
