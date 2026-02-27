@@ -60,7 +60,7 @@
         "@types/react-dom": "^19.1",
         "@stackwright/types": "workspace:*",
         "@vitest/ui": "^3.2.4",
-        "jsdom": "^26.1.0",
+        "jsdom": "^28.1.0",
         "tsup": "^8.5",
         "typescript": "^5.8",
         "vitest": "^3.2.4"
