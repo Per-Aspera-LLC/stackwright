@@ -22,9 +22,6 @@ export type { StackwrightConfig } from './config/defaults'
 // Export DynamicPage for CLI-generated sites
 export { default as DynamicPage } from './components/DynamicPage'
 
-// Add the new types to exports
-export * from '../../types/src/types/siteConfig'
-
 // Make sure PageLayout is exported
 export { default as PageLayout } from './components/structural/PageLayout'
 

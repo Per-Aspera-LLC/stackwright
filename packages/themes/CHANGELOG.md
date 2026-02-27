@@ -1,5 +1,11 @@
 # @stackwright/themes
 
+## 0.3.4-alpha.0
+
+### Patch Changes
+
+- Patch bump for core package import fixes.
+
 ## 0.3.3
 
 ### Patch Changes

@@ -1,12 +1,20 @@
 {
   "name": "@stackwright/themes",
-  "version": "0.3.3",
+  "version": "0.3.4-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Per-Aspera-LLC/stackwright"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
