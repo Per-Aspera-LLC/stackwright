@@ -95,6 +95,9 @@ importers:
 
   packages/build-scripts:
     dependencies:
+      '@stackwright/types':
+        specifier: workspace:*
+        version: link:../types
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.1

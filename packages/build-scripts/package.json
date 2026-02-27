@@ -20,6 +20,7 @@
         "prepublishOnly": "pnpm run build"
     },
     "dependencies": {
+        "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0"
     },
     "devDependencies": {
