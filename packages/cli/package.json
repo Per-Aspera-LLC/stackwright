@@ -30,7 +30,7 @@
   "devDependencies": {
     "@types/fs-extra": "^11.0",
     "@types/js-yaml": "^4.0",
-    "@types/node": "^24.1",
+    "@types/node": "^25.3",
     "typescript": "^5.0",
     "tsup": "^8.5",
     "vitest": "^3.2.4"
