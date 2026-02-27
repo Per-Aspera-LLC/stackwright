@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/icons",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/Per-Aspera-LLC/stackwright"
@@ -18,16 +18,20 @@
     "build": "tsup",
     "dev": "tsup --watch"
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@mui/icons-material": "^7.3.8",
     "@mui/material": "^7.3.8",
-    "react": "^19"
-  },
-  "devDependencies": {
     "@types/react": "^19",
     "@testing-library/jest-dom": "^6.9",
+    "react": "^19",
     "tsup": "^8",
     "typescript": "^5",
     "vitest": "^4"
+  },
+  "peerDependencies": {
+    "@mui/icons-material": "^7.3.8",
+    "@mui/material": "^7.3.8",
+    "react": "^19"
   }
 }

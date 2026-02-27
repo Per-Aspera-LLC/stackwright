@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/themes",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/Per-Aspera-LLC/stackwright"
@@ -14,14 +14,17 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "react": "^19",
     "js-yaml": "^4"
   },
   "devDependencies": {
     "@types/react": "^19",
     "@types/js-yaml": "^4",
+    "react": "^19",
     "typescript": "^5",
     "tsup": "^8",
     "vitest": "^4"
+  },
+  "peerDependencies": {
+    "react": "^19"
   }
 }
