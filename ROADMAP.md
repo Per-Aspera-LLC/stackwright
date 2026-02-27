@@ -61,9 +61,17 @@ Driven by open Dependabot and CodeQL alerts in the GitHub repo. These do not req
 
 ---
 
-## Medium-term: Framework
+## Medium-term: Grammar Hardening (architectural priority)
 
-- [ ] **Migrate `@stackwright/types` to Zod** — Replace `typescript-json-schema` + hand-written TypeScript interfaces with Zod schemas as the single source of truth. Infer TypeScript types via `z.infer<>`. Generate JSON schemas for IDE YAML validation via `zod-to-json-schema` (replaces the `generate-schemas` script). Benefits: runtime validation without AJV, more ergonomic type authoring, CLI and MCP tools can introspect schemas directly via `.shape` rather than parsing JSON Schema `definitions`. Note: JSON schema generation must be retained for IDE YAML validation (`.vscode/settings.json` references).
+These items are grouped because they share a common purpose: making the Stackwright grammar — the type system that defines what YAML can express — more rigorous, introspectable, and extensible. They are sequenced because each enables the next.
+
+- [x] **Migrate `@stackwright/types` to Zod** — Replace `typescript-json-schema` + hand-written TypeScript interfaces with Zod schemas as the single source of truth. Infer TypeScript types via `z.infer<>`. Generate JSON schemas for IDE YAML validation via `zod-to-json-schema` (replaces the `generate-schemas` script). This is not a tooling upgrade — it is the step that makes the grammar introspectable at runtime. Zod schemas expose their shape via `.shape`; this is what enables the MCP server to describe valid fields to an agent without parsing JSON Schema `definitions`, and what enables runtime validation without a separate AJV pass. Note: JSON schema generation must be retained for IDE YAML validation (`.vscode/settings.json` references).
+
+- [ ] **Runtime YAML validation against the grammar** — Once Zod is in place, add schema validation in the prebuild pipeline and (in development) at render time. Invalid content should fail loudly with a structured error message (which field, which type, which value was expected) rather than reaching the React render tree. This closes the gap between "the schema exists for IDE hints" and "the schema is enforced before execution" — the difference between documentation and a compiler.
+
+- [ ] **First-class content type extensibility** — Expose a `registerContentType(key, zodSchema, component)` API so consumers can add content types without modifying framework source. This mirrors the existing `registerStackwrightComponents()` pattern but at the grammar level. A registered content type contributes its Zod schema to the full grammar, making it agent-writable, CLI-validatable, and MCP-describable automatically. This is the primary extensibility gap identified in the architecture: currently, adding a custom content type requires forking the framework. It should require only a registration call in `_app.tsx`.
+
+## Medium-term: Framework
 
 - [ ] **UI adapter abstraction** — Extract MUI-specific code from `@stackwright/core` into a `@stackwright/ui-mui` package, mirroring the existing `@stackwright/nextjs` adapter pattern. This unblocks `@stackwright/ui-shadcn` and other UI layer swaps without touching core.
 - [x] **`tabbed_content` — verify and document** — Live demo added to the getting-started page with three tabs: icon_grid, timeline, and code_block.

@@ -1,35 +1,45 @@
-import { ButtonContent } from './base';
-import { MediaItem } from './media';
+import { z } from 'zod';
+import { buttonContentSchema } from './base';
+import { mediaItemSchema } from './media';
 
-export interface MenuContent extends ButtonContent {
-    menu_items?: MenuContent[]
-}
+export const menuColorSetSchema = z.object({
+    background: z.string(),
+    text: z.string(),
+    hover: z.string(),
+    border: z.string().optional(),
+});
 
-export interface MenuTheme {
-    colors: {
-        default: MenuColorSet
-        contained: MenuColorSet
-        outlined: MenuColorSet
-    }
-}
+export const menuThemeSchema = z.object({
+    colors: z.object({
+        default: menuColorSetSchema,
+        contained: menuColorSetSchema,
+        outlined: menuColorSetSchema,
+    }),
+});
 
-interface MenuColorSet {
-    background: string
-    text: string
-    hover: string
-    border?: string
-}
+export const navigationItemSchema = z.object({
+    label: z.string(),
+    href: z.string(),
+});
 
-export interface NavigationItem {
-    label: string;
-    href: string;
-}
+export const menuContentSchema: z.ZodType<MenuContent> = z.lazy(() =>
+    buttonContentSchema.extend({
+        menu_items: z.array(menuContentSchema).optional(),
+    })
+);
 
-export interface AppBarContent {
-  title: string;
-  logo?: MediaItem;
-  menuItems?: NavigationItem[];
-  textcolor?: string;
-  backgroundcolor?: string;
-  height?: string | number;
-}
+export const appBarContentSchema = z.object({
+    title: z.string(),
+    logo: mediaItemSchema.optional(),
+    menuItems: z.array(navigationItemSchema).optional(),
+    textcolor: z.string().optional(),
+    backgroundcolor: z.string().optional(),
+    height: z.union([z.string(), z.number()]).optional(),
+});
+
+export type MenuContent = z.infer<typeof buttonContentSchema> & {
+    menu_items?: MenuContent[];
+};
+export type MenuTheme = z.infer<typeof menuThemeSchema>;
+export type NavigationItem = z.infer<typeof navigationItemSchema>;
+export type AppBarContent = z.infer<typeof appBarContentSchema>;

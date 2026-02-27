@@ -41,7 +41,7 @@ pnpm test
 # Run core package tests only
 pnpm test:core
 
-# Generate JSON schemas from TypeScript types
+# Generate JSON schemas from Zod schemas
 cd packages/types && pnpm generate-schemas
 
 # Release management
@@ -52,7 +52,7 @@ pnpm release            # Build and publish to NPM
 
 ## Architecture
 
-Stackwright is a **pnpm monorepo** implementing a YAML-driven React framework. Non-developers define web applications in declarative YAML files; the framework transforms them into production-ready Next.js/React applications.
+Stackwright is a **pnpm monorepo** implementing a typed DSL for web applications. YAML is the syntax. `@stackwright/types` is the grammar. The framework compiles content files into production-ready Next.js/React applications. See `PHILOSOPHY.md` for the full architectural rationale.
 
 ### Package Dependency Graph
 
@@ -61,18 +61,18 @@ User's Next.js App
        ↓
 @stackwright/nextjs     ← Next.js adapter (Image, Link, Router wrappers; static gen helpers)
        ↓
-@stackwright/core       ← Runtime engine (YAML→React, component registry, layout system)
+@stackwright/core       ← Compiler/runtime (YAML→React, component registry, layout system)
     ↓  ↓  ↓
 @stackwright/types   @stackwright/themes   @stackwright/icons
-(TS types +          (YAML-configurable    (MUI icon
- JSON schemas)        MUI theming)          registry)
+(grammar: TS types +  (YAML-configurable    (MUI icon
+ JSON schemas)         MUI theming)          registry)
 
-@stackwright/cli        ← Standalone CLI (scaffolding, AI content generation via OpenAI)
+@stackwright/cli        ← Standalone CLI (scaffolding, validation, content generation)
 ```
 
 ### Key Architectural Concepts
 
-**Content Rendering Pipeline**: YAML files are loaded → parsed with `js-yaml` → validated against TypeScript types/JSON schemas → transformed to React components via `contentRenderer.tsx` → rendered with theme and context.
+**Content Rendering Pipeline**: YAML files are loaded → parsed with `js-yaml` → validated against the grammar (TypeScript types/JSON schemas) → compiled to React components via `contentRenderer.tsx` → rendered with theme and context.
 
 **Component Registry (two registries)**:
 - `componentRegistry.ts` — built-in UI components, keyed by lowercase-hyphenated name
@@ -82,7 +82,7 @@ User's Next.js App
 
 **Static Generation**: `@stackwright/nextjs` provides `getStaticPropsForSlug` and related helpers for Next.js `getStaticPaths`/`getStaticProps`. The `SlugPage` component in `@stackwright/core` drives slug-based routing.
 
-**JSON Schema Generation**: `@stackwright/types` runs `typescript-json-schema` to produce `theme-schema.json`, `content-schema.json`, and `siteconfig-schema.json` — these enable YAML validation in IDEs. Must be regenerated after type changes (`pnpm generate-schemas`).
+**Grammar / JSON Schema Generation**: `@stackwright/types` is the single source of truth for the Stackwright grammar. Zod schemas are the source of truth; TypeScript types are inferred via `z.infer<>`. `zod-to-json-schema` generates `theme-schema.json`, `content-schema.json`, and `siteconfig-schema.json` — the machine-readable grammar specification used for IDE YAML validation. Must be regenerated after type changes (`pnpm generate-schemas`). Zod schemas are introspectable at runtime via `schema.def` (Zod v4) enabling MCP tools and future runtime validation.
 
 ### Key Files
 
