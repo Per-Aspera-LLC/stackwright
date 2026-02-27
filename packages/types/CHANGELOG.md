@@ -1,5 +1,18 @@
 # @stackwright/types
 
+## 0.3.0-alpha.1
+
+### Minor Changes
+
+- 1c35939: Migrate grammar to Zod as single source of truth
+
+  Replace hand-written TypeScript interfaces and `typescript-json-schema` with Zod schemas across `@stackwright/types` and `@stackwright/themes`. TypeScript types are now inferred via `z.infer<>`. JSON schemas for IDE YAML validation are generated via `zod-to-json-schema` instead of `typescript-json-schema`. The CLI replaces AJV with Zod's `safeParse` for page and site validation. All Zod schemas are exported from their respective packages, enabling runtime grammar introspection for future MCP tooling and runtime validation.
+
+### Patch Changes
+
+- Updated dependencies [1c35939]
+  - @stackwright/themes@0.4.0-alpha.1
+
 ## 0.2.3-alpha.0
 
 ### Patch Changes
