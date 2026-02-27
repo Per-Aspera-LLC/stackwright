@@ -29,7 +29,6 @@
     },
     "dependencies": {
         "@stackwright/themes": "workspace:*",
-        "@stackwright/types": "link:",
         "js-yaml": "^4.1.0"
     },
     "devDependencies": {
