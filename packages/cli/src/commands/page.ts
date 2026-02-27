@@ -4,9 +4,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
-import Ajv from 'ajv';
 import { detectProject } from '../utils/project-detector';
-import { loadContentSchema } from '../utils/schema-loader';
+import { pageContentSchema } from '../utils/schema-loader';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
@@ -78,10 +77,6 @@ export interface PageValidateResult {
 }
 
 export function validatePages(pagesDir: string, slug?: string): PageValidateResult {
-  const schema = loadContentSchema();
-  const ajv = new Ajv({ allErrors: true, strict: false });
-  const validate = ajv.compile(schema);
-
   const { pages } = listPages(pagesDir);
   const targets = slug
     ? pages.filter((p) => p.slug === `/${slug}` || p.slug === slug)
@@ -98,13 +93,11 @@ export function validatePages(pagesDir: string, slug?: string): PageValidateResu
       continue;
     }
 
-    const valid = validate(raw);
-    if (!valid && validate.errors) {
-      for (const e of validate.errors) {
-        errors.push({
-          slug: page.slug,
-          message: `${e.instancePath || '(root)'} ${e.message ?? 'invalid'}`,
-        });
+    const result = pageContentSchema.safeParse(raw);
+    if (!result.success) {
+      for (const issue of result.error.issues) {
+        const fieldPath = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+        errors.push({ slug: page.slug, message: `${fieldPath}: ${issue.message}` });
       }
     }
   }

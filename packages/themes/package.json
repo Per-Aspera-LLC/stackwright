@@ -22,7 +22,8 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "js-yaml": "^4"
+    "js-yaml": "^4",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/react": "^19",

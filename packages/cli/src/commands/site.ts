@@ -2,9 +2,8 @@ import { Command } from 'commander';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
-import Ajv from 'ajv';
 import { detectProject } from '../utils/project-detector';
-import { loadSiteConfigSchema } from '../utils/schema-loader';
+import { siteConfigSchema } from '../utils/schema-loader';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
@@ -22,10 +21,6 @@ export interface SiteValidateResult {
 }
 
 export function validateSite(siteConfigPath: string): SiteValidateResult {
-  const schema = loadSiteConfigSchema();
-  const ajv = new Ajv({ allErrors: true, strict: false });
-  const validate = ajv.compile(schema);
-
   let raw: unknown;
   try {
     raw = yaml.load(fs.readFileSync(siteConfigPath, 'utf8'));
@@ -36,12 +31,12 @@ export function validateSite(siteConfigPath: string): SiteValidateResult {
     };
   }
 
-  const valid = validate(raw);
-  if (valid) return { valid: true, errors: [] };
+  const result = siteConfigSchema.safeParse(raw);
+  if (result.success) return { valid: true, errors: [] };
 
-  const errors: SiteValidationError[] = (validate.errors ?? []).map((e) => ({
-    field: e.instancePath || '(root)',
-    message: e.message ?? 'invalid',
+  const errors: SiteValidationError[] = result.error.issues.map((issue) => ({
+    field: issue.path.length > 0 ? issue.path.join('.') : '(root)',
+    message: issue.message,
   }));
 
   return { valid: false, errors };

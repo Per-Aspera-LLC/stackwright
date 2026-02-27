@@ -1,31 +1,37 @@
-import { BaseContent } from './base';
-import { MediaStyleVariant, TypographyVariant } from './enums';
+import { z } from 'zod';
+import { mediaStyleVariantSchema, typographyVariantSchema } from './enums';
+import { baseContentSchema } from './base';
 
-// Shared fields for all media types (no `type` discriminator here).
-interface MediaBase extends BaseContent {
-    // Use 'src' instead of 'source' to match HTML/Next.js conventions
-    src: string;
-    alt?: string;
-    height?: number | string;
-    width?: number | string;
-    style?: MediaStyleVariant;
-}
+const mediaBaseSchema = baseContentSchema.extend({
+    src: z.string(),
+    alt: z.string().optional(),
+    height: z.union([z.number(), z.string()]).optional(),
+    width: z.union([z.number(), z.string()]).optional(),
+    style: mediaStyleVariantSchema.optional(),
+});
 
-// Bare media — path/URL only, let the renderer heuristically decide icon vs image.
-export interface MediaContent extends MediaBase {
-    type: "media";
-}
+export const mediaContentSchema = mediaBaseSchema.extend({
+    type: z.literal('media'),
+});
 
-export interface IconContent extends MediaBase {
-    type: "icon";
-    size?: number | TypographyVariant;
-    color?: string;
-}
+export const iconContentSchema = mediaBaseSchema.extend({
+    type: z.literal('icon'),
+    size: z.union([z.number(), typographyVariantSchema]).optional(),
+    color: z.string().optional(),
+});
 
-export interface ImageContent extends MediaBase {
-    type: "image";
-    aspect_ratio?: number;
-}
+export const imageContentSchema = mediaBaseSchema.extend({
+    type: z.literal('image'),
+    aspect_ratio: z.number().optional(),
+});
 
-// Properly discriminated union — `type` is required on all three members.
-export type MediaItem = MediaContent | IconContent | ImageContent;
+export const mediaItemSchema = z.discriminatedUnion('type', [
+    mediaContentSchema,
+    iconContentSchema,
+    imageContentSchema,
+]);
+
+export type MediaContent = z.infer<typeof mediaContentSchema>;
+export type IconContent = z.infer<typeof iconContentSchema>;
+export type ImageContent = z.infer<typeof imageContentSchema>;
+export type MediaItem = z.infer<typeof mediaItemSchema>;
