@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/themes",
-  "version": "0.3.3",
+  "version": "0.3.4-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Per-Aspera-LLC/stackwright"

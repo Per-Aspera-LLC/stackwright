@@ -11,5 +11,7 @@
     "@stackwright/themes": "0.3.3",
     "@stackwright/types": "0.2.2"
   },
-  "changesets": []
+  "changesets": [
+    "every-ends-sleep"
+  ]
 }

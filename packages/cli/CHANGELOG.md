@@ -1,5 +1,14 @@
 # @stackwright/cli
 
+## 0.4.3-alpha.0
+
+### Patch Changes
+
+- Patch bump for core package import fixes.
+- Updated dependencies
+  - @stackwright/themes@0.3.4-alpha.0
+  - @stackwright/types@0.2.3-alpha.0
+
 ## 0.4.2
 
 ### Patch Changes

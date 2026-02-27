@@ -1,5 +1,14 @@
 # @stackwright/nextjs
 
+## 0.2.6-alpha.0
+
+### Patch Changes
+
+- Patch bump for core package import fixes.
+- Updated dependencies
+  - @stackwright/types@0.2.3-alpha.0
+  - @stackwright/core@0.4.4-alpha.0
+
 ## 0.2.5
 
 ### Patch Changes
