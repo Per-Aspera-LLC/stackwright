@@ -63,7 +63,7 @@
         "jsdom": "^26.1.0",
         "tsup": "^8.5",
         "typescript": "^5.8",
-        "vitest": "^3.2.4"
+        "vitest": "^4.0.18"
     },
     "peerDependencies": {
         "react": "^19",
