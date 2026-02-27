@@ -17,7 +17,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@inquirer/prompts": "^7.0.0",
+    "@inquirer/prompts": "^8.3.0",
     "@stackwright/build-scripts": "workspace:*",
     "@stackwright/themes": "workspace:*",
     "@stackwright/types": "workspace:*",
