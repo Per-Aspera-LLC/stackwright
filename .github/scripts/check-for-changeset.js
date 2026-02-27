@@ -8,7 +8,7 @@ function getChangedFiles() {
     // Ensure the base branch exists locally
     execSync(`git fetch origin ${base}`, { stdio: "inherit" });
 
-    const diff = execSync(`git diff --name-only ${base}...HEAD`, {
+    const diff = execSync(`git diff --name-only origin/${base}...HEAD`, {
       encoding: "utf-8",
     });
     return diff.split("\n").filter(Boolean);
