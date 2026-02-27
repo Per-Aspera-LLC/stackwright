@@ -1,17 +1,15 @@
 # Hello Stackwright Example - AI Guide for Agents
 
-Welcome to the Hello Stackwright example project! This guide provides essential knowledge for AI agents to understand and modify this example application effectively.
+This is the reference implementation for Stackwright. It demonstrates the full pipeline: YAML content files → prebuild compilation → Next.js static generation → rendered application. It also serves as the live documentation site for Stackwright itself.
 
-## Project Overview
-
-This example demonstrates Stackwright's YAML-driven React application framework. It serves as both a working example and potential documentation site for Stackwright itself.
+For Stackwright's architectural rationale, see `PHILOSOPHY.md` at the monorepo root. For the framework-wide content type grammar reference, see `AGENTS.md` at the monorepo root.
 
 ## Key Concepts
 
 ### Framework Architecture
-- **YAML-Driven Content**: All page content defined in YAML files
-- **Component System**: Stackwright transforms YAML into React components
-- **Next.js Integration**: Server-side rendering and static generation
+- **Typed DSL**: YAML content files are programs in the Stackwright grammar. `@stackwright/types` defines what is valid.
+- **Prebuild Compilation**: YAML is compiled to JSON and images are processed before `next dev`/`next build` runs
+- **Static Generation**: Pages are statically generated at build time from the compiled JSON
 - **Theme System**: Material-UI theming with YAML configuration
 
 ### Project Structure
@@ -38,8 +36,8 @@ examples/hellostackwrightnext/
 
 ### Development Commands
 ```bash
-# From project root
-pnpm dev:example
+# From monorepo root
+pnpm dev:hellostackwright
 
 # From this directory
 pnpm dev
@@ -204,19 +202,6 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 - Optimize images for web
 - Use lazy loading for non-critical content
 - Minimize custom component complexity
-
-## Future Enhancements
-
-### Planned Features
-- **Dynamic Content**: CMS integration for content management
-- **Advanced Theming**: Light/dark mode support
-- **Internationalization**: Multi-language content support
-- **Accessibility**: Enhanced accessibility features
-
-### Documentation
-- **API Reference**: Detailed component documentation
-- **Examples**: Additional example pages and components
-- **Tutorials**: Step-by-step guides for common tasks
 
 ## References
 

@@ -20,6 +20,16 @@ Stackwright's position: both traps are avoidable if you make the right architect
 
 ## The Core Thesis
 
+**Stackwright is a domain-specific language with a typed grammar. YAML is the syntax. The schema is the grammar. The Next.js application is the runtime.**
+
+This is not incidental to the design — it is the design. Understanding it is the key to understanding every other architectural decision in this project.
+
+In formal terms: the YAML content files are *programs* written in the Stackwright DSL. The type system in `@stackwright/types` defines the grammar of that language — what constructs are valid, what fields are required, what values are permitted. The `contentRenderer` is the interpreter that transforms those programs into rendered UI. The JSON schemas generated from the type system are the machine-readable grammar specification — they enable validation at authoring time, before interpretation.
+
+YAML was chosen deliberately as the syntax layer: it is the most human-readable, schema-capable markup format available without inventing a custom parser. The choice of YAML is an implementation detail of the syntax layer. The grammar — the type system — is the real artifact.
+
+**Why this framing matters**: Most "YAML-driven" tools treat YAML as configuration. Stackwright treats YAML as source code. The difference is that source code has a grammar, and grammars can be validated, tooled, and reasoned about at a level that configuration cannot. This is what makes AI-driven authoring tractable, what makes validation possible before render time, and what makes the escape hatch real — because a program written in a well-defined language can always be translated.
+
 **Stackwright is not a no-code platform. It is a structured interface over a standard Next.js application.**
 
 The distinction matters:
@@ -27,7 +37,7 @@ The distinction matters:
 - A no-code platform owns your content and your runtime. You are a tenant.
 - Stackwright produces a Next.js app that you own, can fork, can hand to any React developer, and can extend with arbitrary code. Stackwright is a tool you use to build it, not a platform you live inside.
 
-The YAML files are not a proprietary format. They are configuration for a standard application. The moment a user outgrows what Stackwright provides, a developer can open the repo and write React components alongside the YAML-driven ones — in the same codebase, with no migration, no "export," no rewrite. The transition from "non-developer-maintained site" to "developer-extended web app" is a git commit, not a project.
+The YAML files are not a proprietary format. They are programs in a typed language that compiles to a standard application. The moment a user outgrows what Stackwright provides, a developer can open the repo and write React components alongside the YAML-driven ones — in the same codebase, with no migration, no "export," no rewrite. The transition from "non-developer-maintained site" to "developer-extended web app" is a git commit, not a project.
 
 ---
 
@@ -45,15 +55,19 @@ When evaluating a new architectural decision, ask: does this make the project mo
 
 ## The Constraint Is the Moat
 
-The YAML schema is narrow by design. This is the most important thing to understand about Stackwright's approach to content types.
+The grammar is narrow by design. This is the most important thing to understand about Stackwright's approach to content types.
 
-**Why narrow schemas matter for AI authoring**: When a language model generates content for a Stackwright site, it is generating YAML against a known schema. If the schema is tight and well-specified, generation is reliable and errors are catchable at validation time. If the schema is loose or highly flexible, generation becomes unpredictable and errors surface at render time as broken layouts.
+**Why a narrow grammar matters for AI authoring**: The fundamental problem with AI-generated applications is not that AI can't write code — it's that unconstrained code generation produces an output space too large to verify. Every generated application becomes a unique artifact. There is no structural basis for "is this correct?" beyond reading all of it.
 
-This is the key competitive insight: unconstrained code generation (asking an LLM to write arbitrary React/JSX) is fragile. Schema-constrained YAML generation is tractable. The narrow schema is what makes AI-driven content authoring work reliably — it is not a limitation of the framework, it is the mechanism by which the framework makes AI useful.
+Stackwright's answer is to reduce the output space to a verified vocabulary. An AI agent authoring a Stackwright site generates YAML against a known typed grammar. The verifiable surface is the YAML, not the React. Correctness becomes: does this YAML conform to the schema, and does it express the intent? Both are tractable problems — for humans reviewing AI output, for AI generating content, and for tooling validating either.
 
-**Implication for new content types**: Add content types deliberately. A new content type should represent a genuinely distinct layout pattern that cannot be reasonably achieved by combining existing types. Do not add escape hatches for one-off customizations — those belong in developer-written React components outside the YAML layer. Resist pressure to make the schema "more flexible" in ways that sacrifice predictability.
+This is the key architectural insight: **constrained generation over a typed grammar is qualitatively more reliable than unconstrained code generation.** If the grammar is tight and well-specified, generation is reliable and errors are catchable at validation time. If the grammar is loose or highly flexible, generation becomes unpredictable and errors surface at render time as broken layouts.
 
-**Implication for schema fields**: Required fields should be truly required. Optional fields should have sensible defaults. Avoid `any`-typed or unvalidated fields. Every field an agent can write should be validatable before render time.
+The narrow grammar is not a limitation of the framework. It is the mechanism by which the framework makes AI authoring useful. A wider grammar means a larger output space means a harder verification problem. Resist the impulse to "add flexibility" — every degree of freedom added to the grammar is a degree of freedom that must be verified.
+
+**Implication for new content types**: Add content types deliberately. A new content type should represent a genuinely distinct layout pattern that cannot be reasonably achieved by combining existing types. Do not add escape hatches for one-off customizations — those belong in developer-written React components outside the YAML layer.
+
+**Implication for schema fields**: Required fields should be truly required. Optional fields should have sensible defaults. Avoid `any`-typed or unvalidated fields. Every field an agent can write should be validatable before render time. The schema fields are the terminals of the grammar — they define the atomic units of expression. Treat them with the same rigor as an API contract.
 
 ---
 
@@ -148,12 +162,14 @@ For contributors and agents making implementation decisions:
 
 1. **Output is always standard Next.js.** No Stackwright-specific runtime, no proprietary deployment target. If a feature requires a Stackwright-specific server, reconsider the feature.
 
-2. **The schema is the contract.** Types in `@stackwright/types` define what agents and users can express. Changes to the schema are high-stakes decisions. Additions should be deliberate; removals are breaking changes.
+2. **The schema is the grammar. The grammar is the contract.** Types in `@stackwright/types` are not documentation — they are the formal specification of the language. Changes to the schema are breaking changes to the language. Additions should be deliberate; removals require a deprecation path. The JSON schemas generated from these types are the machine-readable grammar specification; they must be kept in sync. Think of `@stackwright/types` the way you would think of a language specification — it is the single source of truth for what is expressible.
 
-3. **Fail loudly at build time, gracefully at runtime.** The prebuild step and CLI validation tools should catch content errors before they reach the browser. At runtime, errors should degrade gracefully (error boundaries, fallback UI) rather than crash the page — but the goal is to never reach runtime with invalid content.
+3. **Validate at grammar time, not at render time.** The prebuild step and CLI validation tools should catch content errors before they reach the browser — analogous to a compiler catching syntax errors before execution. At runtime, errors should degrade gracefully (error boundaries, fallback UI) rather than crash the page — but the goal is to never reach runtime with invalid content. Runtime validation failures are compiler bugs, not user errors.
 
 4. **The adapter pattern is the extension mechanism.** `@stackwright/nextjs` demonstrates the right pattern: framework-specific implementations are registered explicitly, not assumed. New adapters (App Router, other frameworks) should follow the same pattern. Do not hardcode framework assumptions into `@stackwright/core`.
 
-5. **Agent-facing docs are part of the build.** The content type reference tables in AGENTS.md must be kept in sync with the TypeScript types. This is as important as keeping the JSON schemas in sync. Stale agent docs produce exactly the same class of bugs as stale type definitions.
+5. **Agent-facing docs are part of the grammar specification.** The content type reference tables in AGENTS.md must be kept in sync with the TypeScript types. This is as important as keeping the JSON schemas in sync. Stale agent docs produce exactly the same class of bugs as stale type definitions — an agent writing against a stale grammar will produce syntactically invalid programs that fail at validation or render time.
 
 6. **Constrain first, extend later — in the free tier.** When in doubt about whether to add a new content type or field to `@stackwright/core`, wait. The cost of adding something is low; the cost of maintaining it, keeping it in the schema reference, making it agent-writable, and eventually removing it is high. The right answer to "I need something the core schema doesn't support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.
+
+7. **The grammar must be introspectable.** Tooling — the MCP server, the CLI, the WYSIWYG editor — must be able to reason about what is valid without parsing source code. This is why schema generation is a first-class build step and why the Zod migration is architecturally significant: Zod schemas are inspectable at runtime via `.shape`, making it possible to enumerate valid fields, describe required vs. optional, and validate input without a separate JSON Schema pass. A grammar that only a human can read is not a grammar — it is documentation.

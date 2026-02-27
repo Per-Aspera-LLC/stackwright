@@ -1,6 +1,8 @@
 ## Stackwright Framework - AI Guide for Agents
 
-Welcome to Stackwright! This is a YAML-driven React application framework that enables rapid development of professional websites and applications through a "content as code" approach. In this guide, you'll find essential knowledge required to be productive in the Stackwright project.
+Welcome to Stackwright. Stackwright is a typed DSL for web applications: YAML is the syntax, `@stackwright/types` defines the grammar, and the framework compiles content files into production-ready Next.js applications. In this guide, you'll find essential knowledge required to be productive in the Stackwright project.
+
+The **Content Type Reference** section below is the load-bearing part of this document — it defines the valid grammar for YAML content files. Keep it in sync with `packages/types/src/types/` at all times. Stale tables here produce the same class of errors as stale API documentation.
 
 ### Key Concepts
 - **Framework Architecture**: To understand the big picture, read:
@@ -79,14 +81,13 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
 
 ### Integration Points and Cross-Component Communication
-- **Service Boundaries**: No obvious service boundaries, all code resides within the project's monorepo
-- **Data Flows**: Data primarily flows from configuration files to React components via the core framework
+- **Data Flows**: Data flows from YAML content files → prebuild (YAML→JSON compilation) → `getStaticProps` → React component tree
 - **External Dependencies**
   - Material-UI: Provides pre-built UI components and styles
-  - Emotion: Allows for dynamic styling of components
+  - Emotion: CSS-in-JS styling for Material-UI
 - **Cross-Component Communication**
-  - Themes can be changed dynamically: `ThemeProvider` exposes `setTheme` via context (call `useTheme().setTheme(newTheme)` from any child component)
-  - Custom events (e.g., `onChange`) can be registered by child components to interact with parents
+  - Theme access: `useSafeTheme()` from `@stackwright/core` resolves theme colors by name or hex value
+  - Component registration: `registerNextJSComponents()` and `registerDefaultIcons()` must be called in `_app.tsx` before first render
 
 ### Troubleshooting
 - **Common Issues**
