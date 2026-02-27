@@ -41,15 +41,15 @@
         "@emotion/cache": "^11.14",
         "@emotion/react": "^11.14",
         "@emotion/styled": "^11.14",
-        "@fontsource/montserrat-alternates": "5.2.6",
-        "@mui/icons-material": "7.2.0",
-        "@mui/material": "7.2.0",
+        "@fontsource/montserrat-alternates": "5.2.8",
+        "@mui/icons-material": "7.3.8",
+        "@mui/material": "7.3.8",
         "@stackwright/types": "workspace:*",
         "@stackwright/themes": "workspace:*",
         "js-yaml": "^4.1.0",
         "react": "^19",
         "react-dom": "^19",
-        "uuid": "^11.1.0"
+        "uuid": "^13.0.0"
     },
     "devDependencies": {
         "@swc/core": "^1.13.2",
@@ -59,16 +59,16 @@
         "@types/react": "^19.1",
         "@types/react-dom": "^19.1",
         "@stackwright/types": "workspace:*",
-        "@vitest/ui": "^3.2.4",
-        "jsdom": "^26.1.0",
+        "@vitest/ui": "^4.0.18",
+        "jsdom": "^28.1.0",
         "tsup": "^8.5",
         "typescript": "^5.8",
-        "vitest": "^3.2.4"
+        "vitest": "^4.0.18"
     },
     "peerDependencies": {
         "react": "^19",
         "react-dom": "^19",
-        "@mui/material": "7.2.0",
-        "@mui/icons-material": "7.2.0"
+        "@mui/material": "7.3.8",
+        "@mui/icons-material": "7.3.8"
     }
 }

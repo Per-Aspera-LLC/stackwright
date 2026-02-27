@@ -24,10 +24,10 @@
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0",
-        "@types/node": "^24.1.0",
+        "@types/node": "^25.3.2",
         "tsup": "^8.5.0",
         "typescript": "^5.8.3",
-        "vitest": "^3.2.4"
+        "vitest": "^4.0.18"
     },
     "engines": {
         "node": ">=20.0.0"
