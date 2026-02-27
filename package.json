@@ -25,7 +25,8 @@
         "stackwright-mcp": "node packages/mcp/dist/server.js"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.29.5"
+        "@changesets/cli": "^2.29.5",
+        "vitest": "^4.0.18"
     },
     "pnpm": {
         "overrides": {
