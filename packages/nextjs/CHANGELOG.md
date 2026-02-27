@@ -4,9 +4,10 @@
 
 ### Patch Changes
 
+- Updated dependencies [2643e8b]
 - Updated dependencies [1c35939]
+  - @stackwright/core@0.5.0-alpha.1
   - @stackwright/types@0.3.0-alpha.1
-  - @stackwright/core@0.4.4-alpha.1
 
 ## 0.2.6-alpha.0
 

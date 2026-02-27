@@ -4,8 +4,9 @@
 
 ### Patch Changes
 
-- @stackwright/core@0.4.4-alpha.1
-- @stackwright/nextjs@0.2.6-alpha.1
+- Updated dependencies [2643e8b]
+  - @stackwright/core@0.5.0-alpha.1
+  - @stackwright/nextjs@0.2.6-alpha.1
 
 ## 0.1.6-alpha.0
 

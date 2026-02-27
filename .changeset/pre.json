@@ -13,6 +13,8 @@
   },
   "changesets": [
     "every-ends-sleep",
+    "prebuild-yaml-validation",
+    "register-content-type",
     "zod-migration"
   ]
 }

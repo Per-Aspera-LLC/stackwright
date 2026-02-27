@@ -1,6 +1,10 @@
 # @stackwright/core
 
-## 0.4.4-alpha.1
+## 0.5.0-alpha.1
+
+### Minor Changes
+
+- 2643e8b: Add `registerContentType(key, schema, component)` API for first-class content type extensibility. A single call in `_app.tsx` registers both the React component and its Zod schema — no framework source modifications needed. Custom types render through the existing pipeline; invalid props are warned in development. `getRegisteredContentTypes()` and `getContentTypeSchema()` are exported for MCP and CLI introspection.
 
 ### Patch Changes
 

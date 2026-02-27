@@ -10,7 +10,9 @@
 
 ### Patch Changes
 
+- Updated dependencies [36dd46c]
 - Updated dependencies [1c35939]
+  - @stackwright/build-scripts@0.2.0-alpha.0
   - @stackwright/types@0.3.0-alpha.1
   - @stackwright/themes@0.4.0-alpha.1
 
