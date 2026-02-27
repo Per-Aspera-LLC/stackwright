@@ -22,6 +22,6 @@
     "@types/js-yaml": "^4",
     "typescript": "^5",
     "tsup": "^8",
-    "vitest": "^3"
+    "vitest": "^4"
   }
 }
