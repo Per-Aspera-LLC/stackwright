@@ -36,3 +36,6 @@ export * from './interfaces/stackwright-components'
 export { stackwrightRegistry, registerStackwrightComponents } from './utils/stackwrightComponentRegistry'
 export { stackwrightUtilityRegistry, registerStackwrightUtilities } from './utils/stackwrightUtilityRegistry'
 export { defaultStackwrightComponents } from './components/stackwright/DefaultStackwrightComponents'
+
+// Content type extensibility
+export { registerContentType, getRegisteredContentTypes, getContentTypeSchema } from './utils/contentTypeRegistry'

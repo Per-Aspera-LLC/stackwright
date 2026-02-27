@@ -45,6 +45,7 @@
         "@stackwright/types": "workspace:*",
         "@stackwright/themes": "workspace:*",
         "js-yaml": "^4.1.0",
+        "zod": "^4.1.12",
         "uuid": "^13.0.0"
     },
     "devDependencies": {

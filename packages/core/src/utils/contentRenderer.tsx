@@ -2,6 +2,7 @@ import { ContentItem, PageContent } from '@stackwright/types'
 import { TopAppBar, BottomAppBar } from '../components/structural/';
 import { StackwrightConfig } from '../config/defaults';
 import { getComponentByType } from './componentRegistry';
+import { getContentTypeSchema } from './contentTypeRegistry';
 
 // Debug logging utility - only logs in development
 const debugLog = (message: string, data?: any) => {
@@ -144,11 +145,26 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
         isFunction: typeof Component === 'function',
     });
     
+    // Dev-mode schema validation for custom content types.
+    // Built-in types are validated at prebuild time; custom types are validated here.
+    if (process.env.NODE_ENV === 'development') {
+        const customSchema = getContentTypeSchema(contentType);
+        if (customSchema) {
+            const validation = customSchema.safeParse(contentData);
+            if (!validation.success) {
+                console.warn(
+                    `[Stackwright] Invalid props for custom content type "${contentType}":`,
+                    validation.error.issues,
+                );
+            }
+        }
+    }
+
     debugLog(`Creating React element for ${contentType}`);
-    
+
     try {
         let element;
-        
+
         debugLog('Creating component with spread props');
         element = <Component key={itemKey} {...contentData} />;
         

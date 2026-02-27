@@ -20,7 +20,7 @@ These items are grouped because they share a common purpose: making the Stackwri
 
 - [x] **Runtime YAML validation against the grammar** — Zod validation added to the prebuild pipeline (`@stackwright/build-scripts`). Both site config (`stackwright.yml`) and each page `content.yml` are validated after `yaml.load()` before image processing; invalid content exits with a structured field-level error message. Test fixtures updated to satisfy the schema; three new validation test cases added.
 
-- [ ] **First-class content type extensibility** — Expose a `registerContentType(key, zodSchema, component)` API so consumers can add content types without modifying framework source. This mirrors the existing `registerStackwrightComponents()` pattern but at the grammar level. A registered content type contributes its Zod schema to the full grammar, making it agent-writable, CLI-validatable, and MCP-describable automatically. This is the primary extensibility gap identified in the architecture: currently, adding a custom content type requires forking the framework. It should require only a registration call in `_app.tsx`.
+- [x] **First-class content type extensibility** — `registerContentType(key, zodSchema, component)` added to `@stackwright/core`. A single call in `_app.tsx` registers both the React component (into `componentRegistry`) and the Zod schema (into `contentTypeRegistry`). Custom types render via the existing `contentRenderer` pipeline; in development, invalid props are caught and logged via `console.warn` before spreading. `getRegisteredContentTypes()` and `getContentTypeSchema()` are exported for MCP/CLI introspection. 8 new tests added.
 
 ## Medium-term: Framework
 
