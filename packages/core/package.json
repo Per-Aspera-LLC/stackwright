@@ -43,7 +43,7 @@
         "@emotion/styled": "^11.14",
         "@fontsource/montserrat-alternates": "5.2.6",
         "@mui/icons-material": "7.2.0",
-        "@mui/material": "7.2.0",
+        "@mui/material": "7.3.8",
         "@stackwright/types": "workspace:*",
         "@stackwright/themes": "workspace:*",
         "js-yaml": "^4.1.0",
@@ -68,7 +68,7 @@
     "peerDependencies": {
         "react": "^19",
         "react-dom": "^19",
-        "@mui/material": "7.2.0",
+        "@mui/material": "7.3.8",
         "@mui/icons-material": "7.2.0"
     }
 }
