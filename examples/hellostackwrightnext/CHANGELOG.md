@@ -1,5 +1,14 @@
 # stackwright-example-app
 
+## 0.1.5-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [076c9e7]
+  - @stackwright/nextjs@0.2.5-alpha.0
+  - @stackwright/core@0.4.3-alpha.0
+  - @stackwright/icons@0.2.2-alpha.0
+
 ## 0.1.4
 
 ### Patch Changes
