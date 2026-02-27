@@ -1,6 +1,6 @@
 import { ContentItem, PageContent } from '@stackwright/types'
 import { TopAppBar, BottomAppBar } from '../components/structural/';
-import { StackwrightConfig } from 'config/defaults';
+import { StackwrightConfig } from '../config/defaults';
 import { getComponentByType } from './componentRegistry';
 
 // Debug logging utility - only logs in development
