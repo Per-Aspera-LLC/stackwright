@@ -2,6 +2,10 @@
     "name": "@stackwright/nextjs",
     "version": "0.2.3",
     "description": "Next.js implementations for Stackwright components",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Per-Aspera-LLC/stackwright"
+    },
     "main": "dist/index.js",
     "module": "dist/index.mjs",
     "types": "dist/index.d.ts",

@@ -2,11 +2,11 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 
 function getChangedFiles() {
-  const base = process.env.GITHUB_BASE_REF || "origin/dev";
+  const base = process.env.GITHUB_BASE_REF || "dev";
 
   try {
     // Ensure the base branch exists locally
-    execSync(`git fetch origin ${base}:${base}`, { stdio: "inherit" });
+    execSync(`git fetch origin ${base}`, { stdio: "inherit" });
 
     const diff = execSync(`git diff --name-only ${base}...HEAD`, {
       encoding: "utf-8",

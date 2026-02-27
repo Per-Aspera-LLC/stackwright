@@ -1,6 +1,10 @@
 {
   "name": "@stackwright/themes",
   "version": "0.3.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Per-Aspera-LLC/stackwright"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
