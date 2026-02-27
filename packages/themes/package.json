@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/themes",
-  "version": "0.3.1",
+  "version": "0.3.2-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Per-Aspera-LLC/stackwright"
@@ -22,6 +22,6 @@
     "@types/js-yaml": "^4",
     "typescript": "^5",
     "tsup": "^8",
-    "vitest": "^3"
+    "vitest": "^4"
   }
 }
