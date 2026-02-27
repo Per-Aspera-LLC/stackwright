@@ -1,5 +1,11 @@
 # @stackwright/nextjs
 
+## 0.2.3
+
+### Patch Changes
+
+- fef2637: Raise minimum Next.js peer dependency from `>=15` to `>=15.2.3` to exclude versions with critical CVEs (authorization bypass in middleware, RCE in React flight protocol).
+
 ## 0.2.2
 
 ### Patch Changes
