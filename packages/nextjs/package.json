@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Next.js implementations for Stackwright components",
     "main": "dist/index.js",
     "module": "dist/index.mjs",
@@ -24,7 +24,7 @@
         "@stackwright/core": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0",
-        "next": ">=15",
+        "next": ">=15.2.3",
         "react": "^19",
         "react-dom": "^19"
     },
@@ -38,7 +38,7 @@
         "vitest": "^3.2.4"
     },
     "peerDependencies": {
-        "next": ">=15",
+        "next": ">=15.2.3",
         "react": "^19",
         "react-dom": "^19"
     }

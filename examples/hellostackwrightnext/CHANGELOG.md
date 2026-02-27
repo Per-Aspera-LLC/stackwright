@@ -1,5 +1,12 @@
 # stackwright-example-app
 
+## 0.1.3
+
+### Patch Changes
+
+- Updated dependencies [fef2637]
+  - @stackwright/nextjs@0.2.3
+
 ## 0.1.2
 
 ### Patch Changes
