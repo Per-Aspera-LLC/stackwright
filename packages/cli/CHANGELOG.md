@@ -1,5 +1,18 @@
 # @stackwright/cli
 
+## 0.5.0-alpha.2
+
+### Patch Changes
+
+- 4a15246: refactor(cli): replace dynamic require() with static imports for sub-type schema introspection
+
+  Sub-type schemas are now imported statically from @stackwright/types, making the
+  dependency explicit and eliminating the silent-drop risk when a schema is renamed.
+
+- Updated dependencies [ce372ed]
+  - @stackwright/types@0.3.0-alpha.2
+  - @stackwright/build-scripts@0.2.0-alpha.1
+
 ## 0.5.0-alpha.1
 
 ### Minor Changes

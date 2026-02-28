@@ -1,5 +1,12 @@
 # @stackwright/build-scripts
 
+## 0.2.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [ce372ed]
+  - @stackwright/types@0.3.0-alpha.2
+
 ## 0.2.0-alpha.0
 
 ### Minor Changes

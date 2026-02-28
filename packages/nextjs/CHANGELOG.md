@@ -1,5 +1,13 @@
 # @stackwright/nextjs
 
+## 0.2.6-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [ce372ed]
+  - @stackwright/types@0.3.0-alpha.2
+  - @stackwright/core@0.5.0-alpha.3
+
 ## 0.2.6-alpha.2
 
 ### Patch Changes

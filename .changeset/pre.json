@@ -14,10 +14,12 @@
   },
   "changesets": [
     "every-ends-sleep",
+    "fix-button-icon-circular-dep",
     "fix-clear-content-type-registry",
     "mcp-server",
     "prebuild-yaml-validation",
     "proud-beers-join",
+    "refactor-cli-static-imports",
     "register-content-type",
     "zod-migration"
   ]

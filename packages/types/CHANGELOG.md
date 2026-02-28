@@ -1,5 +1,16 @@
 # @stackwright/types
 
+## 0.3.0-alpha.2
+
+### Patch Changes
+
+- ce372ed: fix(types): restore full Zod validation for buttonContentSchema.icon
+
+  Extracts a media-primitives.ts leaf module (no imports from base.ts) that
+  defines a standalone mediaItemSchema, breaking the circular initialisation
+  between base.ts and media.ts. buttonContentSchema.icon is now validated as
+  a proper discriminated union instead of z.any().
+
 ## 0.3.0-alpha.1
 
 ### Minor Changes
