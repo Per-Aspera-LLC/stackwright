@@ -1,6 +1,6 @@
 import { ComponentType } from 'react';
 import { z } from 'zod';
-import { registerComponent } from './componentRegistry';
+import { registerComponent, deregisterComponent } from './componentRegistry';
 
 export interface ContentTypeEntry {
   key: string;
@@ -56,5 +56,8 @@ export function getContentTypeSchema(key: string): z.ZodTypeAny | undefined {
 
 /** Clear all custom registrations. Intended for use in tests only. */
 export function clearContentTypeRegistry(): void {
+  for (const key of customContentTypes.keys()) {
+    deregisterComponent(key);
+  }
   customContentTypes.clear();
 }
