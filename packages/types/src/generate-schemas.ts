@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { zodToJsonSchema } from 'zod-to-json-schema';
+import { z } from 'zod';
 import { pageContentSchema } from './types/layout';
 import { siteConfigSchema } from './types/siteConfig';
 import { themeConfigSchema } from '@stackwright/themes';
@@ -9,23 +9,14 @@ import { themeConfigSchema } from '@stackwright/themes';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const JSON_SCHEMA_OPTIONS = { reused: 'ref', target: 'draft-7' } as const;
+
 export async function generateSchemas() {
   console.log('🔧 Generating JSON Schemas...');
 
-  const contentSchema = zodToJsonSchema(pageContentSchema, {
-    name: 'PageContent',
-    $refStrategy: 'none',
-  });
-
-  const themeSchema = zodToJsonSchema(themeConfigSchema, {
-    name: 'ThemeConfig',
-    $refStrategy: 'none',
-  });
-
-  const siteSchema = zodToJsonSchema(siteConfigSchema, {
-    name: 'SiteConfig',
-    $refStrategy: 'none',
-  });
+  const contentSchema = z.toJSONSchema(pageContentSchema, JSON_SCHEMA_OPTIONS);
+  const themeSchema = z.toJSONSchema(themeConfigSchema, JSON_SCHEMA_OPTIONS);
+  const siteSchema = z.toJSONSchema(siteConfigSchema, JSON_SCHEMA_OPTIONS);
 
   const outputDir = path.join(__dirname, '../dist/schemas');
   await fs.ensureDir(outputDir);
