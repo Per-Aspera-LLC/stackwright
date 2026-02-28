@@ -1,5 +1,14 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
+import {
+  textBlockSchema,
+  buttonContentSchema,
+  mediaItemSchema,
+  imageContentSchema,
+  iconContentSchema,
+  carouselItemSchema,
+  timelineItemSchema,
+} from '@stackwright/types';
 import { pageContentSchema } from '../utils/schema-loader';
 import { outputResult } from '../utils/json-output';
 
@@ -81,14 +90,14 @@ const CONTENT_TYPE_NAMES: Record<string, string> = {
   code_block: 'CodeBlockContent',
 };
 
-const SUB_TYPE_KEYS: Array<{ key: string; name: string }> = [
-  { key: 'textBlockSchema', name: 'TextBlock' },
-  { key: 'buttonContentSchema', name: 'ButtonContent' },
-  { key: 'mediaItemSchema', name: 'MediaItem' },
-  { key: 'imageContentSchema', name: 'ImageContent' },
-  { key: 'iconContentSchema', name: 'IconContent' },
-  { key: 'carouselItemSchema', name: 'CarouselItem' },
-  { key: 'timelineItemSchema', name: 'TimelineItem' },
+const SUB_TYPE_SCHEMAS: Array<{ name: string; schema: AnySchema }> = [
+  { name: 'TextBlock', schema: textBlockSchema as unknown as AnySchema },
+  { name: 'ButtonContent', schema: buttonContentSchema as unknown as AnySchema },
+  { name: 'MediaItem', schema: mediaItemSchema as unknown as AnySchema },
+  { name: 'ImageContent', schema: imageContentSchema as unknown as AnySchema },
+  { name: 'IconContent', schema: iconContentSchema as unknown as AnySchema },
+  { name: 'CarouselItem', schema: carouselItemSchema as unknown as AnySchema },
+  { name: 'TimelineItem', schema: timelineItemSchema as unknown as AnySchema },
 ];
 
 export function getTypes(): TypesResult {
@@ -117,15 +126,11 @@ export function getTypes(): TypesResult {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const types = require('@stackwright/types') as Record<string, unknown>;
-  const subTypes: ContentTypeEntry[] = SUB_TYPE_KEYS
-    .filter(({ key }) => types[key])
-    .map(({ key, name }) => ({
-      name,
-      typeName: name,
-      fields: extractFieldsFromSchema(types[key] as AnySchema),
-    }));
+  const subTypes: ContentTypeEntry[] = SUB_TYPE_SCHEMAS.map(({ name, schema }) => ({
+    name,
+    typeName: name,
+    fields: extractFieldsFromSchema(schema),
+  }));
 
   return { contentTypes, subTypes };
 }
