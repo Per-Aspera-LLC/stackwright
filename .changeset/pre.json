@@ -9,11 +9,14 @@
     "@stackwright/icons": "0.2.2",
     "@stackwright/nextjs": "0.2.5",
     "@stackwright/themes": "0.3.3",
-    "@stackwright/types": "0.2.2"
+    "@stackwright/types": "0.2.2",
+    "@stackwright/mcp": "0.1.0-alpha.0"
   },
   "changesets": [
     "every-ends-sleep",
+    "mcp-server",
     "prebuild-yaml-validation",
+    "proud-beers-join",
     "register-content-type",
     "zod-migration"
   ]

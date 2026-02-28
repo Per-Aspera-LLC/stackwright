@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/mcp",
-    "version": "0.1.0-alpha.0",
+    "version": "0.1.0-alpha.1",
     "description": "MCP server for Stackwright — exposes content types, page management, and validation as agent tools",
     "repository": {
         "type": "git",
