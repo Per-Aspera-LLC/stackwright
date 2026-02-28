@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/cli",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "CLI for Stackwright framework",
   "repository": {
     "type": "git",
@@ -21,11 +21,11 @@
     "@stackwright/build-scripts": "workspace:*",
     "@stackwright/themes": "workspace:*",
     "@stackwright/types": "workspace:*",
-    "ajv": "^8.17.1",
     "chalk": "^5.6.2",
     "commander": "^14.0.0",
     "fs-extra": "^11.3",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0",

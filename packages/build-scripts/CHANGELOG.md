@@ -1,5 +1,36 @@
 # @stackwright/build-scripts
 
+## 0.2.0
+
+### Minor Changes
+
+- 36dd46c: Add Zod schema validation to the prebuild pipeline. Both `stackwright.yml` and each page `content.yml` are now validated against their schemas after YAML parsing. Invalid content fails loudly with structured field-level error messages before image processing runs, closing the gap between "schema exists for IDE hints" and "schema is enforced before execution".
+
+### Patch Changes
+
+- Updated dependencies [750f84a]
+- Updated dependencies [ce372ed]
+- Updated dependencies [1c35939]
+  - @stackwright/types@0.3.0
+
+## 0.2.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [ce372ed]
+  - @stackwright/types@0.3.0-alpha.2
+
+## 0.2.0-alpha.0
+
+### Minor Changes
+
+- 36dd46c: Add Zod schema validation to the prebuild pipeline. Both `stackwright.yml` and each page `content.yml` are now validated against their schemas after YAML parsing. Invalid content fails loudly with structured field-level error messages before image processing runs, closing the gap between "schema exists for IDE hints" and "schema is enforced before execution".
+
+### Patch Changes
+
+- Updated dependencies [1c35939]
+  - @stackwright/types@0.3.0-alpha.1
+
 ## 0.1.2
 
 ### Patch Changes

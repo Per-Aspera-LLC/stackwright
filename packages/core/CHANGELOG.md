@@ -1,5 +1,55 @@
 # @stackwright/core
 
+## 0.5.0
+
+### Minor Changes
+
+- 2643e8b: Add `registerContentType(key, schema, component)` API for first-class content type extensibility. A single call in `_app.tsx` registers both the React component and its Zod schema — no framework source modifications needed. Custom types render through the existing pipeline; invalid props are warned in development. `getRegisteredContentTypes()` and `getContentTypeSchema()` are exported for MCP and CLI introspection.
+
+### Patch Changes
+
+- 750f84a: Patch bump for core package import fixes.
+- 7587c14: fix(core): clearContentTypeRegistry now also deregisters components from componentRegistry, eliminating the need for manual `delete componentRegistry[key]` workarounds in tests
+- Updated dependencies [750f84a]
+- Updated dependencies [ce372ed]
+- Updated dependencies [1c35939]
+  - @stackwright/themes@0.4.0
+  - @stackwright/types@0.3.0
+
+## 0.5.0-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [ce372ed]
+  - @stackwright/types@0.3.0-alpha.2
+
+## 0.5.0-alpha.2
+
+### Patch Changes
+
+- 7587c14: fix(core): clearContentTypeRegistry now also deregisters components from componentRegistry, eliminating the need for manual `delete componentRegistry[key]` workarounds in tests
+
+## 0.5.0-alpha.1
+
+### Minor Changes
+
+- 2643e8b: Add `registerContentType(key, schema, component)` API for first-class content type extensibility. A single call in `_app.tsx` registers both the React component and its Zod schema — no framework source modifications needed. Custom types render through the existing pipeline; invalid props are warned in development. `getRegisteredContentTypes()` and `getContentTypeSchema()` are exported for MCP and CLI introspection.
+
+### Patch Changes
+
+- Updated dependencies [1c35939]
+  - @stackwright/types@0.3.0-alpha.1
+  - @stackwright/themes@0.4.0-alpha.1
+
+## 0.4.4-alpha.0
+
+### Patch Changes
+
+- Patch bump for core package import fixes.
+- Updated dependencies
+  - @stackwright/themes@0.3.4-alpha.0
+  - @stackwright/types@0.2.3-alpha.0
+
 ## 0.4.3
 
 ### Patch Changes

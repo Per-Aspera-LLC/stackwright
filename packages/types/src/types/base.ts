@@ -1,25 +1,29 @@
-import { TypographyVariant, ButtonVariant, AlignmentVariant, MediaStyleVariant, MediaVariant } from './enums';
-import { MediaItem } from './media';
+import { z } from 'zod';
+import { typographyVariantSchema, buttonVariantSchema, alignmentVariantSchema } from './enums';
+import { mediaItemSchema } from './media-primitives';
 
-export interface BaseContent {
-    label: string
-    color?: string
-    background?: string
-}
+export const baseContentSchema = z.object({
+    label: z.string(),
+    color: z.string().optional(),
+    background: z.string().optional(),
+});
 
-export interface TextBlock {
-    text: string
-    textSize: TypographyVariant
-    textColor?: string
-}
+export const textBlockSchema = z.object({
+    text: z.string(),
+    textSize: typographyVariantSchema,
+    textColor: z.string().optional(),
+});
 
-export interface ButtonContent extends TextBlock {
-    variant: ButtonVariant
-    variantSize?: "small" | "medium" | "large"
-    href?: string
-    action?: string
-    icon?: MediaItem
-    alignment?: AlignmentVariant
-    bgColor?: string
-}
+export const buttonContentSchema = textBlockSchema.extend({
+    variant: buttonVariantSchema,
+    variantSize: z.enum(['small', 'medium', 'large']).optional(),
+    href: z.string().optional(),
+    action: z.string().optional(),
+    icon: mediaItemSchema.optional(),
+    alignment: alignmentVariantSchema.optional(),
+    bgColor: z.string().optional(),
+});
 
+export type BaseContent = z.infer<typeof baseContentSchema>;
+export type TextBlock = z.infer<typeof textBlockSchema>;
+export type ButtonContent = z.infer<typeof buttonContentSchema>;

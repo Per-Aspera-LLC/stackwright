@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/build-scripts",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "Build-time scripts for Stackwright projects (prebuild image processing, YAML compilation)",
     "repository": {
         "type": "git",
@@ -20,6 +20,7 @@
         "prepublishOnly": "pnpm run build"
     },
     "dependencies": {
+        "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0"
     },
     "devDependencies": {

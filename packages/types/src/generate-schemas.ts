@@ -1,96 +1,44 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import * as TJS from 'typescript-json-schema';
-import { ThemeConfig } from '@stackwright/themes';
+import { z } from 'zod';
+import { pageContentSchema } from './types/layout';
+import { siteConfigSchema } from './types/siteConfig';
+import { themeConfigSchema } from '@stackwright/themes';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const JSON_SCHEMA_OPTIONS = { reused: 'ref', target: 'draft-7' } as const;
+
 export async function generateSchemas() {
   console.log('🔧 Generating JSON Schemas...');
-  
-  const settings: TJS.PartialArgs = {
-    required: true,
-    noExtraProps: true,
-    propOrder: false,
-    typeOfKeyword: false,
-    titles: false,
-    defaultProps: false,
-    ref: true,
-    aliasRef: false,
-    topRef: false,
-    id: "",
-    defaultNumberType: "number",
-    tsNodeRegister: false,
-    validationKeywords: [],
-    include: [],
-    ignoreErrors: false,
-    excludePrivate: false,
-    uniqueNames: false,
-    rejectDateType: false,
-    skipLibCheck: true,
-  };
 
-  const compilerOptions: TJS.CompilerOptions = {
-    strictNullChecks: true,
-    esModuleInterop: true,
-    target: 9, // Equivalent to ts.ScriptTarget.ES2022
-    module: 99 // Equivalent to ts.ModuleKind.ESNext
-
-  };
-
-  const program = TJS.getProgramFromFiles(
-    [path.resolve(__dirname, './types/index.ts')],
-    compilerOptions
-  );
-
-  const generator = TJS.buildGenerator(program, settings);
-  
-  if (!generator) {
-    throw new Error('Failed to create schema generator');
-  }
-
-  // Generate schema for main content structure
-  const contentSchema = generator.getSchemaForSymbol('PageContent');
-  
-  if (!contentSchema) {
-    throw new Error('Could not generate schema for PageContent');
-  }
-
-  const themeSchema = generator.getSchemaForSymbol('ThemeConfig');
-
-  if (!themeSchema) {
-    throw new Error('Could not generate schema for ThemeConfig');
-  }
-
-  const siteConfigSchema = generator.getSchemaForSymbol('SiteConfig');
-
-  if (!siteConfigSchema) {
-    throw new Error('Could not generate schema for SiteConfig');
-  }
+  const contentSchema = z.toJSONSchema(pageContentSchema, JSON_SCHEMA_OPTIONS);
+  const themeSchema = z.toJSONSchema(themeConfigSchema, JSON_SCHEMA_OPTIONS);
+  const siteSchema = z.toJSONSchema(siteConfigSchema, JSON_SCHEMA_OPTIONS);
 
   const outputDir = path.join(__dirname, '../dist/schemas');
   await fs.ensureDir(outputDir);
-  
+
   await fs.writeJSON(
     path.join(outputDir, 'content-schema.json'),
     contentSchema,
     { spaces: 2 }
   );
 
-  await fs.writeJson(
+  await fs.writeJSON(
     path.join(outputDir, 'theme-schema.json'),
     themeSchema,
     { spaces: 2 }
   );
 
-  await fs.writeJson(
+  await fs.writeJSON(
     path.join(outputDir, 'site-config-schema.json'),
-    siteConfigSchema,
+    siteSchema,
     { spaces: 2 }
   );
-  
+
   console.log('✅ Generated schemas in dist/schemas/');
 }
 

@@ -1,5 +1,50 @@
 # stackwright-example-app
 
+## 0.1.6
+
+### Patch Changes
+
+- 750f84a: Patch bump for core package import fixes.
+- Updated dependencies [750f84a]
+- Updated dependencies [7587c14]
+- Updated dependencies [2643e8b]
+  - @stackwright/nextjs@0.2.6
+  - @stackwright/icons@0.2.3
+  - @stackwright/core@0.5.0
+
+## 0.1.6-alpha.3
+
+### Patch Changes
+
+- @stackwright/core@0.5.0-alpha.3
+- @stackwright/nextjs@0.2.6-alpha.3
+
+## 0.1.6-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [7587c14]
+  - @stackwright/core@0.5.0-alpha.2
+  - @stackwright/nextjs@0.2.6-alpha.2
+
+## 0.1.6-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [2643e8b]
+  - @stackwright/core@0.5.0-alpha.1
+  - @stackwright/nextjs@0.2.6-alpha.1
+
+## 0.1.6-alpha.0
+
+### Patch Changes
+
+- Patch bump for core package import fixes.
+- Updated dependencies
+  - @stackwright/nextjs@0.2.6-alpha.0
+  - @stackwright/icons@0.2.3-alpha.0
+  - @stackwright/core@0.4.4-alpha.0
+
 ## 0.1.5
 
 ### Patch Changes

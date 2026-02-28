@@ -1,5 +1,59 @@
 # @stackwright/types
 
+## 0.3.0
+
+### Minor Changes
+
+- 1c35939: Migrate grammar to Zod as single source of truth
+
+  Replace hand-written TypeScript interfaces and `typescript-json-schema` with Zod schemas across `@stackwright/types` and `@stackwright/themes`. TypeScript types are now inferred via `z.infer<>`. JSON schemas for IDE YAML validation are generated via `zod-to-json-schema` instead of `typescript-json-schema`. The CLI replaces AJV with Zod's `safeParse` for page and site validation. All Zod schemas are exported from their respective packages, enabling runtime grammar introspection for future MCP tooling and runtime validation.
+
+### Patch Changes
+
+- 750f84a: Patch bump for core package import fixes.
+- ce372ed: fix(types): restore full Zod validation for buttonContentSchema.icon
+
+  Extracts a media-primitives.ts leaf module (no imports from base.ts) that
+  defines a standalone mediaItemSchema, breaking the circular initialisation
+  between base.ts and media.ts. buttonContentSchema.icon is now validated as
+  a proper discriminated union instead of z.any().
+
+- Updated dependencies [750f84a]
+- Updated dependencies [1c35939]
+  - @stackwright/themes@0.4.0
+
+## 0.3.0-alpha.2
+
+### Patch Changes
+
+- ce372ed: fix(types): restore full Zod validation for buttonContentSchema.icon
+
+  Extracts a media-primitives.ts leaf module (no imports from base.ts) that
+  defines a standalone mediaItemSchema, breaking the circular initialisation
+  between base.ts and media.ts. buttonContentSchema.icon is now validated as
+  a proper discriminated union instead of z.any().
+
+## 0.3.0-alpha.1
+
+### Minor Changes
+
+- 1c35939: Migrate grammar to Zod as single source of truth
+
+  Replace hand-written TypeScript interfaces and `typescript-json-schema` with Zod schemas across `@stackwright/types` and `@stackwright/themes`. TypeScript types are now inferred via `z.infer<>`. JSON schemas for IDE YAML validation are generated via `zod-to-json-schema` instead of `typescript-json-schema`. The CLI replaces AJV with Zod's `safeParse` for page and site validation. All Zod schemas are exported from their respective packages, enabling runtime grammar introspection for future MCP tooling and runtime validation.
+
+### Patch Changes
+
+- Updated dependencies [1c35939]
+  - @stackwright/themes@0.4.0-alpha.1
+
+## 0.2.3-alpha.0
+
+### Patch Changes
+
+- Patch bump for core package import fixes.
+- Updated dependencies
+  - @stackwright/themes@0.3.4-alpha.0
+
 ## 0.2.2
 
 ### Patch Changes

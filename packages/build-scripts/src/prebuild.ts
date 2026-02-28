@@ -20,6 +20,7 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+import { siteConfigSchema, pageContentSchema } from '@stackwright/types';
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -176,6 +177,17 @@ export function runPrebuild(projectRoot = process.cwd()): void {
 
   console.log('\n📄 Processing site config...');
   const rawConfig = yaml.load(fs.readFileSync(siteConfigFile, 'utf8'));
+
+  const siteValidation = siteConfigSchema.safeParse(rawConfig);
+  if (!siteValidation.success) {
+    console.error('❌ stackwright.yml is invalid:');
+    for (const issue of siteValidation.error.issues) {
+      const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+      console.error(`   ${field}: ${issue.message}`);
+    }
+    process.exit(1);
+  }
+
   const processedConfig = processSiteConfig(rawConfig, projectRoot, imagesDir);
   fs.writeFileSync(
     path.join(contentOutDir, '_site.json'),
@@ -194,6 +206,16 @@ export function runPrebuild(projectRoot = process.cwd()): void {
   for (const { slug, filePath, contentDir } of contentFiles) {
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
+
+    const pageValidation = pageContentSchema.safeParse(rawContent);
+    if (!pageValidation.success) {
+      console.error(`❌ Invalid content: ${filePath}`);
+      for (const issue of pageValidation.error.issues) {
+        const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+        console.error(`   ${field}: ${issue.message}`);
+      }
+      process.exit(1);
+    }
 
     const slugDir = slug ?? '_root';
     const imageDestDir = path.join(imagesDir, slugDir);

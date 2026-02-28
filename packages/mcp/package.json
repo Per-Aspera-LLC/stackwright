@@ -1,0 +1,35 @@
+{
+    "name": "@stackwright/mcp",
+    "version": "0.1.0",
+    "description": "MCP server for Stackwright — exposes content types, page management, and validation as agent tools",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Per-Aspera-LLC/stackwright"
+    },
+    "bin": {
+        "stackwright-mcp": "dist/server.js"
+    },
+    "main": "dist/server.js",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "prepublishOnly": "pnpm build"
+    },
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.27.0",
+        "@stackwright/cli": "workspace:*",
+        "@stackwright/types": "workspace:*",
+        "zod": "^4.1.12"
+    },
+    "devDependencies": {
+        "@types/node": "^20.0.0",
+        "fs-extra": "^11.3.3",
+        "tsup": "^8.0.0",
+        "typescript": "^5.6.0"
+    }
+}

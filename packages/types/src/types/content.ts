@@ -1,68 +1,110 @@
-import { BaseContent, TextBlock, ButtonContent } from "./base";
-import { IconContent, MediaContent, MediaItem } from "./media";
-import { GraphicPosition } from "./enums";
+import { z } from 'zod';
+import { baseContentSchema, textBlockSchema, buttonContentSchema } from './base';
+import { iconContentSchema, mediaContentSchema, mediaItemSchema } from './media';
+import { graphicPositionSchema } from './enums';
+import type { TextBlock } from './base';
 
-export interface CarouselItem {
-    title: string;
-    text: string;
-    media: MediaItem;
+export const carouselItemSchema = z.object({
+    title: z.string(),
+    text: z.string(),
+    media: mediaItemSchema,
+    background: z.string().optional(),
+});
+
+export const carouselContentSchema = baseContentSchema.extend({
+    heading: z.string(),
+    autoPlaySpeed: z.number().optional(),
+    infinite: z.boolean().optional(),
+    autoPlay: z.boolean().optional(),
+    background: z.string().optional(),
+    items: z.array(carouselItemSchema),
+});
+
+export const mainContentSchema = baseContentSchema.extend({
+    heading: textBlockSchema,
+    textBlocks: z.array(textBlockSchema),
+    media: mediaItemSchema.optional(),
+    graphic_position: graphicPositionSchema.optional(),
+    buttons: z.array(buttonContentSchema).optional(),
+    textToGraphic: z.number().optional(),
+});
+
+export const timelineItemSchema = z.object({
+    year: z.string(),
+    event: z.string(),
+});
+
+export const timelineContentSchema = baseContentSchema.extend({
+    heading: textBlockSchema.optional(),
+    items: z.array(timelineItemSchema),
+});
+
+export const iconGridContentSchema = baseContentSchema.extend({
+    heading: textBlockSchema.optional(),
+    icons: z.array(iconContentSchema),
+});
+
+export const codeBlockContentSchema = baseContentSchema.extend({
+    code: z.string(),
+    language: z.string().optional(),
+    lineNumbers: z.boolean().optional(),
+});
+
+// ContentItem and TabbedContent are mutually recursive: TabbedContent.tabs is ContentItem[],
+// and ContentItem contains tabbed_content?: TabbedContent.
+// We break the cycle with explicit TypeScript interface declarations + z.lazy().
+
+export type CarouselItem = z.infer<typeof carouselItemSchema>;
+export type CarouselContent = z.infer<typeof carouselContentSchema>;
+export type MainContent = z.infer<typeof mainContentSchema>;
+export type TimelineItem = z.infer<typeof timelineItemSchema>;
+export type TimelineContent = z.infer<typeof timelineContentSchema>;
+export type IconGridContent = z.infer<typeof iconGridContentSchema>;
+export type CodeBlockContent = z.infer<typeof codeBlockContentSchema>;
+
+export interface TabbedContent {
+    label: string;
+    color?: string;
     background?: string;
-}
-
-export interface CarouselContent extends BaseContent {
-    heading: string;
-    autoPlaySpeed?: number;
-    infinite?: boolean;
-    autoPlay?: boolean;
-    background?: string;
-    items: CarouselItem[];
-}
-
-export interface MainContent extends BaseContent {
-    heading: TextBlock;
-    textBlocks: TextBlock[];
-    media?: MediaItem;
-    graphic_position?: GraphicPosition;
-    buttons?: ButtonContent[];
-    textToGraphic?: number; // Ratio of text to graphic width (0-100, default 58)
-}
-
-export interface TabbedContent extends BaseContent {
     heading: TextBlock;
     tabs: ContentItem[];
 }
 
-export interface IconGridContent extends BaseContent {
-    heading?: TextBlock;
-    icons: IconContent[];
+export interface ContentItem {
+    carousel?: CarouselContent;
+    main?: MainContent;
+    tabbed_content?: TabbedContent;
+    media?: import('./media').MediaContent;
+    timeline?: TimelineContent;
+    icon_grid?: IconGridContent;
+    code_block?: CodeBlockContent;
 }
 
-export interface TimelineItem {
-    year: string;
-    event: string;
-}
+export const tabbedContentSchema: z.ZodType<TabbedContent> = z.lazy(() =>
+    baseContentSchema.extend({
+        heading: textBlockSchema,
+        tabs: z.array(contentItemSchema),
+    })
+);
 
-export interface TimelineContent extends BaseContent {
-    heading?: TextBlock;
-    items: TimelineItem[];
-}
-
-export interface CodeBlockContent extends BaseContent {
-    code: string;
-    language?: string;
-    lineNumbers?: boolean;
-}
+export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
+    z.object({
+        carousel: carouselContentSchema.optional(),
+        main: mainContentSchema.optional(),
+        tabbed_content: tabbedContentSchema.optional(),
+        media: mediaContentSchema.optional(),
+        timeline: timelineContentSchema.optional(),
+        icon_grid: iconGridContentSchema.optional(),
+        code_block: codeBlockContentSchema.optional(),
+    })
+);
 
 export type ContentItemMap = {
     carousel: CarouselContent;
     main: MainContent;
     tabbed_content: TabbedContent;
-    media: MediaContent;
+    media: import('./media').MediaContent;
     timeline: TimelineContent;
     icon_grid: IconGridContent;
     code_block: CodeBlockContent;
-};
-
-export type ContentItem = {
-    [K in keyof ContentItemMap]?: ContentItemMap[K];
 };

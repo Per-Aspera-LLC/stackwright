@@ -1,43 +1,47 @@
-import { NavigationItem } from './navigation';
-import { ButtonContent } from './base';
-import { MediaItem } from './media';
-import { Theme } from '@stackwright/themes';
+import { z } from 'zod';
+import { navigationItemSchema } from './navigation';
+import { buttonContentSchema } from './base';
+import { mediaItemSchema } from './media';
+import { themeSchema } from '@stackwright/themes';
 
-export interface SiteConfig {
-  title: string;
-  themeName?: string;
-  customTheme?: Theme;
-  navigation: NavigationItem[];
-  appBar: AppBarConfig,
-  footer?: FooterConfig;
-  breakpoints?: BreakpointsConfig;
-}
+export const appBarConfigSchema = z.object({
+    titleText: z.string(),
+    backgroundColor: z.string().optional(),
+    textColor: z.string().optional(),
+    logo: mediaItemSchema.optional(),
+    height: z.string().optional(),
+    menuItems: z.array(navigationItemSchema).optional(),
+});
 
-export interface AppBarConfig {
-  titleText: string,
-  backgroundColor?: string,
-  textColor?: string,
-  logo?: MediaItem,
-  height?: string,
-  menuItems?: NavigationItem[]
-}
+export const breakpointsConfigSchema = z.object({
+    xs: z.string(),
+    sm: z.string(),
+    md: z.string(),
+    lg: z.string(),
+    xl: z.string(),
+});
 
+export const footerConfigSchema = z.object({
+    backgroundColor: z.string().optional(),
+    textColor: z.string().optional(),
+    copyright: z.string().optional(),
+    itemsPerColumn: z.number().optional(),
+    links: z.array(navigationItemSchema).optional(),
+    socialLinks: z.array(buttonContentSchema).optional(),
+    socialText: z.string().optional(),
+});
 
-export interface BreakpointsConfig {
-  xs: string;
-  sm: string;
-  md: string;
-  lg: string;
-  xl: string;
-}
+export const siteConfigSchema = z.object({
+    title: z.string(),
+    themeName: z.string().optional(),
+    customTheme: themeSchema.optional(),
+    navigation: z.array(navigationItemSchema),
+    appBar: appBarConfigSchema,
+    footer: footerConfigSchema.optional(),
+    breakpoints: breakpointsConfigSchema.optional(),
+});
 
-export interface FooterConfig {
-  backgroundColor?: string;
-  textColor?: string;
-  copyright?: string;
-  itemsPerColumn?: number;
-  links?: NavigationItem[];
-  socialLinks?: ButtonContent[];
-  socialText?: string;
-}
-
+export type AppBarConfig = z.infer<typeof appBarConfigSchema>;
+export type BreakpointsConfig = z.infer<typeof breakpointsConfigSchema>;
+export type FooterConfig = z.infer<typeof footerConfigSchema>;
+export type SiteConfig = z.infer<typeof siteConfigSchema>;

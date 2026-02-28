@@ -1,6 +1,15 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { loadContentSchema } from '../utils/schema-loader';
+import {
+  textBlockSchema,
+  buttonContentSchema,
+  mediaItemSchema,
+  imageContentSchema,
+  iconContentSchema,
+  carouselItemSchema,
+  timelineItemSchema,
+} from '@stackwright/types';
+import { pageContentSchema } from '../utils/schema-loader';
 import { outputResult } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
@@ -25,101 +34,105 @@ export interface TypesResult {
 }
 
 // ---------------------------------------------------------------------------
-// Pure function
+// Zod v4 runtime schema introspection helpers
 // ---------------------------------------------------------------------------
 
-type JsonSchema = Record<string, unknown>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyDef = Record<string, any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnySchema = { def: AnyDef };
 
-const CONTENT_ITEM_MAP_KEY = 'ContentItem';
-const SUB_TYPE_NAMES = new Set([
-  'TextBlock',
-  'ButtonContent',
-  'MediaItem',
-  'ImageContent',
-  'IconContent',
-  'CarouselItem',
-  'TimelineItem',
-]);
-
-export function getTypes(): TypesResult {
-  const schema = loadContentSchema() as JsonSchema;
-  const defs = (schema.definitions ?? {}) as Record<string, JsonSchema>;
-
-  const contentTypes: ContentTypeEntry[] = [];
-  const subTypes: ContentTypeEntry[] = [];
-
-  // ContentItemMap defines the YAML key → TypeScript type mapping
-  const itemMap = defs[CONTENT_ITEM_MAP_KEY];
-  const contentKeyToType: Record<string, string> = {};
-
-  if (itemMap?.properties) {
-    for (const [yamlKey, propDef] of Object.entries(itemMap.properties as Record<string, JsonSchema>)) {
-      const ref = propDef.$ref as string | undefined;
-      if (ref) {
-        const typeName = ref.replace('#/definitions/', '');
-        contentKeyToType[yamlKey] = typeName;
-      }
-    }
-  }
-
-  // Extract fields from a definition
-  function extractFields(def: JsonSchema): FieldEntry[] {
-    const props = def.properties as Record<string, JsonSchema> | undefined;
-    const required = new Set((def.required as string[] | undefined) ?? []);
-    if (!props) return [];
-    return Object.entries(props).map(([name, propDef]) => ({
-      name,
-      type: resolveType(propDef, defs),
-      required: required.has(name),
-    }));
-  }
-
-  // Populate content types from the map
-  for (const [yamlKey, typeName] of Object.entries(contentKeyToType)) {
-    const def = defs[typeName];
-    if (!def) continue;
-    contentTypes.push({
-      name: yamlKey,
-      typeName,
-      fields: extractFields(def),
-    });
-  }
-
-  // Populate sub-types
-  for (const typeName of SUB_TYPE_NAMES) {
-    const def = defs[typeName];
-    if (!def) continue;
-    subTypes.push({
-      name: typeName,
-      typeName,
-      fields: extractFields(def),
-    });
-  }
-
-  return { contentTypes, subTypes };
+function resolveSchema(schema: AnySchema): AnySchema {
+  let s = schema;
+  while (s.def.type === 'lazy') s = s.def.getter() as AnySchema;
+  while (s.def.type === 'optional') s = s.def.innerType as AnySchema;
+  return s;
 }
 
-function resolveType(propDef: JsonSchema, defs: Record<string, JsonSchema>): string {
-  if (propDef.$ref) {
-    return (propDef.$ref as string).replace('#/definitions/', '');
+function zodDefToString(def: AnyDef): string {
+  if (!def) return 'unknown';
+  switch (def.type) {
+    case 'string': return 'string';
+    case 'number': return 'number';
+    case 'boolean': return 'boolean';
+    case 'any': return 'any';
+    case 'optional': return zodDefToString((def.innerType as AnySchema).def);
+    case 'lazy': return zodDefToString((def.getter() as AnySchema).def);
+    case 'enum': return (def.entries ? Object.keys(def.entries) : []).join(' | ');
+    case 'literal': return def.values ? (def.values as unknown[]).map(String).join(' | ') : (def.value !== undefined ? String(def.value) : 'literal');
+    case 'array': return `${zodDefToString((def.element as AnySchema).def)}[]`;
+    case 'object': return 'object';
+    case 'union': return (def.options as AnySchema[]).map((o) => zodDefToString(o.def)).join(' | ');
+    case 'discriminated_union': return (def.options as AnySchema[]).map((o) => zodDefToString(o.def)).join(' | ');
+    default: return def.type ?? 'unknown';
   }
-  if (propDef.type === 'array') {
-    const items = propDef.items as JsonSchema | undefined;
-    if (items?.$ref) {
-      return `${(items.$ref as string).replace('#/definitions/', '')}[]`;
+}
+
+function extractFieldsFromSchema(schema: AnySchema): FieldEntry[] {
+  const resolved = resolveSchema(schema);
+  if (resolved.def.type !== 'object') return [];
+  const shape = resolved.def.shape as Record<string, AnySchema>;
+  return Object.entries(shape).map(([name, fieldSchema]) => ({
+    name,
+    type: zodDefToString(fieldSchema.def),
+    required: fieldSchema.def.type !== 'optional',
+  }));
+}
+
+// Map of YAML key → TypeScript type name (for display purposes)
+const CONTENT_TYPE_NAMES: Record<string, string> = {
+  main: 'MainContent',
+  carousel: 'CarouselContent',
+  tabbed_content: 'TabbedContent',
+  media: 'MediaContent',
+  timeline: 'TimelineContent',
+  icon_grid: 'IconGridContent',
+  code_block: 'CodeBlockContent',
+};
+
+const SUB_TYPE_SCHEMAS: Array<{ name: string; schema: AnySchema }> = [
+  { name: 'TextBlock', schema: textBlockSchema as unknown as AnySchema },
+  { name: 'ButtonContent', schema: buttonContentSchema as unknown as AnySchema },
+  { name: 'MediaItem', schema: mediaItemSchema as unknown as AnySchema },
+  { name: 'ImageContent', schema: imageContentSchema as unknown as AnySchema },
+  { name: 'IconContent', schema: iconContentSchema as unknown as AnySchema },
+  { name: 'CarouselItem', schema: carouselItemSchema as unknown as AnySchema },
+  { name: 'TimelineItem', schema: timelineItemSchema as unknown as AnySchema },
+];
+
+export function getTypes(): TypesResult {
+  const root = resolveSchema(pageContentSchema as unknown as AnySchema);
+  if (root.def.type !== 'object') return { contentTypes: [], subTypes: [] };
+
+  const contentField = (root.def.shape as Record<string, AnySchema>).content;
+  const contentResolved = resolveSchema(contentField);
+  if (contentResolved.def.type !== 'object') return { contentTypes: [], subTypes: [] };
+
+  const contentItemsField = (contentResolved.def.shape as Record<string, AnySchema>).content_items;
+  let itemSchema: AnySchema | null = null;
+  if (contentItemsField.def.type === 'array') {
+    itemSchema = resolveSchema(contentItemsField.def.element as AnySchema);
+  }
+
+  const contentTypes: ContentTypeEntry[] = [];
+  if (itemSchema && itemSchema.def.type === 'object') {
+    const shape = itemSchema.def.shape as Record<string, AnySchema>;
+    for (const [yamlKey, fieldSchema] of Object.entries(shape)) {
+      contentTypes.push({
+        name: yamlKey,
+        typeName: CONTENT_TYPE_NAMES[yamlKey] ?? yamlKey,
+        fields: extractFieldsFromSchema(fieldSchema),
+      });
     }
-    return `${items?.type ?? 'unknown'}[]`;
   }
-  if (Array.isArray(propDef.enum)) {
-    return (propDef.enum as unknown[]).map(String).join(' | ');
-  }
-  if (propDef.anyOf || propDef.oneOf) {
-    const variants = (propDef.anyOf ?? propDef.oneOf) as JsonSchema[];
-    return variants
-      .map((v) => (v.$ref ? (v.$ref as string).replace('#/definitions/', '') : String(v.type ?? 'unknown')))
-      .join(' | ');
-  }
-  return String(propDef.type ?? 'unknown');
+
+  const subTypes: ContentTypeEntry[] = SUB_TYPE_SCHEMAS.map(({ name, schema }) => ({
+    name,
+    typeName: name,
+    fields: extractFieldsFromSchema(schema),
+  }));
+
+  return { contentTypes, subTypes };
 }
 
 // ---------------------------------------------------------------------------

@@ -10,10 +10,12 @@ import { runPrebuild } from '../src/prebuild';
 
 function makeTmpProject(): string {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sw-prebuild-test-'));
-    // Minimal site config
+    // Minimal valid site config (satisfies siteConfigSchema: title, navigation, appBar required)
     fs.writeFileSync(path.join(root, 'stackwright.yml'), `
-theme: corporate
+title: Test Site
 navigation: []
+appBar:
+  titleText: Test Site
 `);
     fs.mkdirSync(path.join(root, 'pages'), { recursive: true });
     return root;
@@ -92,8 +94,10 @@ describe('runPrebuild — image collision prevention', () => {
         // Two pages each with a hero.png — they must not overwrite each other.
         const pageADir = path.join(root, 'pages', 'page-a');
         const pageBDir = path.join(root, 'pages', 'page-b');
-        writePageContent(root, 'page-a', `content:\n  content_items:\n    - main:\n        media:\n          src: "./hero.png"\n          type: "image"\n`);
-        writePageContent(root, 'page-b', `content:\n  content_items:\n    - main:\n        media:\n          src: "./hero.png"\n          type: "image"\n`);
+        const pageWithImage = (label: string) =>
+            `content:\n  content_items:\n    - main:\n        label: "${label}"\n        heading:\n          text: "Heading"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "${label}-img"\n          src: "./hero.png"\n          type: "image"\n`;
+        writePageContent(root, 'page-a', pageWithImage('page-a'));
+        writePageContent(root, 'page-b', pageWithImage('page-b'));
 
         // Write distinct image content so we can tell them apart after copy
         fs.writeFileSync(path.join(pageADir, 'hero.png'), 'IMAGE_A');
@@ -116,7 +120,7 @@ describe('runPrebuild — image collision prevention', () => {
 
     it('rewrites relative image paths to /images/<slug>/filename in output JSON', () => {
         const pageDir = path.join(root, 'pages', 'blog');
-        writePageContent(root, 'blog', `content:\n  content_items:\n    - main:\n        media:\n          src: "./thumb.png"\n          type: "image"\n`);
+        writePageContent(root, 'blog', `content:\n  content_items:\n    - main:\n        label: "blog-hero"\n        heading:\n          text: "Blog"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "blog-thumb"\n          src: "./thumb.png"\n          type: "image"\n`);
         fs.writeFileSync(path.join(pageDir, 'thumb.png'), 'THUMB_DATA');
 
         runPrebuild(root);
@@ -145,17 +149,46 @@ describe('runPrebuild — missing images', () => {
     });
 
     it('does not throw when a referenced image file is missing', () => {
-        writePageContent(root, 'missing-img', `content:\n  content_items:\n    - main:\n        media:\n          src: "./does-not-exist.png"\n          type: "image"\n`);
+        writePageContent(root, 'missing-img', `content:\n  content_items:\n    - main:\n        label: "missing-hero"\n        heading:\n          text: "Missing"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "missing-img"\n          src: "./does-not-exist.png"\n          type: "image"\n`);
         // Should warn but not crash
         expect(() => runPrebuild(root)).not.toThrow();
     });
 
     it('leaves the original path unchanged when image is missing', () => {
-        writePageContent(root, 'missing-img', `content:\n  content_items:\n    - main:\n        media:\n          src: "./does-not-exist.png"\n          type: "image"\n`);
+        writePageContent(root, 'missing-img', `content:\n  content_items:\n    - main:\n        label: "missing-hero"\n        heading:\n          text: "Missing"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "missing-img"\n          src: "./does-not-exist.png"\n          type: "image"\n`);
         runPrebuild(root);
         const raw = fs.readFileSync(
             path.join(root, 'public', 'stackwright-content', 'missing-img.json'), 'utf8'
         );
         expect(raw).toContain('./does-not-exist.png');
+    });
+});
+
+// ---------------------------------------------------------------------------
+// Schema validation
+// ---------------------------------------------------------------------------
+
+describe('runPrebuild — schema validation', () => {
+    let root: string;
+
+    beforeEach(() => {
+        root = makeTmpProject();
+    });
+
+    it('exits when stackwright.yml is missing required fields', () => {
+        // Write a site config that omits required fields (title, appBar)
+        fs.writeFileSync(path.join(root, 'stackwright.yml'), `navigation: []\n`);
+        expect(() => runPrebuild(root)).toThrow();
+    });
+
+    it('exits when a page content file has an invalid structure', () => {
+        // content_items is required inside content; omitting it should fail
+        writePageContent(root, 'bad-page', `content:\n  heading: "oops"\n`);
+        expect(() => runPrebuild(root)).toThrow();
+    });
+
+    it('accepts a valid site config and valid page without throwing', () => {
+        writePageContent(root, 'valid', `content:\n  content_items: []\n`);
+        expect(() => runPrebuild(root)).not.toThrow();
     });
 });
