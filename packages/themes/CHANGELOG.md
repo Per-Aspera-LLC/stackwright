@@ -1,5 +1,11 @@
 # @stackwright/themes
 
+## 0.4.1
+
+### Patch Changes
+
+- Fix broken 0.4.0 publish: add missing `files` field so only `dist/` is included in the npm tarball. Without it, `src/` was included and consumers resolved the broken multi-file structure instead of the bundled output, causing `themeSchema` to not be exported.
+
 ## 0.4.0
 
 ### Minor Changes
