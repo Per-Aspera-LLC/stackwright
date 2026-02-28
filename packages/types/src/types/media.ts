@@ -25,13 +25,12 @@ export const imageContentSchema = mediaBaseSchema.extend({
     aspect_ratio: z.number().optional(),
 });
 
-export const mediaItemSchema = z.discriminatedUnion('type', [
-    mediaContentSchema,
-    iconContentSchema,
-    imageContentSchema,
-]);
-
 export type MediaContent = z.infer<typeof mediaContentSchema>;
 export type IconContent = z.infer<typeof iconContentSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
-export type MediaItem = z.infer<typeof mediaItemSchema>;
+
+// mediaItemSchema and MediaItem are defined in media-primitives.ts (a leaf module
+// with no imports from base.ts) so that base.ts can import them for
+// buttonContentSchema.icon without creating a circular module dependency.
+export { mediaItemSchema } from './media-primitives';
+export type { MediaItem } from './media-primitives';
