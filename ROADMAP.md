@@ -7,7 +7,7 @@ This file tracks planned work across the project. Items are roughly ordered by p
 ## Near-term: Developer Experience
 
 - [ ] **Fix and modernize the CLI `create` command** — The CLI (`@stackwright/cli`) is significantly out of date relative to the current project structure. Needs to scaffold from the current hellostackwrightnext template rather than the old structure.
-- [ ] **Expose CLI as a local MCP tool** — Once the CLI is updated, wrap it as an MCP server so Claude Code (and any other MCP-compatible agent) can call tools like `stackwright_create_page`, `stackwright_scaffold_project`, and `stackwright_validate_yaml` directly without leaving the editor. This would make demo videos compelling and lower the barrier for agent-driven content generation.
+- [x] **Expose CLI as a local MCP tool** — `@stackwright/mcp` package ships a stdio-based MCP server (`pnpm stackwright-mcp`) with 8 tools: `stackwright_get_content_types`, `stackwright_list_pages`, `stackwright_add_page`, `stackwright_validate_pages`, `stackwright_validate_site`, `stackwright_list_themes`, `stackwright_get_project_info`, and `stackwright_scaffold_project`. Claude Code and any MCP-compatible agent can call these directly without leaving the editor.
 - [ ] **`STACKWRIGHT_DEBUG` documentation in Getting Started** — Mention the `.env.local.example` flag so developers know how to enable verbose logging when debugging.
 
 ---
@@ -41,7 +41,8 @@ These items are grouped because they share a common purpose: making the Stackwri
 
 ## Infrastructure
 
-- [ ] **MCP server for content types** — A dedicated MCP server that exposes: valid YAML keys and field schemas, component screenshots, and YAML validation. Higher leverage once the component library grows beyond ~10 types.
+- [x] **MCP server for content types** — `@stackwright/mcp` exposes valid YAML keys and field schemas (via Zod runtime introspection) and YAML validation for both pages and site config. 14 tests. **Component screenshots not yet implemented** — deferred until the component library grows beyond ~10 types; will require Playwright-based capture and MCP image resource support.
+- [ ] **MCP component screenshots** — Add a `stackwright_get_component_screenshot` tool that returns rendered screenshots of each content type as MCP image resources. Depends on visual regression test infrastructure (Playwright). Revisit once component count exceeds ~10.
 - [ ] **Automated schema sync check** — CI step that fails if `packages/types/src/types/` has changed but the JSON schemas haven't been regenerated.
 - [ ] **Visual regression tests** — Screenshot-based tests for each content type component so UI changes don't silently break layouts.
 - [ ] **End-to-end integration tests** — Playwright tests against the hellostackwrightnext example verifying that each content type renders correctly through the full prebuild → Next.js → browser pipeline. Prioritized over unit tests: the framework's value is in the complete YAML-to-page transform, not individual functions in isolation. Start with smoke tests (pages load, no console errors) before adding per-component assertions.
