@@ -1,5 +1,12 @@
 # @stackwright/mcp
 
+## 0.1.1
+
+### Patch Changes
+
+- @stackwright/cli@0.5.1
+- @stackwright/types@0.3.1
+
 ## 0.1.0
 
 ### Minor Changes

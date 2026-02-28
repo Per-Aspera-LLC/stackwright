@@ -1,5 +1,12 @@
 # @stackwright/nextjs
 
+## 0.2.7
+
+### Patch Changes
+
+- @stackwright/core@0.5.1
+- @stackwright/types@0.3.1
+
 ## 0.2.6
 
 ### Patch Changes

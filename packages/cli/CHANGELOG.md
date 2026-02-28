@@ -1,5 +1,14 @@
 # @stackwright/cli
 
+## 0.5.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @stackwright/themes@0.4.1
+  - @stackwright/types@0.3.1
+  - @stackwright/build-scripts@0.2.1
+
 ## 0.5.0
 
 ### Minor Changes

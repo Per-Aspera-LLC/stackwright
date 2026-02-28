@@ -1,5 +1,11 @@
 # @stackwright/build-scripts
 
+## 0.2.1
+
+### Patch Changes
+
+- @stackwright/types@0.3.1
+
 ## 0.2.0
 
 ### Minor Changes
