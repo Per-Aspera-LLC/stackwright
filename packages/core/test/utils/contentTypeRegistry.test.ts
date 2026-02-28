@@ -7,16 +7,13 @@ import {
     getContentTypeSchema,
     clearContentTypeRegistry,
 } from '../../src/utils/contentTypeRegistry';
-import { getComponentByType, componentRegistry } from '../../src/utils/componentRegistry';
+import { getComponentByType } from '../../src/utils/componentRegistry';
 
 const StubComponent = (() => null) as unknown as ComponentType<any>;
 const testSchema = z.object({ label: z.string(), text: z.string() });
 
 beforeEach(() => {
     clearContentTypeRegistry();
-    // Remove any custom types added to componentRegistry during tests
-    delete componentRegistry['test_widget'];
-    delete componentRegistry['another_widget'];
 });
 
 describe('registerContentType', () => {
@@ -45,8 +42,6 @@ describe('registerContentType', () => {
 
         expect(getContentTypeSchema('test_widget')).toBe(SchemaB);
         expect(getComponentByType('test_widget')).toBe(CompB);
-
-        delete componentRegistry['test_widget'];
     });
 });
 
@@ -66,8 +61,6 @@ describe('getRegisteredContentTypes', () => {
         expect(entries).toHaveLength(2);
         expect(entries.map(e => e.key)).toContain('test_widget');
         expect(entries.map(e => e.key)).toContain('another_widget');
-
-        delete componentRegistry['another_widget'];
     });
 
     it('each entry has key, schema, and component', () => {
@@ -85,5 +78,12 @@ describe('clearContentTypeRegistry', () => {
         clearContentTypeRegistry();
         expect(getRegisteredContentTypes()).toEqual([]);
         expect(getContentTypeSchema('test_widget')).toBeUndefined();
+    });
+
+    it('also deregisters components from componentRegistry', () => {
+        registerContentType('test_widget', testSchema, StubComponent);
+        expect(getComponentByType('test_widget')).toBe(StubComponent);
+        clearContentTypeRegistry();
+        expect(getComponentByType('test_widget')).toBeNull();
     });
 });

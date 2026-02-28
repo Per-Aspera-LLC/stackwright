@@ -112,6 +112,11 @@ export function registerComponent(
     componentRegistry[contentType] = component;
 }
 
+// Helper to remove a component from the registry
+export function deregisterComponent(contentType: string): void {
+    delete componentRegistry[contentType];
+}
+
 // Re-export stackwright registry for convenience
 export {
     stackwrightRegistry,
