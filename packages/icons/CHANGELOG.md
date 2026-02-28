@@ -1,5 +1,11 @@
 # @stackwright/icons
 
+## 0.2.3
+
+### Patch Changes
+
+- 750f84a: Patch bump for core package import fixes.
+
 ## 0.2.3-alpha.0
 
 ### Patch Changes

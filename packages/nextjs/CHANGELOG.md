@@ -1,5 +1,18 @@
 # @stackwright/nextjs
 
+## 0.2.6
+
+### Patch Changes
+
+- 750f84a: Patch bump for core package import fixes.
+- Updated dependencies [750f84a]
+- Updated dependencies [ce372ed]
+- Updated dependencies [7587c14]
+- Updated dependencies [2643e8b]
+- Updated dependencies [1c35939]
+  - @stackwright/types@0.3.0
+  - @stackwright/core@0.5.0
+
 ## 0.2.6-alpha.3
 
 ### Patch Changes

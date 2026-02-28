@@ -4,10 +4,11 @@ import { registerContentTypeTools } from './tools/content-types.js';
 import { registerPageTools } from './tools/pages.js';
 import { registerSiteTools } from './tools/site.js';
 import { registerProjectTools } from './tools/project.js';
+import { version } from '../package.json';
 
 const server = new McpServer({
   name: 'stackwright',
-  version: '0.1.0-alpha.0',
+  version,
 });
 
 registerContentTypeTools(server);

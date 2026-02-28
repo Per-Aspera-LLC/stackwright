@@ -11,25 +11,19 @@ The MCP server runs as a stdio-based service and provides tools for:
 - **Site Management**: Validate site configuration and list available themes
 - **Project Management**: Get project information and scaffold new projects
 
-## Installation
+## Prerequisites
 
-```bash
-# Install the MCP server package
-pnpm add @stackwright/mcp
-
-# Or build from source
-cd packages/mcp
-pnpm build
-```
+- Node.js v18+
+- Stackwright monorepo cloned and built (`pnpm install && pnpm build` from root)
 
 ## Running the Server
 
 ```bash
-# Run the MCP server (stdio mode)
+# From the monorepo root
 pnpm stackwright-mcp
 ```
 
-The server will start and listen on stdin/stdout for MCP protocol messages.
+The server starts and listens on stdin/stdout for MCP protocol messages.
 
 ## Available Tools
 
@@ -208,61 +202,53 @@ const result = await server.callTool('stackwright_scaffold_project', {
 
 The Stackwright MCP server follows the Model Context Protocol (MCP) specification. Any MCP-compatible client can connect to and use these tools.
 
-### Example: Using with Claude Code
-
-```typescript
-// Connect to the MCP server
-const client = new McpClient();
-await client.connect(new StdioClientTransport());
-
-// Call a tool
-const result = await client.callTool('stackwright_get_content_types', {});
-console.log(result.content[0].text);
-
-// Disconnect when done
-await client.disconnect();
-```
-
-### Example: Using with Custom MCP Client
+### Example: Agent workflow
 
 ```typescript
 import { McpClient } from '@modelcontextprotocol/sdk/client/mcp.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
-async function main() {
-  const client = new McpClient();
-  const transport = new StdioClientTransport();
-  
-  await client.connect(transport);
-  
-  try {
-    // Get content types
-    const contentTypes = await client.callTool('stackwright_get_content_types', {});
-    console.log('Content types:', contentTypes.content[0].text);
-    
-    // List pages in a project
-    const pages = await client.callTool('stackwright_list_pages', {
-      projectRoot: '/path/to/project'
-    });
-    console.log('Pages:', pages.content[0].text);
-    
-  } finally {
-    await client.disconnect();
-  }
-}
+const client = new McpClient();
+await client.connect(new StdioClientTransport());
 
-main().catch(console.error);
+try {
+  // 1. Understand available content types
+  const contentTypes = await client.callTool('stackwright_get_content_types', {});
+
+  // 2. Create a new page
+  await client.callTool('stackwright_add_page', {
+    projectRoot: '/path/to/project',
+    slug: 'services',
+    heading: 'Our Services',
+  });
+
+  // 3. Validate
+  const validation = await client.callTool('stackwright_validate_pages', {
+    projectRoot: '/path/to/project',
+    slug: 'services',
+  });
+
+  if (validation.isError) {
+    console.error('Validation failed:', validation.content[0].text);
+  }
+} finally {
+  await client.disconnect();
+}
 ```
+
+## Best Practices
+
+1. **Always validate after creating or modifying content** — call `stackwright_validate_pages` after `stackwright_add_page`.
+2. **Use `stackwright_get_content_types` to ground your YAML** — the tool returns the live Zod-derived schema, so field names and required/optional status are always current.
+3. **Check `isError` on every response** — tools signal errors via the `isError` flag rather than throwing, so a successful HTTP-level call can still represent a domain error.
+4. **Use absolute paths** — all `projectRoot` and `targetDir` parameters must be absolute paths.
+5. **Disconnect in a finally block** — always call `client.disconnect()` to avoid leaving the server process orphaned.
 
 ## Development
 
 ### Building
 
 ```bash
-# Build the MCP server
-pnpm build:mcp
-
-# Or from the monorepo root
 cd packages/mcp
 pnpm build
 ```
@@ -270,10 +256,6 @@ pnpm build
 ### Testing
 
 ```bash
-# Run tests
-pnpm test:mcp
-
-# Or from the monorepo root
 cd packages/mcp
 pnpm test
 ```
@@ -281,10 +263,6 @@ pnpm test
 ### Running in Development Mode
 
 ```bash
-# Watch for changes and rebuild
-pnpm dev:mcp
-
-# Or from the monorepo root
 cd packages/mcp
 pnpm dev
 ```
@@ -296,22 +274,14 @@ The MCP server is built on top of the `@modelcontextprotocol/sdk` and exposes fu
 ### Tool Registration Pattern
 
 ```typescript
-// Each tool is registered with:
-// - A unique name (e.g., 'stackwright_get_content_types')
-// - A description for agents
-// - Input schema (using Zod for validation)
-// - An async handler function
-
 server.tool(
   'tool_name',
   'Tool description',
   {
-    // Input parameters with Zod validation
     param1: z.string().describe('Description'),
-    param2: z.number().optional().describe('Optional description')
+    param2: z.number().optional().describe('Optional description'),
   },
   async ({ param1, param2 }) => {
-    // Tool implementation
     return { content: [{ type: 'text', text: 'Result' }] };
   }
 );
@@ -323,22 +293,25 @@ Tools return structured responses with:
 - `content`: Array of content items (text, images, etc.)
 - `isError`: Boolean flag indicating if the response represents an error
 
-Example error response:
 ```json
 {
-  "content": [
-    {
-      "type": "text",
-      "text": "Validation failed:\n  [about] Missing required field: heading"
-    }
-  ],
+  "content": [{ "type": "text", "text": "Validation failed:\n  [about] Missing required field: heading" }],
   "isError": true
 }
 ```
 
+## Troubleshooting
+
+**Server not responding** — ensure the server is running with `pnpm stackwright-mcp` and that stdin/stdout are properly connected to the client.
+
+**Tool not found** — verify the tool name is correct (all tool names are prefixed with `stackwright_`).
+
+**Validation failures** — check the structured error text for specific field issues; use `stackwright_get_content_types` to confirm required fields.
+
+**Permission errors on file operations** — use absolute paths and ensure the server process has write access to the target directory.
+
 ## Version Compatibility
 
-The MCP server is designed to work with:
 - `@modelcontextprotocol/sdk`: ^1.27.0
 - `@stackwright/cli`: Same workspace version
 - Node.js: ^18.0.0 or later
@@ -349,14 +322,4 @@ MIT License. See the [LICENSE](../LICENSE) file for details.
 
 ## Support
 
-For issues and questions:
 - GitHub Issues: https://github.com/Per-Aspera-LLC/stackwright/issues
-- Documentation: https://github.com/Per-Aspera-LLC/stackwright
-- MCP Protocol: https://modelcontextprotocol.org/
-
-## Future Roadmap
-
-- Additional tools for theme management
-- Tools for component registration and customization
-- Support for more complex content operations
-- Integration with build and deployment pipelines
