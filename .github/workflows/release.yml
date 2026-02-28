@@ -35,6 +35,8 @@ jobs:
                   git config user.name "github-actions"
                   git config user.email "github-actions@github.com"
 
+            - run: pnpm install --frozen-lockfile
+
             - name: Exit prerelease mode if active
               run: |
                   if [ -f ".changeset/pre.json" ]; then
@@ -43,8 +45,6 @@ jobs:
                   git commit -m "chore: exit prerelease mode [skip ci]" || echo "No changes"
                   git push origin main
                   fi
-
-            - run: pnpm install --frozen-lockfile
             - run: pnpm build
 
             - name: Create versions and changelogs
