@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.5.0-alpha.2
+
+### Patch Changes
+
+- 7587c14: fix(core): clearContentTypeRegistry now also deregisters components from componentRegistry, eliminating the need for manual `delete componentRegistry[key]` workarounds in tests
+
 ## 0.5.0-alpha.1
 
 ### Minor Changes
