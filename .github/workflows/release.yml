@@ -5,17 +5,19 @@ on:
         branches:
             - main
 
+# Versioning is done manually before merging to main (changeset pre exit +
+# changeset version). This workflow only publishes — it never writes back to
+# the repository, so it works with protected-branch rules and requires no
+# elevated token permissions.
 permissions:
-    contents: write
-    id-token: write
+    contents: read
+    id-token: write  # required for npm provenance attestation
 
 jobs:
     release:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
 
             - uses: pnpm/action-setup@v3
               with:
@@ -23,40 +25,14 @@ jobs:
 
             - uses: actions/setup-node@v4
               with:
-                  node-version: 20
+                  node-version: 22
                   registry-url: "https://registry.npmjs.org"
                   cache: "pnpm"
 
-            - name: Upgrade npm for OIDC provenance support
-              run: npm install -g npm@latest
-
-            - name: Configure git
-              run: |
-                  git config user.name "github-actions"
-                  git config user.email "github-actions@github.com"
-
             - run: pnpm install --frozen-lockfile
-
-            - name: Exit prerelease mode if active
-              run: |
-                  if [ -f ".changeset/pre.json" ]; then
-                  pnpm changeset pre exit
-                  git add .
-                  git commit -m "chore: exit prerelease mode [skip ci]" || echo "No changes"
-                  git push origin main
-                  fi
             - run: pnpm build
 
-            - name: Create versions and changelogs
-              run: pnpm changeset version
-
-            - name: Commit version bumps
-              run: |
-                  git add .
-                  git diff --staged --quiet || git commit -m "chore: version packages [skip ci]"
-                  git push origin main
-
             - name: Publish to npm
-              run: pnpm publish -r --provenance --access public
+              run: pnpm publish -r --provenance --access public --no-git-checks
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
