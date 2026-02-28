@@ -5,6 +5,9 @@
     "type": "git",
     "url": "https://github.com/Per-Aspera-LLC/stackwright"
   },
+  "files": [
+    "dist"
+  ],
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
