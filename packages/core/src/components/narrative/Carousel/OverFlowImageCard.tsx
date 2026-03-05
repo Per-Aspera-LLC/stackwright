@@ -19,6 +19,7 @@ export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardPr
       style={{
         padding: 0,
         position: 'relative',
+        width: '100%',
         minWidth: minWidth,
         overflow: 'visible',
         top: '-45px',
@@ -32,11 +33,9 @@ export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardPr
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', height: '100%' }}>
         <div style={{ width: '100%', height: '100%', backgroundColor: backgroundColor }}>
           <Media
-            src={item.media.src}
-            type={(item.media as MediaItem).type}
-            alt={(item.media as MediaItem).alt}
+            {...(item.media as MediaItem)}
             label={item.title}
-            style={item.media.style ? item.media.style : 'contained'}
+            style="cover"
           />
 
           <h3
