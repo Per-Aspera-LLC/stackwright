@@ -30,7 +30,7 @@
         "js-yaml": "^4.1.0"
     },
     "devDependencies": {
-        "@swc/core": "^1.13.2",
+        "@swc/core": "^1.15.18",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@types/js-yaml": "^4.0",
