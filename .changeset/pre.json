@@ -15,6 +15,7 @@
     "@stackwright/e2e": "0.0.0"
   },
   "changesets": [
+    "add-alert-content-type",
     "add-e2e-playwright-tests",
     "auto-generate-agent-docs",
     "ci-schema-sync-check",
