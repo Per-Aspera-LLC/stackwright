@@ -13,6 +13,7 @@ export { getTypes } from './commands/types';
 export { runPrebuildCommand } from './commands/prebuild';
 export { listThemes } from './commands/theme';
 export { getInfo } from './commands/info';
+export { generateAgentDocs } from './commands/generate-agent-docs';
 
 // Result types
 export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
@@ -22,3 +23,4 @@ export type { TypesResult, ContentTypeEntry, FieldEntry } from './commands/types
 export type { PrebuildResult } from './commands/prebuild';
 export type { ThemeListResult } from './commands/theme';
 export type { InfoResult, PackageVersions } from './commands/info';
+export type { GenerateAgentDocsResult } from './commands/generate-agent-docs';

@@ -49,34 +49,35 @@ Without these hooks, co-located images will not be found at runtime.
 
 ### Content Type Reference
 
-**AGENTS: This table is the source of truth for valid YAML content types. If you add, remove, or change fields in `packages/types/src/types/`, you MUST update this table and the matching table in `examples/hellostackwrightnext/AGENTS.md`.**
+**AGENTS: This table is auto-generated from the live Zod schemas. Run `pnpm stackwright -- generate-agent-docs` to regenerate. Do NOT edit the content between the markers manually.**
 
+<!-- stackwright:content-type-table:start -->
 The YAML key is the key used inside `content_items` entries. All types inherit `label` (required), `color` (optional), and `background` (optional) from `BaseContent`.
 
 | YAML key | Required fields | Optional fields |
 |---|---|---|
-| `main` | `label`, `heading` (TextBlock), `textBlocks` (TextBlock[]) | `media` (MediaItem), `graphic_position` (`left`\|`right`), `buttons` (ButtonContent[]), `textToGraphic` (0-100, default 58), `background` |
-| `carousel` | `label`, `heading` (string), `items` (CarouselItem[]) | `autoPlay` (bool), `autoPlaySpeed` (ms), `infinite` (bool), `background` |
-| `timeline` | `label`, `items` (TimelineItem[]) | `heading` (TextBlock) |
-| `icon_grid` | `label`, `icons` (IconContent[]) | `heading` (TextBlock) |
-| `tabbed_content` | `label`, `heading` (TextBlock), `tabs` (ContentItem[]) | — |
-| `media` | `label`, `type: "media"`, `src` (string) | `alt`, `height`, `width`, `style` (`contained`\|`overflow`) |
-| `code_block` | `label`, `code` (string) | `language` (string), `lineNumbers` (bool, default false), `background` |
+| `carousel` | `label` (string), `heading` (string), `items` (CarouselItem[]) | `color` (string), `background` (string), `autoPlaySpeed` (number), `infinite` (boolean), `autoPlay` (boolean) |
+| `main` | `label` (string), `heading` (TextBlock), `textBlocks` (TextBlock[]) | `color` (string), `background` (string), `media` (MediaItem), `graphic_position` (`left` | `right`), `buttons` (ButtonContent[]), `textToGraphic` (number) |
+| `tabbed_content` | `label` (string), `heading` (TextBlock), `tabs` (object[]) | `color` (string), `background` (string) |
+| `media` | `label` (string), `src` (string), `type` ("media") | `color` (string), `background` (string), `alt` (string), `height` (number | string), `width` (number | string), `style` (`contained` | `overflow`) |
+| `timeline` | `label` (string), `items` (TimelineItem[]) | `color` (string), `background` (string), `heading` (TextBlock) |
+| `icon_grid` | `label` (string), `icons` (IconContent[]) | `color` (string), `background` (string), `heading` (TextBlock) |
+| `code_block` | `label` (string), `code` (string) | `color` (string), `background` (string), `language` (string), `lineNumbers` (boolean) |
 
 **Sub-type reference:**
 
 | Type | Fields |
 |---|---|
 | `TextBlock` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string) |
-| `ButtonContent` | `text`, `textSize`, `variant` (`text`\|`outlined`\|`contained`), `href`?, `bgColor`?, `textColor`?, `variantSize`? (`small`\|`medium`\|`large`), `icon`? (MediaItem), `alignment`? (`left`\|`center`\|`right`) |
-| `MediaContent` | `type: "media"` (required), `label` (string), `src` (file path or URL), `alt`?, `height`?, `width`?, `style`? (`contained`\|`overflow`) |
-| `ImageContent` | `type: "image"` (required), `label` (string), `src` (file path or URL), `alt`?, `height`?, `width`?, `aspect_ratio`? (number), `style`? (`contained`\|`overflow`) |
-| `IconContent` | `type: "icon"` (required), `label` (string), `src` (registry key — see `@stackwright/icons` AGENTS.md for valid names), `color`?, `height`? (px, default 24), `size`? (number \| TypographyVariant) |
-| `MediaItem` | Union of `MediaContent` \| `ImageContent` \| `IconContent`. `type` is required on all three and acts as the discriminator. |
-| `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? |
+| `ButtonContent` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string), `variant` (`text` | `outlined` | `contained`), `variantSize`? (`small` | `medium` | `large`), `href`? (string), `action`? (string), `icon`? (MediaItem), `alignment`? (`left` | `center` | `right`), `bgColor`? (string) |
+| `MediaItem` | Discriminated union: `type: "media"` \| `type: "icon"` \| `type: "image"`. `type` field is required and acts as discriminator. |
+| `ImageContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("image"), `aspect_ratio`? (number) |
+| `IconContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("icon"), `size`? (number | TypographyVariant) |
+| `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? (string) |
 | `TimelineItem` | `year` (string), `event` (string) |
 
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
+<!-- stackwright:content-type-table:end -->
 
 ### Integration Points and Cross-Component Communication
 - **Service Boundaries**: No obvious service boundaries, all code resides within the project's monorepo
