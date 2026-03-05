@@ -12,5 +12,7 @@
     "@stackwright/themes": "0.4.1",
     "@stackwright/types": "0.3.1"
   },
-  "changesets": []
+  "changesets": [
+    "auto-generate-agent-docs"
+  ]
 }
