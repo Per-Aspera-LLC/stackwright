@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.5.2-alpha.2
+
+### Patch Changes
+
+- 8f052e1: Add Playwright E2E tests covering the full YAML → prebuild → Next.js build → browser pipeline. CI now runs smoke tests against the example app on every PR.
+
 ## 0.5.2-alpha.1
 
 ### Patch Changes
