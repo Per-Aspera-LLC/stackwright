@@ -2,6 +2,12 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Branching Workflow
+
+- **`dev`** is the integration branch. Feature branches are created from `dev` and PRs target `dev`.
+- **`main`** is the release branch. `dev` is merged to `main` only when cutting a release.
+- When creating a new feature branch: `git checkout -b feat/issue-XX-description dev`
+
 ## Commands
 
 ```bash

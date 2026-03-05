@@ -43,6 +43,26 @@ describe('getComponentByType — built-in types', () => {
         expect(getComponentByType('code_block')).not.toBeNull();
     });
 
+    it('resolves "feature_list" to a non-null component', () => {
+        expect(getComponentByType('feature_list')).not.toBeNull();
+    });
+
+    it('resolves "testimonial_grid" to a non-null component', () => {
+        expect(getComponentByType('testimonial_grid')).not.toBeNull();
+    });
+
+    it('resolves "faq" to a non-null component', () => {
+        expect(getComponentByType('faq')).not.toBeNull();
+    });
+
+    it('resolves "pricing_table" to a non-null component', () => {
+        expect(getComponentByType('pricing_table')).not.toBeNull();
+    });
+
+    it('resolves "contact_form_stub" to a non-null component', () => {
+        expect(getComponentByType('contact_form_stub')).not.toBeNull();
+    });
+
     it('returns null for an unknown content type', () => {
         expect(getComponentByType('__nonexistent_type__')).toBeNull();
     });

@@ -722,6 +722,280 @@
             "code"
           ],
           "additionalProperties": false
+        },
+        "feature_list": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "columns": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "icon": {
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/__schema0"
+                      }
+                    ]
+                  },
+                  "heading": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "heading",
+                  "description"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "label",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        "testimonial_grid": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "columns": {
+              "type": "number"
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "quote": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "type": "string"
+                  },
+                  "company": {
+                    "type": "string"
+                  },
+                  "avatar": {
+                    "allOf": [
+                      {
+                        "$ref": "#/definitions/__schema0"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "quote",
+                  "name"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "label",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        "faq": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "question": {
+                    "type": "string"
+                  },
+                  "answer": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "question",
+                  "answer"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "label",
+            "items"
+          ],
+          "additionalProperties": false
+        },
+        "pricing_table": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "plans": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "features": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "highlighted": {
+                    "type": "boolean"
+                  },
+                  "badge_text": {
+                    "type": "string"
+                  },
+                  "cta_text": {
+                    "type": "string"
+                  },
+                  "cta_href": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "price",
+                  "features",
+                  "cta_text",
+                  "cta_href"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "label",
+            "plans"
+          ],
+          "additionalProperties": false
+        },
+        "contact_form_stub": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "email_subject": {
+              "type": "string"
+            },
+            "phone": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "button_text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label",
+            "email"
+          ],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

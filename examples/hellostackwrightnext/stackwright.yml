@@ -17,6 +17,8 @@ navigation:
       href: "/getting-started"
     - label: "About"
       href: "/about"
+    - label: "Showcase"
+      href: "/showcase"
 
 footer:
     backgroundColor: "primary"

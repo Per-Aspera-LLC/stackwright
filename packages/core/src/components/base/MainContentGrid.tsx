@@ -20,7 +20,7 @@ export function MainContentGrid(content: MainContent) {
     );
 
     const imageGrid = content.media && (
-        <div style={{ flex: `0 0 ${graphicPercent}%`, padding: '8px' }}>
+        <div style={{ flex: `0 0 ${graphicPercent}%`, minWidth: 0, padding: '8px' }}>
             <div style={{ width: "100%", height: "100%" }}>
                 <Media
                     {...content.media}
@@ -31,7 +31,7 @@ export function MainContentGrid(content: MainContent) {
     );
 
     const textGrid = (
-        <div style={{ flex: `0 0 ${content.media ? textPercent : 100}%`, padding: '8px' }}>
+        <div style={{ flex: `0 0 ${content.media ? textPercent : 100}%`, minWidth: 0, padding: '8px' }}>
             <div style={{ width: "100%", height: "auto" }}>
                 {content.heading?.text && (
                     <h2 style={{ color: headerColor, margin: '0 0 8px 0' }}>
@@ -74,7 +74,7 @@ export function MainContentGrid(content: MainContent) {
             <div
                 style={{
                     display: 'flex',
-                    flexWrap: 'wrap',
+                    flexWrap: 'nowrap',
                     justifyContent: "center",
                     alignItems: "center",
                     gap: '16px',

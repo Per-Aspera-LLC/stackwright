@@ -1,5 +1,5 @@
 import React from 'react'
-import { CarouselItem } from '@stackwright/types'
+import { CarouselItem, MediaItem } from '@stackwright/types'
 import { useSafeTheme } from '../../../hooks/useSafeTheme'
 import { Media } from '../../media/Media'
 
@@ -33,6 +33,8 @@ export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardPr
         <div style={{ width: '100%', height: '100%', backgroundColor: backgroundColor }}>
           <Media
             src={item.media.src}
+            type={(item.media as MediaItem).type}
+            alt={(item.media as MediaItem).alt}
             label={item.title}
             style={item.media.style ? item.media.style : 'contained'}
           />
