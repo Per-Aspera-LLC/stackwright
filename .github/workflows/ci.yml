@@ -40,22 +40,32 @@ jobs:
       - run: pnpm install
       - run: pnpm build
 
+      - name: Pack workspace packages as tarballs
+        run: |
+          mkdir -p /tmp/stackwright-tarballs
+          for pkg in types themes icons core nextjs build-scripts ui-shadcn cli; do
+            pnpm --filter "@stackwright/$pkg" pack --pack-destination /tmp/stackwright-tarballs
+          done
+
       - name: Scaffold a test project
         run: node packages/cli/dist/cli.js scaffold /tmp/test-site --title "Test Site" --theme default --json
 
-      - name: Override scaffold deps with workspace versions
+      - name: Override scaffold deps with local tarballs
         run: |
           node -e "
-            const pkg = require('./package.json');
-            const ws = 'file:${{ github.workspace }}/packages/';
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+            const tarballs = fs.readdirSync('/tmp/stackwright-tarballs');
             for (const section of ['dependencies', 'devDependencies']) {
               for (const dep of Object.keys(pkg[section] || {})) {
                 if (dep.startsWith('@stackwright/')) {
-                  pkg[section][dep] = ws + dep.replace('@stackwright/', '');
+                  const short = dep.replace('@stackwright/', '');
+                  const tarball = tarballs.find(t => t.includes(short));
+                  if (tarball) pkg[section][dep] = '/tmp/stackwright-tarballs/' + tarball;
                 }
               }
             }
-            require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+            fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
         working-directory: /tmp/test-site
 
@@ -104,6 +114,8 @@ jobs:
 
       - run: pnpm install
       - run: pnpm build
+      - run: pnpm install
+        name: Re-link bins after build
 
       - name: Install Playwright browsers
         run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
