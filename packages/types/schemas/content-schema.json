@@ -953,6 +953,43 @@
           ],
           "additionalProperties": false
         },
+        "alert": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "variant": {
+              "type": "string",
+              "enum": [
+                "info",
+                "warning",
+                "success",
+                "danger",
+                "note",
+                "tip"
+              ]
+            },
+            "title": {
+              "type": "string"
+            },
+            "body": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label",
+            "variant",
+            "body"
+          ],
+          "additionalProperties": false
+        },
         "contact_form_stub": {
           "type": "object",
           "properties": {
