@@ -19,7 +19,7 @@
         "changeset": "changeset",
         "version-packages": "changeset version",
         "release": "pnpm build && changeset publish",
-        "test": "pnpm -r test",
+        "test": "pnpm -r --filter='!@stackwright/e2e' test",
         "test:core": "pnpm --filter @stackwright/core test",
         "test:e2e": "pnpm --filter @stackwright/e2e test",
         "stackwright": "node packages/cli/dist/cli.js",

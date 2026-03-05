@@ -17,7 +17,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `pnpm --filter stackwright-example-app build && pnpm --filter stackwright-example-app start`,
+    command: `pnpm --filter stackwright-example-app exec stackwright-prebuild && pnpm --filter stackwright-example-app exec next build && pnpm --filter stackwright-example-app exec next start`,
     cwd: path.resolve(__dirname, "../.."),
     port: 3000,
     timeout: 180_000,
