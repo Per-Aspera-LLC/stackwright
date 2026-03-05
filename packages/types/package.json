@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/types",
-    "version": "0.3.1",
+    "version": "0.3.2-alpha.0",
     "description": "TypeScript types and JSON schemas for Stackwright",
     "repository": {
         "type": "git",
@@ -15,12 +15,13 @@
             "import": "./dist/index.mjs",
             "require": "./dist/index.js"
         },
-        "./schemas/theme-schema.json": "./dist/schemas/theme-schema.json",
-        "./schemas/content-schema.json": "./dist/schemas/content-schema.json",
-        "./schemas/siteconfig-schema.json": "./dist/schemas/site-config-schema.json"
+        "./schemas/theme-schema.json": "./schemas/theme-schema.json",
+        "./schemas/content-schema.json": "./schemas/content-schema.json",
+        "./schemas/siteconfig-schema.json": "./schemas/site-config-schema.json"
     },
     "files": [
-        "dist"
+        "dist",
+        "schemas"
     ],
     "scripts": {
         "build": "tsup && pnpm generate-schemas",
@@ -36,8 +37,8 @@
         "@types/fs-extra": "11.0.4",
         "@types/js-yaml": "^4.0.5",
         "@types/react": "^19",
-        "fs-extra": "^11.3.0",
-        "tsup": "^8.0.0",
+        "fs-extra": "^11.3.4",
+        "tsup": "^8.5.1",
         "tsx": "^4.21.0",
         "typescript": "^5.6.0",
         "vitest": "^4.0.18"

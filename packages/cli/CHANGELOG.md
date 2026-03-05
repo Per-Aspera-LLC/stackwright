@@ -1,5 +1,27 @@
 # @stackwright/cli
 
+## 0.6.0-alpha.1
+
+### Patch Changes
+
+- 6820928: Move JSON schema output from `dist/schemas/` to `schemas/` (committed to git) so CI can detect drift. Update package exports and `files` field. Update scaffold `.vscode/settings.json` to reference the new schema path.
+- Updated dependencies [6820928]
+  - @stackwright/types@0.3.2-alpha.0
+  - @stackwright/build-scripts@0.2.2-alpha.0
+
+## 0.6.0-alpha.0
+
+### Minor Changes
+
+- 4efd19a: feat(cli): add `generate-agent-docs` command to auto-generate AGENTS.md content type reference tables from live Zod schemas (closes #83)
+
+  - New `pnpm stackwright -- generate-agent-docs` command introspects Zod schemas at runtime and regenerates the content type reference tables in `/AGENTS.md` and `examples/hellostackwrightnext/AGENTS.md`
+  - Tables are delimited by `<!-- stackwright:content-type-table:start/end -->` HTML comment markers; non-table content is preserved
+  - Schema name registry maps Zod schema object references to human-readable type names (TextBlock, MediaItem, etc.) for readable output
+  - Fixed `resolveSchema` to correctly handle `optional(lazy(...))` wrapper nesting (fixes `tabbed_content` showing empty fields)
+  - CI job `check-agent-docs` runs the generator and fails with an actionable message if AGENTS.md is out of sync
+  - `generateAgentDocs()` exported from `@stackwright/cli` for programmatic use
+
 ## 0.5.1
 
 ### Patch Changes

@@ -1,16 +1,16 @@
 {
     "yaml.schemas": {
-        "node_modules/@stackwright/types/dist/schemas/content-schema.json": [
+        "node_modules/@stackwright/types/schemas/content-schema.json": [
             "**/pages/*/content.yaml",
             "**/pages/*/content.yml",
             "**/pages/content.yaml",
             "**/pages/content.yml"
         ],
-        "node_modules/@stackwright/types/dist/schemas/theme-schema.json": [
+        "node_modules/@stackwright/types/schemas/theme-schema.json": [
             "**/themes/*.yaml",
             "**/themes/*.yml"
         ],
-        "node_modules/@stackwright/types/dist/schemas/site-config-schema.json": [
+        "node_modules/@stackwright/types/schemas/site-config-schema.json": [
             "**/stackwright.yaml",
             "**/stackwright.yml",
             "**/site-config.yaml",
