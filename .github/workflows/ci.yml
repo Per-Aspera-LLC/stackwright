@@ -38,7 +38,7 @@ jobs:
           cache: 'pnpm'
 
       - run: pnpm install
-      - run: pnpm build:cli
+      - run: pnpm build
 
       - name: Scaffold a test project
         run: pnpm stackwright -- scaffold /tmp/test-site --title "Test Site" --theme default --json
