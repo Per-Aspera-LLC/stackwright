@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.2.7",
+    "version": "0.2.8-alpha.0",
     "description": "Next.js implementations for Stackwright components",
     "repository": {
         "type": "git",
@@ -37,7 +37,7 @@
         "next": "^16.1.6",
         "react": "^19",
         "react-dom": "^19",
-        "tsup": "^8.5.0",
+        "tsup": "^8.5.1",
         "typescript": "^5.8.3",
         "vitest": "^4.0.18"
     },

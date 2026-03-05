@@ -1,5 +1,12 @@
 # @stackwright/core
 
+## 0.5.2-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [6820928]
+  - @stackwright/types@0.3.2-alpha.0
+
 ## 0.5.1
 
 ### Patch Changes

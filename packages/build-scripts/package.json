@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/build-scripts",
-    "version": "0.2.1",
+    "version": "0.2.2-alpha.0",
     "description": "Build-time scripts for Stackwright projects (prebuild image processing, YAML compilation)",
     "repository": {
         "type": "git",
@@ -26,7 +26,7 @@
     "devDependencies": {
         "@types/js-yaml": "^4.0",
         "@types/node": "^25.3.2",
-        "tsup": "^8.5.0",
+        "tsup": "^8.5.1",
         "typescript": "^5.8.3",
         "vitest": "^4.0.18"
     },

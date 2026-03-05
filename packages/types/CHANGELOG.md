@@ -1,5 +1,11 @@
 # @stackwright/types
 
+## 0.3.2-alpha.0
+
+### Patch Changes
+
+- 6820928: Move JSON schema output from `dist/schemas/` to `schemas/` (committed to git) so CI can detect drift. Update package exports and `files` field. Update scaffold `.vscode/settings.json` to reference the new schema path.
+
 ## 0.3.1
 
 ### Patch Changes

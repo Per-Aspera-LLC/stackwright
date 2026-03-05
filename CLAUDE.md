@@ -109,11 +109,10 @@ User's Next.js App
 ### Content Type Maintenance Rule
 
 **When modifying `packages/types/src/types/` — adding, removing, or changing any content type, field, or enum — you MUST:**
-1. Update the Content Type Reference table in `/AGENTS.md`
-2. Update the matching table in `examples/hellostackwrightnext/AGENTS.md`
-3. Regenerate JSON schemas: `cd packages/types && pnpm generate-schemas`
+1. Run `pnpm stackwright -- generate-agent-docs` to regenerate AGENTS.md tables in both `/AGENTS.md` and `examples/hellostackwrightnext/AGENTS.md`
+2. Regenerate JSON schemas: `cd packages/types && pnpm generate-schemas`
 
-The AGENTS.md tables are the primary reference for agents writing YAML content. Stale tables will cause agents to write invalid YAML.
+The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the tables are out of sync.
 
 ### Naming Conventions
 
