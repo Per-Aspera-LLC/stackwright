@@ -5,7 +5,7 @@ import type { SiteConfig } from "@stackwright/types";
 import type { PageContent } from "@stackwright/types";
 
 // ---------------------------------------------------------------------------
-// Template Processing - Uses filesystem reflection instead of hardcoded strings
+// Template Processing
 // ---------------------------------------------------------------------------
 
 export interface TemplateConfig {
@@ -47,7 +47,7 @@ export async function processTemplate(
         written.push(relPath);
     }
 
-    async function processYamlFile(relPath: string, data: any): Promise<void> {
+    async function processYamlFile(relPath: string, data: SiteConfig | PageContent): Promise<void> {
         const fullPath = path.join(targetDir, relPath);
         await fs.ensureDir(path.dirname(fullPath));
         const yamlContent = yaml.dump(data, { lineWidth: 120 });
@@ -68,10 +68,14 @@ export async function processTemplate(
 
     for (const file of staticFiles) {
         const templatePath = path.join(templateDir, file);
-        if (fs.existsSync(templatePath)) {
-            const content = await fs.readFile(templatePath, "utf8");
-            await processFile(file, content);
+        if (!fs.existsSync(templatePath)) {
+            throw new Error(
+                `Template file missing: ${templatePath}\n` +
+                `This is a packaging error — please reinstall @stackwright/cli.`,
+            );
         }
+        const content = await fs.readFile(templatePath, "utf8");
+        await processFile(file, content);
     }
 
     // Generate dynamic files
@@ -115,12 +119,7 @@ function buildSiteConfig(siteTitle: string, themeId: string, year: number): Site
             backgroundColor: "primary",
             textColor: "secondary",
             copyright: `© ${year} ${siteTitle}. All rights reserved.`,
-            links: [
-                {
-                    label: "GitHub",
-                    href: "https://github.com/Per-Aspera-LLC/stackwright/",
-                },
-            ],
+            links: [],
         },
         customTheme: {
             id: "custom",
@@ -283,6 +282,7 @@ function buildGettingStartedPageContent(): PageContent {
 }
 
 function buildPackageJson(projectName: string): object {
+    // MAINTENANCE: Update these versions when cutting major releases of Stackwright.
     const VERSIONS = {
         emotionReact: "^11.14.0",
         emotionStyled: "^11.14.1",
@@ -342,7 +342,7 @@ function buildPackageJson(projectName: string): object {
             node: ">=20.0.0",
             pnpm: ">=10.0.0",
         },
-        packageManager: "pnpm@10.0.0",
+        packageManager: "pnpm@10",
     };
 }
 
