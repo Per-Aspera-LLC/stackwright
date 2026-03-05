@@ -1,12 +1,12 @@
 import { registerStackwrightIcons } from '../registry/iconRegistry';
 import { BlueSkyIcon } from '../icons/social/BlueSkyIcon';
 import { StackwrightIcon } from '../icons/brand/StackwrightIcon';
-import { muiIconPreset } from './muiIcons';
+import { lucideIconPreset } from './lucideIcons';
 
 export const defaultStackwrightIcons = {
   'bluesky': BlueSkyIcon,
   'stackwright': StackwrightIcon,
-  ...muiIconPreset,
+  ...lucideIconPreset,
 };
 
 export function registerDefaultIcons() {
