@@ -13,6 +13,7 @@
     "@stackwright/types": "0.3.1"
   },
   "changesets": [
-    "auto-generate-agent-docs"
+    "auto-generate-agent-docs",
+    "ci-schema-sync-check"
   ]
 }

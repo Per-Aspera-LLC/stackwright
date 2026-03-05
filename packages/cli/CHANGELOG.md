@@ -1,5 +1,14 @@
 # @stackwright/cli
 
+## 0.6.0-alpha.1
+
+### Patch Changes
+
+- 6820928: Move JSON schema output from `dist/schemas/` to `schemas/` (committed to git) so CI can detect drift. Update package exports and `files` field. Update scaffold `.vscode/settings.json` to reference the new schema path.
+- Updated dependencies [6820928]
+  - @stackwright/types@0.3.2-alpha.0
+  - @stackwright/build-scripts@0.2.2-alpha.0
+
 ## 0.6.0-alpha.0
 
 ### Minor Changes
