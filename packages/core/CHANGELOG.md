@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.5.2-alpha.1
+
+### Patch Changes
+
+- 2ce66eb: Fix layout regressions: MainContentGrid side-by-side layout, Carousel overflow card widths, and Media aspectRatio passthrough
+
 ## 0.5.2-alpha.0
 
 ### Patch Changes

@@ -15,6 +15,7 @@
   },
   "changesets": [
     "auto-generate-agent-docs",
-    "ci-schema-sync-check"
+    "ci-schema-sync-check",
+    "fix-layout-regressions"
   ]
 }
