@@ -45,11 +45,14 @@ pnpm stackwright -- info
 # Project-aware commands must be run from inside a Stackwright project:
 # cd examples/hellostackwrightnext && pnpm stackwright -- page list
 
-# Run all tests
+# Run all unit tests
 pnpm test
 
 # Run core package tests only
 pnpm test:core
+
+# Run Playwright E2E tests (requires chromium system deps)
+pnpm test:e2e
 
 # Generate JSON schemas from Zod schemas
 cd packages/types && pnpm generate-schemas
@@ -117,8 +120,16 @@ User's Next.js App
 **When modifying `packages/types/src/types/` — adding, removing, or changing any content type, field, or enum — you MUST:**
 1. Run `pnpm stackwright -- generate-agent-docs` to regenerate AGENTS.md tables in both `/AGENTS.md` and `examples/hellostackwrightnext/AGENTS.md`
 2. Regenerate JSON schemas: `cd packages/types && pnpm generate-schemas`
+3. Update or add unit tests in `packages/core/test/` for the affected component
+4. Verify E2E tests still pass (`pnpm test:e2e`) — add example usage in `examples/hellostackwrightnext/` for new content types so E2E coverage includes them
 
 The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the tables are out of sync.
+
+### Testing Requirements
+
+**Unit tests** (`pnpm test`): Vitest with JSDOM. Tests live in `packages/*/test/`. When adding or modifying components, update the corresponding unit tests in `packages/core/test/`.
+
+**E2E tests** (`pnpm test:e2e`): Playwright tests in `packages/e2e/` that verify the full YAML → prebuild → Next.js build → browser pipeline against `examples/hellostackwrightnext/`. When adding new content types, add example usage in the example app so E2E smoke tests cover them. The E2E tests check that every page renders content, has no error boundaries, produces no critical console errors, and that all nav links resolve.
 
 ### Naming Conventions
 

@@ -21,6 +21,7 @@
         "release": "pnpm build && changeset publish",
         "test": "pnpm -r test",
         "test:core": "pnpm --filter @stackwright/core test",
+        "test:e2e": "pnpm --filter @stackwright/e2e test",
         "stackwright": "node packages/cli/dist/cli.js",
         "stackwright-mcp": "node packages/mcp/dist/server.js"
     },
