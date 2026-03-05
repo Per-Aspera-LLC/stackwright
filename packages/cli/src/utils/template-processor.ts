@@ -124,6 +124,7 @@ function buildSiteConfig(siteTitle: string, themeId: string, year: number): Site
         customTheme: {
             id: "custom",
             name: `${siteTitle} Theme`,
+            description: `Custom theme for ${siteTitle}`,
             colors: {
                 primary: "#1976d2",
                 secondary: "#ffffff",
