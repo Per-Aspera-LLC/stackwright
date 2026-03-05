@@ -1,31 +1,7 @@
 import React from "react";
 import { PageContent, SiteConfig } from "@stackwright/types";
 import PageLayout from "./structural/PageLayout";
-import { ThemeProvider, ThemeLoader } from "@stackwright/themes";
-import {
-    CssBaseline,
-    Box,
-    styled,
-    ThemeProvider as MuiThemeProvider,
-    createTheme,
-} from "@mui/material";
-
-// Defined at module scope so styled() is not called on every render.
-const ShimmerOverlay = styled(Box)({
-    position: "absolute",
-    top: 0,
-    left: "-100%",
-    width: "100%",
-    height: "100%",
-    background:
-        "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
-    animation: "sf-shimmer 2s ease-in-out infinite",
-    pointerEvents: "none",
-    "@keyframes sf-shimmer": {
-        "0%": { left: "-100%" },
-        "100%": { left: "100%" },
-    },
-});
+import { ThemeProvider, ThemeLoader, ThemeStyleInjector } from "@stackwright/themes";
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -49,37 +25,51 @@ class DynamicPageErrorBoundary extends React.Component<
     render() {
         if (this.state.hasError) {
             return (
-                <Box
-                    sx={{
-                        p: 4,
-                        m: 2,
-                        border: "1px solid",
-                        borderColor: "error.main",
-                        borderRadius: 1,
-                        backgroundColor: "error.light",
-                        color: "error.contrastText",
+                <div
+                    style={{
+                        padding: '32px',
+                        margin: '16px',
+                        border: "1px solid #d32f2f",
+                        borderRadius: '4px',
+                        backgroundColor: "#fce4ec",
+                        color: "#b71c1c",
                     }}
                 >
-                    <Box component="strong" sx={{ display: "block", mb: 1 }}>
+                    <strong style={{ display: "block", marginBottom: '8px' }}>
                         Page render error
-                    </Box>
-                    <Box
-                        component="pre"
-                        sx={{
+                    </strong>
+                    <pre
+                        style={{
                             fontFamily: "monospace",
                             fontSize: "0.8rem",
                             whiteSpace: "pre-wrap",
-                            m: 0,
+                            margin: 0,
                         }}
                     >
                         {this.state.error?.message ?? "Unknown error"}
-                    </Box>
-                </Box>
+                    </pre>
+                </div>
             );
         }
         return this.props.children;
     }
 }
+
+// CSS keyframes for background animations — injected once via <style> tag
+const ANIMATION_STYLES = `
+@keyframes sf-shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+@keyframes sf-drift {
+  0% { background-position-y: 0px; }
+  100% { background-position-y: 100px; }
+}
+@keyframes sf-float {
+  0%, 100% { background-position-y: 0px; }
+  50% { background-position-y: 20px; }
+}
+`;
 
 interface DynamicPageProps {
     pageContent: PageContent;
@@ -92,12 +82,10 @@ export default function DynamicPage({
     siteConfig,
     slug,
 }: DynamicPageProps) {
-    // Load theme from siteConfig or default to 'corporate'
     const themeName = siteConfig?.themeName || "corporate";
     let theme;
 
     try {
-        // Check if there's a custom theme provided
         if (siteConfig?.customTheme) {
             theme = ThemeLoader.loadCustomTheme(siteConfig.customTheme);
         } else {
@@ -112,7 +100,7 @@ export default function DynamicPage({
     }
 
     // Build background image styles
-    const backgroundImageStyles = siteConfig?.customTheme?.backgroundImage
+    const backgroundImageStyles: React.CSSProperties = siteConfig?.customTheme?.backgroundImage
         ? {
               backgroundImage: `url(${siteConfig.customTheme.backgroundImage.url})`,
               backgroundRepeat:
@@ -131,76 +119,58 @@ export default function DynamicPage({
         siteConfig?.customTheme?.backgroundImage?.animation === "shimmer" ||
         siteConfig?.customTheme?.backgroundImage?.animation === "shimmer-float";
 
-    // Generate animation styles for drift and float
-    const getDriftFloatStyles = () => {
+    const getDriftFloatAnimation = (): string | undefined => {
         const bgImg = siteConfig?.customTheme?.backgroundImage;
-        if (!bgImg?.animation || bgImg.animation === "shimmer") return {};
+        if (!bgImg?.animation || bgImg.animation === "shimmer") return undefined;
 
         switch (bgImg.animation) {
             case "drift":
-                return {
-                    animation: "sf-drift 60s linear infinite",
-                    "@keyframes sf-drift": {
-                        "0%": { backgroundPositionY: "0px" },
-                        "100%": { backgroundPositionY: "100px" },
-                    },
-                };
+                return "sf-drift 60s linear infinite";
             case "float":
             case "shimmer-float":
-                return {
-                    animation: "sf-float 8s ease-in-out infinite",
-                    "@keyframes sf-float": {
-                        "0%, 100%": { backgroundPositionY: "0px" },
-                        "50%": { backgroundPositionY: "20px" },
-                    },
-                };
+                return "sf-float 8s ease-in-out infinite";
             default:
-                return {};
+                return undefined;
         }
     };
 
-    const muiTheme = createTheme({
-        palette: {
-            primary: { main: theme.colors.primary },
-            secondary: { main: theme.colors.secondary },
-            background: {
-                default: theme.colors.background,
-                paper: theme.colors.surface,
-            },
-            text: {
-                primary: theme.colors.text,
-                secondary: theme.colors.textSecondary,
-            },
-        },
-        typography: {
-            fontFamily:
-                theme.typography?.fontFamily?.primary || "Roboto, sans-serif",
-        },
-    });
-
     return (
-        <MuiThemeProvider theme={muiTheme}>
-            <ThemeProvider theme={theme}>
-                <CssBaseline>
-                    <Box
-                        sx={{
-                            minHeight: "100vh",
-                            position: "relative",
-                            overflow: "hidden",
-                            ...backgroundImageStyles,
-                            ...getDriftFloatStyles(),
-                        }}
-                    >
-                        {showShimmer && <ShimmerOverlay />}
-                        <DynamicPageErrorBoundary pageName={slug}>
-                            <PageLayout
-                                pageContent={pageContent}
-                                siteConfig={siteConfig}
-                            />
-                        </DynamicPageErrorBoundary>
-                    </Box>
-                </CssBaseline>
-            </ThemeProvider>
-        </MuiThemeProvider>
+        <ThemeProvider theme={theme}>
+            <ThemeStyleInjector theme={theme}>
+                <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />
+                <div
+                    style={{
+                        minHeight: "100vh",
+                        position: "relative",
+                        overflow: "hidden",
+                        fontFamily: theme.typography?.fontFamily?.primary || "sans-serif",
+                        ...backgroundImageStyles,
+                        animation: getDriftFloatAnimation(),
+                    }}
+                >
+                    {showShimmer && (
+                        <div
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: "-100%",
+                                width: "100%",
+                                height: "100%",
+                                background:
+                                    "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+                                animation: "sf-shimmer 2s ease-in-out infinite",
+                                pointerEvents: "none",
+                            }}
+                        />
+                    )}
+                    <DynamicPageErrorBoundary pageName={slug}>
+                        <PageLayout
+                            pageContent={pageContent}
+                            siteConfig={siteConfig}
+                        />
+                    </DynamicPageErrorBoundary>
+                </div>
+            </ThemeStyleInjector>
+        </ThemeProvider>
     );
 }

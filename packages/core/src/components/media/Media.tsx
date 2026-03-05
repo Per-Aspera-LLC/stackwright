@@ -1,7 +1,6 @@
 import React from 'react';
 import { ImageContent, MediaItem } from '@stackwright/types';
 import { MediaContainer } from './MediaContainer';
-import { Typography } from '@mui/material';
 import { getStackwrightImage, getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
 // Heuristic fallbacks for YAML that omits the explicit type field.
@@ -36,15 +35,15 @@ const renderIcon = (src: string, sizePx: number | string, color?: string) => {
 
     if (IconComponent) {
         return (
-            <IconComponent sx={{
-                fontSize: sizePx,
-                color: color || 'currentColor',
-            }} />
+            <IconComponent
+                size={sizePx}
+                color={color || 'currentColor'}
+            />
         );
     }
 
-    console.warn(`Icon "${src}" not found in registry. Add it to @stackwright/icons muiIcons.ts or register it in _app.tsx.`);
-    return <Typography variant="caption">📷 {src}</Typography>;
+    console.warn(`Icon "${src}" not found in registry. Register it via @stackwright/icons or in _app.tsx.`);
+    return <span style={{ fontSize: '0.75rem', fontFamily: 'monospace' }}>📷 {src}</span>;
 };
 
 const renderImage = (content: MediaItem) => {
@@ -72,7 +71,7 @@ const renderImage = (content: MediaItem) => {
 
 export function Media(content: MediaItem) {
     if (!content.src) {
-        return <Typography>No src set for Media</Typography>;
+        return <span>No src set for Media</span>;
     }
 
     // Discriminator-first: all three types now carry a required `type` field.
@@ -128,5 +127,5 @@ export function Media(content: MediaItem) {
     }
 
     console.warn(`Cannot determine media type for "${content.src}". Add type: "image", type: "icon", or type: "media" to your YAML.`);
-    return <Typography variant="caption">Unknown media: {content.src}</Typography>;
+    return <span style={{ fontSize: '0.75rem' }}>Unknown media: {content.src}</span>;
 }

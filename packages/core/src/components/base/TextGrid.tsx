@@ -1,5 +1,4 @@
 import React from "react";
-import { Box, Divider, Typography } from "@mui/material";
 import { TextBlock } from "@stackwright/types";
 import { v4 as uuidv4 } from "uuid";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
@@ -16,7 +15,7 @@ interface TextGridProps {
 
 export function TextGrid({ content, config }: TextGridProps) {
     const theme = useSafeTheme();
-    const listIcon = config?.list_icon || "•"; // Default fallback
+    const listIcon = config?.list_icon || "•";
 
     const startsWithBullet = (text: string) => {
         return text.trimStart().startsWith(BULLET_CHARACTER);
@@ -39,31 +38,26 @@ export function TextGrid({ content, config }: TextGridProps) {
         switch (textBlock.text) {
             case "%DIVIDER%":
                 return (
-                    <Divider
-                        sx={{
-                            color:
-                                textBlock.textColor ||
-                                theme.colors.textSecondary,
+                    <hr
+                        style={{
+                            border: 'none',
+                            borderTop: `1px solid ${textBlock.textColor || theme.colors.textSecondary}`,
+                            width: '100%',
                         }}
                     />
                 );
             case "%SPACER%":
-                return <Box height={16} />;
+                return <div style={{ height: 16 }} />;
             default:
                 return (
-                    <Typography
-                        variant={textBlock.textSize}
-                        sx={{
-                            fontSize: {
-                                xs: "0.8em",
-                                sm: "1em",
-                                md: "1.2em",
-                            },
+                    <p
+                        style={{
+                            margin: 0,
                             color: textBlock.textColor || theme.colors.text,
                         }}
                     >
                         {textBlock.text}
-                    </Typography>
+                    </p>
                 );
         }
     };
@@ -73,7 +67,7 @@ export function TextGrid({ content, config }: TextGridProps) {
     return (
         <>
             {content.map((textItem) => (
-                <Box key={uuidv4()}>
+                <div key={uuidv4()}>
                     {textItem.text
                         .split("\n")
                         .filter((line) => line.trim() !== "")
@@ -83,52 +77,40 @@ export function TextGrid({ content, config }: TextGridProps) {
                                 text: line,
                             };
                             return (
-                                <Box
+                                <div
                                     key={uuidv4()}
-                                    sx={{
+                                    style={{
                                         display: "flex",
                                         alignItems: "center",
-                                        gap: 2,
-                                        marginBottom: 1,
+                                        gap: '16px',
+                                        marginBottom: '8px',
                                     }}
                                 >
                                     {startsWithBullet(line) && listIcon && (
-                                        <Typography
-                                            variant={textItem.textSize}
-                                            sx={{
-                                                fontSize: {
-                                                    xs: "0.8em",
-                                                    sm: "1em",
-                                                    md: "1.2em",
-                                                },
+                                        <span
+                                            style={{
                                                 color: theme.colors.primary,
                                             }}
                                         >
                                             {listIcon}
-                                        </Typography>
+                                        </span>
                                     )}
 
                                     {startsWithListNumber(line) && (
-                                        <Typography
-                                            variant={textItem.textSize}
-                                            sx={{
-                                                fontSize: {
-                                                    xs: "0.8em",
-                                                    sm: "1em",
-                                                    md: "1.2em",
-                                                },
+                                        <span
+                                            style={{
                                                 color: theme.colors.primary,
                                             }}
                                         >
                                             {listNumber++}.
-                                        </Typography>
+                                        </span>
                                     )}
 
                                     {renderText(lineBlock)}
-                                </Box>
+                                </div>
                             );
                         })}
-                </Box>
+                </div>
             ))}
         </>
     );

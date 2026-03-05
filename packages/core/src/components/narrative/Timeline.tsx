@@ -1,5 +1,4 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
 import { TimelineContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 
@@ -7,87 +6,83 @@ export function Timeline(content: TimelineContent) {
   const theme = useSafeTheme();
 
   return (
-    <Box sx={{ 
-      maxWidth: '4xl', 
-      mx: 'auto', 
-      py: 6,
+    <div style={{
+      maxWidth: '896px',
+      margin: '32px auto',
+      padding: '48px 0',
       background: content?.background || 'transparent',
-      m: 4
     }}>
       {content.heading && (
-        <Typography 
-          variant={content.heading.textSize} 
-          sx={{ 
-            mb: 4, 
+        <h3
+          style={{
+            marginBottom: '32px',
             textAlign: 'center',
-            color: content.heading.textColor || theme.colors.text
+            color: content.heading.textColor || theme.colors.text,
           }}
         >
           {content.heading.text}
-        </Typography>
+        </h3>
       )}
-      
-      <Box sx={{ position: 'relative' }}>
+
+      <div style={{ position: 'relative' }}>
         {/* Vertical line */}
-        <Box sx={{
+        <div style={{
           position: 'absolute',
           left: '32px',
           top: 0,
           bottom: 0,
           width: '2px',
-          bgcolor: theme.colors.secondary || '#d1d5db'
+          backgroundColor: theme.colors.secondary || '#d1d5db',
         }} />
-        
+
         {content.items.map((item, index) => (
-          <Box key={index} sx={{ 
-            position: 'relative', 
-            display: 'flex', 
-            alignItems: 'center', 
-            mb: 4 
+          <div key={index} style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '32px',
           }}>
             {/* Timeline dot */}
-            <Box sx={{
+            <div style={{
               position: 'absolute',
               left: '24px',
               width: '16px',
               height: '16px',
-              bgcolor: theme.colors.primary || '#d97706',
+              backgroundColor: theme.colors.primary || '#d97706',
               borderRadius: '50%',
-              border: '4px solid',
-              borderColor: 'background.paper',
-              boxShadow: 1
+              border: `4px solid ${theme.colors.surface}`,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
             }} />
-            
+
             {/* Content */}
-            <Box sx={{ ml: 8 }}>
-              <Box sx={{
-                bgcolor: 'background.paper',
-                p: 3,
-                borderRadius: 2,
-                boxShadow: 1
+            <div style={{ marginLeft: '64px' }}>
+              <div style={{
+                backgroundColor: theme.colors.surface,
+                padding: '24px',
+                borderRadius: '8px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
               }}>
-                <Typography 
-                  variant="h6" 
-                  sx={{ 
+                <h4
+                  style={{
                     color: theme.colors.primary || '#d97706',
                     fontWeight: 'bold',
-                    mb: 1
+                    marginBottom: '8px',
+                    marginTop: 0,
                   }}
                 >
                   {item.year}
-                </Typography>
-                <Typography 
-                  variant="body1"
-                  sx={{ color: theme.colors.text || '#374151' }}
+                </h4>
+                <p
+                  style={{ color: theme.colors.text || '#374151', margin: 0 }}
                 >
                   {item.event}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
+                </p>
+              </div>
+            </div>
+          </div>
         ))}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

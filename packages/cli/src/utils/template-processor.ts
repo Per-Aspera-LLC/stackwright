@@ -285,10 +285,7 @@ function buildGettingStartedPageContent(): PageContent {
 function buildPackageJson(projectName: string): object {
     // MAINTENANCE: Update these versions when cutting major releases of Stackwright.
     const VERSIONS = {
-        emotionReact: "^11.14.0",
-        emotionStyled: "^11.14.1",
-        muiIconsMaterial: "^7.3.8",
-        muiMaterial: "^7.3.8",
+        tailwindcss: "^4.1.11",
         stackwright: "latest",
         jsYaml: "^4.1.1",
         next: "^16.1.6",
@@ -317,10 +314,7 @@ function buildPackageJson(projectName: string): object {
             "type-check": "tsc --noEmit",
         },
         dependencies: {
-            "@emotion/react": VERSIONS.emotionReact,
-            "@emotion/styled": VERSIONS.emotionStyled,
-            "@mui/icons-material": VERSIONS.muiIconsMaterial,
-            "@mui/material": VERSIONS.muiMaterial,
+            "@stackwright/ui-shadcn": VERSIONS.stackwright,
             "@stackwright/core": VERSIONS.stackwright,
             "@stackwright/icons": VERSIONS.stackwright,
             "@stackwright/nextjs": VERSIONS.stackwright,

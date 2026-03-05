@@ -1,44 +1,54 @@
 import React from 'react';
-import { SvgIconProps } from '@mui/material/SvgIcon';
-import * as MuiIcons from '@mui/icons-material';
-import { stackwrightIconRegistry } from '../registry/iconRegistry';
+import { IconProps, stackwrightIconRegistry } from '../registry/iconRegistry';
 
-interface StackwrightIconProps extends SvgIconProps {
+interface StackwrightIconProps extends IconProps {
   name: string;
-  fallback?: 'hide' | 'error' | 'mui-default';
+  fallback?: 'hide' | 'error';
 }
 
-export function StackwrightIcon({ 
-  name, 
-  fallback = 'mui-default', 
-  ...props 
+// Simple question-mark SVG used when no icon is registered and fallback isn't 'hide'
+function UnknownIcon({ size = 24, color = 'currentColor', className, style }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={color}
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      style={style}
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+}
+
+export function StackwrightIcon({
+  name,
+  fallback = 'hide',
+  ...props
 }: StackwrightIconProps) {
-  // Get the custom icon with proper typing
   const customIcon = stackwrightIconRegistry.get(name);
-  
+
   if (customIcon) {
-    const IconComponent = customIcon as React.ComponentType<SvgIconProps>;
+    const IconComponent = customIcon;
     return <IconComponent {...props} />;
   }
 
-  // Fallback to MUI icons
-  if (fallback === 'mui-default') {
-    const MuiIcon = (MuiIcons as any)[name];
-    if (MuiIcon) {
-      return <MuiIcon {...props} />;
-    }
+  if (fallback === 'error') {
+    console.error(`Icon '${name}' not found in Stackwright icon registry`);
+    return null;
   }
 
-  // Handle missing icons based on fallback strategy
   if (fallback === 'hide') {
     return null;
   }
 
-  if (fallback === 'error') {
-    console.error(`Icon '${name}' not found in Stackwright icon registry or MUI icons`);
-    return null;
-  }
-
-  // Default fallback
-  return <MuiIcons.Help {...props} />;
+  return <UnknownIcon {...props} />;
 }
