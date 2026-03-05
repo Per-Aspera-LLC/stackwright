@@ -1,5 +1,12 @@
 # @stackwright/nextjs
 
+## 0.2.8-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [8f052e1]
+  - @stackwright/core@0.5.2-alpha.2
+
 ## 0.2.8-alpha.1
 
 ### Patch Changes

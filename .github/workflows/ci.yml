@@ -40,11 +40,40 @@ jobs:
       - run: pnpm install
       - run: pnpm build
 
+      - name: Pack workspace packages as tarballs
+        run: |
+          mkdir -p /tmp/stackwright-tarballs
+          for pkg in types themes icons core nextjs build-scripts ui-shadcn cli; do
+            pnpm --filter "@stackwright/$pkg" pack --pack-destination /tmp/stackwright-tarballs
+          done
+
       - name: Scaffold a test project
         run: node packages/cli/dist/cli.js scaffold /tmp/test-site --title "Test Site" --theme default --json
 
+      - name: Override scaffold deps with local tarballs
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
+            const tarballs = fs.readdirSync('/tmp/stackwright-tarballs');
+            const names = ['types','themes','icons','core','nextjs','build-scripts','ui-shadcn','cli'];
+            const overrides = {};
+            for (const name of names) {
+              const tarball = tarballs.find(t => t.startsWith('stackwright-' + name + '-'));
+              if (tarball) overrides['@stackwright/' + name] = '/tmp/stackwright-tarballs/' + tarball;
+            }
+            for (const section of ['dependencies', 'devDependencies']) {
+              for (const dep of Object.keys(pkg[section] || {})) {
+                if (overrides[dep]) pkg[section][dep] = overrides[dep];
+              }
+            }
+            pkg.pnpm = { overrides };
+            fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+        working-directory: /tmp/test-site
+
       - name: Install scaffold dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
         working-directory: /tmp/test-site
 
       - name: Build scaffold output
@@ -73,6 +102,37 @@ jobs:
         run: |
           git diff --exit-code AGENTS.md examples/hellostackwrightnext/AGENTS.md || \
           (echo "AGENTS.md is out of sync. Run 'pnpm stackwright -- generate-agent-docs' and commit the result." && exit 1)
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm install
+        name: Re-link bins after build
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm test:e2e
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: packages/e2e/playwright-report/
+          retention-days: 14
 
   check-schemas:
     runs-on: ubuntu-latest
