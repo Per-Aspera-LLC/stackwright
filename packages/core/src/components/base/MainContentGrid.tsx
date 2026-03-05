@@ -1,6 +1,4 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import { MainContent, GraphicPosition } from "@stackwright/types";
 import { TextGrid } from "./TextGrid";
 import { ThemedButton } from "./ThemedButton";
@@ -11,13 +9,8 @@ import { resolveColor } from "../../utils/colorUtils";
 export function MainContentGrid(content: MainContent) {
     const theme = useSafeTheme();
 
-    // Calculate column sizes based on textToGraphic ratio (default 58% text, 42% graphic)
-    const textRatio = content.textToGraphic ?? 58;
-    const textColumns = Math.round((textRatio / 100) * 12);
-    const graphicColumns = 12 - textColumns;
-
-    // Calculate mobile graphic size (constrained to 6-10 columns for better mobile UX)
-    const graphicColumnsXs = Math.max(6, Math.min(10, graphicColumns));
+    const textPercent = content.textToGraphic ?? 58;
+    const graphicPercent = 100 - textPercent;
 
     const headerColor = resolveColor(
         content.heading.textColor
@@ -27,99 +20,68 @@ export function MainContentGrid(content: MainContent) {
     );
 
     const imageGrid = content.media && (
-        <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            size={{
-                xs: graphicColumnsXs,
-                md: graphicColumns,
-            }}
-            padding={1}
-        >
-            <Box sx={{ width: "100%", height: "100%" }}>
+        <div style={{ flex: `1 1 ${graphicPercent}%`, minWidth: 0, padding: '8px' }}>
+            <div style={{ width: "100%", height: "100%" }}>
                 <Media
                     {...content.media}
                     label={`${content.heading?.text} graphic`}
                 />
-            </Box>
-        </Grid>
+            </div>
+        </div>
     );
+
     const textGrid = (
-        <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            size={{
-                xs: 12,
-                md: textColumns,
-            }}
-            padding={1}
-        >
-            <Box
-                sx={{
-                    width: "100%",
-                    height: "auto",
-                }}
-            >
+        <div style={{ flex: `1 1 ${content.media ? textPercent : 100}%`, minWidth: 0, padding: '8px' }}>
+            <div style={{ width: "100%", height: "auto" }}>
                 {content.heading?.text && (
-                    <Typography
-                        variant={content.heading.textSize}
-                        sx={{
-                            color: headerColor,
-                        }}
-                    >
+                    <h2 style={{ color: headerColor, margin: '0 0 8px 0' }}>
                         {content.heading.text}
-                    </Typography>
+                    </h2>
                 )}
                 {content.textBlocks && (
                     <TextGrid content={content.textBlocks} />
                 )}
 
                 {content.buttons && (
-                    <Grid
-                        container
-                        spacing={2}
-                        sx={{
-                            mt: 2,
-                            justifyContent: {
-                                xs: "center",
-                                sm: "center",
-                            },
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: '16px',
+                            marginTop: '16px',
+                            justifyContent: 'center',
                         }}
                     >
                         {content.buttons.map((button, index) => (
-                            <Grid key={index}>
-                                <ThemedButton button={button} />
-                            </Grid>
+                            <ThemedButton key={index} button={button} />
                         ))}
-                    </Grid>
+                    </div>
                 )}
-            </Box>
-        </Grid>
+            </div>
+        </div>
     );
+
+    const isGraphicLeft = content.graphic_position === GraphicPosition.LEFT;
+
     return (
-        <Box
-            sx={{
-                py: 2,
+        <div
+            style={{
+                padding: '16px 0',
                 background: content?.background || "transparent",
-                m: 4,
+                margin: '32px',
             }}
         >
-            <Grid
-                container
-                spacing={2}
-                sx={{
+            <div
+                style={{
+                    display: 'flex',
+                    flexWrap: 'nowrap',
                     justifyContent: "center",
                     alignItems: "center",
-                    flexDirection: {
-                        xs: "column",
-                        md: "row",
-                    },
+                    gap: '16px',
                 }}
             >
                 {content.media ? (
-                    content.graphic_position === GraphicPosition.LEFT ? (
+                    isGraphicLeft ? (
                         <>
                             {imageGrid}
                             {textGrid}
@@ -133,7 +95,7 @@ export function MainContentGrid(content: MainContent) {
                 ) : (
                     textGrid
                 )}
-            </Grid>
-        </Box>
+            </div>
+        </div>
     );
 }

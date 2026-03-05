@@ -1,0 +1,89 @@
+import React from 'react';
+import { FeatureListContent } from '@stackwright/types';
+import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { resolveColor } from '../../utils/colorUtils';
+import { Media } from '../media/Media';
+
+export function FeatureList({ heading, columns = 3, items, background }: FeatureListContent) {
+    const theme = useSafeTheme();
+
+    const headingColor = resolveColor(
+        heading?.textColor ? heading.textColor : theme.colors.primary,
+        theme.colors,
+    );
+
+    return (
+        <section
+            style={{
+                padding: '48px 32px',
+                background: background || 'transparent',
+            }}
+        >
+            {heading?.text && (
+                <h3
+                    style={{
+                        color: headingColor,
+                        marginBottom: '32px',
+                        textAlign: 'center',
+                    }}
+                >
+                    {heading.text}
+                </h3>
+            )}
+            <div
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                    gap: '32px',
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                }}
+            >
+                {items.map((item, index) => (
+                    <div
+                        key={index}
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            textAlign: 'center',
+                            gap: '12px',
+                        }}
+                    >
+                        {item.icon && (
+                            <div style={{ marginBottom: '8px' }}>
+                                <Media
+                                    {...item.icon}
+                                    alt={item.icon.alt || item.heading}
+                                    label={item.heading}
+                                    height={item.icon.height || 48}
+                                    width={item.icon.width || 48}
+                                    color={item.icon.color || theme.colors.primary}
+                                />
+                            </div>
+                        )}
+                        <h4
+                            style={{
+                                color: theme.colors.text,
+                                margin: 0,
+                                fontWeight: 600,
+                            }}
+                        >
+                            {item.heading}
+                        </h4>
+                        <p
+                            style={{
+                                color: theme.colors.text,
+                                margin: 0,
+                                opacity: 0.8,
+                                lineHeight: 1.6,
+                            }}
+                        >
+                            {item.description}
+                        </p>
+                    </div>
+                ))}
+            </div>
+        </section>
+    );
+}

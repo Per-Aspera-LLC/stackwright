@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.2.7",
+    "version": "0.2.8-alpha.1",
     "description": "Next.js implementations for Stackwright components",
     "repository": {
         "type": "git",
@@ -30,14 +30,14 @@
         "js-yaml": "^4.1.0"
     },
     "devDependencies": {
-        "@swc/core": "^1.13.2",
+        "@swc/core": "^1.15.18",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@types/js-yaml": "^4.0",
         "next": "^16.1.6",
         "react": "^19",
         "react-dom": "^19",
-        "tsup": "^8.5.0",
+        "tsup": "^8.5.1",
         "typescript": "^5.8.3",
         "vitest": "^4.0.18"
     },

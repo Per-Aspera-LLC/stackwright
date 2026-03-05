@@ -5,6 +5,11 @@ import {
     TabbedContentGrid,
     CodeBlock,
     IconGrid,
+    FeatureList,
+    TestimonialGrid,
+    Faq,
+    PricingTable,
+    ContactFormStub,
 } from "../components/base/";
 import { Media } from "../components/media/Media";
 import { Timeline } from "../components/narrative/Timeline";
@@ -28,6 +33,11 @@ export const componentRegistry: Record<
     timeline: Timeline,
     icon_grid: IconGrid,
     code_block: CodeBlock,
+    feature_list: FeatureList,
+    testimonial_grid: TestimonialGrid,
+    faq: Faq,
+    pricing_table: PricingTable,
+    contact_form_stub: ContactFormStub,
     // Stackwright components (will be resolved dynamically)
     "stackwright-image": () => getStackwrightImage(),
     "stackwright-link": () => getStackwrightLink(),

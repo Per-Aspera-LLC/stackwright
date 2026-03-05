@@ -1,7 +1,6 @@
 import React from 'react';
 import { ImageContent, MediaItem } from '@stackwright/types';
 import { MediaContainer } from './MediaContainer';
-import { Typography } from '@mui/material';
 import { getStackwrightImage, getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
 // Heuristic fallbacks for YAML that omits the explicit type field.
@@ -14,37 +13,21 @@ const isIconSource = (src: string): boolean => {
            src.length > 0;
 };
 
-const isImageSource = (src: string): boolean => {
-    const lower = src.toLowerCase();
-    return (
-        lower.startsWith('./') ||
-        lower.startsWith('http') ||
-        lower.startsWith('data:') ||
-        lower.startsWith('/')
-    ) && (
-        lower.endsWith('.png') ||
-        lower.endsWith('.jpg') ||
-        lower.endsWith('.webp') ||
-        lower.endsWith('.bmp') ||
-        lower.endsWith('.gif')
-    );
-};
-
 const renderIcon = (src: string, sizePx: number | string, color?: string) => {
     // Registry lookup only — no require(). See packages/icons/AGENTS.md for why.
     const IconComponent = getIconRegistry()?.get(src);
 
     if (IconComponent) {
         return (
-            <IconComponent sx={{
-                fontSize: sizePx,
-                color: color || 'currentColor',
-            }} />
+            <IconComponent
+                size={sizePx}
+                color={color || 'currentColor'}
+            />
         );
     }
 
-    console.warn(`Icon "${src}" not found in registry. Add it to @stackwright/icons muiIcons.ts or register it in _app.tsx.`);
-    return <Typography variant="caption">📷 {src}</Typography>;
+    console.warn(`Icon "${src}" not found in registry. Register it via @stackwright/icons or in _app.tsx.`);
+    return <span style={{ fontSize: '0.75rem', fontFamily: 'monospace' }}>📷 {src}</span>;
 };
 
 const renderImage = (content: MediaItem) => {
@@ -70,63 +53,53 @@ const renderImage = (content: MediaItem) => {
     );
 };
 
+const renderIconMedia = (content: MediaItem) => {
+    const sizePx = typeof content.height === 'number' ? content.height : 24;
+    return (
+        <MediaContainer height={sizePx} width={sizePx} style={content.style}>
+            {renderIcon(content.src, sizePx, (content as any).color)}
+        </MediaContainer>
+    );
+};
+
+const renderImageMedia = (content: MediaItem) => {
+    const imageContent = content as ImageContent;
+    return (
+        <MediaContainer
+            height={content.height}
+            width={content.width}
+            aspectRatio={imageContent.aspect_ratio}
+            style={content.style}
+        >
+            {renderImage(content)}
+        </MediaContainer>
+    );
+};
+
 export function Media(content: MediaItem) {
     if (!content.src) {
-        return <Typography>No src set for Media</Typography>;
+        return <span>No src set for Media</span>;
     }
 
-    // Discriminator-first: all three types now carry a required `type` field.
     if (content.type === 'icon') {
-        const sizePx = typeof content.height === 'number' ? content.height : 24;
-        return (
-            <MediaContainer height={sizePx} width={sizePx} style={content.style}>
-                {renderIcon(content.src, sizePx, content.color)}
-            </MediaContainer>
-        );
+        return renderIconMedia(content);
     }
+
     if (content.type === 'image') {
-        return (
-            <MediaContainer height={content.height} width={content.width} style={content.style}>
-                {renderImage(content)}
-            </MediaContainer>
-        );
-    }
-    if (content.type === 'media') {
-        // Bare media: fall back to heuristics on src to decide icon vs image.
-        if (isIconSource(content.src)) {
-            const sizePx = typeof content.height === 'number' ? content.height : 24;
-            return (
-                <MediaContainer height={sizePx} width={sizePx} style={content.style}>
-                    {renderIcon(content.src, sizePx)}
-                </MediaContainer>
-            );
-        }
-        return (
-            <MediaContainer height={content.height || 'auto'} width={content.width || '100%'} style={content.style}>
-                {renderImage(content)}
-            </MediaContainer>
-        );
+        return renderImageMedia(content);
     }
 
-    // Legacy fallback: YAML written before discriminators were required.
-    // Deprecated — add type: "image", type: "icon", or type: "media" to YAML.
+    // type === 'media' or legacy YAML without a type field — use heuristics.
     if (isIconSource(content.src)) {
-        const sizePx = typeof content.height === 'number' ? content.height : 24;
-        return (
-            <MediaContainer height={sizePx} width={sizePx} style={content.style}>
-                {renderIcon(content.src, sizePx, (content as any).color)}
-            </MediaContainer>
-        );
+        return renderIconMedia(content);
     }
 
-    if (isImageSource(content.src)) {
-        return (
-            <MediaContainer height={content.height || 'auto'} width={content.width || '100%'} style={content.style}>
-                {renderImage(content)}
-            </MediaContainer>
-        );
+    // Assume image for paths and URLs.
+    if (content.src.includes('/') || content.src.includes('.') ||
+        content.src.startsWith('http') || content.src.startsWith('data:')) {
+        return renderImageMedia(content);
     }
 
     console.warn(`Cannot determine media type for "${content.src}". Add type: "image", type: "icon", or type: "media" to your YAML.`);
-    return <Typography variant="caption">Unknown media: {content.src}</Typography>;
+    return <span style={{ fontSize: '0.75rem' }}>Unknown media: {content.src}</span>;
 }

@@ -1,7 +1,5 @@
 "use client";
 import React from "react";
-import { Box, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import { IconGridContent } from "@stackwright/types";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
 import { resolveColor } from "../../utils/colorUtils";
@@ -10,13 +8,12 @@ import { getIconRegistry } from "../../utils/stackwrightComponentRegistry";
 function renderIcon(src: string, sizePx: number, color: string) {
     const IconComponent = getIconRegistry()?.get(src);
     if (IconComponent) {
-        return <IconComponent sx={{ fontSize: sizePx, color }} />;
+        return <IconComponent size={sizePx} color={color} />;
     }
-    // Fallback: show the icon name so authors know what to register
     return (
-        <Typography variant="caption" sx={{ color, fontFamily: "monospace" }}>
+        <span style={{ color, fontFamily: "monospace", fontSize: '0.75rem' }}>
             {src}
-        </Typography>
+        </span>
     );
 }
 
@@ -29,25 +26,27 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
     );
 
     return (
-        <Box
-            sx={{
-                py: 2,
+        <div
+            style={{
+                padding: '16px 0',
                 background: background || "transparent",
-                m: 4,
+                margin: '32px',
             }}
         >
             {heading?.text && (
-                <Typography
-                    variant={heading.textSize}
-                    sx={{ color: headingColor, mb: 3, textAlign: "center" }}
+                <h3
+                    style={{ color: headingColor, marginBottom: '24px', textAlign: "center" }}
                 >
                     {heading.text}
-                </Typography>
+                </h3>
             )}
-            <Grid
-                container
-                spacing={3}
-                sx={{ justifyContent: "center", alignItems: "flex-start" }}
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+                    gap: '24px',
+                    justifyItems: "center",
+                }}
             >
                 {icons.map((icon, index) => {
                     const iconColor = icon.color
@@ -56,13 +55,12 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
                     const sizePx = typeof icon.height === "number" ? icon.height : 48;
 
                     return (
-                        <Grid
+                        <div
                             key={index}
-                            size={{ xs: 6, sm: 4, md: 3, lg: 2 }}
-                            sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}
+                            style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: '8px' }}
                         >
-                            <Box
-                                sx={{
+                            <div
+                                style={{
                                     display: "flex",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -71,23 +69,23 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
                                 }}
                             >
                                 {renderIcon(icon.src, sizePx, iconColor)}
-                            </Box>
+                            </div>
                             {icon.label && (
-                                <Typography
-                                    variant="body2"
-                                    sx={{
+                                <span
+                                    style={{
+                                        fontSize: '0.875rem',
                                         textAlign: "center",
                                         color: theme.colors.text,
                                         fontWeight: 500,
                                     }}
                                 >
                                     {icon.label}
-                                </Typography>
+                                </span>
                             )}
-                        </Grid>
+                        </div>
                     );
                 })}
-            </Grid>
-        </Box>
+            </div>
+        </div>
     );
 }

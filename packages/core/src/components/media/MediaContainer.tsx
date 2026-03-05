@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import React from 'react';
 import { MediaStyleVariant } from '@stackwright/types';
 
 interface MediaContainerProps {
@@ -10,47 +10,46 @@ interface MediaContainerProps {
   style?: MediaStyleVariant;
 }
 
-export function MediaContainer({ 
-  children, 
-  height, 
-  width, 
+export function MediaContainer({
+  children,
+  height,
+  width,
   aspectRatio,
   maxSize,
   style = 'contained'
 }: MediaContainerProps) {
-  // Smart height/width defaults based on what's provided
   const getSmartHeight = (): string | number => {
     if (height !== undefined) return height;
-    if (aspectRatio) return 'auto'; // Let aspectRatio handle it
-    return '200px'; // Reasonable default for images with fill
+    if (aspectRatio) return 'auto';
+    return '200px';
   };
 
   const getSmartWidth = (): string | number => {
     if (width !== undefined) return width;
-    if (aspectRatio) return '100%'; // Full width when using aspect ratio
-    return '200px'; // Square default
+    if (aspectRatio) return '100%';
+    return '200px';
   };
 
+  const objectFit = style === 'contained' ? 'contain' : 'cover';
+
   return (
-    <Grid 
-      container 
-      sx={{
+    <div
+      style={{
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         position: 'relative',
         height: getSmartHeight(),
         width: getSmartWidth(),
-        aspectRatio,
-        maxWidth: maxSize,
-        maxHeight: maxSize,
-        mx: 'auto',
+        aspectRatio: aspectRatio != null ? String(aspectRatio) : undefined,
+        maxWidth: maxSize != null ? maxSize : undefined,
+        maxHeight: maxSize != null ? maxSize : undefined,
+        margin: '0 auto',
         overflow: style === 'contained' ? 'hidden' : 'visible',
-        '& img': {
-          objectFit: style === 'contained' ? 'contain' : 'cover'
-        }
       }}
+      data-sw-object-fit={objectFit}
     >
       {children}
-    </Grid>
+    </div>
   );
 }

@@ -1,8 +1,14 @@
 import React from 'react';
-import { SvgIconProps } from '@mui/material/SvgIcon';
+
+export interface IconProps {
+  className?: string;
+  size?: number | string;
+  color?: string;
+  style?: React.CSSProperties;
+}
 
 // Define the IconComponent type
-export type IconComponent = React.FC<SvgIconProps> | React.ComponentType<SvgIconProps>;
+export type IconComponent = React.ComponentType<IconProps>;
 
 class StackwrightIconRegistryImpl {
   private icons: Map<string, IconComponent> = new Map();

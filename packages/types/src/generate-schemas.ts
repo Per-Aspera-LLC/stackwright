@@ -18,7 +18,7 @@ export async function generateSchemas() {
   const themeSchema = z.toJSONSchema(themeConfigSchema, JSON_SCHEMA_OPTIONS);
   const siteSchema = z.toJSONSchema(siteConfigSchema, JSON_SCHEMA_OPTIONS);
 
-  const outputDir = path.join(__dirname, '../dist/schemas');
+  const outputDir = path.join(__dirname, '../schemas');
   await fs.ensureDir(outputDir);
 
   await fs.writeJSON(
@@ -39,7 +39,7 @@ export async function generateSchemas() {
     { spaces: 2 }
   );
 
-  console.log('✅ Generated schemas in dist/schemas/');
+  console.log('✅ Generated schemas in schemas/');
 }
 
 // Only run if called directly

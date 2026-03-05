@@ -1,4 +1,4 @@
-import { Stack, Box } from '@mui/material';
+import React from 'react';
 import { PageContent } from '@stackwright/types';
 import { renderContent } from '../../utils/contentRenderer';
 
@@ -6,14 +6,11 @@ import { renderContent } from '../../utils/contentRenderer';
 export default function DefaultPageLayout(pageContent: PageContent) {
     return (
         <main>
-          <Box sx={{ flexGrow: 1 }}>
-            <Stack spacing={3}>  
-              {/* Remove TopAppBar and BottomAppBar from here since PageLayout handles them */}
-              <Box>
-                {renderContent(pageContent)}
-              </Box>
-            </Stack>
-          </Box>
+          <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div>
+              {renderContent(pageContent)}
+            </div>
+          </div>
         </main>
     );
 }

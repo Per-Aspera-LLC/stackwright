@@ -1,9 +1,10 @@
 // Core system
 
-export { 
+export type { IconProps, IconComponent } from './registry/iconRegistry';
+export {
   stackwrightIconRegistry,
-  registerStackwrightIcon, 
-  registerStackwrightIcons 
+  registerStackwrightIcon,
+  registerStackwrightIcons
 } from './registry/iconRegistry';
 
 // Individual icons (tree-shakeable)
@@ -15,7 +16,7 @@ export {
   defaultStackwrightIcons,
   registerDefaultIcons
 } from './presets/defaultIcons';
-export { muiIconPreset, registerMuiIcons } from './presets/muiIcons';
+export { lucideIconPreset, registerLucideIcons } from './presets/lucideIcons';
 
 // Organized exports
 export * from './icons/brand';

@@ -1,7 +1,25 @@
-import { useMediaQuery } from '@mui/material';
+import { useState, useEffect } from 'react';
 import { useSiteConfig } from './useSiteConfig';
 
-// Default breakpoints matching MUI standard values
+/**
+ * SSR-safe matchMedia hook. Returns false during SSR / first render,
+ * then syncs with the real media query.
+ */
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    setMatches(mql.matches);
+    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, [query]);
+
+  return matches;
+}
+
+// Default breakpoints matching standard values
 const DEFAULT_BREAKPOINTS = {
   xs: "(max-width:599px)",
   sm: "(min-width:600px) and (max-width:899px)", 

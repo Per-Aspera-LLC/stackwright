@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/mcp",
-    "version": "0.1.1",
+    "version": "0.1.2-alpha.1",
     "description": "MCP server for Stackwright — exposes content types, page management, and validation as agent tools",
     "repository": {
         "type": "git",
@@ -24,12 +24,12 @@
         "@modelcontextprotocol/sdk": "^1.27.0",
         "@stackwright/cli": "workspace:*",
         "@stackwright/types": "workspace:*",
-        "zod": "^4.1.12"
+        "zod": "^4.3.6"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",
-        "fs-extra": "^11.3.3",
-        "tsup": "^8.0.0",
+        "fs-extra": "^11.3.4",
+        "tsup": "^8.5.1",
         "typescript": "^5.6.0"
     }
 }

@@ -8,7 +8,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom', '@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
+  external: ['react', 'react-dom'],
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.js' : '.mjs',

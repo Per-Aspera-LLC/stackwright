@@ -1,5 +1,4 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
 import { CodeBlockContent } from "@stackwright/types";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
 
@@ -14,46 +13,43 @@ export function CodeBlock({
     const lines = code.trimEnd().split("\n");
 
     return (
-        <Box
-            sx={{
-                mx: 4,
-                my: 0,
-                py: 2,
+        <div
+            style={{
+                margin: '0 32px',
+                padding: '16px 0',
                 background: background || "transparent",
             }}
         >
-            <Box
-                sx={{
+            <div
+                style={{
                     backgroundColor: "#f4f4f5",
-                    borderRadius: 1,
+                    borderRadius: '4px',
                     overflow: "auto",
                     border: `1px solid ${theme.colors.textSecondary}22`,
                 }}
             >
                 {language && (
-                    <Box
-                        sx={{
-                            px: 2,
-                            py: 0.5,
+                    <div
+                        style={{
+                            padding: '4px 16px',
                             borderBottom: `1px solid ${theme.colors.textSecondary}22`,
                         }}
                     >
-                        <Typography
-                            variant="caption"
-                            sx={{
+                        <span
+                            style={{
+                                fontSize: '0.75rem',
                                 color: theme.colors.textSecondary,
                                 fontFamily: "monospace",
                             }}
                         >
                             {language}
-                        </Typography>
-                    </Box>
+                        </span>
+                    </div>
                 )}
-                <Box
-                    component="pre"
-                    sx={{
-                        m: 0,
-                        p: 2,
+                <pre
+                    style={{
+                        margin: 0,
+                        padding: '16px',
                         overflow: "auto",
                         fontFamily: "monospace",
                         fontSize: "0.875rem",
@@ -62,15 +58,13 @@ export function CodeBlock({
                     }}
                 >
                     {lines.map((line, i) => (
-                        <Box
+                        <span
                             key={i}
-                            component="span"
-                            sx={{ display: "flex", gap: 2 }}
+                            style={{ display: "flex", gap: '16px' }}
                         >
                             {lineNumbers && (
-                                <Box
-                                    component="span"
-                                    sx={{
+                                <span
+                                    style={{
                                         userSelect: "none",
                                         minWidth: "2ch",
                                         textAlign: "right",
@@ -79,14 +73,14 @@ export function CodeBlock({
                                     }}
                                 >
                                     {i + 1}
-                                </Box>
+                                </span>
                             )}
-                            <Box component="span">{line}</Box>
+                            <span>{line}</span>
                             {"\n"}
-                        </Box>
+                        </span>
                     ))}
-                </Box>
-            </Box>
-        </Box>
+                </pre>
+            </div>
+        </div>
     );
 }
