@@ -50,3 +50,49 @@ jobs:
       - name: Build scaffold output
         run: pnpm build
         working-directory: /tmp/test-site
+
+  check-agent-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm build
+
+      - name: Regenerate AGENTS.md tables
+        run: node packages/cli/dist/cli.js generate-agent-docs
+
+      - name: Fail if AGENTS.md is out of sync with schemas
+        run: |
+          git diff --exit-code AGENTS.md examples/hellostackwrightnext/AGENTS.md || \
+          (echo "AGENTS.md is out of sync. Run 'pnpm stackwright -- generate-agent-docs' and commit the result." && exit 1)
+
+  check-schemas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm build
+
+      - name: Regenerate JSON schemas
+        run: cd packages/types && pnpm generate-schemas
+
+      - name: Fail if JSON schemas are out of sync with types
+        run: |
+          git diff --exit-code packages/types/schemas/ || \
+          (echo "JSON schemas are out of sync. Run 'cd packages/types && pnpm generate-schemas' and commit the result." && exit 1)
