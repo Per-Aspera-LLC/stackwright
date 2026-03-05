@@ -10,5 +10,6 @@ export { TestimonialGrid } from "./TestimonialGrid";
 export { Faq } from "./Faq";
 export { PricingTable } from "./PricingTable";
 export { ContactFormStub } from "./ContactFormStub";
+export { Alert } from "./Alert";
 
 export * from "./Menu";

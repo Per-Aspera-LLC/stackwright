@@ -345,6 +345,43 @@ content:
             cta_text: "Contact Sales"
             cta_href: "#"
 
+    # --- alert ---
+
+    - alert:
+        label: "alert-info-demo"
+        variant: "info"
+        title: "Getting Started"
+        body: "Stackwright compiles YAML content files into production-ready Next.js applications. Define your pages in YAML and let the framework handle the rendering."
+
+    - alert:
+        label: "alert-warning-demo"
+        variant: "warning"
+        title: "Breaking Change"
+        body: "The theme schema has been updated. Run pnpm generate-schemas after modifying any type definitions."
+
+    - alert:
+        label: "alert-success-demo"
+        variant: "success"
+        title: "Deployment Complete"
+        body: "Your site has been built and deployed successfully. All pages passed validation."
+
+    - alert:
+        label: "alert-danger-demo"
+        variant: "danger"
+        title: "Validation Failed"
+        body: "The YAML content contains errors that must be fixed before building. Check the console output for details."
+
+    - alert:
+        label: "alert-note-demo"
+        variant: "note"
+        body: "This is a note without a title — useful for brief inline annotations."
+
+    - alert:
+        label: "alert-tip-demo"
+        variant: "tip"
+        title: "Pro Tip"
+        body: "Use the MCP server to let AI agents create and validate content for your Stackwright site."
+
     # --- contact_form_stub ---
 
     - contact_form_stub:

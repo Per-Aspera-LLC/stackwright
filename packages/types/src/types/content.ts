@@ -104,6 +104,14 @@ export const pricingTableContentSchema = baseContentSchema.extend({
     plans: z.array(pricingPlanSchema),
 });
 
+export const alertVariantSchema = z.enum(['info', 'warning', 'success', 'danger', 'note', 'tip']);
+
+export const alertContentSchema = baseContentSchema.extend({
+    variant: alertVariantSchema,
+    title: z.string().optional(),
+    body: z.string(),
+});
+
 export const contactFormStubContentSchema = baseContentSchema.extend({
     heading: textBlockSchema.optional(),
     description: z.string().optional(),
@@ -133,6 +141,8 @@ export type FaqItem = z.infer<typeof faqItemSchema>;
 export type FaqContent = z.infer<typeof faqContentSchema>;
 export type PricingPlan = z.infer<typeof pricingPlanSchema>;
 export type PricingTableContent = z.infer<typeof pricingTableContentSchema>;
+export type AlertVariant = z.infer<typeof alertVariantSchema>;
+export type AlertContent = z.infer<typeof alertContentSchema>;
 export type ContactFormStubContent = z.infer<typeof contactFormStubContentSchema>;
 
 export interface TabbedContent {
@@ -155,6 +165,7 @@ export interface ContentItem {
     testimonial_grid?: TestimonialGridContent;
     faq?: FaqContent;
     pricing_table?: PricingTableContent;
+    alert?: AlertContent;
     contact_form_stub?: ContactFormStubContent;
 }
 
@@ -178,6 +189,7 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
         testimonial_grid: testimonialGridContentSchema.optional(),
         faq: faqContentSchema.optional(),
         pricing_table: pricingTableContentSchema.optional(),
+        alert: alertContentSchema.optional(),
         contact_form_stub: contactFormStubContentSchema.optional(),
     })
 );
@@ -194,5 +206,6 @@ export type ContentItemMap = {
     testimonial_grid: TestimonialGridContent;
     faq: FaqContent;
     pricing_table: PricingTableContent;
+    alert: AlertContent;
     contact_form_stub: ContactFormStubContent;
 };
