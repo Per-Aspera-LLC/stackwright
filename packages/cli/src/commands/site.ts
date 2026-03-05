@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import type { ZodIssue } from 'zod';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
@@ -34,7 +35,7 @@ export function validateSite(siteConfigPath: string): SiteValidateResult {
   const result = siteConfigSchema.safeParse(raw);
   if (result.success) return { valid: true, errors: [] };
 
-  const errors: SiteValidationError[] = result.error.issues.map((issue) => ({
+  const errors: SiteValidationError[] = result.error.issues.map((issue: ZodIssue) => ({
     field: issue.path.length > 0 ? issue.path.join('.') : '(root)',
     message: issue.message,
   }));

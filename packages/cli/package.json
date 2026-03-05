@@ -7,7 +7,8 @@
     "url": "https://github.com/Per-Aspera-LLC/stackwright"
   },
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
