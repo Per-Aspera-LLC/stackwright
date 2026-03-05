@@ -43,8 +43,24 @@ jobs:
       - name: Scaffold a test project
         run: node packages/cli/dist/cli.js scaffold /tmp/test-site --title "Test Site" --theme default --json
 
+      - name: Override scaffold deps with workspace versions
+        run: |
+          node -e "
+            const pkg = require('./package.json');
+            const ws = 'file:${{ github.workspace }}/packages/';
+            for (const section of ['dependencies', 'devDependencies']) {
+              for (const dep of Object.keys(pkg[section] || {})) {
+                if (dep.startsWith('@stackwright/')) {
+                  pkg[section][dep] = ws + dep.replace('@stackwright/', '');
+                }
+              }
+            }
+            require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+        working-directory: /tmp/test-site
+
       - name: Install scaffold dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
         working-directory: /tmp/test-site
 
       - name: Build scaffold output
