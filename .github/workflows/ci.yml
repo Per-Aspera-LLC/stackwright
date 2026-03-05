@@ -41,7 +41,7 @@ jobs:
       - run: pnpm build
 
       - name: Scaffold a test project
-        run: pnpm stackwright -- scaffold /tmp/test-site --title "Test Site" --theme default --json
+        run: node packages/cli/dist/cli.js scaffold /tmp/test-site --title "Test Site" --theme default --json
 
       - name: Install scaffold dependencies
         run: pnpm install
