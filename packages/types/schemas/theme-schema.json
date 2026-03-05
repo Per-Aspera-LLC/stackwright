@@ -1,0 +1,270 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "colors": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string"
+        },
+        "secondary": {
+          "type": "string"
+        },
+        "accent": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "surface": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "textSecondary": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "primary",
+        "secondary",
+        "accent",
+        "background",
+        "surface",
+        "text",
+        "textSecondary"
+      ],
+      "additionalProperties": false
+    },
+    "backgroundImage": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "repeat": {
+          "type": "string",
+          "enum": [
+            "repeat",
+            "repeat-x",
+            "repeat-y",
+            "no-repeat"
+          ]
+        },
+        "size": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "attachment": {
+          "type": "string",
+          "enum": [
+            "scroll",
+            "fixed",
+            "local"
+          ]
+        },
+        "scale": {
+          "type": "number"
+        },
+        "animation": {
+          "type": "string",
+          "enum": [
+            "drift",
+            "float",
+            "shimmer",
+            "shimmer-float",
+            "none"
+          ]
+        },
+        "customAnimation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "typography": {
+      "type": "object",
+      "properties": {
+        "fontFamily": {
+          "type": "object",
+          "properties": {
+            "primary": {
+              "type": "string"
+            },
+            "secondary": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "primary",
+            "secondary"
+          ],
+          "additionalProperties": false
+        },
+        "scale": {
+          "type": "object",
+          "properties": {
+            "xs": {
+              "type": "string"
+            },
+            "sm": {
+              "type": "string"
+            },
+            "base": {
+              "type": "string"
+            },
+            "lg": {
+              "type": "string"
+            },
+            "xl": {
+              "type": "string"
+            },
+            "2xl": {
+              "type": "string"
+            },
+            "3xl": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "xs",
+            "sm",
+            "base",
+            "lg",
+            "xl",
+            "2xl",
+            "3xl"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "fontFamily",
+        "scale"
+      ],
+      "additionalProperties": false
+    },
+    "spacing": {
+      "type": "object",
+      "properties": {
+        "xs": {
+          "type": "string"
+        },
+        "sm": {
+          "type": "string"
+        },
+        "md": {
+          "type": "string"
+        },
+        "lg": {
+          "type": "string"
+        },
+        "xl": {
+          "type": "string"
+        },
+        "2xl": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "2xl"
+      ],
+      "additionalProperties": false
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "button": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/__schema0"
+            }
+          ]
+        },
+        "card": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/__schema0"
+            }
+          ]
+        },
+        "header": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/__schema0"
+            }
+          ]
+        },
+        "footer": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/__schema0"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "description",
+    "colors",
+    "typography",
+    "spacing"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "__schema0": {
+      "type": "object",
+      "properties": {
+        "base": {
+          "type": "string"
+        },
+        "primary": {
+          "type": "string"
+        },
+        "secondary": {
+          "type": "string"
+        },
+        "outline": {
+          "type": "string"
+        },
+        "shadow": {
+          "type": "string"
+        },
+        "nav": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  }
+}

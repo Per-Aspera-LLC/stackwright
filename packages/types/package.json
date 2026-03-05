@@ -15,12 +15,13 @@
             "import": "./dist/index.mjs",
             "require": "./dist/index.js"
         },
-        "./schemas/theme-schema.json": "./dist/schemas/theme-schema.json",
-        "./schemas/content-schema.json": "./dist/schemas/content-schema.json",
-        "./schemas/siteconfig-schema.json": "./dist/schemas/site-config-schema.json"
+        "./schemas/theme-schema.json": "./schemas/theme-schema.json",
+        "./schemas/content-schema.json": "./schemas/content-schema.json",
+        "./schemas/siteconfig-schema.json": "./schemas/site-config-schema.json"
     },
     "files": [
-        "dist"
+        "dist",
+        "schemas"
     ],
     "scripts": {
         "build": "tsup && pnpm generate-schemas",
