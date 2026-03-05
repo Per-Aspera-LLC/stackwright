@@ -56,15 +56,18 @@ jobs:
             const fs = require('fs');
             const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
             const tarballs = fs.readdirSync('/tmp/stackwright-tarballs');
+            const names = ['types','themes','icons','core','nextjs','build-scripts','ui-shadcn','cli'];
+            const overrides = {};
+            for (const name of names) {
+              const tarball = tarballs.find(t => t.startsWith('stackwright-' + name + '-'));
+              if (tarball) overrides['@stackwright/' + name] = '/tmp/stackwright-tarballs/' + tarball;
+            }
             for (const section of ['dependencies', 'devDependencies']) {
               for (const dep of Object.keys(pkg[section] || {})) {
-                if (dep.startsWith('@stackwright/')) {
-                  const short = dep.replace('@stackwright/', '');
-                  const tarball = tarballs.find(t => t.includes(short));
-                  if (tarball) pkg[section][dep] = '/tmp/stackwright-tarballs/' + tarball;
-                }
+                if (overrides[dep]) pkg[section][dep] = overrides[dep];
               }
             }
+            pkg.pnpm = { overrides };
             fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
           "
         working-directory: /tmp/test-site
