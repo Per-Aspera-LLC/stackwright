@@ -11,15 +11,15 @@
 |-------|-------|--------|
 | 1 | Icons: Lucide migration | ✅ Done |
 | 2 | ui-shadcn: New component package | ✅ Done |
-| 3 | Themes: CSS custom properties | 🔶 Partial (infra done, integration needed) |
-| 4 | Core: UI interface definition | ⬜ Not started |
-| 5 | Core: Component rewrites (structural) | ⬜ Not started |
-| 6 | Core: Component rewrites (base) | ⬜ Not started |
-| 7 | Core: Component rewrites (narrative) | ⬜ Not started |
-| 8 | Core: Hook/utility updates | ⬜ Not started |
-| 9 | Core: Remove MUI from package.json | ⬜ Not started |
-| 10 | Example app: Update hellostackwrightnext | ⬜ Not started |
-| 11 | Cleanup & testing | ⬜ Not started |
+| 3 | Themes: CSS custom properties | ✅ Done (wired into DynamicPage) |
+| 4 | Core: UI interface definition | ⏭️ Deferred (components use plain HTML for now) |
+| 5 | Core: Component rewrites (structural) | ✅ Done |
+| 6 | Core: Component rewrites (base) | ✅ Done |
+| 7 | Core: Component rewrites (narrative) | ✅ Done |
+| 8 | Core: Hook/utility updates | ✅ Done |
+| 9 | Core: Remove MUI from package.json | ✅ Done |
+| 10 | Example app: Update hellostackwrightnext | ✅ Done |
+| 11 | Cleanup & testing | ✅ Done |
 
 ---
 
