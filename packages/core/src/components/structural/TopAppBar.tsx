@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Box, imageListClasses } from '@mui/material';
+import React from 'react';
 import { AppBarContent } from '@stackwright/types';
 import { ThemedButton } from '../base/ThemedButton';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
@@ -7,48 +7,47 @@ import { Media } from '../media/Media'
 
 export default function TopAppBar({ title, logo, menuItems, textcolor, backgroundcolor }: AppBarContent) {
   const theme = useSafeTheme();
-  
+
   const headerBgColor = backgroundcolor ? resolveColor(backgroundcolor, theme.colors) : theme.colors.primary;
   const headerTextColor = textcolor ? resolveColor(textcolor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor)
-    
 
   return (
-    <AppBar position="sticky" sx={{ 
-      backgroundColor: headerBgColor,
-      color: headerTextColor,
-      width: '100%',
-      height: '100%'
-    }}>
-      <Toolbar sx={{ height: '100%', width: '100%', display: 'flex'}}>
+    <header
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 1100,
+        backgroundColor: headerBgColor,
+        color: headerTextColor,
+        width: '100%',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      }}
+    >
+      <nav style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', padding: '0 24px' }}>
         {logo ? (
           <>
-            <Box 
-              sx={{
-                paddingRight: 1.5,
-                height: 'auto'
-              }}
-              >
+            <div style={{ paddingRight: '12px', height: 'auto' }}>
               <Media
                 {...logo}
                 style='contained'
                 height={logo.height || '48px'}
                 width={logo.width || '48px'}
                 label={`${title} logo`}
-                />
-              </Box>
-            <Typography  variant="h4" component="div" sx={{  mr: 4 }}>
+              />
+            </div>
+            <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: '32px' }}>
               {title}
-            </Typography>
+            </h1>
           </>
-        ): (
-          <Typography  variant="h4" component="div" sx={{  mr: 4 }}>
+        ) : (
+          <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: '32px' }}>
             {title}
-          </Typography>
+          </h1>
         )}
-        
-        <Box sx={{ flexGrow: 1 }} />
-        
-        <Box sx={{ display: 'flex', gap: 2 }}>
+
+        <div style={{ flexGrow: 1 }} />
+
+        <div style={{ display: 'flex', gap: '16px' }}>
           {menuItems?.map((item, index) => (
             <ThemedButton
               key={index}
@@ -63,8 +62,8 @@ export default function TopAppBar({ title, logo, menuItems, textcolor, backgroun
               size="medium"
             />
           ))}
-        </Box>
-      </Toolbar>
-    </AppBar>
+        </div>
+      </nav>
+    </header>
   );
 }

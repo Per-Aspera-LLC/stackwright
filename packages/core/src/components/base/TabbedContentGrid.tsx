@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Tabs, Tab, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid";
 import { TabbedContent, ContentItem } from "@stackwright/types";
 import { renderContent } from "../../utils/contentRenderer";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
@@ -11,94 +9,80 @@ export function TabbedContentGrid(content: TabbedContent) {
     const theme = useSafeTheme();
     const [value, setValue] = useState(0);
 
-    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
-    };
     return (
-        <Box
-            sx={{
+        <div
+            style={{
                 flexGrow: 1,
                 width: "100%",
-                padding: 4,
+                padding: '32px',
             }}
         >
-            <Grid
-                container
-                alignItems="center"
-                size={{
-                    xs: 12,
-                    md: 7,
-                }}
-                sx={{
+            <div
+                style={{
                     width: "100%",
                     textAlign: "center",
-                    justifyContent: "center",
-                    marginTop: 2,
-                    marginBottom: 2,
+                    margin: '16px 0',
                 }}
             >
-                <Grid
-                    size={{ xs: 12 }}
-                    container
-                    sx={{
+                <p
+                    style={{
                         width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
+                        textAlign: "center",
+                        color: theme.colors.text,
+                        marginBottom: '8px',
                     }}
                 >
-                    <Typography
-                        variant={content?.heading?.textSize || "body1"}
-                        gutterBottom
-                        sx={{
-                            width: "100%",
-                            textAlign: "center",
-                            color: theme.colors.text,
-                        }}
-                    >
-                        {content.heading.text}
-                    </Typography>
-                </Grid>
+                    {content.heading.text}
+                </p>
 
-                <Grid
-                    container
-                    size={{ xs: 12 }}
-                    sx={{
+                <div
+                    style={{
                         width: "100%",
                         display: "flex",
                         justifyContent: "center",
+                        flexDirection: "column",
+                        alignItems: "center",
                     }}
                 >
-                    <Tabs
-                        value={value}
-                        onChange={handleChange}
-                        variant="scrollable"
-                        scrollButtons="auto"
-                        allowScrollButtonsMobile
-                        sx={{
+                    <div
+                        role="tablist"
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            gap: '4px',
+                            borderBottom: `2px solid ${theme.colors.textSecondary}22`,
                             width: "100%",
-                            "& .MuiTabs-flexContainer": {
-                                justifyContent: "center",
-                            },
-                            "& .MuiTabs-scroller": {
-                                display: "flex",
-                                justifyContent: "center",
-                            },
+                            overflowX: "auto",
                         }}
                     >
                         {content.tabs.map((tab: ContentItem, index) => {
                             const contentData = Object.values(tab)[0];
+                            const isActive = value === index;
                             return (
-                                <Tab
+                                <button
                                     key={index}
-                                    label={
-                                        contentData?.label ?? `Tab ${index + 1}`
-                                    }
+                                    role="tab"
                                     id={`tab-${index}`}
                                     aria-controls={`tabpanel-${index}`}
-                                />
+                                    aria-selected={isActive}
+                                    onClick={() => setValue(index)}
+                                    style={{
+                                        padding: '8px 16px',
+                                        border: 'none',
+                                        background: 'none',
+                                        cursor: 'pointer',
+                                        borderBottom: isActive ? `2px solid ${theme.colors.primary}` : '2px solid transparent',
+                                        color: isActive ? theme.colors.primary : theme.colors.textSecondary,
+                                        fontWeight: isActive ? 600 : 400,
+                                        marginBottom: '-2px',
+                                        whiteSpace: 'nowrap',
+                                    }}
+                                >
+                                    {contentData?.label ?? `Tab ${index + 1}`}
+                                </button>
                             );
                         })}
-                    </Tabs>
+                    </div>
                     {content.tabs.map((tab: ContentItem, index) => (
                         <div
                             key={index}
@@ -109,19 +93,19 @@ export function TabbedContentGrid(content: TabbedContent) {
                             style={{ width: "100%" }}
                         >
                             {value === index && (
-                                <Box
-                                    sx={{
-                                        p: 3,
+                                <div
+                                    style={{
+                                        padding: '24px',
                                         transition: "all 0.3s ease-in-out",
                                     }}
                                 >
                                     {renderContent(tab)}
-                                </Box>
+                                </div>
                             )}
                         </div>
                     ))}
-                </Grid>
-            </Grid>
-        </Box>
+                </div>
+            </div>
+        </div>
     );
 }

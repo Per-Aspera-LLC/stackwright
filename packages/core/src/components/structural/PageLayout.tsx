@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import React from "react";
 import TopAppBar from "./TopAppBar";
 import { PageContent } from "@stackwright/types";
 import { SiteConfig } from "@stackwright/types";
@@ -6,12 +6,6 @@ import BottomAppBar from "./BottomAppBar";
 import { renderContent } from "../../utils/contentRenderer";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
 import { defaultSiteConfig } from "../../config/siteDefaults";
-
-const styles = {
-    contentContainer: {
-        flexGrow: 1,
-    },
-};
 
 interface PageLayoutProps {
     pageContent: PageContent;
@@ -26,15 +20,14 @@ export default function PageLayout({
 
     const config = siteConfig || defaultSiteConfig;
 
-    // Check if background image is set - if so, use transparent backgrounds
     const hasBackgroundImage = siteConfig?.customTheme?.backgroundImage?.url;
     const backgroundColor = hasBackgroundImage
         ? "transparent"
         : theme.colors.background;
 
     return (
-        <Box
-            sx={{
+        <div
+            style={{
                 display: "flex",
                 flexDirection: "column",
                 minHeight: "100vh",
@@ -50,17 +43,16 @@ export default function PageLayout({
                 backgroundcolor={config.appBar.backgroundColor}
             />
 
-            <Box
-                component="main"
-                sx={{
-                    ...styles.contentContainer,
+            <main
+                style={{
+                    flexGrow: 1,
                     backgroundColor: backgroundColor,
                 }}
             >
                 {renderContent(pageContent)}
-            </Box>
+            </main>
 
             <BottomAppBar footer={config.footer} />
-        </Box>
+        </div>
     );
 }

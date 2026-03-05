@@ -1,5 +1,5 @@
+import React from 'react';
 import { MenuContent } from '@stackwright/types';
-import { MenuItem, Typography } from '@mui/material';
 import { MenuThemeConfig } from './menuTheme';
 interface MenuItemProps {
   item: MenuContent;
@@ -13,29 +13,27 @@ export const MenuItemComponent = ({ item, isCompressed, theme }: MenuItemProps) 
   const isEmphasizedVariant = item.variant === 'contained' || item.variant === 'outlined';
   const colorSet = theme.colors[effectiveVariant as keyof typeof theme.colors] || theme.colors.default;
 
+  const textColor = isCompressed && item.variant === 'contained'
+    ? theme.colors.contained.background
+    : colorSet.text;
+
   return (
-    <MenuItem 
-      component="a" 
+    <a
       href={item.href || '#'}
-      sx={{
+      style={{
+        display: 'block',
+        padding: '8px 16px',
         backgroundColor: colorSet.background,
         color: colorSet.text,
-        border: effectiveVariant === 'outlined' ? 1 : 0,
-        borderColor: colorSet.border,
+        border: effectiveVariant === 'outlined' ? `1px solid ${colorSet.border}` : 'none',
         borderRadius: isEmphasizedVariant && !isCompressed ? '24px' : 0,
-        '&:hover': {
-          backgroundColor: colorSet.hover
-        }
+        textDecoration: 'none',
+        cursor: 'pointer',
       }}
     >
-      <Typography 
-        variant="body1"
-        sx={{
-          color: isCompressed && item.variant === 'contained' ? theme.colors.contained.background : colorSet.text
-        }}
-      >
+      <span style={{ color: textColor }}>
         {item.text}
-      </Typography>
-    </MenuItem>
+      </span>
+    </a>
   );
 };
