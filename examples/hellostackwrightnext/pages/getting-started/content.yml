@@ -145,187 +145,26 @@ content:
                     aspect_ratio: 1.5
 
         - main:
-              label: "content-types-intro"
-              heading:
-                  text: "Available Content Types"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Each entry in content_items uses a key that maps to a component. Here are the types available today."
-                    textSize: "body1"
-              background: "#f8f9fa"
-
-        - main:
-              label: "content-type-main"
-              heading:
-                  text: "main"
-                  textSize: "h3"
-              textBlocks:
-                  - text: "The primary layout block. Renders a heading, text blocks, an optional image, and optional buttons. Control the text-to-image column ratio with textToGraphic (default: 58% text). Set graphic_position to left or right."
-                    textSize: "body1"
-
-        - main:
-              label: "content-type-timeline"
-              heading:
-                  text: "timeline"
-                  textSize: "h3"
-              textBlocks:
-                  - text: "A vertical timeline. Each item has a year and an event. Good for history, roadmaps, and changelogs."
-                    textSize: "body1"
-              background: "#f8f9fa"
-
-        - main:
-              label: "content-type-carousel"
-              heading:
-                  text: "carousel"
-                  textSize: "h3"
-              textBlocks:
-                  - text: "A slideshow of items, each with a title, text, and media. Supports autoPlay, speed, and infinite looping."
-                    textSize: "body1"
-
-        - main:
-              label: "content-type-icon-grid"
-              heading:
-                  text: "icon_grid"
-                  textSize: "h3"
-              textBlocks:
-                  - text: "A grid of icons with labels and an optional heading. Icons can be referenced by MUI icon name or as image paths. Great for feature lists, tech stacks, and service overviews."
-                    textSize: "body1"
-              background: "#f8f9fa"
-
-        - icon_grid:
-              label: "icon-grid-demo"
-              heading:
-                  text: "Example: Feature Highlights"
-                  textSize: "h4"
-              icons:
-                  - type: "icon"
-                    label: "Fast Builds"
-                    src: "Speed"
-                    color: "primary"
-                  - type: "icon"
-                    label: "Type Safe"
-                    src: "VerifiedUser"
-                    color: "primary"
-                  - type: "icon"
-                    label: "Static Output"
-                    src: "CloudDone"
-                    color: "primary"
-                  - type: "icon"
-                    label: "YAML Driven"
-                    src: "Description"
-                    color: "primary"
-                  - type: "icon"
-                    label: "MUI Themed"
-                    src: "Palette"
-                    color: "primary"
-                  - type: "icon"
-                    label: "Open Source"
-                    src: "Code"
-                    color: "primary"
-              background: "#f8f9fa"
-
-        - main:
-              label: "content-type-tabbed"
-              heading:
-                  text: "tabbed_content"
-                  textSize: "h3"
-              textBlocks:
-                  - text: "Wraps any other content types in a tabbed interface. Useful for comparisons or categorized content without separate pages."
-                    textSize: "body1"
-
-        - tabbed_content:
-              label: "tabbed-content-demo"
-              heading:
-                  text: "Live Demo: tabbed_content"
-                  textSize: "h4"
-              tabs:
-                  - icon_grid:
-                        label: "Icons Tab"
-                        heading:
-                            text: "Tech Stack"
-                            textSize: "h5"
-                        icons:
-                            - type: "icon"
-                              label: "React"
-                              src: "Code"
-                              color: "primary"
-                            - type: "icon"
-                              label: "Next.js"
-                              src: "RocketLaunch"
-                              color: "primary"
-                            - type: "icon"
-                              label: "TypeScript"
-                              src: "VerifiedUser"
-                              color: "primary"
-                            - type: "icon"
-                              label: "MUI"
-                              src: "Palette"
-                              color: "primary"
-                  - timeline:
-                        label: "Timeline Tab"
-                        heading:
-                            text: "Project Milestones"
-                            textSize: "h5"
-                        items:
-                            - year: "2024"
-                              event: "Stackwright project started — YAML-driven React framework concept"
-                            - year: "2025"
-                              event: "Core content types, themes, and Next.js adapter stabilized"
-                            - year: "2026"
-                              event: "Prebuild pipeline, Turbopack support, and icon_grid added"
-                  - code_block:
-                        label: "YAML Tab"
-                        language: "yaml"
-                        code: |
-                            - tabbed_content:
-                                label: "my-tabs"
-                                heading:
-                                  text: "My Tabs"
-                                  textSize: "h3"
-                                tabs:
-                                  - main:
-                                      label: "First Tab"
-                                      heading:
-                                        text: "Tab One"
-                                        textSize: "h4"
-                                      textBlocks:
-                                        - text: "Content for the first tab."
-                                          textSize: "body1"
-                                  - main:
-                                      label: "Second Tab"
-                                      heading:
-                                        text: "Tab Two"
-                                        textSize: "h4"
-                                      textBlocks:
-                                        - text: "Content for the second tab."
-                                          textSize: "body1"
-
-        - main:
-              label: "content-type-code-block"
-              heading:
-                  text: "code_block"
-                  textSize: "h3"
-              textBlocks:
-                  - text: "A formatted code block with optional language label and line numbers. Use this for any multi-line code or command snippets."
-                    textSize: "body1"
-              background: "#f8f9fa"
-
-        - main:
               label: "next-steps"
               heading:
                   text: "Where to Go Next"
                   textSize: "h2"
               textBlocks:
-                  - text: "Read the About page to understand the philosophy behind the framework, or explore the source on GitHub."
+                  - text: "See all available content types in the Showcase, read the About page, or explore the source on GitHub."
                     textSize: "body1"
               buttons:
+                  - label: "showcase-btn"
+                    text: "Content Type Showcase"
+                    textSize: "body1"
+                    variant: "contained"
+                    href: "/showcase"
+                    bgColor: "secondary"
+                    textColor: "primary"
                   - label: "about-btn"
                     text: "About Stackwright"
                     textSize: "body1"
-                    variant: "contained"
+                    variant: "outlined"
                     href: "/about"
-                    bgColor: "secondary"
-                    textColor: "primary"
                   - label: "github-btn"
                     text: "View on GitHub"
                     textSize: "body1"

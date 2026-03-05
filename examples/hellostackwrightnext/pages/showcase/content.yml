@@ -1,0 +1,360 @@
+content:
+  content_items:
+    - main:
+        label: "showcase-hero"
+        heading:
+          text: "Content Type Showcase"
+          textSize: "h1"
+        textBlocks:
+          - text: "Every content type available in Stackwright, demonstrated live. Each section below is a single YAML block."
+            textSize: "h6"
+
+    # --- main ---
+
+    - main:
+        label: "main-demo"
+        heading:
+          text: "main"
+          textSize: "h2"
+        textBlocks:
+          - text: "The workhorse layout block"
+            textSize: "h5"
+          - text: "Heading, text blocks, an optional image, and optional buttons. Set graphic_position to control image placement. Adjust the text-to-image ratio with textToGraphic."
+            textSize: "body1"
+        media:
+          type: "image"
+          label: "main-demo-graphic"
+          src: "./otterficer-digital.png"
+          alt: "Placeholder — replace with a hero image or product screenshot"
+          aspect_ratio: 1
+          height: 300
+        graphic_position: "right"
+        buttons:
+          - label: "main-demo-btn"
+            text: "Example Button"
+            textSize: "body1"
+            variant: "contained"
+            href: "#"
+
+    # --- carousel ---
+
+    - carousel:
+        label: "carousel-demo"
+        heading: "carousel"
+        autoPlay: true
+        autoPlaySpeed: 5000
+        background: "#f8f9fa"
+        items:
+          - title: "Define Pages in YAML"
+            text: "No JSX required. Write structured content files and Stackwright compiles them into React components."
+            media:
+              type: "image"
+              src: "/images/stackwright-digital.png"
+              alt: "Placeholder — replace with a screenshot of a YAML editor"
+              width: 300
+              height: 200
+              label: "slide-1"
+          - title: "Theme with Tokens"
+            text: "Colors, typography, and spacing are defined once in your site config and applied everywhere automatically."
+            media:
+              type: "image"
+              src: "/images/stackwright.png"
+              alt: "Placeholder — replace with a theme color palette preview"
+              width: 300
+              height: 200
+              label: "slide-2"
+          - title: "Deploy Anywhere"
+            text: "The output is a standard Next.js app. Deploy to Vercel, Netlify, or your own infrastructure."
+            media:
+              type: "image"
+              src: "/images/stackwright-digital.png"
+              alt: "Placeholder — replace with a deployment dashboard screenshot"
+              width: 300
+              height: 200
+              label: "slide-3"
+          - title: "Extend with React"
+            text: "When YAML isn't enough, drop into React. Custom components live alongside YAML pages in the same codebase."
+            media:
+              type: "image"
+              src: "/images/stackwright.png"
+              alt: "Placeholder — replace with a code editor showing React components"
+              width: 300
+              height: 200
+              label: "slide-4"
+
+    # --- timeline ---
+
+    - timeline:
+        label: "timeline-demo"
+        heading:
+          text: "timeline"
+          textSize: "h2"
+        items:
+          - year: "Q1 2024"
+            event: "Project kicked off — first YAML-to-React prototype built in a weekend hackathon."
+          - year: "Q3 2024"
+            event: "Core content types (main, carousel, timeline, tabbed_content) stabilized. Theme system and icon registry added."
+          - year: "Q1 2025"
+            event: "CLI tools, prebuild pipeline, and image co-location. First external users onboarded."
+          - year: "Q3 2025"
+            event: "MCP server for AI-driven content authoring. Agent docs auto-generation."
+          - year: "Q1 2026"
+            event: "shadcn/ui migration. Five new content types added."
+          - year: "Next"
+            event: "Collections system, App Router support, and the complete AI editorial loop."
+
+    # --- icon_grid ---
+
+    - icon_grid:
+        label: "icon-grid-demo"
+        heading:
+          text: "icon_grid"
+          textSize: "h2"
+        background: "#f8f9fa"
+        icons:
+          - type: "icon"
+            label: "React"
+            src: "Code"
+            color: "primary"
+          - type: "icon"
+            label: "Next.js"
+            src: "Rocket"
+            color: "primary"
+          - type: "icon"
+            label: "TypeScript"
+            src: "ShieldCheck"
+            color: "primary"
+          - type: "icon"
+            label: "Tailwind CSS"
+            src: "Palette"
+            color: "primary"
+          - type: "icon"
+            label: "Zod"
+            src: "FileCheck"
+            color: "primary"
+          - type: "icon"
+            label: "Vitest"
+            src: "FlaskConical"
+            color: "primary"
+          - type: "icon"
+            label: "pnpm"
+            src: "Package"
+            color: "primary"
+          - type: "icon"
+            label: "Lucide"
+            src: "Gem"
+            color: "primary"
+
+    # --- tabbed_content ---
+
+    - tabbed_content:
+        label: "tabbed-content-demo"
+        heading:
+          text: "tabbed_content"
+          textSize: "h2"
+        tabs:
+          - main:
+                label: "For Non-Developers"
+                heading:
+                    text: "Write Content, Not Code"
+                    textSize: "h4"
+                textBlocks:
+                    - text: "Describe what you want to an AI agent. It writes valid YAML, validates it against the schema, and opens a pull request. Your developer reviews and merges. No CMS login, no training, no lock-in."
+                      textSize: "body1"
+          - main:
+                label: "For Developers"
+                heading:
+                    text: "Standard Next.js Under the Hood"
+                    textSize: "h4"
+                textBlocks:
+                    - text: "The output is a Next.js app you own. Add custom React components alongside YAML pages. Use any npm package. Deploy anywhere. The framework disappears when you outgrow it — and that is by design."
+                      textSize: "body1"
+          - code_block:
+                label: "The YAML"
+                language: "yaml"
+                code: |
+                    - tabbed_content:
+                        label: "my-tabs"
+                        heading:
+                          text: "Compare Options"
+                          textSize: "h3"
+                        tabs:
+                          - main:
+                              label: "Option A"
+                              heading:
+                                text: "First Option"
+                                textSize: "h4"
+                              textBlocks:
+                                - text: "Details about option A."
+                                  textSize: "body1"
+                          - main:
+                              label: "Option B"
+                              heading:
+                                text: "Second Option"
+                                textSize: "h4"
+                              textBlocks:
+                                - text: "Details about option B."
+                                  textSize: "body1"
+
+    # --- code_block ---
+
+    - code_block:
+        label: "code-block-demo"
+        language: "yaml"
+        lineNumbers: true
+        background: "#f8f9fa"
+        code: |
+            # code_block — formatted code with syntax highlighting
+            content:
+              content_items:
+                - main:
+                    label: "hello-world"
+                    heading:
+                      text: "Hello World"
+                      textSize: "h1"
+                    textBlocks:
+                      - text: "My first Stackwright page."
+                        textSize: "body1"
+
+    # --- feature_list ---
+
+    - feature_list:
+        label: "feature-list-demo"
+        heading:
+          text: "feature_list"
+          textSize: "h2"
+        columns: 3
+        items:
+          - icon:
+              type: "icon"
+              src: "Zap"
+              height: 48
+            heading: "Lightning Fast"
+            description: "Static generation means zero server-side rendering cost. Pages load instantly from a CDN."
+          - icon:
+              type: "icon"
+              src: "Shield"
+              height: 48
+            heading: "Schema Validated"
+            description: "Every content file is validated against Zod schemas at build time. Errors are caught before deploy."
+          - icon:
+              type: "icon"
+              src: "GitBranch"
+              height: 48
+            heading: "Git Native"
+            description: "Content lives in your repo. Version history, branching, PRs, and rollback come free."
+          - icon:
+              type: "icon"
+              src: "Bot"
+              height: 48
+            heading: "AI Ready"
+            description: "Tight schemas make AI-generated content reliable. The MCP server turns natural language into valid YAML."
+          - icon:
+              type: "icon"
+              src: "Paintbrush"
+              height: 48
+            heading: "Themeable"
+            description: "Define colors, typography, and spacing once. Apply everywhere. Switch themes without touching content."
+          - icon:
+              type: "icon"
+              src: "DoorOpen"
+              height: 48
+            heading: "No Lock-in"
+            description: "The output is a standard Next.js app. Fork it, hand it to any React developer, extend it with custom code."
+
+    # --- testimonial_grid ---
+
+    - testimonial_grid:
+        label: "testimonial-grid-demo"
+        heading:
+          text: "testimonial_grid"
+          textSize: "h2"
+        columns: 3
+        background: "#f8f9fa"
+        items:
+          - quote: "We went from idea to deployed marketing site in a single sprint. The YAML schema is strict enough that our content team cannot break the build."
+            name: "Alex Chen"
+            role: "Engineering Lead"
+            company: "StartupCo"
+          - quote: "Non-developers on the team update content by describing changes to an AI agent. No Jira tickets, no developer bottleneck."
+            name: "Jordan Rivera"
+            role: "Product Manager"
+            company: "DevTools Inc"
+          - quote: "When we outgrew the YAML layer, we just started writing React components in the same repo. No migration, no rewrite. That sold us."
+            name: "Sam Patel"
+            role: "CTO"
+            company: "Launchpad Labs"
+
+    # --- faq ---
+
+    - faq:
+        label: "faq-demo"
+        heading:
+          text: "faq"
+          textSize: "h2"
+        items:
+          - question: "What is Stackwright?"
+            answer: "A typed DSL that compiles YAML content files into production-ready Next.js applications. You define pages, layouts, and content in YAML — Stackwright handles the rendering."
+          - question: "Do I need to know React?"
+            answer: "Not for content authoring. YAML content can be written by anyone. When you need custom functionality beyond the built-in content types, a React developer can extend the app alongside the YAML-driven pages."
+          - question: "How does theming work?"
+            answer: "Themes are defined in YAML with colors, typography, and spacing tokens. These are resolved at render time via CSS custom properties. You can switch themes dynamically or define custom themes per site."
+          - question: "What happens when I outgrow the framework?"
+            answer: "Nothing breaks. The output is a standard Next.js app. A developer opens the repo and starts writing React components alongside the YAML pages. No migration, no export, no rewrite."
+          - question: "Is it free and open source?"
+            answer: "Yes, the core framework is open source under the MIT license."
+
+    # --- pricing_table ---
+
+    - pricing_table:
+        label: "pricing-table-demo"
+        heading:
+          text: "pricing_table"
+          textSize: "h2"
+        background: "#f8f9fa"
+        plans:
+          - name: "Starter"
+            price: "Free"
+            description: "For personal projects and experiments"
+            features:
+              - "All 12 content types"
+              - "Theme system"
+              - "CLI tools"
+              - "Community support"
+            cta_text: "Get Started"
+            cta_href: "/getting-started"
+          - name: "Pro"
+            price: "$29/mo"
+            description: "For teams shipping production sites"
+            features:
+              - "Everything in Starter"
+              - "Pro component library"
+              - "Priority support"
+              - "Custom integrations"
+            highlighted: true
+            cta_text: "Start Free Trial"
+            cta_href: "/getting-started"
+          - name: "Enterprise"
+            price: "Custom"
+            description: "For organizations at scale"
+            features:
+              - "Everything in Pro"
+              - "SLA guarantee"
+              - "Dedicated support"
+              - "On-premise deployment"
+            cta_text: "Contact Sales"
+            cta_href: "#"
+
+    # --- contact_form_stub ---
+
+    - contact_form_stub:
+        label: "contact-form-stub-demo"
+        heading:
+          text: "contact_form_stub"
+          textSize: "h2"
+        description: "A static contact section. No server required — the button opens a mailto link. Add phone and address for a complete contact page."
+        email: "hello@stackwright.dev"
+        email_subject: "Inquiry from Stackwright website"
+        phone: "+1 (555) 012-3456"
+        address: "123 Framework Lane, Open Source City"
+        button_text: "Send Us an Email"
