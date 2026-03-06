@@ -20,6 +20,7 @@
     "auto-generate-agent-docs",
     "ci-schema-sync-check",
     "content-renderer-error-handling",
-    "fix-layout-regressions"
+    "fix-layout-regressions",
+    "fix-mobile-responsiveness"
   ]
 }
