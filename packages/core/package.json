@@ -38,20 +38,22 @@
         "prepublishOnly": "npm run build"
     },
     "dependencies": {
-        "@stackwright/types": "workspace:*",
         "@stackwright/themes": "workspace:*",
+        "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0",
-        "zod": "^4.3.6",
-        "uuid": "^13.0.0"
+        "prismjs": "^1.30.0",
+        "uuid": "^13.0.0",
+        "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@stackwright/types": "workspace:*",
         "@swc/core": "^1.15.18",
         "@testing-library/jest-dom": "^6.6",
         "@testing-library/react": "^16.3",
         "@types/node": "^25.3",
+        "@types/prismjs": "^1.26.6",
         "@types/react": "^19.1",
         "@types/react-dom": "^19.2",
-        "@stackwright/types": "workspace:*",
         "@vitest/ui": "^4.0.18",
         "jsdom": "^28.1.0",
         "react": "^19",

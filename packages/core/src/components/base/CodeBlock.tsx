@@ -1,6 +1,25 @@
 import React from "react";
 import { CodeBlockContent } from "@stackwright/types";
 import { useSafeTheme } from "../../hooks/useSafeTheme";
+import { highlightCode, getTokenColor, HighlightToken } from "../../utils/prismHighlighter";
+
+/**
+ * Split a flat token list into per-line groups so each line can be
+ * rendered independently (required for line-number alignment).
+ */
+function splitTokensByLine(tokens: HighlightToken[]): HighlightToken[][] {
+    const lines: HighlightToken[][] = [[]];
+    for (const token of tokens) {
+        const parts = token.content.split("\n");
+        for (let p = 0; p < parts.length; p++) {
+            if (p > 0) lines.push([]);
+            if (parts[p].length > 0) {
+                lines[lines.length - 1].push({ type: token.type, content: parts[p] });
+            }
+        }
+    }
+    return lines;
+}
 
 export function CodeBlock({
     code,
@@ -10,7 +29,8 @@ export function CodeBlock({
 }: CodeBlockContent) {
     const theme = useSafeTheme();
 
-    const lines = code.trimEnd().split("\n");
+    const tokens = highlightCode(code.trimEnd(), language);
+    const tokenLines = splitTokensByLine(tokens);
 
     return (
         <div
@@ -57,7 +77,7 @@ export function CodeBlock({
                         color: theme.colors.text,
                     }}
                 >
-                    {lines.map((line, i) => (
+                    {tokenLines.map((lineTokens, i) => (
                         <span
                             key={i}
                             style={{ display: "flex", gap: '16px' }}
@@ -75,7 +95,20 @@ export function CodeBlock({
                                     {i + 1}
                                 </span>
                             )}
-                            <span>{line}</span>
+                            <span>
+                                {lineTokens.length > 0
+                                    ? lineTokens.map((t, j) => {
+                                          const color = getTokenColor(t.type);
+                                          return color ? (
+                                              <span key={j} style={{ color }}>
+                                                  {t.content}
+                                              </span>
+                                          ) : (
+                                              <span key={j}>{t.content}</span>
+                                          );
+                                      })
+                                    : " "}
+                            </span>
                             {"\n"}
                         </span>
                     ))}
