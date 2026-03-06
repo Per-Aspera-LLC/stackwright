@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.6.0-alpha.6
+
+### Minor Changes
+
+- 8086e12: Add syntax highlighting to CodeBlock component using Prism.js. Supports JavaScript, TypeScript, Python, YAML, HTML, CSS, JSON, bash, JSX, and TSX with inline-styled tokens. Unsupported languages fall back gracefully to plain text.
+
 ## 0.6.0-alpha.5
 
 ### Patch Changes

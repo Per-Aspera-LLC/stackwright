@@ -21,6 +21,7 @@
     "ci-schema-sync-check",
     "content-renderer-error-handling",
     "fix-layout-regressions",
-    "fix-mobile-responsiveness"
+    "fix-mobile-responsiveness",
+    "syntax-highlighting-code-block"
   ]
 }
