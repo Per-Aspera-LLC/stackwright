@@ -1,5 +1,13 @@
 # stackwright-example-app
 
+## 0.1.8-alpha.7
+
+### Patch Changes
+
+- Updated dependencies [a4c573a]
+  - @stackwright/core@0.6.0-alpha.7
+  - @stackwright/nextjs@0.2.8-alpha.7
+
 ## 0.1.8-alpha.6
 
 ### Patch Changes

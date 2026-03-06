@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.6.0-alpha.7
+
+### Patch Changes
+
+- a4c573a: Add keyboard navigation and accessibility to Carousel component. Arrow keys navigate between slides, proper ARIA attributes (role, aria-roledescription, aria-live, aria-label) support screen readers, and a visible focus indicator aids keyboard users.
+
 ## 0.6.0-alpha.6
 
 ### Minor Changes

@@ -18,6 +18,7 @@
     "add-alert-content-type",
     "add-e2e-playwright-tests",
     "auto-generate-agent-docs",
+    "carousel-keyboard-nav",
     "ci-schema-sync-check",
     "content-renderer-error-handling",
     "fix-layout-regressions",
