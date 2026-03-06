@@ -8,8 +8,24 @@ import { siteConfigSchema } from '../utils/schema-loader';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
-// Pure function
+// Pure functions
 // ---------------------------------------------------------------------------
+
+export interface ReadSiteConfigResult {
+  content: string;
+  path: string;
+}
+
+export function readSiteConfig(siteConfigPath: string): ReadSiteConfigResult {
+  if (!fs.existsSync(siteConfigPath)) {
+    const err = new Error(`Site config not found: ${siteConfigPath}`);
+    (err as NodeJS.ErrnoException).code = 'NOT_A_PROJECT';
+    throw err;
+  }
+
+  const content = fs.readFileSync(siteConfigPath, 'utf8');
+  return { content, path: siteConfigPath };
+}
 
 export interface SiteValidationError {
   field: string;
@@ -49,6 +65,27 @@ export function validateSite(siteConfigPath: string): SiteValidateResult {
 
 export function registerSite(program: Command): void {
   const site = program.command('site').description('Manage site configuration');
+
+  site
+    .command('get')
+    .description('Read the raw YAML content of stackwright.yml')
+    .option('--json', 'Output machine-readable JSON')
+    .action((opts: { json?: boolean }) => {
+      const json = Boolean(opts.json);
+      try {
+        const { siteConfig } = detectProject();
+        const result = readSiteConfig(siteConfig);
+        outputResult(result, { json }, () => {
+          console.log(result.content);
+        });
+      } catch (err: unknown) {
+        if (getErrorCode(err) === 'NOT_A_PROJECT') {
+          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+        } else {
+          outputError(formatError(err), 'READ_SITE_FAILED', { json }, 2);
+        }
+      }
+    });
 
   site
     .command('validate')
