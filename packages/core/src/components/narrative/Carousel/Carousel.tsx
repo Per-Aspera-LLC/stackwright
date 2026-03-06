@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { OverflowImageCard } from './OverFlowImageCard';
 import { CarouselContent } from '@stackwright/types'
 import { useSafeTheme } from '../../../hooks/useSafeTheme';
@@ -34,6 +34,8 @@ export const Carousel = (carouselContent: CarouselContent) => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [lastInteraction, setLastInteraction] = useState(Date.now())
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
   const safeTheme = useSafeTheme()
   const { isXs, isSmUp, isMdUp, isLgUp } = useBreakpoints()
 
@@ -60,12 +62,7 @@ export const Carousel = (carouselContent: CarouselContent) => {
     }, 150)
   }, [carouselContent.items.length, itemsToShow])
 
-  const manualNext = () => {
-    setLastInteraction(Date.now())
-    next()
-  }
-
-  const prev = () => {
+  const prev = useCallback(() => {
     setLastInteraction(Date.now())
     setIsTransitioning(true)
     setTimeout(() => {
@@ -77,7 +74,12 @@ export const Carousel = (carouselContent: CarouselContent) => {
       })
       setTimeout(() => setIsTransitioning(false), 50)
     }, 150)
-  }
+  }, [carouselContent.items.length, itemsToShow])
+
+  const manualNext = useCallback(() => {
+    setLastInteraction(Date.now())
+    next()
+  }, [next])
 
   useEffect(() => {
     if (carouselContent.autoPlay && scrollAndButtonsEnabled) {
@@ -95,10 +97,30 @@ export const Carousel = (carouselContent: CarouselContent) => {
     setCurrentIndex(0)
   }, [itemsToShow])
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (!scrollAndButtonsEnabled) return
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault()
+      prev()
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault()
+      manualNext()
+    }
+  }, [scrollAndButtonsEnabled, prev, manualNext])
+
   const background = carouselContent.background || safeTheme.colors.primary;
 
   return (
     <div
+      ref={containerRef}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={carouselContent.heading || 'Carousel'}
+      aria-live={carouselContent.autoPlay ? 'off' : 'polite'}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
       style={{
         display: 'flex',
         flexDirection: 'row',
@@ -108,6 +130,8 @@ export const Carousel = (carouselContent: CarouselContent) => {
         height: '80%',
         padding: '16px',
         overflowY: 'visible',
+        outline: isFocused ? '2px solid currentColor' : 'none',
+        outlineOffset: '-2px',
       }}
     >
       {scrollAndButtonsEnabled && (
@@ -126,11 +150,17 @@ export const Carousel = (carouselContent: CarouselContent) => {
         }}
       >
         {carouselContent.items.slice(currentIndex, currentIndex + itemsToShow).map((item, index) => (
-          <OverflowImageCard
+          <div
             key={`${currentIndex}-${index}-${item.title}`}
-            item={item}
-            minWidth="100%"
-          />
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`Slide ${currentIndex + index + 1} of ${carouselContent.items.length}`}
+          >
+            <OverflowImageCard
+              item={item}
+              minWidth="100%"
+            />
+          </div>
         ))}
       </div>
 
