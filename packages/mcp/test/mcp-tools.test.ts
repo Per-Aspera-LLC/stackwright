@@ -176,6 +176,115 @@ describe("MCP Tools Integration", () => {
             );
         });
 
+        it("get_page returns page YAML content", async () => {
+            const pageDir = path.join(pagesDir, "about");
+            fs.ensureDirSync(pageDir);
+            const yamlContent = makePageYaml("about", "About Us");
+            fs.writeFileSync(
+                path.join(pageDir, "content.yml"),
+                yamlContent,
+            );
+
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerPageTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_get_page"
+            ];
+            const result = await tool.handler({
+                projectRoot: testDir,
+                slug: "about",
+            });
+
+            expect(result.content[0].text).toContain("About Us");
+            expect(result.content[0].text).toContain('Page "/about"');
+            expect(result.isError).toBeFalsy();
+        });
+
+        it("get_page returns error for missing page", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerPageTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_get_page"
+            ];
+            const result = await tool.handler({
+                projectRoot: testDir,
+                slug: "nonexistent",
+            });
+
+            expect(result.isError).toBe(true);
+            expect(result.content[0].text).toContain("Page not found");
+        });
+
+        it("write_page writes valid YAML and creates new page", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerPageTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_write_page"
+            ];
+            const yamlContent = makePageYaml("new-page", "New Page Title");
+            const result = await tool.handler({
+                projectRoot: testDir,
+                slug: "new-page",
+                content: yamlContent,
+            });
+
+            expect(result.content[0].text).toContain('Created page "/new-page"');
+            expect(result.isError).toBeFalsy();
+
+            // Verify file was written
+            const pagePath = path.join(pagesDir, "new-page", "content.yml");
+            expect(fs.existsSync(pagePath)).toBe(true);
+            expect(fs.readFileSync(pagePath, "utf8")).toContain("New Page Title");
+        });
+
+        it("write_page updates existing page", async () => {
+            const pageDir = path.join(pagesDir, "existing");
+            fs.ensureDirSync(pageDir);
+            fs.writeFileSync(
+                path.join(pageDir, "content.yml"),
+                makePageYaml("existing", "Old Title"),
+            );
+
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerPageTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_write_page"
+            ];
+            const result = await tool.handler({
+                projectRoot: testDir,
+                slug: "existing",
+                content: makePageYaml("existing", "New Title"),
+            });
+
+            expect(result.content[0].text).toContain('Updated page "/existing"');
+            expect(result.isError).toBeFalsy();
+        });
+
+        it("write_page rejects invalid YAML with field-level errors", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerPageTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_write_page"
+            ];
+            const result = await tool.handler({
+                projectRoot: testDir,
+                slug: "bad-page",
+                content: "invalid_key: true\n",
+            });
+
+            expect(result.isError).toBe(true);
+            expect(result.content[0].text).toContain("Validation failed");
+
+            // Verify file was NOT written
+            const pagePath = path.join(pagesDir, "bad-page", "content.yml");
+            expect(fs.existsSync(pagePath)).toBe(false);
+        });
+
         it("validate_pages returns success for valid pages", async () => {
             const pageDir = path.join(pagesDir, "about");
             fs.ensureDirSync(pageDir);
@@ -291,6 +400,37 @@ describe("MCP Tools Integration", () => {
             expect(tools).toContain("stackwright_list_themes");
         });
 
+        it("get_site_config returns site config YAML", async () => {
+            const siteConfigPath = path.join(testDir, "stackwright.yml");
+            fs.writeFileSync(siteConfigPath, makeValidSiteConfig());
+
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerSiteTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_get_site_config"
+            ];
+            const result = await tool.handler({ projectRoot: testDir });
+
+            expect(result.content[0].text).toContain("Site config");
+            expect(result.content[0].text).toContain("Test Site");
+            expect(result.content[0].text).toContain("per-aspera");
+            expect(result.isError).toBeFalsy();
+        });
+
+        it("get_site_config returns error when config missing", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerSiteTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_get_site_config"
+            ];
+            const result = await tool.handler({ projectRoot: testDir });
+
+            expect(result.isError).toBe(true);
+            expect(result.content[0].text).toContain("Error reading site config");
+        });
+
         it("validate_site returns success for valid config", async () => {
             const siteConfigPath = path.join(testDir, "stackwright.yml");
             fs.writeFileSync(siteConfigPath, makeValidSiteConfig());
@@ -337,15 +477,18 @@ describe("MCP Tools Integration", () => {
             // Verify all expected tools are registered
             expect(tools).toContain("stackwright_get_content_types");
             expect(tools).toContain("stackwright_list_pages");
+            expect(tools).toContain("stackwright_get_page");
+            expect(tools).toContain("stackwright_write_page");
             expect(tools).toContain("stackwright_add_page");
             expect(tools).toContain("stackwright_validate_pages");
             expect(tools).toContain("stackwright_get_project_info");
             expect(tools).toContain("stackwright_scaffold_project");
+            expect(tools).toContain("stackwright_get_site_config");
             expect(tools).toContain("stackwright_validate_site");
             expect(tools).toContain("stackwright_list_themes");
 
-            // Should have exactly 8 tools
-            expect(tools.length).toBe(8);
+            // Should have exactly 11 tools
+            expect(tools.length).toBe(11);
         });
     });
 });

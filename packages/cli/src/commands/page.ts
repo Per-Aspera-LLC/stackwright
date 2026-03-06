@@ -105,6 +105,78 @@ export function validatePages(pagesDir: string, slug?: string): PageValidateResu
   return { valid: errors.length === 0, errors };
 }
 
+export interface ReadPageResult {
+  slug: string;
+  content: string;
+  path: string;
+}
+
+export function readPage(pagesDir: string, slug: string): ReadPageResult {
+  const normalizedSlug = slug.startsWith('/') ? slug : `/${slug}`;
+  const { pages } = listPages(pagesDir);
+  const page = pages.find((p) => p.slug === normalizedSlug);
+
+  if (!page) {
+    const err = new Error(`Page not found: "${normalizedSlug}"`);
+    (err as NodeJS.ErrnoException).code = 'PAGE_NOT_FOUND';
+    throw err;
+  }
+
+  const content = fs.readFileSync(page.path, 'utf8');
+  return { slug: page.slug, content, path: page.path };
+}
+
+export interface WritePageResult {
+  slug: string;
+  path: string;
+  created: boolean;
+}
+
+export function writePage(
+  pagesDir: string,
+  slug: string,
+  yamlContent: string
+): WritePageResult {
+  const cleanSlug = slug.replace(/^\//, '').replace(/\\/g, '/');
+
+  // Prevent path traversal
+  const resolvedTarget = path.resolve(pagesDir, cleanSlug);
+  if (!resolvedTarget.startsWith(path.resolve(pagesDir) + path.sep) && resolvedTarget !== path.resolve(pagesDir)) {
+    const err = new Error(`Invalid slug: "${slug}"`);
+    (err as NodeJS.ErrnoException).code = 'INVALID_SLUG';
+    throw err;
+  }
+
+  // Parse and validate YAML before writing
+  let raw: unknown;
+  try {
+    raw = yaml.load(yamlContent);
+  } catch (parseErr) {
+    const err = new Error(`YAML parse error: ${formatError(parseErr)}`);
+    (err as NodeJS.ErrnoException).code = 'YAML_PARSE_ERROR';
+    throw err;
+  }
+
+  const result = pageContentSchema.safeParse(raw);
+  if (!result.success) {
+    const fieldErrors = result.error.issues.map((issue) => {
+      const fieldPath = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+      return `${fieldPath}: ${issue.message}`;
+    });
+    const err = new Error(`Validation failed:\n  ${fieldErrors.join('\n  ')}`);
+    (err as NodeJS.ErrnoException).code = 'VALIDATION_FAILED';
+    throw err;
+  }
+
+  const contentPath = path.join(pagesDir, cleanSlug, 'content.yml');
+  const created = !fs.existsSync(contentPath);
+
+  fs.ensureDirSync(path.dirname(contentPath));
+  fs.writeFileSync(contentPath, yamlContent, 'utf8');
+
+  return { slug: `/${cleanSlug}`, path: contentPath, created };
+}
+
 export interface AddPageResult {
   path: string;
   slug: string;
@@ -182,6 +254,63 @@ export function registerPage(program: Command): void {
           outputError(formatError(err), 'NOT_A_PROJECT', { json });
         } else {
           outputError(formatError(err), 'ADD_PAGE_FAILED', { json }, 2);
+        }
+      }
+    });
+
+  page
+    .command('get <slug>')
+    .description('Read a page\'s raw YAML content by slug')
+    .option('--json', 'Output machine-readable JSON')
+    .action((slug: string, opts: { json?: boolean }) => {
+      const json = Boolean(opts.json);
+      try {
+        const { pagesDir } = detectProject();
+        const result = readPage(pagesDir, slug);
+        outputResult(result, { json }, () => {
+          console.log(result.content);
+        });
+      } catch (err: unknown) {
+        const code = getErrorCode(err);
+        if (code === 'NOT_A_PROJECT' || code === 'PAGE_NOT_FOUND') {
+          outputError(formatError(err), code, { json });
+        } else {
+          outputError(formatError(err), 'READ_PAGE_FAILED', { json }, 2);
+        }
+      }
+    });
+
+  page
+    .command('write <slug>')
+    .description('Write YAML content to a page (validates before writing)')
+    .option('--json', 'Output machine-readable JSON')
+    .option('--file <path>', 'Read YAML content from a file instead of stdin')
+    .action(async (slug: string, opts: { json?: boolean; file?: string }) => {
+      const json = Boolean(opts.json);
+      try {
+        const { pagesDir } = detectProject();
+        let yamlContent: string;
+        if (opts.file) {
+          yamlContent = fs.readFileSync(opts.file, 'utf8');
+        } else {
+          // Read from stdin
+          const chunks: Buffer[] = [];
+          for await (const chunk of process.stdin) {
+            chunks.push(chunk);
+          }
+          yamlContent = Buffer.concat(chunks).toString('utf8');
+        }
+        const result = writePage(pagesDir, slug, yamlContent);
+        outputResult(result, { json }, () => {
+          const verb = result.created ? 'Created' : 'Updated';
+          console.log(chalk.green(`${verb} page "${result.slug}" at ${result.path}`));
+        });
+      } catch (err: unknown) {
+        const code = getErrorCode(err);
+        if (code === 'NOT_A_PROJECT' || code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR' || code === 'INVALID_SLUG') {
+          outputError(formatError(err), code, { json });
+        } else {
+          outputError(formatError(err), 'WRITE_PAGE_FAILED', { json }, 2);
         }
       }
     });
