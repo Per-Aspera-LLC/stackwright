@@ -98,11 +98,88 @@ describe("MCP Tools Integration", () => {
             const textContent = result.content[0].text;
             expect(textContent).toContain("CONTENT TYPES");
             expect(textContent).toContain("SUB-TYPES");
+            expect(textContent).toContain("stackwright_preview_component");
 
             // Verify it matches actual CLI types
             const types = getTypes();
             expect(types.contentTypes.length).toBeGreaterThan(0);
             expect(types.subTypes.length).toBeGreaterThan(0);
+        });
+
+        it("registers preview_component tool", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerContentTypeTools(server);
+
+            const tools = Object.keys((server as any)._registeredTools);
+            expect(tools).toContain("stackwright_preview_component");
+        });
+
+        it("preview_component rejects unknown content types", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerContentTypeTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_preview_component"
+            ];
+            const result = await tool.handler({ content_type: "nonexistent" });
+
+            expect(result.isError).toBe(true);
+            expect(result.content[0].text).toContain("Unknown content type");
+        });
+
+        it("preview_component returns graceful message when no screenshot exists", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerContentTypeTools(server);
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_preview_component"
+            ];
+            // Temporarily rename the screenshot if it exists to test the missing path
+            const screenshotsDir = path.resolve(__dirname, "../screenshots");
+            const screenshotPath = path.join(screenshotsDir, "main-desktop.png");
+            const backupPath = screenshotPath + ".bak";
+            const existed = fs.existsSync(screenshotPath);
+            if (existed) fs.renameSync(screenshotPath, backupPath);
+
+            try {
+                const result = await tool.handler({ content_type: "main" });
+                expect(result.isError).toBeUndefined();
+                expect(result.content[0].text).toContain("No preview screenshot available");
+            } finally {
+                if (existed) fs.renameSync(backupPath, screenshotPath);
+            }
+        });
+
+        it("preview_component returns image when screenshot exists", async () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerContentTypeTools(server);
+
+            // Create a fake screenshot in the expected location
+            const screenshotsDir = path.resolve(
+                __dirname,
+                "../screenshots",
+            );
+            fs.ensureDirSync(screenshotsDir);
+            const fakePng = Buffer.from("fake-png-data");
+            fs.writeFileSync(
+                path.join(screenshotsDir, "faq-desktop.png"),
+                fakePng,
+            );
+
+            const tool = (server as any)._registeredTools[
+                "stackwright_preview_component"
+            ];
+            const result = await tool.handler({ content_type: "faq" });
+
+            expect(result.content).toHaveLength(2);
+            expect(result.content[0].type).toBe("text");
+            expect(result.content[0].text).toContain("faq");
+            expect(result.content[1].type).toBe("image");
+            expect(result.content[1].mimeType).toBe("image/png");
+            expect(result.content[1].data).toBe(fakePng.toString("base64"));
+
+            // Cleanup
+            fs.removeSync(path.join(screenshotsDir, "faq-desktop.png"));
         });
     });
 
@@ -336,6 +413,7 @@ describe("MCP Tools Integration", () => {
 
             // Verify all expected tools are registered
             expect(tools).toContain("stackwright_get_content_types");
+            expect(tools).toContain("stackwright_preview_component");
             expect(tools).toContain("stackwright_list_pages");
             expect(tools).toContain("stackwright_add_page");
             expect(tools).toContain("stackwright_validate_pages");
@@ -344,8 +422,8 @@ describe("MCP Tools Integration", () => {
             expect(tools).toContain("stackwright_validate_site");
             expect(tools).toContain("stackwright_list_themes");
 
-            // Should have exactly 8 tools
-            expect(tools.length).toBe(8);
+            // Should have exactly 9 tools
+            expect(tools.length).toBe(9);
         });
     });
 });

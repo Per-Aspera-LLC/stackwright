@@ -167,7 +167,7 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
     try {
         debugLog('Creating component with spread props');
         const element = (
-            <ContentItemErrorBoundary key={itemKey} contentType={contentType}>
+            <ContentItemErrorBoundary key={itemKey} contentType={contentType} label={contentData?.label}>
                 <Component {...contentData} />
             </ContentItemErrorBoundary>
         );
