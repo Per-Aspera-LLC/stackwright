@@ -19,6 +19,7 @@
     "add-e2e-playwright-tests",
     "auto-generate-agent-docs",
     "ci-schema-sync-check",
+    "content-renderer-error-handling",
     "fix-layout-regressions"
   ]
 }

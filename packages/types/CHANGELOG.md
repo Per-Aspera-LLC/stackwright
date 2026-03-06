@@ -1,5 +1,11 @@
 # @stackwright/types
 
+## 0.4.0-alpha.2
+
+### Patch Changes
+
+- 62a97d5: Add error handling for unknown content types: visible inline warnings instead of silent nulls, item-level error boundaries, and prebuild detection of unrecognized content type keys
+
 ## 0.4.0-alpha.1
 
 ### Minor Changes
