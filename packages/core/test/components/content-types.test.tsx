@@ -7,6 +7,7 @@ import { Faq } from '../../src/components/base/Faq';
 import { PricingTable } from '../../src/components/base/PricingTable';
 import { ContactFormStub } from '../../src/components/base/ContactFormStub';
 import { Alert } from '../../src/components/base/Alert';
+import { MainContentGrid } from '../../src/components/base/MainContentGrid';
 
 describe('FeatureList', () => {
     it('renders heading and feature items', () => {
@@ -230,5 +231,62 @@ describe('Alert', () => {
         );
         expect(screen.getByText('Error')).toBeInTheDocument();
         expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
+    });
+});
+
+describe('FeatureList responsive', () => {
+    it('uses auto-fill grid for responsive columns', () => {
+        const { container } = render(
+            <FeatureList
+                label="features"
+                items={[{ heading: 'A', description: 'B' }]}
+            />
+        );
+        const gridDiv = Array.from(container.querySelectorAll('div')).find(
+            el => (el as HTMLElement).style.gridTemplateColumns?.includes('auto-fill')
+        );
+        expect(gridDiv).toBeTruthy();
+    });
+});
+
+describe('TestimonialGrid responsive', () => {
+    it('uses auto-fill grid for responsive columns', () => {
+        const { container } = render(
+            <TestimonialGrid
+                label="testimonials"
+                items={[{ quote: 'Great!', name: 'Alice' }]}
+            />
+        );
+        const gridDiv = Array.from(container.querySelectorAll('div')).find(
+            el => (el as HTMLElement).style.gridTemplateColumns?.includes('auto-fill')
+        );
+        expect(gridDiv).toBeTruthy();
+    });
+});
+
+describe('MainContentGrid', () => {
+    it('renders heading and text content', () => {
+        render(
+            <MainContentGrid
+                label="hero"
+                heading={{ text: 'Welcome', textSize: 'h2' }}
+                textBlocks={[{ text: 'Hello world' }]}
+            />
+        );
+        expect(screen.getByText('Welcome')).toBeInTheDocument();
+        expect(screen.getByText('Hello world')).toBeInTheDocument();
+    });
+
+    it('uses flex-wrap for responsive stacking', () => {
+        const { container } = render(
+            <MainContentGrid
+                label="hero"
+                heading={{ text: 'Hello', textSize: 'h2' }}
+            />
+        );
+        const flexDiv = Array.from(container.querySelectorAll('div')).find(
+            el => (el as HTMLElement).style.flexWrap === 'wrap'
+        );
+        expect(flexDiv).toBeTruthy();
     });
 });

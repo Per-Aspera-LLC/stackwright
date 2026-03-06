@@ -33,7 +33,7 @@ export function FeatureList({ heading, columns = 3, items, background }: Feature
             <div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                     gap: '32px',
                     maxWidth: '1200px',
                     margin: '0 auto',

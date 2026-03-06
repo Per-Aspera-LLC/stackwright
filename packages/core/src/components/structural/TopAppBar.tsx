@@ -1,15 +1,51 @@
-import React from 'react';
-import { AppBarContent } from '@stackwright/types';
+import React, { useState } from 'react';
+import { AppBarContent, NavigationItem } from '@stackwright/types';
 import { ThemedButton } from '../base/ThemedButton';
+import { CompressedMenu } from '../base/Menu/CompressedMenu';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
-import { Media } from '../media/Media'
+import { Media } from '../media/Media';
+import { useBreakpoints } from '../../hooks/useBreakpoints';
 
 export default function TopAppBar({ title, logo, menuItems, textcolor, backgroundcolor }: AppBarContent) {
   const theme = useSafeTheme();
+  const { isSmDown } = useBreakpoints();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const headerBgColor = backgroundcolor ? resolveColor(backgroundcolor, theme.colors) : theme.colors.primary;
-  const headerTextColor = textcolor ? resolveColor(textcolor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor)
+  const headerTextColor = textcolor ? resolveColor(textcolor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setMenuOpen(false);
+    setAnchorEl(null);
+  };
+
+  const buildMenu = (items: NavigationItem[]) => (
+    <>
+      {items.map((item, index) => (
+        <a
+          key={index}
+          href={item.href}
+          onClick={handleMenuClose}
+          style={{
+            display: 'block',
+            padding: '8px 16px',
+            color: theme.colors.text,
+            textDecoration: 'none',
+            fontSize: '1rem',
+          }}
+        >
+          {item.label}
+        </a>
+      ))}
+    </>
+  );
 
   return (
     <header
@@ -47,22 +83,35 @@ export default function TopAppBar({ title, logo, menuItems, textcolor, backgroun
 
         <div style={{ flexGrow: 1 }} />
 
-        <div style={{ display: 'flex', gap: '16px' }}>
-          {menuItems?.map((item, index) => (
-            <ThemedButton
-              key={index}
-              button={{
-                text: item.label,
-                href: item.href,
-                variant: 'text',
-                bgColor: headerBgColor,
-                textColor: headerTextColor,
-                textSize: 'h6'
-              }}
-              size="medium"
+        {menuItems && menuItems.length > 0 && (
+          isSmDown ? (
+            <CompressedMenu
+              menuItems={menuItems}
+              menuOpen={menuOpen}
+              anchorEl={anchorEl}
+              onMenuOpen={handleMenuOpen}
+              onMenuClose={handleMenuClose}
+              buildMenu={buildMenu}
             />
-          ))}
-        </div>
+          ) : (
+            <div style={{ display: 'flex', gap: '16px' }}>
+              {menuItems.map((item, index) => (
+                <ThemedButton
+                  key={index}
+                  button={{
+                    text: item.label,
+                    href: item.href,
+                    variant: 'text',
+                    bgColor: headerBgColor,
+                    textColor: headerTextColor,
+                    textSize: 'h6'
+                  }}
+                  size="medium"
+                />
+              ))}
+            </div>
+          )
+        )}
       </nav>
     </header>
   );

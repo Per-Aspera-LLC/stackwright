@@ -148,6 +148,22 @@ Each package uses **tsup** to produce dual-format output (ESM `.mjs` + CJS `.js`
 
 **Important**: Do NOT add `"type": "module"` to package.json in any `packages/*` directory. tsup uses `.mjs`/`.js` file extensions to signal ESM vs CJS format. Adding `"type": "module"` causes Node to treat CJS `.js` output as ESM, breaking `require()` in Next.js config files.
 
+### Responsive Design
+
+Core components (`packages/core/src/components/`) use **inline `style={{}}` props** exclusively — not Tailwind utility classes. This is architecturally deliberate: `@stackwright/core` has no CSS build pipeline (tsup compiles JS/TS only), and layout values are dynamic (driven by YAML theme config at runtime). Only `@stackwright/ui-shadcn` uses Tailwind, pre-compiling its own CSS at build time. Do not add CSS files, media query stylesheets, or Tailwind classes to `packages/core`.
+
+**Two proven responsive patterns:**
+
+1. **CSS-only (preferred):** `gridTemplateColumns: "repeat(auto-fill, minmax(Xpx, 1fr))"` — naturally responsive, no JS, no SSR hydration flash. Used by `IconGrid`, `FeatureList`, `TestimonialGrid`. Choose a sensible `minmax` minimum (120px for icon grids, 280px for content cards).
+
+2. **JS hook (when CSS alone is insufficient):** `useBreakpoints()` from `packages/core/src/hooks/useBreakpoints.ts` — returns `{ isXs, isSm, isMd, isLg, isXl, isSmUp, isMdUp, isLgUp, isXlUp, isSmDown, isMdDown, isLgDown }`. Has a one-frame SSR flash (returns all `false` on first render, syncs via `useEffect` after hydration). Only use when CSS cannot express the logic — e.g., conditionally rendering entirely different component trees (TopAppBar's hamburger menu vs desktop nav links). Used by `Carousel`, `TopAppBar`.
+
+**Rules for new and modified components:**
+- All grid/multi-column components must render correctly from **320px to 1440px** viewport width.
+- Never hardcode a fixed column count as `repeat(N, 1fr)`. Use `repeat(auto-fill, minmax(Xpx, 1fr))` instead.
+- For flex layouts that must stack on mobile, use `flexWrap: 'wrap'` with a `minWidth` on children to control the wrap breakpoint. Use `minWidth: 'min(Xpx, 100%)'` to prevent overflow on very narrow viewports.
+- For text that may overflow on narrow viewports (emails, URLs, long strings), add `wordBreak: 'break-word'` or `wordBreak: 'break-all'` as appropriate.
+
 ### Image Co-location Pipeline
 
 Images can be co-located with their page YAML files in `pages/`. Using a relative path starting with `./` in YAML (e.g., `src: ./hero-image.png`) triggers automatic processing during the prebuild step:
