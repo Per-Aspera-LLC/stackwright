@@ -143,6 +143,29 @@ This example demonstrates the core Stackwright architecture:
 4. **Build**: Run `pnpm build` to compile the application
 5. **Development**: Use `pnpm dev` for hot-reloading development
 
+## Debugging
+
+Set `STACKWRIGHT_DEBUG=true` in `.env.local` to enable verbose logging from Stackwright internals. This is off by default.
+
+```bash
+cp .env.local.example .env.local
+# Uncomment STACKWRIGHT_DEBUG=true
+```
+
+When enabled, you'll see prefixed debug output in the browser console and server logs:
+
+- `🐛 ContentRenderer Debug` — YAML-to-React rendering pipeline (content type resolution, item processing)
+- `🔧 ComponentRegistry Debug` — component lookups and registration
+- `🚀 StackwrightRegistry Debug` — framework component registration (Image, Link, Router)
+- `📸 NextStackwrightImage Debug` — Next.js Image wrapper props and resolution
+
+This is useful when:
+- A content type isn't rendering and you need to see how the renderer resolves it
+- Components appear missing or unregistered
+- Image paths aren't resolving correctly
+
+**Note:** Debug logging only activates in development mode (`NODE_ENV=development`). It has no effect in production builds.
+
 ## Troubleshooting
 
 - **Missing Components**: Ensure all required components are registered in the component registry
