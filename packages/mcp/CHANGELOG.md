@@ -1,5 +1,16 @@
 # @stackwright/mcp
 
+## 0.2.0-alpha.4
+
+### Minor Changes
+
+- f330ab8: Add MCP tools for reading and writing page content and site configuration. New tools: `stackwright_get_page` (read page YAML by slug), `stackwright_write_page` (write/update page YAML with validation), and `stackwright_get_site_config` (read site config YAML). Also adds corresponding CLI commands `page get`, `page write`, and `site get`.
+
+### Patch Changes
+
+- Updated dependencies [f330ab8]
+  - @stackwright/cli@0.6.0-alpha.4
+
 ## 0.1.2-alpha.3
 
 ### Patch Changes

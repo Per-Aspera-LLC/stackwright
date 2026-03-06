@@ -7,8 +7,8 @@ export { outputResult, outputError } from './utils/json-output';
 
 // Pure command functions — callable as a library without spawning a subprocess
 export { scaffold } from './commands/scaffold';
-export { listPages, addPage, validatePages } from './commands/page';
-export { validateSite } from './commands/site';
+export { listPages, addPage, validatePages, readPage, writePage } from './commands/page';
+export { validateSite, readSiteConfig } from './commands/site';
 export { getTypes } from './commands/types';
 export { runPrebuildCommand } from './commands/prebuild';
 export { listThemes } from './commands/theme';
@@ -18,8 +18,8 @@ export { stageChanges, openPr } from './commands/git-ops';
 
 // Result types
 export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
-export type { PageSummary, PageListResult, PageValidateResult, AddPageResult } from './commands/page';
-export type { SiteValidateResult, SiteValidationError } from './commands/site';
+export type { PageSummary, PageListResult, PageValidateResult, AddPageResult, ReadPageResult, WritePageResult } from './commands/page';
+export type { SiteValidateResult, SiteValidationError, ReadSiteConfigResult } from './commands/site';
 export type { TypesResult, ContentTypeEntry, FieldEntry } from './commands/types';
 export type { PrebuildResult } from './commands/prebuild';
 export type { ThemeListResult } from './commands/theme';
