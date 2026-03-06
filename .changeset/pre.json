@@ -25,6 +25,7 @@
     "fix-mobile-responsiveness",
     "mcp-editorial-loop",
     "mcp-read-write-tools",
-    "syntax-highlighting-code-block"
+    "syntax-highlighting-code-block",
+    "visual-regression-tests"
   ]
 }
