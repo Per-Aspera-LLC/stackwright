@@ -1,5 +1,11 @@
 # @stackwright/cli
 
+## 0.6.0-alpha.5
+
+### Minor Changes
+
+- 0f05ba1: Add `stackwright_stage_changes` and `stackwright_open_pr` MCP tools completing the AI editorial loop. Agents can now go from content authoring to PR creation entirely via MCP — staging only content files for safety and validating all YAML before committing. Requires the GitHub CLI (`gh`) for PR creation.
+
 ## 0.6.0-alpha.4
 
 ### Minor Changes

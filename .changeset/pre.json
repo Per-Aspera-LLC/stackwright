@@ -23,6 +23,7 @@
     "content-renderer-error-handling",
     "fix-layout-regressions",
     "fix-mobile-responsiveness",
+    "mcp-editorial-loop",
     "mcp-read-write-tools",
     "syntax-highlighting-code-block"
   ]
