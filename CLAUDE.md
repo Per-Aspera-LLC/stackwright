@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **`dev`** is the integration branch. Feature branches are created from `dev` and PRs target `dev`.
 - **`main`** is the release branch. `dev` is merged to `main` only when cutting a release.
-- When creating a new feature branch: `git checkout -b feat/issue-XX-description dev`
+- **Always pull the latest `dev` before creating a feature branch**: `git fetch origin dev && git checkout -b feat/issue-XX-description origin/dev`
 
 ## Commands
 

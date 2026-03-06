@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "sync-screenshots": "bash scripts/sync-screenshots.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"

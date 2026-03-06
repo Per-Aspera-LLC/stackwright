@@ -7,6 +7,7 @@ interface ContentItemErrorBoundaryState {
 
 interface ContentItemErrorBoundaryProps {
     contentType: string;
+    label?: string;
     children: React.ReactNode;
 }
 
@@ -57,6 +58,13 @@ export class ContentItemErrorBoundary extends React.Component<
                 </div>
             );
         }
-        return this.props.children;
+        return (
+            <div
+                data-content-type={this.props.contentType}
+                {...(this.props.label ? { 'data-label': this.props.label } : {})}
+            >
+                {this.props.children}
+            </div>
+        );
     }
 }
