@@ -72,30 +72,30 @@ export function ContactFormStub({
                         padding: '24px',
                     }}
                 >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
                         <span style={{ fontWeight: 600, color: theme.colors.text }}>Email:</span>
                         <a
                             href={mailto}
-                            style={{ color: theme.colors.primary, textDecoration: 'none' }}
+                            style={{ color: theme.colors.primary, textDecoration: 'none', wordBreak: 'break-all' }}
                         >
                             {email}
                         </a>
                     </div>
                     {phone && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
                             <span style={{ fontWeight: 600, color: theme.colors.text }}>Phone:</span>
                             <a
                                 href={`tel:${phone}`}
-                                style={{ color: theme.colors.primary, textDecoration: 'none' }}
+                                style={{ color: theme.colors.primary, textDecoration: 'none', wordBreak: 'break-all' }}
                             >
                                 {phone}
                             </a>
                         </div>
                     )}
                     {address && (
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
                             <span style={{ fontWeight: 600, color: theme.colors.text }}>Address:</span>
-                            <span style={{ color: theme.colors.text }}>{address}</span>
+                            <span style={{ color: theme.colors.text, wordBreak: 'break-word' }}>{address}</span>
                         </div>
                     )}
                 </div>

@@ -33,7 +33,7 @@ export function TestimonialGrid({ heading, columns = 3, items, background }: Tes
             <div
                 style={{
                     display: 'grid',
-                    gridTemplateColumns: `repeat(${columns}, 1fr)`,
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                     gap: '24px',
                     maxWidth: '1200px',
                     margin: '0 auto',
