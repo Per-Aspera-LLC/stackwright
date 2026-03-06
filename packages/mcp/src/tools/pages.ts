@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import path from 'path';
-import { listPages, addPage, validatePages } from '@stackwright/cli';
+import { listPages, addPage, validatePages, readPage, writePage } from '@stackwright/cli';
 
 const PAGES_SUBDIR = 'content/pages';
 
@@ -26,6 +26,79 @@ export function registerPageTools(server: McpServer): void {
           ? 'No pages found.'
           : `Pages (${result.pages.length}):\n${lines.join('\n')}`;
       return { content: [{ type: 'text', text }] };
+    }
+  );
+
+  server.tool(
+    'stackwright_get_page',
+    'Read the raw YAML content of an existing page by slug. Returns the full YAML source.',
+    {
+      projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
+      slug: z.string().describe('Page slug, e.g. "about" or "getting-started"'),
+    },
+    async ({ projectRoot, slug }) => {
+      try {
+        const result = readPage(pagesDir(projectRoot), slug);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Page "${result.slug}" (${result.path}):\n\n${result.content}`,
+            },
+          ],
+        };
+      } catch (err) {
+        const code = (err as NodeJS.ErrnoException).code;
+        return {
+          content: [
+            {
+              type: 'text',
+              text: code === 'PAGE_NOT_FOUND'
+                ? `Page not found: "${slug}". Use stackwright_list_pages to see available pages.`
+                : `Error reading page: ${String((err as Error).message)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  server.tool(
+    'stackwright_write_page',
+    'Write or update a page\'s YAML content. Validates against the content schema before writing — invalid YAML is rejected with field-level errors.',
+    {
+      projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
+      slug: z.string().describe('Page slug, e.g. "about" or "team/leadership"'),
+      content: z.string().describe('The full YAML content for the page'),
+    },
+    async ({ projectRoot, slug, content }) => {
+      try {
+        const result = writePage(pagesDir(projectRoot), slug, content);
+        const verb = result.created ? 'Created' : 'Updated';
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `${verb} page "${result.slug}" at ${result.path}`,
+            },
+          ],
+        };
+      } catch (err) {
+        const code = (err as NodeJS.ErrnoException).code;
+        const message = (err as Error).message;
+        return {
+          content: [
+            {
+              type: 'text',
+              text: code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR'
+                ? message
+                : `Error writing page: ${message}`,
+            },
+          ],
+          isError: true,
+        };
+      }
     }
   );
 
