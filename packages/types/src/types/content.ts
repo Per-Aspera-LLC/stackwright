@@ -194,6 +194,16 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
     })
 );
 
+/**
+ * All recognized built-in content type keys.
+ * Used by the prebuild pipeline to warn on typos in YAML content files.
+ */
+export const KNOWN_CONTENT_TYPE_KEYS = [
+    'carousel', 'main', 'tabbed_content', 'media', 'timeline',
+    'icon_grid', 'code_block', 'feature_list', 'testimonial_grid',
+    'faq', 'pricing_table', 'alert', 'contact_form_stub',
+] as const;
+
 export type ContentItemMap = {
     carousel: CarouselContent;
     main: MainContent;
