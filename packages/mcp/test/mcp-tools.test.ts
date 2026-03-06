@@ -4,10 +4,15 @@ import { registerContentTypeTools } from "../src/tools/content-types";
 import { registerPageTools } from "../src/tools/pages";
 import { registerProjectTools } from "../src/tools/project";
 import { registerSiteTools } from "../src/tools/site";
+import { registerGitOpsTools } from "../src/tools/git-ops";
 import { getTypes } from "@stackwright/cli";
 import fs from "fs-extra";
 import path from "path";
 import os from "os";
+import { execFile } from "child_process";
+import { promisify } from "util";
+
+const exec = promisify(execFile);
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -323,6 +328,68 @@ describe("MCP Tools Integration", () => {
         });
     });
 
+    describe("Git Ops Tools", () => {
+        async function initGitRepo(dir: string): Promise<void> {
+            await exec("git", ["init"], { cwd: dir });
+            await exec("git", ["config", "user.email", "test@stackwright.dev"], { cwd: dir });
+            await exec("git", ["config", "user.name", "Stackwright Test"], { cwd: dir });
+            await exec("git", ["commit", "--allow-empty", "-m", "init"], { cwd: dir });
+        }
+
+        it("registers git ops tools", () => {
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerGitOpsTools(server);
+
+            const tools = Object.keys((server as any)._registeredTools);
+            expect(tools).toContain("stackwright_stage_changes");
+            expect(tools).toContain("stackwright_open_pr");
+        });
+
+        it("stage_changes returns empty when no changes exist", async () => {
+            await initGitRepo(testDir);
+
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerGitOpsTools(server);
+
+            const tool = (server as any)._registeredTools["stackwright_stage_changes"];
+            const result = await tool.handler({ projectRoot: testDir });
+
+            expect(result.content[0].text).toContain("No Stackwright content changes");
+        });
+
+        it("stage_changes stages content files", async () => {
+            await initGitRepo(testDir);
+            const pageDir = path.join(pagesDir, "test-page");
+            fs.ensureDirSync(pageDir);
+            fs.writeFileSync(
+                path.join(pageDir, "content.yml"),
+                makePageYaml("test-page", "Test Page"),
+            );
+
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerGitOpsTools(server);
+
+            const tool = (server as any)._registeredTools["stackwright_stage_changes"];
+            const result = await tool.handler({ projectRoot: testDir });
+
+            expect(result.content[0].text).toContain("Staged 1 file(s)");
+            expect(result.content[0].text).toContain("content/pages/test-page/content.yml");
+        });
+
+        it("open_pr returns error when nothing is staged", async () => {
+            await initGitRepo(testDir);
+
+            const server = new McpServer({ name: "test", version: "1.0.0" });
+            registerGitOpsTools(server);
+
+            const tool = (server as any)._registeredTools["stackwright_open_pr"];
+            const result = await tool.handler({ projectRoot: testDir });
+
+            expect(result.isError).toBe(true);
+            expect(result.content[0].text).toContain("No staged changes");
+        });
+    });
+
     describe("Server Integration", () => {
         it("registers all tool categories", () => {
             const server = new McpServer({ name: "test", version: "1.0.0" });
@@ -331,6 +398,7 @@ describe("MCP Tools Integration", () => {
             registerPageTools(server);
             registerProjectTools(server);
             registerSiteTools(server);
+            registerGitOpsTools(server);
 
             const tools = Object.keys((server as any)._registeredTools);
 
@@ -343,9 +411,11 @@ describe("MCP Tools Integration", () => {
             expect(tools).toContain("stackwright_scaffold_project");
             expect(tools).toContain("stackwright_validate_site");
             expect(tools).toContain("stackwright_list_themes");
+            expect(tools).toContain("stackwright_stage_changes");
+            expect(tools).toContain("stackwright_open_pr");
 
-            // Should have exactly 8 tools
-            expect(tools.length).toBe(8);
+            // Should have exactly 10 tools
+            expect(tools.length).toBe(10);
         });
     });
 });

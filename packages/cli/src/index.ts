@@ -14,6 +14,7 @@ export { runPrebuildCommand } from './commands/prebuild';
 export { listThemes } from './commands/theme';
 export { getInfo } from './commands/info';
 export { generateAgentDocs } from './commands/generate-agent-docs';
+export { stageChanges, openPr } from './commands/git-ops';
 
 // Result types
 export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
@@ -24,3 +25,4 @@ export type { PrebuildResult } from './commands/prebuild';
 export type { ThemeListResult } from './commands/theme';
 export type { InfoResult, PackageVersions } from './commands/info';
 export type { GenerateAgentDocsResult } from './commands/generate-agent-docs';
+export type { StageChangesResult, StageChangesOptions, OpenPrResult, OpenPrOptions } from './commands/git-ops';
