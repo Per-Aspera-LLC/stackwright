@@ -1,5 +1,5 @@
 import React from 'react';
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { renderContent } from '../../src/utils/contentRenderer';
 import { registerComponent } from '../../src/utils/componentRegistry';
@@ -54,9 +54,14 @@ describe('renderContent — null / empty', () => {
         expect(renderContent(undefined as any)).toBeNull();
     });
 
-    it('returns null for an empty ContentItem object', () => {
+    it('returns null for an empty ContentItem object and warns', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const result = renderContent({});
         expect(result).toBeNull();
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Empty content item'),
+        );
+        warnSpy.mockRestore();
     });
 });
 
@@ -78,10 +83,23 @@ describe('renderContent — single ContentItem', () => {
         expect(screen.getByTestId('test-carousel')).toBeInTheDocument();
     });
 
-    it('returns null for an unknown content type (no crash)', () => {
+    it('renders an UnknownContentType warning for an unknown content type', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const item = { __unknown_type__: { label: 'x' } };
-        const result = renderContent(item);
-        expect(result).toBeNull();
+        renderOutput(item);
+        expect(screen.getByText(/Unknown content type/)).toBeInTheDocument();
+        expect(screen.getByText(/"__unknown_type__"/)).toBeInTheDocument();
+        warnSpy.mockRestore();
+    });
+
+    it('logs console.warn for unknown content types', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+        const item = { __unknown_type__: { label: 'x' } };
+        renderOutput(item);
+        expect(warnSpy).toHaveBeenCalledWith(
+            expect.stringContaining('Unknown content type: "__unknown_type__"'),
+        );
+        warnSpy.mockRestore();
     });
 });
 
@@ -159,7 +177,8 @@ describe('renderContent — PageContent', () => {
         expect(screen.getByText('Visible')).toBeInTheDocument();
     });
 
-    it('skips unknown content types without throwing', () => {
+    it('renders warning for unknown types and continues rendering known types', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
         const pageContent = {
             content: {
                 content_items: [
@@ -168,8 +187,9 @@ describe('renderContent — PageContent', () => {
                 ],
             },
         };
-        // Should not throw; the known item still renders
         renderOutput(pageContent);
+        expect(screen.getByText(/Unknown content type/)).toBeInTheDocument();
         expect(screen.getByText('Still Renders')).toBeInTheDocument();
+        warnSpy.mockRestore();
     });
 });
