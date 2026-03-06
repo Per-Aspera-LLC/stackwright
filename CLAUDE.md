@@ -185,6 +185,29 @@ Add these hooks to the example app's `package.json` (already done in `hellostack
 
 `registerNextJSComponents()` from `@stackwright/nextjs` must be called explicitly before rendering — it registers Next.js Image, Link, Router, and Route adapters into the `stackwrightRegistry`. The registration call should live in `pages/_app.tsx` (Pages Router) or `app/layout.tsx` (App Router). Do not rely on module import side effects to trigger registration.
 
+### Debug Logging
+
+Stackwright uses `STACKWRIGHT_DEBUG=true` (set in `.env.local`) to gate verbose console logging. Debug output only activates when both `NODE_ENV === 'development'` and `STACKWRIGHT_DEBUG === 'true'`.
+
+**Pattern for new modules:** Define a module-scoped debug function with a unique emoji prefix:
+
+```typescript
+const debugLog = (message: string, data?: any) => {
+  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
+    console.log(`🏷️ ModuleName Debug: ${message}`, data ? data : '');
+  }
+};
+```
+
+**Existing prefixes** (do not reuse):
+- `🐛` ContentRenderer — `🔧` ComponentRegistry — `🚀` StackwrightRegistry — `📸` NextStackwrightImage
+
+**Rules:**
+- Use the helper function pattern (not inline conditionals) for consistency.
+- Log at key decision points: component lookups, registration, content type resolution, error paths.
+- Never log sensitive data (user input, credentials).
+- Do not use `console.debug` or other log levels — always `console.log` gated by the env check.
+
 ### Troubleshooting
 
 - **ESM "Cannot find module" errors**: Missing `.js` extensions in ESM imports in built output. Also check that no `packages/*` package.json has `"type": "module"` set.
