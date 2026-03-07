@@ -5,7 +5,7 @@
     "scripts": {
         "prebuild": "stackwright-prebuild",
         "predev": "stackwright-prebuild",
-        "dev": "next dev",
+        "dev": "stackwright-prebuild --watch & next dev",
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
