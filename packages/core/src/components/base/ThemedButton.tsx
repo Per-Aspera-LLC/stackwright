@@ -20,7 +20,7 @@ const variantStyles = (
   variant: string | undefined,
   bgColor: string,
   textColor: string,
-  hoverColor: string
+  _hoverColor: string
 ): React.CSSProperties => {
   switch (variant) {
     case 'outlined':

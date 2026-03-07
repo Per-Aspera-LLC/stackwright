@@ -44,7 +44,7 @@ describe('runWatch', () => {
 
   // Override process.exit and SIGINT/SIGTERM handlers to prevent test runner exit
   const originalExit = process.exit;
-  const originalOn = process.on;
+  const _originalOn = process.on;
 
   beforeEach(() => {
     root = makeTmpProject();

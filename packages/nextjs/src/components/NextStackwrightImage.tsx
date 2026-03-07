@@ -14,11 +14,11 @@ export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
   sizes,
   placeholder,
   blurDataURL,
-  onLoad,
-  onError,
+  onLoad: _onLoad,
+  onError: _onError,
   className,
   style,
-  ...props
+  ..._props
 }) => {
   console.log('Returning NextjsStackwrightImage for src: ', src);
 
@@ -51,7 +51,7 @@ export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
     className,
     style,
   };
-  if (process.env.NODE_ENV == 'development' && process.env.STACKWRIGHT_DEBUG == 'true')
+  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true')
     console.log('📸 NextStackwrightImage Debug: Image props:', imageProps);
 
   try {
