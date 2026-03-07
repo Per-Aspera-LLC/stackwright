@@ -1,5 +1,14 @@
 # @stackwright/core
 
+## 0.6.0-alpha.11
+
+### Patch Changes
+
+- 77836f7: Remove unconditional console.log calls from NextStackwrightImage and ThemeLoader, fix aspect_ratio DOM prop leak, and clean up Carousel setTimeout on unmount.
+- Updated dependencies [77836f7]
+  - @stackwright/themes@0.4.2-alpha.1
+  - @stackwright/types@0.4.0-alpha.4
+
 ## 0.6.0-alpha.10
 
 ### Patch Changes
