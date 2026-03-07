@@ -24,13 +24,13 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
   return (
     <div
       style={{
-        padding: '16px 0',
+        padding: `${theme.spacing.md} 0`,
         background: background || 'transparent',
-        margin: '32px',
+        margin: theme.spacing.xl,
       }}
     >
       {heading?.text && (
-        <h3 style={{ color: headingColor, marginBottom: '24px', textAlign: 'center' }}>
+        <h3 style={{ color: headingColor, marginBottom: theme.spacing.lg, textAlign: 'center' }}>
           {heading.text}
         </h3>
       )}
@@ -38,7 +38,7 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-          gap: '24px',
+          gap: theme.spacing.lg,
           justifyItems: 'center',
         }}
       >
@@ -51,7 +51,7 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
           return (
             <div
               key={index}
-              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme.spacing.xs }}
             >
               <div
                 style={{

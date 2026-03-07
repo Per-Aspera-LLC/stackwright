@@ -30,8 +30,8 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
   return (
     <div
       style={{
-        margin: '0 32px',
-        padding: '16px 0',
+        margin: `0 ${theme.spacing.xl}`,
+        padding: `${theme.spacing.md} 0`,
         background: background || 'transparent',
       }}
     >
@@ -46,7 +46,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
         {language && (
           <div
             style={{
-              padding: '4px 16px',
+              padding: `${theme.spacing.xs} ${theme.spacing.md}`,
               borderBottom: `1px solid ${theme.colors.textSecondary}22`,
             }}
           >
@@ -64,7 +64,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
         <pre
           style={{
             margin: 0,
-            padding: '16px',
+            padding: theme.spacing.md,
             overflow: 'auto',
             fontFamily: 'monospace',
             fontSize: '0.875rem',
@@ -73,7 +73,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
           }}
         >
           {tokenLines.map((lineTokens, i) => (
-            <span key={i} style={{ display: 'flex', gap: '16px' }}>
+            <span key={i} style={{ display: 'flex', gap: theme.spacing.md }}>
               {lineNumbers && (
                 <span
                   style={{

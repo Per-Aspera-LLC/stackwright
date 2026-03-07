@@ -20,7 +20,7 @@ export function FeatureList({
   return (
     <section
       style={{
-        padding: '48px 32px',
+        padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
         background: background || 'transparent',
       }}
     >
@@ -28,7 +28,7 @@ export function FeatureList({
         <h3
           style={{
             color: headingColor,
-            marginBottom: '32px',
+            marginBottom: theme.spacing.xl,
             textAlign: 'center',
           }}
         >
@@ -39,7 +39,7 @@ export function FeatureList({
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '32px',
+          gap: theme.spacing.xl,
           maxWidth: '1200px',
           margin: '0 auto',
         }}
@@ -52,11 +52,11 @@ export function FeatureList({
               flexDirection: 'column',
               alignItems: 'center',
               textAlign: 'center',
-              gap: '12px',
+              gap: theme.spacing.sm,
             }}
           >
             {item.icon && (
-              <div style={{ marginBottom: '8px' }}>
+              <div style={{ marginBottom: theme.spacing.xs }}>
                 <Media
                   {...item.icon}
                   alt={item.icon.alt || item.heading}
