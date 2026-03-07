@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     prebuild: 'src/prebuild.ts',
+    watch: 'src/watch.ts',
     index: 'src/index.ts',
   },
   format: ['cjs'],
