@@ -7,15 +7,15 @@ export const defaultSiteConfig: SiteConfig = {
   title: 'Stackwright',
   themeName: 'corporate',
   appBar: {
-    titleText: 'Stackwright Hello World'
+    titleText: 'Stackwright Hello World',
   },
   navigation: [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/about" },
-    { label: "Services", href: "/services" },
-    { label: "Contact", href: "/contact" }
+    { label: 'Home', href: '/' },
+    { label: 'About', href: '/about' },
+    { label: 'Services', href: '/services' },
+    { label: 'Contact', href: '/contact' },
   ],
   footer: {
-    copyright: `© ${new Date().getFullYear()} Stackwright. All rights reserved.`
-  }
+    copyright: `© ${new Date().getFullYear()} Stackwright. All rights reserved.`,
+  },
 };

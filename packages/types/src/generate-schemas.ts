@@ -21,23 +21,11 @@ export async function generateSchemas() {
   const outputDir = path.join(__dirname, '../schemas');
   await fs.ensureDir(outputDir);
 
-  await fs.writeJSON(
-    path.join(outputDir, 'content-schema.json'),
-    contentSchema,
-    { spaces: 2 }
-  );
+  await fs.writeJSON(path.join(outputDir, 'content-schema.json'), contentSchema, { spaces: 2 });
 
-  await fs.writeJSON(
-    path.join(outputDir, 'theme-schema.json'),
-    themeSchema,
-    { spaces: 2 }
-  );
+  await fs.writeJSON(path.join(outputDir, 'theme-schema.json'), themeSchema, { spaces: 2 });
 
-  await fs.writeJSON(
-    path.join(outputDir, 'site-config-schema.json'),
-    siteSchema,
-    { spaces: 2 }
-  );
+  await fs.writeJSON(path.join(outputDir, 'site-config-schema.json'), siteSchema, { spaces: 2 });
 
   console.log('✅ Generated schemas in schemas/');
 }

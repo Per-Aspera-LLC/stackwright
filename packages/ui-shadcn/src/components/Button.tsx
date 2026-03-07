@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import { Slot } from '@radix-ui/react-slot';
@@ -21,14 +21,11 @@ export interface ButtonProps {
 }
 
 const variantClasses: Record<NonNullable<ButtonProps['variant']>, string> = {
-  primary:
-    'bg-[var(--sw-color-primary)] text-white hover:opacity-90',
-  secondary:
-    'bg-[var(--sw-color-secondary)] text-white hover:opacity-90',
+  primary: 'bg-[var(--sw-color-primary)] text-white hover:opacity-90',
+  secondary: 'bg-[var(--sw-color-secondary)] text-white hover:opacity-90',
   outline:
     'border border-[var(--sw-color-primary)] text-[var(--sw-color-primary)] bg-transparent hover:bg-[var(--sw-color-primary)] hover:text-white',
-  text:
-    'text-[var(--sw-color-primary)] bg-transparent hover:opacity-75',
+  text: 'text-[var(--sw-color-primary)] bg-transparent hover:opacity-75',
 };
 
 const sizeClasses: Record<NonNullable<ButtonProps['size']>, string> = {

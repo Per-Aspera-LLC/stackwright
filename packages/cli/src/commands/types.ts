@@ -23,8 +23,8 @@ export interface FieldEntry {
 }
 
 export interface ContentTypeEntry {
-  name: string;       // YAML key, e.g. "main", "carousel"
-  typeName: string;   // TypeScript type name, e.g. "MainContent"
+  name: string; // YAML key, e.g. "main", "carousel"
+  typeName: string; // TypeScript type name, e.g. "MainContent"
   fields: FieldEntry[];
 }
 
@@ -52,19 +52,36 @@ function resolveSchema(schema: AnySchema): AnySchema {
 function zodDefToString(def: AnyDef): string {
   if (!def) return 'unknown';
   switch (def.type) {
-    case 'string': return 'string';
-    case 'number': return 'number';
-    case 'boolean': return 'boolean';
-    case 'any': return 'any';
-    case 'optional': return zodDefToString((def.innerType as AnySchema).def);
-    case 'lazy': return zodDefToString((def.getter() as AnySchema).def);
-    case 'enum': return (def.entries ? Object.keys(def.entries) : []).join(' | ');
-    case 'literal': return def.values ? (def.values as unknown[]).map(String).join(' | ') : (def.value !== undefined ? String(def.value) : 'literal');
-    case 'array': return `${zodDefToString((def.element as AnySchema).def)}[]`;
-    case 'object': return 'object';
-    case 'union': return (def.options as AnySchema[]).map((o) => zodDefToString(o.def)).join(' | ');
-    case 'discriminated_union': return (def.options as AnySchema[]).map((o) => zodDefToString(o.def)).join(' | ');
-    default: return def.type ?? 'unknown';
+    case 'string':
+      return 'string';
+    case 'number':
+      return 'number';
+    case 'boolean':
+      return 'boolean';
+    case 'any':
+      return 'any';
+    case 'optional':
+      return zodDefToString((def.innerType as AnySchema).def);
+    case 'lazy':
+      return zodDefToString((def.getter() as AnySchema).def);
+    case 'enum':
+      return (def.entries ? Object.keys(def.entries) : []).join(' | ');
+    case 'literal':
+      return def.values
+        ? (def.values as unknown[]).map(String).join(' | ')
+        : def.value !== undefined
+          ? String(def.value)
+          : 'literal';
+    case 'array':
+      return `${zodDefToString((def.element as AnySchema).def)}[]`;
+    case 'object':
+      return 'object';
+    case 'union':
+      return (def.options as AnySchema[]).map((o) => zodDefToString(o.def)).join(' | ');
+    case 'discriminated_union':
+      return (def.options as AnySchema[]).map((o) => zodDefToString(o.def)).join(' | ');
+    default:
+      return def.type ?? 'unknown';
   }
 }
 
@@ -150,20 +167,21 @@ export function registerTypes(program: Command): void {
 
       outputResult(result, { json }, () => {
         console.log(chalk.bold('\nContent Types\n'));
-        console.log(
-          `${'YAML key'.padEnd(20)}${'Type'.padEnd(25)}${'Required fields'}`
-        );
+        console.log(`${'YAML key'.padEnd(20)}${'Type'.padEnd(25)}${'Required fields'}`);
         console.log('─'.repeat(72));
         for (const ct of result.contentTypes) {
-          const required = ct.fields.filter((f) => f.required).map((f) => f.name).join(', ');
-          console.log(
-            `${chalk.cyan(ct.name.padEnd(20))}${ct.typeName.padEnd(25)}${required}`
-          );
+          const required = ct.fields
+            .filter((f) => f.required)
+            .map((f) => f.name)
+            .join(', ');
+          console.log(`${chalk.cyan(ct.name.padEnd(20))}${ct.typeName.padEnd(25)}${required}`);
         }
 
         console.log(chalk.bold('\nSub-types\n'));
         for (const st of result.subTypes) {
-          const fields = st.fields.map((f) => `${f.name}${f.required ? '' : '?'}: ${f.type}`).join(', ');
+          const fields = st.fields
+            .map((f) => `${f.name}${f.required ? '' : '?'}: ${f.type}`)
+            .join(', ');
           console.log(`  ${chalk.cyan(st.typeName)} — ${fields}`);
         }
       });

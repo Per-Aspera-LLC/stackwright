@@ -5,18 +5,20 @@
  */
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : null;
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16),
+      }
+    : null;
 }
 
 /**
  * Calculate relative luminance of a color
  */
 function getLuminance(r: number, g: number, b: number): number {
-  const [rs, gs, bs] = [r, g, b].map(c => {
+  const [rs, gs, bs] = [r, g, b].map((c) => {
     c = c / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   });
@@ -29,15 +31,15 @@ function getLuminance(r: number, g: number, b: number): number {
 export function getContrastRatio(color1: string, color2: string): number {
   const rgb1 = hexToRgb(color1);
   const rgb2 = hexToRgb(color2);
-  
+
   if (!rgb1 || !rgb2) return 1;
-  
+
   const lum1 = getLuminance(rgb1.r, rgb1.g, rgb1.b);
   const lum2 = getLuminance(rgb2.r, rgb2.g, rgb2.b);
-  
+
   const brightest = Math.max(lum1, lum2);
   const darkest = Math.min(lum1, lum2);
-  
+
   return (brightest + 0.05) / (darkest + 0.05);
 }
 
@@ -52,8 +54,8 @@ export function isReadable(textColor: string, backgroundColor: string): boolean 
  * Get the more readable text color option
  */
 export function getBetterTextColor(
-  option1: string, 
-  option2: string, 
+  option1: string,
+  option2: string,
   backgroundColor: string
 ): string {
   const ratio1 = getContrastRatio(option1, backgroundColor);
@@ -67,21 +69,21 @@ export function getBetterTextColor(
 export function getHoverColor(color: string, factor: number = 0.15): string {
   const rgb = hexToRgb(color);
   if (!rgb) return color;
-  
+
   const luminance = getLuminance(rgb.r, rgb.g, rgb.b);
   const shouldDarken = luminance > 0.5;
-  
+
   const adjust = (value: number) => {
-    const adjusted = shouldDarken 
-      ? Math.max(0, value - (value * factor))
-      : Math.min(255, value + ((255 - value) * factor));
+    const adjusted = shouldDarken
+      ? Math.max(0, value - value * factor)
+      : Math.min(255, value + (255 - value) * factor);
     return Math.round(adjusted);
   };
-  
+
   const newR = adjust(rgb.r);
   const newG = adjust(rgb.g);
   const newB = adjust(rgb.b);
-  
+
   return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
 }
 
@@ -89,14 +91,13 @@ export function getHoverColor(color: string, factor: number = 0.15): string {
  * Resolve theme color names to hex values
  */
 export function resolveColor(colorValue: string, themeColors: Record<string, string>): string {
-   if (typeof colorValue !== 'string') {
+  if (typeof colorValue !== 'string') {
     console.warn(`Invalid color value: ${colorValue}. Defaulting to 'transparent'.`);
     return 'transparent';
   }
- 
+
   if (colorValue.startsWith('#')) {
     return colorValue; // Already a hex code
   }
   return themeColors[colorValue] || colorValue;
 }
-

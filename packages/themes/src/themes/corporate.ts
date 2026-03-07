@@ -18,7 +18,7 @@ export const corporateTheme = {
       primary: '#1f2937',
       secondary: '#6b7280',
       inverse: '#ffffff',
-    }
+    },
   },
   spacing: {
     section: 'py-20',
@@ -27,5 +27,5 @@ export const corporateTheme = {
   typography: {
     hero: 'text-4xl md:text-6xl font-bold',
     subtitle: 'text-xl md:text-2xl',
-  }
+  },
 };

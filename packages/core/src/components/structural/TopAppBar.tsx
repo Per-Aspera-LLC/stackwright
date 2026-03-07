@@ -7,14 +7,24 @@ import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
 import { Media } from '../media/Media';
 import { useBreakpoints } from '../../hooks/useBreakpoints';
 
-export default function TopAppBar({ title, logo, menuItems, textcolor, backgroundcolor }: AppBarContent) {
+export default function TopAppBar({
+  title,
+  logo,
+  menuItems,
+  textcolor,
+  backgroundcolor,
+}: AppBarContent) {
   const theme = useSafeTheme();
   const { isSmDown } = useBreakpoints();
   const [menuOpen, setMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
-  const headerBgColor = backgroundcolor ? resolveColor(backgroundcolor, theme.colors) : theme.colors.primary;
-  const headerTextColor = textcolor ? resolveColor(textcolor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor);
+  const headerBgColor = backgroundcolor
+    ? resolveColor(backgroundcolor, theme.colors)
+    : theme.colors.primary;
+  const headerTextColor = textcolor
+    ? resolveColor(textcolor, theme.colors)
+    : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -59,13 +69,21 @@ export default function TopAppBar({ title, logo, menuItems, textcolor, backgroun
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
       }}
     >
-      <nav style={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', padding: '0 24px' }}>
+      <nav
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 24px',
+        }}
+      >
         {logo ? (
           <>
             <div style={{ paddingRight: '12px', height: 'auto' }}>
               <Media
                 {...logo}
-                style='contained'
+                style="contained"
                 height={logo.height || '48px'}
                 width={logo.width || '48px'}
                 label={`${title} logo`}
@@ -83,8 +101,9 @@ export default function TopAppBar({ title, logo, menuItems, textcolor, backgroun
 
         <div style={{ flexGrow: 1 }} />
 
-        {menuItems && menuItems.length > 0 && (
-          isSmDown ? (
+        {menuItems &&
+          menuItems.length > 0 &&
+          (isSmDown ? (
             <CompressedMenu
               menuItems={menuItems}
               menuOpen={menuOpen}
@@ -104,14 +123,13 @@ export default function TopAppBar({ title, logo, menuItems, textcolor, backgroun
                     variant: 'text',
                     bgColor: headerBgColor,
                     textColor: headerTextColor,
-                    textSize: 'h6'
+                    textSize: 'h6',
                   }}
                   size="medium"
                 />
               ))}
             </div>
-          )
-        )}
+          ))}
       </nav>
     </header>
   );

@@ -18,11 +18,7 @@ export function formatError(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
 
-export function outputResult(
-  data: unknown,
-  opts: { json: boolean },
-  humanFn: () => void
-): void {
+export function outputResult(data: unknown, opts: { json: boolean }, humanFn: () => void): void {
   if (opts.json) {
     console.log(JSON.stringify(data, null, 2));
   } else {
