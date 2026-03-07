@@ -1,5 +1,13 @@
 # @stackwright/build-scripts
 
+## 0.3.0-alpha.4
+
+### Patch Changes
+
+- 681d5d4: Add monorepo-wide ESLint and Prettier with CI enforcement. Auto-formatted all source files to consistent style. No runtime behavior changes.
+- Updated dependencies [681d5d4]
+  - @stackwright/types@0.4.0-alpha.3
+
 ## 0.3.0-alpha.3
 
 ### Minor Changes
@@ -70,7 +78,6 @@
 ### Patch Changes
 
 - 386acb8: chore(deps): batch dependency maintenance — February 2026
-
   - `@mui/material` + `@mui/icons-material`: 7.2.0 → 7.3.8 (patch)
   - `@fontsource/montserrat-alternates`: 5.2.6 → 5.2.8 (patch)
   - `uuid`: ^11.1.0 → ^13.0.0 (major — API unchanged for v4/v7 usage)
@@ -91,7 +98,6 @@
 ### Patch Changes
 
 - 386acb8: chore(deps): batch dependency maintenance — February 2026
-
   - `@mui/material` + `@mui/icons-material`: 7.2.0 → 7.3.8 (patch)
   - `@fontsource/montserrat-alternates`: 5.2.6 → 5.2.8 (patch)
   - `uuid`: ^11.1.0 → ^13.0.0 (major — API unchanged for v4/v7 usage)
@@ -112,7 +118,6 @@
 ### Patch Changes
 
 - 4c964f1: fix(sprint2): reliability and silent failure modes
-
   - Add React error boundary to `DynamicPage` so a single bad component
     shows degraded UI instead of crashing the whole page
   - Move `ShimmerOverlay` styled component to module scope in `DynamicPage`
@@ -128,20 +133,17 @@
 - 8910585: Next.js 16 / Turbopack compatibility and prebuild pipeline
 
   **New package: `@stackwright/build-scripts`**
-
   - Introduces `stackwright-prebuild` CLI binary for build-time YAML processing
   - Scans `pages/` for `content.yml` files, copies co-located images to `public/images/`, and writes processed JSON to `public/stackwright-content/`
   - Eliminates all `fs`/`path` usage from `@stackwright/nextjs`, resolving Turbopack browser-bundle conflicts
   - Add `"prebuild": "stackwright-prebuild"` and `"predev": "stackwright-prebuild"` to your `package.json` scripts; `getStaticProps` then reads from `public/stackwright-content/*.json`
 
   **`@stackwright/nextjs`**
-
   - `NextStackwrightStaticGeneration` removed — static generation is now handled by the prebuild pipeline above
   - `createStackwrightNextConfig` adds `turbopack: {}` for Next.js 16+ (silences webpack-without-turbopack warning)
   - Remove `shallow` prop from `StackwrightLinkProps` and `NextStackwrightLink` (removed from `next/link` in Next.js 13)
   - Widen peer dependency to `next: ">=15"` to cover Next.js 16+
 
   **`@stackwright/core`**
-
   - Remove `shallow` from `StackwrightLinkProps` interface
   - Pin workspace `csstype` to `^3.2.0` via pnpm override to resolve DTS build conflict
