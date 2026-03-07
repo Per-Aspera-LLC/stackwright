@@ -1,6 +1,5 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import path from 'path';
 import { git, gh } from '../utils/git';
 import { detectProject } from '../utils/project-detector';
 import { validatePages } from './page';

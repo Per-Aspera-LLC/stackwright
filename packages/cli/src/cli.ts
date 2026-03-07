@@ -11,7 +11,6 @@ import { registerInfo } from './commands/info';
 import { registerGenerateAgentDocs } from './commands/generate-agent-docs';
 import { registerGitOps } from './commands/git-ops';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version } = require('../package.json') as { version: string };
 
 async function main(): Promise<void> {

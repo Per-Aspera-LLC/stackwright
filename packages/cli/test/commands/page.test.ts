@@ -12,7 +12,7 @@ function makeTmpDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'sw-cli-test-'));
 }
 
-function makePageYaml(heading: string): string {
+function _makePageYaml(heading: string): string {
   return `content:
   content_items:
     - main:

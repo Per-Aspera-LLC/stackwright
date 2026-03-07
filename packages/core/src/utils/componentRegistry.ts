@@ -15,7 +15,6 @@ import {
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
 import {
-  stackwrightRegistry,
   getStackwrightImage,
   getStackwrightLink,
   getStackwrightRouter,
