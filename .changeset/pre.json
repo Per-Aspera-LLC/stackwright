@@ -22,6 +22,7 @@
     "carousel-keyboard-nav",
     "ci-schema-sync-check",
     "content-renderer-error-handling",
+    "fix-console-log-carousel-cleanup",
     "fix-layout-regressions",
     "fix-mobile-responsiveness",
     "hot-recompilation-watch",
