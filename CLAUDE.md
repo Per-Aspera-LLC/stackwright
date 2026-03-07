@@ -135,6 +135,10 @@ The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit t
 
 **Every PR that changes user-facing behavior MUST include a changeset.** Run `pnpm changeset` before committing, select the affected packages, choose the bump type (patch for fixes, minor for features), and write a short summary. Commit the generated `.changeset/*.md` file with your PR. CI will fail if a changeset is missing for changed packages.
 
+### Roadmap Maintenance
+
+**When opening a PR against `dev`, check if `ROADMAP.md` needs updating.** If the PR completes, advances, or invalidates a roadmap item, update it in the same PR. Mark completed items with `[x]` and add the PR number. This keeps the roadmap accurate for new contributors and agents.
+
 ### Naming Conventions
 
 - File names: kebab-case (`main-content-grid.tsx`)
