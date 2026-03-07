@@ -38,7 +38,7 @@ export function CompressedMenu<T>({
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          padding: '8px',
+          padding: 'var(--sw-spacing-xs, 0.5rem)',
           display: 'flex',
           alignItems: 'center',
           color: 'var(--sw-color-primary, currentColor)',
@@ -73,7 +73,7 @@ export function CompressedMenu<T>({
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             borderRadius: '4px',
             zIndex: 1000,
-            padding: '8px',
+            padding: 'var(--sw-spacing-xs, 0.5rem)',
           }}
         >
           {buildMenu(menuItems, true)}

@@ -24,7 +24,7 @@ export const MenuItemComponent = ({ item, isCompressed, theme }: MenuItemProps) 
       href={item.href || '#'}
       style={{
         display: 'block',
-        padding: '8px 16px',
+        padding: 'var(--sw-spacing-xs, 0.5rem) var(--sw-spacing-md, 1rem)',
         backgroundColor: colorSet.background,
         color: colorSet.text,
         border: effectiveVariant === 'outlined' ? `1px solid ${colorSet.border}` : 'none',

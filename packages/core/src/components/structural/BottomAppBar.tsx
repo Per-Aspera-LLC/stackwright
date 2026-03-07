@@ -24,11 +24,11 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
       style={{
         backgroundColor: backgroundColor,
         color: textColor,
-        padding: '8px 16px',
+        padding: `${theme.spacing.xs} ${theme.spacing.md}`,
         marginTop: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        gap: '16px',
+        gap: theme.spacing.md,
         minHeight: '32px',
       }}
     >
@@ -38,8 +38,8 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
           flexDirection: 'row',
           flexWrap: 'wrap',
           alignItems: 'center',
-          gap: '8px',
-          padding: '0 20px',
+          gap: theme.spacing.xs,
+          padding: `0 ${theme.spacing.md}`,
         }}
       >
         {footer?.links &&
@@ -61,10 +61,10 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
             style={{
               display: 'flex',
               flexDirection: footer.socialLinks.length > 3 ? 'column' : 'row',
-              gap: '8px',
+              gap: theme.spacing.xs,
             }}
           >
-            <h4 style={{ margin: 0, paddingLeft: '40px', fontWeight: 'bold' }}>
+            <h4 style={{ margin: 0, paddingLeft: theme.spacing['2xl'], fontWeight: 'bold' }}>
               {footer?.socialText || 'Social Media'}
             </h4>
             {footer.socialLinks.map((social, index) => (

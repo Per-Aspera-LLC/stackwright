@@ -14,7 +14,7 @@ export function Faq({ heading, items, background }: FaqContent) {
   return (
     <section
       style={{
-        padding: '48px 32px',
+        padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
         background: background || 'transparent',
       }}
     >
@@ -22,7 +22,7 @@ export function Faq({ heading, items, background }: FaqContent) {
         <h3
           style={{
             color: headingColor,
-            marginBottom: '32px',
+            marginBottom: theme.spacing.xl,
             textAlign: 'center',
           }}
         >
@@ -35,7 +35,7 @@ export function Faq({ heading, items, background }: FaqContent) {
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px',
+          gap: theme.spacing.xs,
         }}
       >
         {items.map((item, index) => (
@@ -50,7 +50,7 @@ export function Faq({ heading, items, background }: FaqContent) {
           >
             <summary
               style={{
-                padding: '16px 20px',
+                padding: `${theme.spacing.md} ${theme.spacing.md}`,
                 cursor: 'pointer',
                 fontWeight: 600,
                 color: theme.colors.text,
@@ -64,7 +64,7 @@ export function Faq({ heading, items, background }: FaqContent) {
               <span
                 aria-hidden="true"
                 style={{
-                  marginLeft: '16px',
+                  marginLeft: theme.spacing.md,
                   flexShrink: 0,
                   fontSize: '1.25rem',
                   lineHeight: 1,
@@ -75,7 +75,7 @@ export function Faq({ heading, items, background }: FaqContent) {
             </summary>
             <div
               style={{
-                padding: '0 20px 16px 20px',
+                padding: `0 ${theme.spacing.md} ${theme.spacing.md} ${theme.spacing.md}`,
                 color: theme.colors.text,
                 opacity: 0.8,
                 lineHeight: 1.6,

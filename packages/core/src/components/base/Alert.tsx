@@ -22,7 +22,7 @@ export function Alert({ variant, title, body, background }: AlertContent) {
   return (
     <section
       style={{
-        padding: '48px 32px',
+        padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
         background: background || 'transparent',
       }}
     >
@@ -33,8 +33,8 @@ export function Alert({ variant, title, body, background }: AlertContent) {
           margin: '0 auto',
           display: 'flex',
           alignItems: 'flex-start',
-          gap: '12px',
-          padding: '16px 20px',
+          gap: theme.spacing.sm,
+          padding: `${theme.spacing.md} ${theme.spacing.md}`,
           backgroundColor: config.bgColor,
           borderLeft: `4px solid ${config.color}`,
           borderRadius: '8px',

@@ -14,7 +14,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
   return (
     <section
       style={{
-        padding: '48px 32px',
+        padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
         background: background || 'transparent',
       }}
     >
@@ -22,7 +22,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
         <h3
           style={{
             color: headingColor,
-            marginBottom: '32px',
+            marginBottom: theme.spacing.xl,
             textAlign: 'center',
           }}
         >
@@ -32,7 +32,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
       <div
         style={{
           display: 'flex',
-          gap: '24px',
+          gap: theme.spacing.lg,
           justifyContent: 'center',
           flexWrap: 'wrap',
           maxWidth: '1200px',
@@ -54,7 +54,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                 backgroundColor: theme.colors.surface,
                 borderRadius: '12px',
                 border: `2px solid ${borderColor}`,
-                padding: '32px 24px',
+                padding: `${theme.spacing.xl} ${theme.spacing.lg}`,
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
@@ -72,7 +72,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                     transform: 'translateX(-50%)',
                     backgroundColor: theme.colors.primary,
                     color: theme.colors.surface,
-                    padding: '4px 16px',
+                    padding: `${theme.spacing.xs} ${theme.spacing.md}`,
                     borderRadius: '12px',
                     fontSize: '0.75rem',
                     fontWeight: 600,
@@ -86,7 +86,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
               <h4
                 style={{
                   color: theme.colors.text,
-                  margin: '0 0 8px 0',
+                  margin: `0 0 ${theme.spacing.xs} 0`,
                   fontSize: '1.25rem',
                   fontWeight: 600,
                 }}
@@ -98,7 +98,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                   color: theme.colors.primary,
                   fontSize: '2rem',
                   fontWeight: 700,
-                  marginBottom: '8px',
+                  marginBottom: theme.spacing.xs,
                 }}
               >
                 {plan.price}
@@ -108,7 +108,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                   style={{
                     color: theme.colors.text,
                     opacity: 0.7,
-                    margin: '0 0 16px 0',
+                    margin: `0 0 ${theme.spacing.md} 0`,
                     fontSize: '0.875rem',
                   }}
                 >
@@ -119,7 +119,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                 style={{
                   listStyle: 'none',
                   padding: 0,
-                  margin: '0 0 24px 0',
+                  margin: `0 0 ${theme.spacing.lg} 0`,
                   flex: 1,
                 }}
               >
@@ -127,12 +127,12 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                   <li
                     key={fi}
                     style={{
-                      padding: '6px 0',
+                      padding: `${theme.spacing.xs} 0`,
                       color: theme.colors.text,
                       fontSize: '0.875rem',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '8px',
+                      gap: theme.spacing.xs,
                     }}
                   >
                     <span style={{ color: theme.colors.primary }}>&#10003;</span>
@@ -146,7 +146,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: '10px 24px',
+                  padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
                   borderRadius: '6px',
                   textDecoration: 'none',
                   fontWeight: 600,

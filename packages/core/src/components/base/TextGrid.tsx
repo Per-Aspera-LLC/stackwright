@@ -76,8 +76,8 @@ export function TextGrid({ content, config }: TextGridProps) {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '16px',
-                    marginBottom: '8px',
+                    gap: theme.spacing.md,
+                    marginBottom: theme.spacing.xs,
                   }}
                 >
                   {startsWithBullet(line) && listIcon && (

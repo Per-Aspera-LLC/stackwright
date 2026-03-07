@@ -54,6 +54,26 @@ describe('useSafeTheme — outside ThemeProvider', () => {
   it('does not throw when ThemeProvider is absent', () => {
     expect(() => renderHook(() => useSafeTheme())).not.toThrow();
   });
+
+  it('fallback theme includes spacing tokens', () => {
+    const { result } = renderHook(() => useSafeTheme());
+    const theme = result.current;
+    expect(theme.spacing).toBeDefined();
+    expect(theme.spacing.xs).toBeTruthy();
+    expect(theme.spacing.sm).toBeTruthy();
+    expect(theme.spacing.md).toBeTruthy();
+    expect(theme.spacing.lg).toBeTruthy();
+    expect(theme.spacing.xl).toBeTruthy();
+    expect(theme.spacing['2xl']).toBeTruthy();
+  });
+
+  it('fallback theme includes typography', () => {
+    const { result } = renderHook(() => useSafeTheme());
+    const theme = result.current;
+    expect(theme.typography).toBeDefined();
+    expect(theme.typography.fontFamily.primary).toBeTruthy();
+    expect(theme.typography.scale.base).toBeTruthy();
+  });
 });
 
 describe('useSafeTheme — re-throws non-provider errors', () => {
