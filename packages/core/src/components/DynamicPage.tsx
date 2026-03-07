@@ -2,6 +2,7 @@ import React from "react";
 import { PageContent, SiteConfig } from "@stackwright/types";
 import PageLayout from "./structural/PageLayout";
 import { ThemeProvider, ThemeLoader, ThemeStyleInjector } from "@stackwright/themes";
+import { useDevContentReload } from "../hooks/useDevContentReload";
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -82,6 +83,8 @@ export default function DynamicPage({
     siteConfig,
     slug,
 }: DynamicPageProps) {
+    useDevContentReload();
+
     const themeName = siteConfig?.themeName || "corporate";
     let theme;
 

@@ -3,6 +3,7 @@ import { defineConfig } from 'tsup';
 export default defineConfig({
   entry: {
     prebuild: 'src/prebuild.ts',
+    watch: 'src/watch.ts',
     index: 'src/index.ts',
   },
   format: ['cjs'],
@@ -12,7 +13,7 @@ export default defineConfig({
   sourcemap: false,
   clean: true,
   // Node built-ins are always available at runtime — never bundle them
-  external: ['fs', 'path', 'url', 'process'],
+  external: ['fs', 'path', 'url', 'process', 'http'],
   // Shebang is prepended to the prebuild CLI entry
   banner: {
     js: '#!/usr/bin/env node',
