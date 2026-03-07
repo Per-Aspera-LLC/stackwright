@@ -10,35 +10,35 @@ import { mediaStyleVariantSchema, typographyVariantSchema } from './enums';
 // optional, since embedded media items (e.g. button icons) do not require them.
 
 const mediaPrimitiveBaseSchema = z.object({
-    src: z.string(),
-    alt: z.string().optional(),
-    height: z.union([z.number(), z.string()]).optional(),
-    width: z.union([z.number(), z.string()]).optional(),
-    style: mediaStyleVariantSchema.optional(),
-    label: z.string().optional(),
-    color: z.string().optional(),
-    background: z.string().optional(),
+  src: z.string(),
+  alt: z.string().optional(),
+  height: z.union([z.number(), z.string()]).optional(),
+  width: z.union([z.number(), z.string()]).optional(),
+  style: mediaStyleVariantSchema.optional(),
+  label: z.string().optional(),
+  color: z.string().optional(),
+  background: z.string().optional(),
 });
 
 const mediaContentPrimitiveSchema = mediaPrimitiveBaseSchema.extend({
-    type: z.literal('media'),
+  type: z.literal('media'),
 });
 
 const iconContentPrimitiveSchema = mediaPrimitiveBaseSchema.extend({
-    type: z.literal('icon'),
-    size: z.union([z.number(), typographyVariantSchema]).optional(),
-    color: z.string().optional(),
+  type: z.literal('icon'),
+  size: z.union([z.number(), typographyVariantSchema]).optional(),
+  color: z.string().optional(),
 });
 
 const imageContentPrimitiveSchema = mediaPrimitiveBaseSchema.extend({
-    type: z.literal('image'),
-    aspect_ratio: z.number().optional(),
+  type: z.literal('image'),
+  aspect_ratio: z.number().optional(),
 });
 
 export const mediaItemSchema = z.discriminatedUnion('type', [
-    mediaContentPrimitiveSchema,
-    iconContentPrimitiveSchema,
-    imageContentPrimitiveSchema,
+  mediaContentPrimitiveSchema,
+  iconContentPrimitiveSchema,
+  imageContentPrimitiveSchema,
 ]);
 
 export type MediaItem = z.infer<typeof mediaItemSchema>;

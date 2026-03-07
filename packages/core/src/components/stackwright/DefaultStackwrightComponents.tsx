@@ -1,5 +1,10 @@
 import React from 'react';
-import { StackwrightImageProps, StackwrightLinkProps, StackwrightRouterProps, StackwrightRouteProps } from '../../interfaces/stackwright-components';
+import {
+  StackwrightImageProps,
+  StackwrightLinkProps,
+  StackwrightRouterProps,
+  StackwrightRouteProps,
+} from '../../interfaces/stackwright-components';
 
 // Default HTML-based Image implementation
 export const DefaultStackwrightImage: React.FC<StackwrightImageProps> = ({
@@ -73,7 +78,7 @@ export const DefaultStackwrightRoute: React.FC<StackwrightRouteProps> = ({
   // Basic client-side routing logic
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
   const matches = exact ? currentPath === path : currentPath.startsWith(path);
-  
+
   if (!matches) {
     return null;
   }

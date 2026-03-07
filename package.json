@@ -26,8 +26,8 @@
         "stackwright-mcp": "node packages/mcp/dist/server.js",
         "lint": "eslint packages/",
         "lint:fix": "eslint --fix packages/",
-        "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\"",
-        "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx}\""
+        "format": "prettier --write \"packages/*/{src,test}/**/*.{ts,tsx}\"",
+        "format:check": "prettier --check \"packages/*/{src,test}/**/*.{ts,tsx}\""
     },
     "devDependencies": {
         "@changesets/cli": "^2.30.0",

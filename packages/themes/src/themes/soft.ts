@@ -18,7 +18,7 @@ export const softTheme = {
       primary: '#374151',
       secondary: '#9ca3af',
       inverse: '#ffffff',
-    }
+    },
   },
   spacing: {
     section: 'py-16',
@@ -27,6 +27,5 @@ export const softTheme = {
   typography: {
     hero: 'text-3xl md:text-5xl font-semibold',
     subtitle: 'text-lg md:text-xl',
-  }
+  },
 };
-

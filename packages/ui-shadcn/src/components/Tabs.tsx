@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import * as RadixTabs from '@radix-ui/react-tabs';
@@ -14,7 +14,7 @@ export const TabsList = React.forwardRef<
     ref={ref}
     className={cn(
       'inline-flex h-10 items-center justify-center rounded-md bg-[var(--sw-color-surface)] p-1 text-[var(--sw-color-text-secondary)]',
-      className,
+      className
     )}
     {...props}
   />
@@ -32,7 +32,7 @@ export const TabsTrigger = React.forwardRef<
       'ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sw-color-primary)] focus-visible:ring-offset-2',
       'disabled:pointer-events-none disabled:opacity-50',
       'data-[state=active]:bg-[var(--sw-color-primary)] data-[state=active]:text-white data-[state=active]:shadow-sm',
-      className,
+      className
     )}
     {...props}
   />
@@ -47,7 +47,7 @@ export const TabsContent = React.forwardRef<
     ref={ref}
     className={cn(
       'mt-2 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--sw-color-primary)] focus-visible:ring-offset-2',
-      className,
+      className
     )}
     {...props}
   />

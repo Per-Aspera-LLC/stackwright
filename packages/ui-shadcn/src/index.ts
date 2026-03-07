@@ -3,12 +3,7 @@ export { cn } from './cn';
 export { Button } from './components/Button';
 export type { ButtonProps } from './components/Button';
 
-export {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from './components/Tabs';
+export { Tabs, TabsList, TabsTrigger, TabsContent } from './components/Tabs';
 
 export {
   Accordion,

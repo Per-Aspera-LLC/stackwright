@@ -31,7 +31,7 @@ const customContentTypes = new Map<string, ContentTypeEntry>();
 export function registerContentType(
   key: string,
   schema: z.ZodTypeAny,
-  component: ComponentType<any>,
+  component: ComponentType<any>
 ): void {
   customContentTypes.set(key, { key, schema, component });
   // Also register in the component registry so contentRenderer can find it.

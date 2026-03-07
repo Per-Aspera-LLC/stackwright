@@ -11,11 +11,13 @@ interface MenuItemProps {
 export const MenuItemComponent = ({ item, isCompressed, theme }: MenuItemProps) => {
   const effectiveVariant = isCompressed ? 'text' : item.variant;
   const isEmphasizedVariant = item.variant === 'contained' || item.variant === 'outlined';
-  const colorSet = theme.colors[effectiveVariant as keyof typeof theme.colors] || theme.colors.default;
+  const colorSet =
+    theme.colors[effectiveVariant as keyof typeof theme.colors] || theme.colors.default;
 
-  const textColor = isCompressed && item.variant === 'contained'
-    ? theme.colors.contained.background
-    : colorSet.text;
+  const textColor =
+    isCompressed && item.variant === 'contained'
+      ? theme.colors.contained.background
+      : colorSet.text;
 
   return (
     <a
@@ -31,9 +33,7 @@ export const MenuItemComponent = ({ item, isCompressed, theme }: MenuItemProps) 
         cursor: 'pointer',
       }}
     >
-      <span style={{ color: textColor }}>
-        {item.text}
-      </span>
+      <span style={{ color: textColor }}>{item.text}</span>
     </a>
   );
 };
