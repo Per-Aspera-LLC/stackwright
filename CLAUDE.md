@@ -8,6 +8,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **`main`** is the release branch. `dev` is merged to `main` only when cutting a release.
 - **Always pull the latest `dev` before creating a feature branch**: `git fetch origin dev && git checkout -b feat/issue-XX-description origin/dev`
 
+### Commit Discipline
+
+**Commit early and often at logical checkpoints.** Don't accumulate a large diff across an entire feature branch — break the work into meaningful, reviewable commits. Each commit should leave the codebase in a buildable state.
+
+Good commit points:
+- After adding a new module or file that compiles/passes lint
+- After wiring up a new feature end-to-end (even before tests)
+- After adding or updating tests for the feature
+- After updating docs, ROADMAP.md, or changesets
+- Before and after a refactor that touches many files
+
+Commit messages should be concise and use conventional commit prefixes (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`). Include the issue number when relevant (e.g., `feat(build-scripts): add --watch mode (#122)`).
+
 ## Commands
 
 ```bash
