@@ -15,12 +15,10 @@ export const NextStackwrightRoute: React.FC<StackwrightRouteProps> = ({
 }) => {
   const router = useRouter();
   const currentPath = router.pathname;
-  
+
   // Simple route matching logic
-  const matches = exact 
-    ? currentPath === path 
-    : currentPath.startsWith(path);
-  
+  const matches = exact ? currentPath === path : currentPath.startsWith(path);
+
   if (!matches) {
     return null;
   }

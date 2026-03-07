@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import * as RadixAccordion from '@radix-ui/react-accordion';
@@ -30,7 +30,7 @@ export const AccordionTrigger = React.forwardRef<
         'flex flex-1 items-center justify-between py-4 font-medium transition-all',
         'text-[var(--sw-color-text)] hover:text-[var(--sw-color-primary)]',
         '[&[data-state=open]>svg]:rotate-180',
-        className,
+        className
       )}
       {...props}
     >
@@ -50,9 +50,7 @@ export const AccordionContent = React.forwardRef<
     className="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
     {...props}
   >
-    <div className={cn('pb-4 pt-0 text-[var(--sw-color-text)]', className)}>
-      {children}
-    </div>
+    <div className={cn('pb-4 pt-0 text-[var(--sw-color-text)]', className)}>{children}</div>
   </RadixAccordion.Content>
 ));
 AccordionContent.displayName = 'AccordionContent';

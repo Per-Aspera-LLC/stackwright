@@ -32,8 +32,14 @@ export function registerProjectTools(server: McpServer): void {
     {
       targetDir: z.string().describe('Absolute path where the new project should be created'),
       name: z.string().optional().describe('npm package name for the new project'),
-      title: z.string().optional().describe('Site title (used in stackwright.yml and page metadata)'),
-      theme: z.string().optional().describe('Theme ID to use (run stackwright_list_themes to see options)'),
+      title: z
+        .string()
+        .optional()
+        .describe('Site title (used in stackwright.yml and page metadata)'),
+      theme: z
+        .string()
+        .optional()
+        .describe('Theme ID to use (run stackwright_list_themes to see options)'),
     },
     async ({ targetDir, name, title, theme }) => {
       const result = await scaffold(targetDir, { name, title, theme });

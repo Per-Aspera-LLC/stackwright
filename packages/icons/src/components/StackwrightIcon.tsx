@@ -29,11 +29,7 @@ function UnknownIcon({ size = 24, color = 'currentColor', className, style }: Ic
   );
 }
 
-export function StackwrightIcon({
-  name,
-  fallback = 'hide',
-  ...props
-}: StackwrightIconProps) {
+export function StackwrightIcon({ name, fallback = 'hide', ...props }: StackwrightIconProps) {
   const customIcon = stackwrightIconRegistry.get(name);
 
   if (customIcon) {

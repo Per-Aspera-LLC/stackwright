@@ -3,25 +3,25 @@ import { typographyVariantSchema, buttonVariantSchema, alignmentVariantSchema } 
 import { mediaItemSchema } from './media-primitives';
 
 export const baseContentSchema = z.object({
-    label: z.string(),
-    color: z.string().optional(),
-    background: z.string().optional(),
+  label: z.string(),
+  color: z.string().optional(),
+  background: z.string().optional(),
 });
 
 export const textBlockSchema = z.object({
-    text: z.string(),
-    textSize: typographyVariantSchema,
-    textColor: z.string().optional(),
+  text: z.string(),
+  textSize: typographyVariantSchema,
+  textColor: z.string().optional(),
 });
 
 export const buttonContentSchema = textBlockSchema.extend({
-    variant: buttonVariantSchema,
-    variantSize: z.enum(['small', 'medium', 'large']).optional(),
-    href: z.string().optional(),
-    action: z.string().optional(),
-    icon: mediaItemSchema.optional(),
-    alignment: alignmentVariantSchema.optional(),
-    bgColor: z.string().optional(),
+  variant: buttonVariantSchema,
+  variantSize: z.enum(['small', 'medium', 'large']).optional(),
+  href: z.string().optional(),
+  action: z.string().optional(),
+  icon: mediaItemSchema.optional(),
+  alignment: alignmentVariantSchema.optional(),
+  bgColor: z.string().optional(),
 });
 
 export type BaseContent = z.infer<typeof baseContentSchema>;

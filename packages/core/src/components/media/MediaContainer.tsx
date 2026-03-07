@@ -16,7 +16,7 @@ export function MediaContainer({
   width,
   aspectRatio,
   maxSize,
-  style = 'contained'
+  style = 'contained',
 }: MediaContainerProps) {
   const getSmartHeight = (): string | number => {
     if (height !== undefined) return height;

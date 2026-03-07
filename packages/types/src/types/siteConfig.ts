@@ -5,40 +5,40 @@ import { mediaItemSchema } from './media';
 import { themeSchema } from '@stackwright/themes';
 
 export const appBarConfigSchema = z.object({
-    titleText: z.string(),
-    backgroundColor: z.string().optional(),
-    textColor: z.string().optional(),
-    logo: mediaItemSchema.optional(),
-    height: z.string().optional(),
-    menuItems: z.array(navigationItemSchema).optional(),
+  titleText: z.string(),
+  backgroundColor: z.string().optional(),
+  textColor: z.string().optional(),
+  logo: mediaItemSchema.optional(),
+  height: z.string().optional(),
+  menuItems: z.array(navigationItemSchema).optional(),
 });
 
 export const breakpointsConfigSchema = z.object({
-    xs: z.string(),
-    sm: z.string(),
-    md: z.string(),
-    lg: z.string(),
-    xl: z.string(),
+  xs: z.string(),
+  sm: z.string(),
+  md: z.string(),
+  lg: z.string(),
+  xl: z.string(),
 });
 
 export const footerConfigSchema = z.object({
-    backgroundColor: z.string().optional(),
-    textColor: z.string().optional(),
-    copyright: z.string().optional(),
-    itemsPerColumn: z.number().optional(),
-    links: z.array(navigationItemSchema).optional(),
-    socialLinks: z.array(buttonContentSchema).optional(),
-    socialText: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  textColor: z.string().optional(),
+  copyright: z.string().optional(),
+  itemsPerColumn: z.number().optional(),
+  links: z.array(navigationItemSchema).optional(),
+  socialLinks: z.array(buttonContentSchema).optional(),
+  socialText: z.string().optional(),
 });
 
 export const siteConfigSchema = z.object({
-    title: z.string(),
-    themeName: z.string().optional(),
-    customTheme: themeSchema.optional(),
-    navigation: z.array(navigationItemSchema),
-    appBar: appBarConfigSchema,
-    footer: footerConfigSchema.optional(),
-    breakpoints: breakpointsConfigSchema.optional(),
+  title: z.string(),
+  themeName: z.string().optional(),
+  customTheme: themeSchema.optional(),
+  navigation: z.array(navigationItemSchema),
+  appBar: appBarConfigSchema,
+  footer: footerConfigSchema.optional(),
+  breakpoints: breakpointsConfigSchema.optional(),
 });
 
 export type AppBarConfig = z.infer<typeof appBarConfigSchema>;

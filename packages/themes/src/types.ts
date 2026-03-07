@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-export const componentStyleSchema = z.object({
+export const componentStyleSchema = z
+  .object({
     base: z.string().optional(),
     primary: z.string().optional(),
     secondary: z.string().optional(),
@@ -8,60 +9,65 @@ export const componentStyleSchema = z.object({
     shadow: z.string().optional(),
     nav: z.string().optional(),
     text: z.string().optional(),
-}).catchall(z.string().optional());
+  })
+  .catchall(z.string().optional());
 
 export const themeConfigSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    description: z.string(),
-    colors: z.object({
-        primary: z.string(),
-        secondary: z.string(),
-        accent: z.string(),
-        background: z.string(),
-        surface: z.string(),
-        text: z.string(),
-        textSecondary: z.string(),
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  colors: z.object({
+    primary: z.string(),
+    secondary: z.string(),
+    accent: z.string(),
+    background: z.string(),
+    surface: z.string(),
+    text: z.string(),
+    textSecondary: z.string(),
+  }),
+  backgroundImage: z
+    .object({
+      url: z.string(),
+      repeat: z.enum(['repeat', 'repeat-x', 'repeat-y', 'no-repeat']).optional(),
+      size: z.string().optional(),
+      position: z.string().optional(),
+      attachment: z.enum(['scroll', 'fixed', 'local']).optional(),
+      scale: z.number().optional(),
+      animation: z.enum(['drift', 'float', 'shimmer', 'shimmer-float', 'none']).optional(),
+      customAnimation: z.string().optional(),
+    })
+    .optional(),
+  typography: z.object({
+    fontFamily: z.object({
+      primary: z.string(),
+      secondary: z.string(),
     }),
-    backgroundImage: z.object({
-        url: z.string(),
-        repeat: z.enum(['repeat', 'repeat-x', 'repeat-y', 'no-repeat']).optional(),
-        size: z.string().optional(),
-        position: z.string().optional(),
-        attachment: z.enum(['scroll', 'fixed', 'local']).optional(),
-        scale: z.number().optional(),
-        animation: z.enum(['drift', 'float', 'shimmer', 'shimmer-float', 'none']).optional(),
-        customAnimation: z.string().optional(),
-    }).optional(),
-    typography: z.object({
-        fontFamily: z.object({
-            primary: z.string(),
-            secondary: z.string(),
-        }),
-        scale: z.object({
-            xs: z.string(),
-            sm: z.string(),
-            base: z.string(),
-            lg: z.string(),
-            xl: z.string(),
-            '2xl': z.string(),
-            '3xl': z.string(),
-        }),
+    scale: z.object({
+      xs: z.string(),
+      sm: z.string(),
+      base: z.string(),
+      lg: z.string(),
+      xl: z.string(),
+      '2xl': z.string(),
+      '3xl': z.string(),
     }),
-    spacing: z.object({
-        xs: z.string(),
-        sm: z.string(),
-        md: z.string(),
-        lg: z.string(),
-        xl: z.string(),
-        '2xl': z.string(),
-    }),
-    components: z.object({
-        button: componentStyleSchema.optional(),
-        card: componentStyleSchema.optional(),
-        header: componentStyleSchema.optional(),
-        footer: componentStyleSchema.optional(),
-    }).optional(),
+  }),
+  spacing: z.object({
+    xs: z.string(),
+    sm: z.string(),
+    md: z.string(),
+    lg: z.string(),
+    xl: z.string(),
+    '2xl': z.string(),
+  }),
+  components: z
+    .object({
+      button: componentStyleSchema.optional(),
+      card: componentStyleSchema.optional(),
+      header: componentStyleSchema.optional(),
+      footer: componentStyleSchema.optional(),
+    })
+    .optional(),
 });
 
 export const themeSchema = themeConfigSchema;

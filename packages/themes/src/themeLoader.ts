@@ -104,7 +104,7 @@ spacing:
   lg: "1.5rem"
   xl: "2rem"
   2xl: "3rem"
-`
+`,
     };
 
     if (!themes[name]) {

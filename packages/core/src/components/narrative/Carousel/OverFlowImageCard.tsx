@@ -1,12 +1,12 @@
-import React from 'react'
-import { CarouselItem, MediaItem } from '@stackwright/types'
-import { useSafeTheme } from '../../../hooks/useSafeTheme'
-import { Media } from '../../media/Media'
+import React from 'react';
+import { CarouselItem, MediaItem } from '@stackwright/types';
+import { useSafeTheme } from '../../../hooks/useSafeTheme';
+import { Media } from '../../media/Media';
 
 interface OverflowImageCardProps {
-  item: CarouselItem,
-  minWidth: string,
-  style?: React.CSSProperties
+  item: CarouselItem;
+  minWidth: string;
+  style?: React.CSSProperties;
 }
 
 export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardProps) => {
@@ -30,27 +30,25 @@ export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardPr
         ...style,
       }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', width: '100%', height: '100%' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%',
+        }}
+      >
         <div style={{ width: '100%', height: '100%', backgroundColor: backgroundColor }}>
-          <Media
-            {...(item.media as MediaItem)}
-            label={item.title}
-            style="cover"
-          />
+          <Media {...(item.media as MediaItem)} label={item.title} style="cover" />
 
-          <h3
-            style={{ margin: '8px', color: theme.colors.text, textAlign: 'center' }}
-          >
+          <h3 style={{ margin: '8px', color: theme.colors.text, textAlign: 'center' }}>
             {item.title}
           </h3>
 
-          <p
-            style={{ margin: '16px', color: theme.colors.text }}
-          >
-            {item.text}
-          </p>
+          <p style={{ margin: '16px', color: theme.colors.text }}>{item.text}</p>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

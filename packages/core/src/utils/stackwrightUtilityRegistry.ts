@@ -12,7 +12,7 @@ class StackwrightUtilityRegistryImpl {
     if (!utility) {
       throw new Error(
         `Stackwright utility '${String(utilityName)}' is not registered. ` +
-        `Please register it using stackwrightUtilityRegistry.register() before use.`
+          `Please register it using stackwrightUtilityRegistry.register() before use.`
       );
     }
     return utility as StackwrightUtilities[K];
@@ -37,7 +37,8 @@ class StackwrightUtilityRegistryImpl {
 export const stackwrightUtilityRegistry = new StackwrightUtilityRegistryImpl();
 
 // Convenience functions for easier access
-export const getStackwrightStaticGeneration = () => stackwrightUtilityRegistry.get('StaticGeneration');
+export const getStackwrightStaticGeneration = () =>
+  stackwrightUtilityRegistry.get('StaticGeneration');
 
 // Helper to register utilities with validation
 export function registerStackwrightUtilities(utilities: Partial<StackwrightUtilities>) {

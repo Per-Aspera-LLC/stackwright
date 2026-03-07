@@ -153,17 +153,13 @@ export async function openPr(
   }
 
   // 2. Validate staged YAML files
-  const pageYamlFiles = stagedFiles.filter(
-    (f) => f.includes('pages/') && /\.(yml|yaml)$/.test(f)
-  );
+  const pageYamlFiles = stagedFiles.filter((f) => f.includes('pages/') && /\.(yml|yaml)$/.test(f));
   const siteYamlFiles = stagedFiles.filter((f) => /^stackwright\.(yml|yaml)$/.test(f));
 
   if (pageYamlFiles.length > 0) {
     const result = validatePages(pagesDir);
     if (!result.valid) {
-      const errorDetails = result.errors
-        .map((e) => `  [${e.slug}] ${e.message}`)
-        .join('\n');
+      const errorDetails = result.errors.map((e) => `  [${e.slug}] ${e.message}`).join('\n');
       const err = new Error(`Page validation failed:\n${errorDetails}`);
       (err as NodeJS.ErrnoException).code = 'VALIDATION_FAILED';
       throw err;
@@ -173,9 +169,7 @@ export async function openPr(
   if (siteYamlFiles.length > 0) {
     const result = validateSite(siteConfigPath);
     if (!result.valid) {
-      const errorDetails = result.errors
-        .map((e) => `  [${e.field}] ${e.message}`)
-        .join('\n');
+      const errorDetails = result.errors.map((e) => `  [${e.field}] ${e.message}`).join('\n');
       const err = new Error(`Site config validation failed:\n${errorDetails}`);
       (err as NodeJS.ErrnoException).code = 'VALIDATION_FAILED';
       throw err;

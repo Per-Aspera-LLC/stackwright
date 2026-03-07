@@ -4,8 +4,8 @@ import { StackwrightIcon } from '../icons/brand/StackwrightIcon';
 import { lucideIconPreset } from './lucideIcons';
 
 export const defaultStackwrightIcons = {
-  'bluesky': BlueSkyIcon,
-  'stackwright': StackwrightIcon,
+  bluesky: BlueSkyIcon,
+  stackwright: StackwrightIcon,
   ...lucideIconPreset,
 };
 

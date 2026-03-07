@@ -18,20 +18,20 @@ const defaultMenuTheme: MenuThemeConfig = {
     default: {
       background: 'white',
       text: 'secondary.main',
-      hover: 'whitesmoke'
+      hover: 'whitesmoke',
     },
     contained: {
       background: 'primary.main',
       text: 'primary.contrastText',
-      hover: 'primary.dark'
+      hover: 'primary.dark',
     },
     outlined: {
       background: 'white',
       text: 'primary.main',
       hover: 'primary.light',
-      border: 'primary.main'
-    }
-  }
+      border: 'primary.main',
+    },
+  },
 };
 export const createMenuTheme = (contentTheme?: Partial<MenuThemeConfig>) => {
   if (!contentTheme) return defaultMenuTheme;
@@ -40,7 +40,7 @@ export const createMenuTheme = (contentTheme?: Partial<MenuThemeConfig>) => {
     colors: {
       default: { ...defaultMenuTheme.colors.default, ...contentTheme.colors?.default },
       contained: { ...defaultMenuTheme.colors.contained, ...contentTheme.colors?.contained },
-      outlined: { ...defaultMenuTheme.colors.outlined, ...contentTheme.colors?.outlined }
-    }
+      outlined: { ...defaultMenuTheme.colors.outlined, ...contentTheme.colors?.outlined },
+    },
   };
 };
