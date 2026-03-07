@@ -1,5 +1,12 @@
 # @stackwright/cli
 
+## 0.6.0-alpha.6
+
+### Patch Changes
+
+- Updated dependencies [d1ecb6b]
+  - @stackwright/build-scripts@0.3.0-alpha.3
+
 ## 0.6.0-alpha.5
 
 ### Minor Changes
