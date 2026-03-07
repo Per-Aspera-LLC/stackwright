@@ -1,0 +1,9 @@
+dist/
+node_modules/
+*.json
+*.yaml
+*.yml
+*.md
+pnpm-lock.yaml
+packages/types/schemas/
+examples/

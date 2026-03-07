@@ -23,10 +23,21 @@
         "test:core": "pnpm --filter @stackwright/core test",
         "test:e2e": "pnpm --filter @stackwright/e2e test",
         "stackwright": "node packages/cli/dist/cli.js",
-        "stackwright-mcp": "node packages/mcp/dist/server.js"
+        "stackwright-mcp": "node packages/mcp/dist/server.js",
+        "lint": "eslint packages/",
+        "lint:fix": "eslint --fix packages/",
+        "format": "prettier --write \"packages/*/src/**/*.{ts,tsx}\"",
+        "format:check": "prettier --check \"packages/*/src/**/*.{ts,tsx}\""
     },
     "devDependencies": {
         "@changesets/cli": "^2.30.0",
+        "@typescript-eslint/eslint-plugin": "^8.56.1",
+        "@typescript-eslint/parser": "^8.56.1",
+        "eslint": "^9.39.3",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-react": "^7.37.5",
+        "eslint-plugin-react-hooks": "^7.0.1",
+        "prettier": "^3.8.1",
         "vitest": "^4.0.18"
     },
     "pnpm": {
@@ -41,8 +52,7 @@
             "rollup": ">=4.59.0",
             "minimatch": ">=9.0.7",
             "glob": ">=10.5.0",
-            "ajv": ">=6.14.0",
-            "vite": ">=7.1.11",
+                        "vite": ">=7.1.11",
             "lodash": ">=4.17.23",
             "diff": ">=4.0.4",
             "tmp": ">=0.2.4"
