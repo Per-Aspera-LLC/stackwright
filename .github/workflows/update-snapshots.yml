@@ -1,0 +1,55 @@
+name: Update Visual Snapshots
+
+# Runs after PRs are merged to dev or main. Regenerates visual regression
+# baselines on the CI platform and syncs them to the MCP screenshots directory,
+# then commits the updated images back to the branch.
+
+on:
+  push:
+    branches: [main, dev]
+
+permissions:
+  contents: write
+
+jobs:
+  update-snapshots:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Need a token that can push commits back
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - run: pnpm install
+      - run: pnpm build
+      - run: pnpm install
+        name: Re-link bins after build
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
+
+      - name: Regenerate visual baselines
+        run: pnpm --filter @stackwright/e2e exec playwright test --update-snapshots
+
+      - name: Sync screenshots to MCP package
+        run: bash packages/e2e/scripts/sync-screenshots.sh
+
+      - name: Commit updated snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add packages/e2e/tests/__screenshots__ packages/mcp/screenshots
+          if git diff --cached --quiet; then
+            echo "No snapshot changes to commit."
+          else
+            git commit -m "chore: update visual regression baselines [skip ci]"
+            git push
+          fi

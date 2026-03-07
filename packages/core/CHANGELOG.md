@@ -1,5 +1,56 @@
 # @stackwright/core
 
+## 0.6.0-alpha.8
+
+### Minor Changes
+
+- 163e3b1: Add visual regression tests for all 13 content types and MCP component preview tool
+
+  - Screenshot-based visual regression tests (desktop 1280px + mobile 375px) for every content type on the showcase page
+  - `data-content-type` and `data-label` attributes on content item wrappers for reliable DOM targeting
+  - New `stackwright_preview_component` MCP tool returns PNG screenshots of content types to AI agents
+  - Sync script to copy E2E baselines to MCP package for serving via the preview tool
+
+## 0.6.0-alpha.7
+
+### Patch Changes
+
+- a4c573a: Add keyboard navigation and accessibility to Carousel component. Arrow keys navigate between slides, proper ARIA attributes (role, aria-roledescription, aria-live, aria-label) support screen readers, and a visible focus indicator aids keyboard users.
+
+## 0.6.0-alpha.6
+
+### Minor Changes
+
+- 8086e12: Add syntax highlighting to CodeBlock component using Prism.js. Supports JavaScript, TypeScript, Python, YAML, HTML, CSS, JSON, bash, JSX, and TSX with inline-styled tokens. Unsupported languages fall back gracefully to plain text.
+
+## 0.6.0-alpha.5
+
+### Patch Changes
+
+- 1b2eef6: Fix mobile responsiveness for FeatureList, TestimonialGrid, MainContentGrid, TopAppBar, ContactFormStub, and CompressedMenu. Grid components now use `auto-fill minmax()` for natural responsive columns. MainContentGrid uses `flex-wrap` with `calc()`-adjusted flex-basis to maintain text/image split at desktop and stack vertically on narrow screens. TopAppBar shows a hamburger menu on mobile (`isSmDown`) via `useBreakpoints()`. CompressedMenu generalized to accept generic item types. Also fixes `useBreakpoints` hook to gracefully handle missing `window.matchMedia` in JSDOM/SSR environments.
+
+## 0.6.0-alpha.4
+
+### Minor Changes
+
+- 62a97d5: Add error handling for unknown content types: visible inline warnings instead of silent nulls, item-level error boundaries, and prebuild detection of unrecognized content type keys
+
+### Patch Changes
+
+- Updated dependencies [62a97d5]
+  - @stackwright/types@0.4.0-alpha.2
+
+## 0.6.0-alpha.3
+
+### Minor Changes
+
+- a6c3fcf: Add alert/admonition content type with info, warning, success, danger, note, and tip variants. Replaces the dead Callout component with a proper implementation including Zod schema, themed React component, severity icons, unit tests, and example usage.
+
+### Patch Changes
+
+- Updated dependencies [a6c3fcf]
+  - @stackwright/types@0.4.0-alpha.1
+
 ## 0.5.2-alpha.2
 
 ### Patch Changes

@@ -3,6 +3,8 @@ import { TopAppBar, BottomAppBar } from '../components/structural/';
 import { StackwrightConfig } from '../config/defaults';
 import { getComponentByType } from './componentRegistry';
 import { getContentTypeSchema } from './contentTypeRegistry';
+import { UnknownContentType } from '../components/base/UnknownContentType';
+import { ContentItemErrorBoundary } from '../components/ContentItemErrorBoundary';
 
 // Debug logging utility - only logs in development
 const debugLog = (message: string, data?: any) => {
@@ -117,7 +119,7 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
     const firstEntry = entries[0];
 
     if (!firstEntry) {
-        debugLog('No content entries found, returning null');
+        console.warn('[Stackwright] Empty content item encountered (no content type keys). Skipping.');
         return null;
     }
 
@@ -135,8 +137,8 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
     const Component = getComponentByType(contentType);
 
     if (!Component) {
-        debugLog(`No component found for content type: ${contentType}`);
-        return null;
+        console.warn(`[Stackwright] Unknown content type: "${contentType}". No component registered.`);
+        return <UnknownContentType key={itemKey} contentType={contentType} />;
     }
 
     debugLog(`Retrieved component for ${contentType}:`, {
@@ -163,14 +165,16 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
     debugLog(`Creating React element for ${contentType}`);
 
     try {
-        let element;
-
         debugLog('Creating component with spread props');
-        element = <Component key={itemKey} {...contentData} />;
-        
+        const element = (
+            <ContentItemErrorBoundary key={itemKey} contentType={contentType} label={contentData?.label}>
+                <Component {...contentData} />
+            </ContentItemErrorBoundary>
+        );
+
         debugLog(`Successfully created React element for ${contentType}`);
         return element;
-        
+
     } catch (error) {
         debugLog(`Error creating React element for ${contentType}:`, error);
         throw error;

@@ -1,5 +1,11 @@
 # @stackwright/icons
 
+## 0.2.4-alpha.0
+
+### Patch Changes
+
+- a6c3fcf: Add alert/admonition content type with info, warning, success, danger, note, and tip variants. Replaces the dead Callout component with a proper implementation including Zod schema, themed React component, severity icons, unit tests, and example usage.
+
 ## 0.2.3
 
 ### Patch Changes

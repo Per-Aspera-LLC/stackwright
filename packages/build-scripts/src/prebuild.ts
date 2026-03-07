@@ -20,7 +20,7 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
-import { siteConfigSchema, pageContentSchema } from '@stackwright/types';
+import { siteConfigSchema, pageContentSchema, KNOWN_CONTENT_TYPE_KEYS } from '@stackwright/types';
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -150,6 +150,40 @@ function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
   return results;
 }
 
+// ── Content type validation ──────────────────────────────────────────────────
+
+const knownContentKeys = new Set<string>(KNOWN_CONTENT_TYPE_KEYS);
+
+/**
+ * Inspect raw (pre-Zod-parse) content items for unrecognized content type keys.
+ * Zod's default `.strip()` silently removes unknown keys, so a typo like
+ * `feture_list` would pass validation but render as an invisible gap.
+ * This check catches those typos at build time.
+ */
+function warnUnknownContentKeys(
+  contentItems: Record<string, unknown>[],
+  filePath: string,
+): void {
+  for (let i = 0; i < contentItems.length; i++) {
+    const item = contentItems[i];
+    const keys = Object.keys(item);
+    const unknownKeys = keys.filter(k => !knownContentKeys.has(k));
+
+    for (const key of unknownKeys) {
+      console.warn(
+        `  ⚠️  Unknown content type "${key}" in ${filePath} (content_items[${i}]). ` +
+        `Known types: ${KNOWN_CONTENT_TYPE_KEYS.join(', ')}`,
+      );
+    }
+
+    if (keys.length > 0 && keys.every(k => !knownContentKeys.has(k))) {
+      console.warn(
+        `  ⚠️  content_items[${i}] in ${filePath} has no recognized content type and will not render.`,
+      );
+    }
+  }
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export function runPrebuild(projectRoot = process.cwd()): void {
@@ -215,6 +249,12 @@ export function runPrebuild(projectRoot = process.cwd()): void {
         console.error(`   ${field}: ${issue.message}`);
       }
       process.exit(1);
+    }
+
+    // Warn about unknown content type keys in the raw YAML (before Zod strips them)
+    const rawItems = (rawContent as any)?.content?.content_items;
+    if (Array.isArray(rawItems)) {
+      warnUnknownContentKeys(rawItems, filePath);
     }
 
     const slugDir = slug ?? '_root';

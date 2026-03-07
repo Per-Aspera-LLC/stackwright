@@ -10,6 +10,7 @@ import {
     Faq,
     PricingTable,
     ContactFormStub,
+    Alert,
 } from "../components/base/";
 import { Media } from "../components/media/Media";
 import { Timeline } from "../components/narrative/Timeline";
@@ -37,6 +38,7 @@ export const componentRegistry: Record<
     testimonial_grid: TestimonialGrid,
     faq: Faq,
     pricing_table: PricingTable,
+    alert: Alert,
     contact_form_stub: ContactFormStub,
     // Stackwright components (will be resolved dynamically)
     "stackwright-image": () => getStackwrightImage(),

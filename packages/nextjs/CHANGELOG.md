@@ -1,5 +1,49 @@
 # @stackwright/nextjs
 
+## 0.2.8-alpha.8
+
+### Patch Changes
+
+- Updated dependencies [163e3b1]
+  - @stackwright/core@0.6.0-alpha.8
+
+## 0.2.8-alpha.7
+
+### Patch Changes
+
+- Updated dependencies [a4c573a]
+  - @stackwright/core@0.6.0-alpha.7
+
+## 0.2.8-alpha.6
+
+### Patch Changes
+
+- Updated dependencies [8086e12]
+  - @stackwright/core@0.6.0-alpha.6
+
+## 0.2.8-alpha.5
+
+### Patch Changes
+
+- Updated dependencies [1b2eef6]
+  - @stackwright/core@0.6.0-alpha.5
+
+## 0.2.8-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [62a97d5]
+  - @stackwright/core@0.6.0-alpha.4
+  - @stackwright/types@0.4.0-alpha.2
+
+## 0.2.8-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [a6c3fcf]
+  - @stackwright/types@0.4.0-alpha.1
+  - @stackwright/core@0.6.0-alpha.3
+
 ## 0.2.8-alpha.2
 
 ### Patch Changes

@@ -1,23 +1,22 @@
 import React, { useRef, useEffect } from 'react';
-import { MenuContent } from '@stackwright/types';
 
-interface CompressedMenuProps {
-  menuItems: MenuContent[];
+interface CompressedMenuProps<T = unknown> {
+  menuItems: T[];
   menuOpen: boolean;
   anchorEl: HTMLElement | null;
   onMenuOpen: (event: React.MouseEvent<HTMLElement>) => void;
   onMenuClose: () => void;
-  buildMenu: (items: MenuContent[], compressed: boolean) => React.ReactNode;
+  buildMenu: (items: T[], compressed: boolean) => React.ReactNode;
 }
 
-export const CompressedMenu = ({
+export function CompressedMenu<T>({
   menuItems,
   menuOpen,
   anchorEl,
   onMenuOpen,
   onMenuClose,
   buildMenu
-}: CompressedMenuProps) => {
+}: CompressedMenuProps<T>) {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -73,4 +72,4 @@ export const CompressedMenu = ({
       )}
     </div>
   );
-};
+}

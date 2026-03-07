@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **`dev`** is the integration branch. Feature branches are created from `dev` and PRs target `dev`.
 - **`main`** is the release branch. `dev` is merged to `main` only when cutting a release.
-- When creating a new feature branch: `git checkout -b feat/issue-XX-description dev`
+- **Always pull the latest `dev` before creating a feature branch**: `git fetch origin dev && git checkout -b feat/issue-XX-description origin/dev`
 
 ## Commands
 
@@ -135,6 +135,10 @@ The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit t
 
 **Every PR that changes user-facing behavior MUST include a changeset.** Run `pnpm changeset` before committing, select the affected packages, choose the bump type (patch for fixes, minor for features), and write a short summary. Commit the generated `.changeset/*.md` file with your PR. CI will fail if a changeset is missing for changed packages.
 
+### Roadmap Maintenance
+
+**When opening a PR against `dev`, check if `ROADMAP.md` needs updating.** If the PR completes, advances, or invalidates a roadmap item, update it in the same PR. Mark completed items with `[x]` and add the PR number. This keeps the roadmap accurate for new contributors and agents.
+
 ### Naming Conventions
 
 - File names: kebab-case (`main-content-grid.tsx`)
@@ -147,6 +151,22 @@ The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit t
 Each package uses **tsup** to produce dual-format output (ESM `.mjs` + CJS `.js`) with TypeScript declarations. Tests use **Vitest** with JSDOM. All packages are in alpha (`0.x.x-alpha.x`); releases are managed via Changesets.
 
 **Important**: Do NOT add `"type": "module"` to package.json in any `packages/*` directory. tsup uses `.mjs`/`.js` file extensions to signal ESM vs CJS format. Adding `"type": "module"` causes Node to treat CJS `.js` output as ESM, breaking `require()` in Next.js config files.
+
+### Responsive Design
+
+Core components (`packages/core/src/components/`) use **inline `style={{}}` props** exclusively — not Tailwind utility classes. This is architecturally deliberate: `@stackwright/core` has no CSS build pipeline (tsup compiles JS/TS only), and layout values are dynamic (driven by YAML theme config at runtime). Only `@stackwright/ui-shadcn` uses Tailwind, pre-compiling its own CSS at build time. Do not add CSS files, media query stylesheets, or Tailwind classes to `packages/core`.
+
+**Two proven responsive patterns:**
+
+1. **CSS-only (preferred):** `gridTemplateColumns: "repeat(auto-fill, minmax(Xpx, 1fr))"` — naturally responsive, no JS, no SSR hydration flash. Used by `IconGrid`, `FeatureList`, `TestimonialGrid`. Choose a sensible `minmax` minimum (120px for icon grids, 280px for content cards).
+
+2. **JS hook (when CSS alone is insufficient):** `useBreakpoints()` from `packages/core/src/hooks/useBreakpoints.ts` — returns `{ isXs, isSm, isMd, isLg, isXl, isSmUp, isMdUp, isLgUp, isXlUp, isSmDown, isMdDown, isLgDown }`. Has a one-frame SSR flash (returns all `false` on first render, syncs via `useEffect` after hydration). Only use when CSS cannot express the logic — e.g., conditionally rendering entirely different component trees (TopAppBar's hamburger menu vs desktop nav links). Used by `Carousel`, `TopAppBar`.
+
+**Rules for new and modified components:**
+- All grid/multi-column components must render correctly from **320px to 1440px** viewport width.
+- Never hardcode a fixed column count as `repeat(N, 1fr)`. Use `repeat(auto-fill, minmax(Xpx, 1fr))` instead.
+- For flex layouts that must stack on mobile, use `flexWrap: 'wrap'` with a `minWidth` on children to control the wrap breakpoint. Use `minWidth: 'min(Xpx, 100%)'` to prevent overflow on very narrow viewports.
+- For text that may overflow on narrow viewports (emails, URLs, long strings), add `wordBreak: 'break-word'` or `wordBreak: 'break-all'` as appropriate.
 
 ### Image Co-location Pipeline
 
@@ -168,6 +188,29 @@ Add these hooks to the example app's `package.json` (already done in `hellostack
 ### Component Registration
 
 `registerNextJSComponents()` from `@stackwright/nextjs` must be called explicitly before rendering — it registers Next.js Image, Link, Router, and Route adapters into the `stackwrightRegistry`. The registration call should live in `pages/_app.tsx` (Pages Router) or `app/layout.tsx` (App Router). Do not rely on module import side effects to trigger registration.
+
+### Debug Logging
+
+Stackwright uses `STACKWRIGHT_DEBUG=true` (set in `.env.local`) to gate verbose console logging. Debug output only activates when both `NODE_ENV === 'development'` and `STACKWRIGHT_DEBUG === 'true'`.
+
+**Pattern for new modules:** Define a module-scoped debug function with a unique emoji prefix:
+
+```typescript
+const debugLog = (message: string, data?: any) => {
+  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
+    console.log(`🏷️ ModuleName Debug: ${message}`, data ? data : '');
+  }
+};
+```
+
+**Existing prefixes** (do not reuse):
+- `🐛` ContentRenderer — `🔧` ComponentRegistry — `🚀` StackwrightRegistry — `📸` NextStackwrightImage
+
+**Rules:**
+- Use the helper function pattern (not inline conditionals) for consistency.
+- Log at key decision points: component lookups, registration, content type resolution, error paths.
+- Never log sensitive data (user input, credentials).
+- Do not use `console.debug` or other log levels — always `console.log` gated by the env check.
 
 ### Troubleshooting
 

@@ -23,6 +23,9 @@ import {
   Shield,        // Security
   Users,         // People
   TrendingUp,    // TrendingUp
+  Info,          // Info (alert)
+  AlertTriangle, // AlertTriangle (alert)
+  CircleAlert,   // CircleAlert (alert)
 } from 'lucide-react';
 
 import { registerStackwrightIcons } from '../registry/iconRegistry';
@@ -48,6 +51,9 @@ export const lucideIconPreset: Record<string, React.ComponentType<any>> = {
   Security: Shield,
   People: Users,
   TrendingUp,
+  Info,
+  AlertTriangle,
+  CircleAlert,
 };
 
 export function registerLucideIcons() {

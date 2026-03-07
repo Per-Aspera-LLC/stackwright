@@ -1,5 +1,54 @@
 # @stackwright/mcp
 
+## 0.2.0-alpha.6
+
+### Minor Changes
+
+- 163e3b1: Add visual regression tests for all 13 content types and MCP component preview tool
+
+  - Screenshot-based visual regression tests (desktop 1280px + mobile 375px) for every content type on the showcase page
+  - `data-content-type` and `data-label` attributes on content item wrappers for reliable DOM targeting
+  - New `stackwright_preview_component` MCP tool returns PNG screenshots of content types to AI agents
+  - Sync script to copy E2E baselines to MCP package for serving via the preview tool
+
+## 0.2.0-alpha.5
+
+### Minor Changes
+
+- 0f05ba1: Add `stackwright_stage_changes` and `stackwright_open_pr` MCP tools completing the AI editorial loop. Agents can now go from content authoring to PR creation entirely via MCP — staging only content files for safety and validating all YAML before committing. Requires the GitHub CLI (`gh`) for PR creation.
+
+### Patch Changes
+
+- Updated dependencies [0f05ba1]
+  - @stackwright/cli@0.6.0-alpha.5
+
+## 0.2.0-alpha.4
+
+### Minor Changes
+
+- f330ab8: Add MCP tools for reading and writing page content and site configuration. New tools: `stackwright_get_page` (read page YAML by slug), `stackwright_write_page` (write/update page YAML with validation), and `stackwright_get_site_config` (read site config YAML). Also adds corresponding CLI commands `page get`, `page write`, and `site get`.
+
+### Patch Changes
+
+- Updated dependencies [f330ab8]
+  - @stackwright/cli@0.6.0-alpha.4
+
+## 0.1.2-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [62a97d5]
+  - @stackwright/types@0.4.0-alpha.2
+  - @stackwright/cli@0.6.0-alpha.3
+
+## 0.1.2-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [a6c3fcf]
+  - @stackwright/types@0.4.0-alpha.1
+  - @stackwright/cli@0.6.0-alpha.2
+
 ## 0.1.2-alpha.1
 
 ### Patch Changes

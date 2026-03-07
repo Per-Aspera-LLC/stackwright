@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
-import { validateSite, listThemes } from '@stackwright/cli';
+import { validateSite, listThemes, readSiteConfig } from '@stackwright/cli';
 
 function resolveSiteConfig(projectRoot: string): string {
   const candidates = ['stackwright.yml', 'stackwright.yaml'];
@@ -14,6 +14,38 @@ function resolveSiteConfig(projectRoot: string): string {
 }
 
 export function registerSiteTools(server: McpServer): void {
+  server.tool(
+    'stackwright_get_site_config',
+    'Read the raw YAML content of the stackwright.yml site configuration file.',
+    {
+      projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
+    },
+    async ({ projectRoot }) => {
+      try {
+        const siteConfigPath = resolveSiteConfig(projectRoot);
+        const result = readSiteConfig(siteConfigPath);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Site config (${result.path}):\n\n${result.content}`,
+            },
+          ],
+        };
+      } catch (err) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error reading site config: ${String((err as Error).message)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
   server.tool(
     'stackwright_validate_site',
     'Validate the stackwright.yml site configuration file against the Stackwright site config schema.',

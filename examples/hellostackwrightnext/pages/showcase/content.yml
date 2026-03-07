@@ -198,13 +198,22 @@ content:
 
     # --- code_block ---
 
+    - main:
+        label: "code-block-heading"
+        heading:
+          text: "code_block"
+          textSize: "h2"
+        textBlocks:
+          - text: "Syntax-highlighted code blocks with line numbers. Supports JavaScript, TypeScript, Python, YAML, HTML, CSS, JSON, bash, JSX, and TSX."
+            textSize: "body1"
+
     - code_block:
-        label: "code-block-demo"
+        label: "code-block-yaml-demo"
         language: "yaml"
         lineNumbers: true
         background: "#f8f9fa"
         code: |
-            # code_block — formatted code with syntax highlighting
+            # A Stackwright page defined in YAML
             content:
               content_items:
                 - main:
@@ -215,6 +224,45 @@ content:
                     textBlocks:
                       - text: "My first Stackwright page."
                         textSize: "body1"
+
+    - code_block:
+        label: "code-block-ts-demo"
+        language: "typescript"
+        lineNumbers: true
+        background: "#f8f9fa"
+        code: |
+            import { registerContentType } from '@stackwright/core';
+            import { z } from 'zod';
+
+            // Register a custom content type with Zod validation
+            const chartSchema = z.object({
+              title: z.string(),
+              dataUrl: z.string().url(),
+              height: z.number().optional().default(400),
+            });
+
+            type ChartProps = z.infer<typeof chartSchema>;
+
+            function Chart({ title, dataUrl, height }: ChartProps) {
+              return <div style={{ height }}>{title}</div>;
+            }
+
+            registerContentType('chart', chartSchema, Chart);
+
+    - code_block:
+        label: "code-block-bash-demo"
+        language: "bash"
+        background: "#f8f9fa"
+        code: |
+            # Scaffold a new Stackwright project
+            npx create-stackwright my-site
+            cd my-site && pnpm install
+
+            # Start the dev server
+            pnpm dev
+
+            # Validate all content before deploying
+            pnpm stackwright -- validate-pages
 
     # --- feature_list ---
 
@@ -344,6 +392,43 @@ content:
               - "On-premise deployment"
             cta_text: "Contact Sales"
             cta_href: "#"
+
+    # --- alert ---
+
+    - alert:
+        label: "alert-info-demo"
+        variant: "info"
+        title: "Getting Started"
+        body: "Stackwright compiles YAML content files into production-ready Next.js applications. Define your pages in YAML and let the framework handle the rendering."
+
+    - alert:
+        label: "alert-warning-demo"
+        variant: "warning"
+        title: "Breaking Change"
+        body: "The theme schema has been updated. Run pnpm generate-schemas after modifying any type definitions."
+
+    - alert:
+        label: "alert-success-demo"
+        variant: "success"
+        title: "Deployment Complete"
+        body: "Your site has been built and deployed successfully. All pages passed validation."
+
+    - alert:
+        label: "alert-danger-demo"
+        variant: "danger"
+        title: "Validation Failed"
+        body: "The YAML content contains errors that must be fixed before building. Check the console output for details."
+
+    - alert:
+        label: "alert-note-demo"
+        variant: "note"
+        body: "This is a note without a title — useful for brief inline annotations."
+
+    - alert:
+        label: "alert-tip-demo"
+        variant: "tip"
+        title: "Pro Tip"
+        body: "Use the MCP server to let AI agents create and validate content for your Stackwright site."
 
     # --- contact_form_stub ---
 

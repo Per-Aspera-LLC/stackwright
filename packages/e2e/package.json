@@ -1,9 +1,10 @@
 {
   "name": "@stackwright/e2e",
-  "version": "0.0.0",
+  "version": "0.1.0-alpha.0",
   "private": true,
   "scripts": {
-    "test": "playwright test"
+    "test": "playwright test",
+    "sync-screenshots": "bash scripts/sync-screenshots.sh"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0"
