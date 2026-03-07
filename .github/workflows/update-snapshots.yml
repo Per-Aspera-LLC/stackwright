@@ -15,10 +15,16 @@ jobs:
   update-snapshots:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate PerAsperaCI token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.PERASPECRACI_APP_ID }}
+          private-key: ${{ secrets.PERASPERA_CI_PRIVATE_KEY }}
+
       - uses: actions/checkout@v4
         with:
-          # Need a token that can push commits back
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: pnpm/action-setup@v3
         with:
