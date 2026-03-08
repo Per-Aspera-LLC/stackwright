@@ -132,7 +132,7 @@ See `examples/hellostackwrightnext/` for a complete working site demonstrating a
 
 ## Contributing
 
-Contributions are welcome. See [CLAUDE.md](./CLAUDE.md) for build commands, architecture overview, and development conventions.
+Contributions are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for setup instructions, branching workflow, testing, and development conventions. For architectural rationale, see [PHILOSOPHY.md](./PHILOSOPHY.md).
 
 ## License
 
