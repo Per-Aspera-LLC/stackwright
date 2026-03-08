@@ -2,7 +2,7 @@
 
 This document captures the product intent and architectural principles behind Stackwright. It is written for agents, contributors, and future maintainers who need to understand not just *what* the framework does, but *why* it is built the way it is — so that new decisions align with the long-term direction rather than inadvertently working against it.
 
-CLAUDE.md tells you how to work in this repo. ROADMAP.md tells you what to build next. This document tells you what Stackwright is and why it is built the way it is.
+[CONTRIBUTING.md](./CONTRIBUTING.md) tells you how to work in this repo. [ROADMAP.md](./ROADMAP.md) tells you what to build next. This document tells you what Stackwright is and why it is built the way it is.
 
 ---
 
