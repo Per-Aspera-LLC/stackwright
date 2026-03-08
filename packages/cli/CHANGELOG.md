@@ -1,5 +1,14 @@
 # @stackwright/cli
 
+## 0.6.0-alpha.9
+
+### Patch Changes
+
+- Updated dependencies [70f070c]
+  - @stackwright/themes@0.4.2-alpha.2
+  - @stackwright/types@0.4.0-alpha.5
+  - @stackwright/build-scripts@0.3.0-alpha.6
+
 ## 0.6.0-alpha.8
 
 ### Patch Changes
