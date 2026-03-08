@@ -122,9 +122,7 @@ describe('useTheme', () => {
       return null;
     }
 
-    expect(() => render(<BadConsumer />)).toThrow(
-      'useTheme must be used within a ThemeProvider'
-    );
+    expect(() => render(<BadConsumer />)).toThrow('useTheme must be used within a ThemeProvider');
 
     consoleSpy.mockRestore();
   });
