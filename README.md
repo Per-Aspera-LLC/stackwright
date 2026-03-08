@@ -1,18 +1,18 @@
 # Stackwright
+
 <img width="256" height="256" alt="stackwright" src="https://github.com/user-attachments/assets/181b6fd5-0442-4345-a7d0-88f4858c5721" />
 
-**Build real web applications from human-readable YAML**
+**Build real web applications from human-readable YAML — authored by humans or AI agents**
 
-Stackwright bridges the gap between no-code builders and custom development. Write your site in simple YAML files, get a production-ready Next.js application that any developer can extend — no migration, no rewrite, no lock-in.
+Stackwright is a typed DSL that compiles YAML content files into production-ready Next.js applications. Define pages, themes, and navigation in YAML; get a standard React app you own, can fork, and can extend with custom code at any time.
 
 ## Why Stackwright?
 
-- **Start without a developer**: Non-technical teammates define pages, content, and themes in YAML
-- **Own everything**: The output is a standard Next.js app in a git repo you control
-- **No lock-in**: Any React developer can open the project and extend it immediately
-- **Graduate naturally**: Begin with YAML-driven pages, add custom React components alongside them as you grow
-
-Perfect for startups who need more than Squarespace but aren't ready to build from scratch, and for teams who want non-developers to contribute content without a CMS subscription.
+- **Start without a developer**: Non-technical teammates define pages, content, and themes in YAML — or describe what they want to an AI agent and let it write the YAML for them
+- **AI-native authoring**: The narrow, validated YAML schema is designed for reliable AI generation. An MCP server gives AI agents tools to create pages, edit content, validate changes, and open PRs
+- **Own everything**: The output is a standard Next.js app in a git repo you control. Git is the CMS — version history, branching, PR review, and rollback come free
+- **No lock-in**: Any React developer can open the project and extend it immediately. The escape hatch is a feature, not a compromise
+- **Graduate naturally**: Begin with YAML-driven pages, add custom React components alongside them as you grow — no migration, no rewrite
 
 ## Quick Start
 
@@ -46,6 +46,7 @@ pages/
     content.yml        → /about
   getting-started/
     content.yml        → /getting-started
+    hero.png           → co-located image, auto-copied to public/
 ```
 
 A minimal page:
@@ -84,16 +85,38 @@ customTheme:
     text: "#393837"
 ```
 
+Images can be co-located alongside their page YAML files using `./relative` paths (e.g., `src: ./hero.png`). The prebuild pipeline copies them to `public/images/` and rewrites paths automatically.
+
 ## Content Types
 
 | YAML key | Description |
 |---|---|
-| `main` | Hero/section block: heading, text, image, buttons |
+| `main` | Hero/section block: heading, text, image, buttons, configurable layout |
+| `carousel` | Image/text slideshow with autoplay and keyboard navigation |
 | `timeline` | Vertical timeline with year and event fields |
-| `carousel` | Image/text slideshow with autoplay support |
 | `icon_grid` | Grid of icons with labels — feature lists, tech stacks |
+| `feature_list` | Multi-column feature cards with icons and descriptions |
+| `testimonial_grid` | Grid of testimonial cards with quotes and attribution |
 | `tabbed_content` | Wraps other content types in a tabbed UI |
-| `code_block` | Formatted code with language label |
+| `code_block` | Syntax-highlighted code with language label |
+| `faq` | Expandable FAQ accordion |
+| `pricing_table` | Pricing plan comparison cards |
+| `alert` | Styled admonition/callout (info, warning, success, danger, note, tip) |
+| `contact_form_stub` | Contact information display with mailto link |
+| `media` | Standalone image or media block |
+
+All content types support optional `color` and `background` overrides, and render responsively from 320px to 1440px.
+
+## MCP Server
+
+Stackwright includes an MCP (Model Context Protocol) server that gives AI agents direct tools for content authoring:
+
+```bash
+# Run the MCP server (for use with Claude Code, Claude Desktop, etc.)
+pnpm stackwright-mcp
+```
+
+Available tools include creating and editing pages, reading and writing site config, validating YAML against the schema, previewing components, managing git branches, and opening PRs. This enables a workflow where non-developers describe changes in natural language and the AI agent produces validated, reviewable content changes.
 
 ## CLI
 
@@ -110,21 +133,32 @@ stackwright page list
 # Validate content against the schema
 stackwright page validate
 
+# Show available content types from the live schema
+stackwright types
+
 # Show installed package versions
 stackwright info
+
+# Hot-reload during development (watches YAML and images)
+stackwright prebuild --watch
 ```
 
 ## Package Structure
 
 ```
-@stackwright/core         — YAML→React engine, component registry, layout system
-@stackwright/nextjs       — Next.js adapter (Image, Link, Router, static gen helpers)
-@stackwright/themes       — YAML-configurable MUI theming
-@stackwright/types        — TypeScript types + JSON schemas for IDE validation
-@stackwright/icons        — MUI icon registry
-@stackwright/build-scripts — Prebuild pipeline (image co-location, path rewriting)
-@stackwright/cli          — CLI for scaffolding, page management, validation
+@stackwright/core          — YAML→React compiler, component registry, layout system
+@stackwright/nextjs        — Next.js adapter (Image, Link, Router, static gen helpers)
+@stackwright/themes        — YAML-configurable theming with CSS custom properties
+@stackwright/types         — Zod schemas, TypeScript types, and JSON schemas for validation
+@stackwright/icons         — Lucide icon registry
+@stackwright/build-scripts — Prebuild pipeline (image co-location, path rewriting, watch mode)
+@stackwright/cli           — CLI for scaffolding, page management, validation
+@stackwright/mcp           — MCP server for AI agent integration
 ```
+
+## IDE Support
+
+`@stackwright/types` generates JSON schemas (`content-schema.json`, `theme-schema.json`, `siteconfig-schema.json`) that provide autocomplete and validation in YAML editors. Regenerate after type changes with `pnpm generate-schemas`.
 
 ## Examples
 
