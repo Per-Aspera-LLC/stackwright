@@ -72,7 +72,14 @@ export function ContactFormStub({
             padding: theme.spacing.lg,
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: theme.spacing.xs }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              flexWrap: 'wrap',
+              gap: theme.spacing.xs,
+            }}
+          >
             <span style={{ fontWeight: 600, color: theme.colors.text }}>Email:</span>
             <a
               href={mailto}
@@ -87,7 +94,12 @@ export function ContactFormStub({
           </div>
           {phone && (
             <div
-              style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: theme.spacing.xs }}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                flexWrap: 'wrap',
+                gap: theme.spacing.xs,
+              }}
             >
               <span style={{ fontWeight: 600, color: theme.colors.text }}>Phone:</span>
               <a
@@ -104,7 +116,12 @@ export function ContactFormStub({
           )}
           {address && (
             <div
-              style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: theme.spacing.xs }}
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                flexWrap: 'wrap',
+                gap: theme.spacing.xs,
+              }}
             >
               <span style={{ fontWeight: 600, color: theme.colors.text }}>Address:</span>
               <span style={{ color: theme.colors.text, wordBreak: 'break-word' }}>{address}</span>
