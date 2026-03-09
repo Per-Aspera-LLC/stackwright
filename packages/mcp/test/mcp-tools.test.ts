@@ -383,7 +383,7 @@ describe('MCP Tools Integration', () => {
       expect(textContent).toContain('per-aspera');
     });
 
-    it('scaffold_project creates new project structure', async () => {
+    it('scaffold_project creates new project structure', { timeout: 15_000 }, async () => {
       const targetDir = path.join(testDir, 'new-project');
 
       const server = new McpServer({ name: 'test', version: '1.0.0' });

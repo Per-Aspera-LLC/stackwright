@@ -12,6 +12,7 @@ export interface ScaffoldOptions {
   title?: string;
   theme?: string;
   json?: boolean;
+  offline?: boolean;
 }
 
 export interface ScaffoldResult {
@@ -54,12 +55,12 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     theme = theme ?? 'corporate';
   }
 
-  await fs.ensureDir(targetDir);
   const pages = await processTemplate({
     projectName: name!,
     siteTitle: title!,
     themeId: theme!,
     targetDir,
+    offline: opts.offline,
   });
 
   return { path: targetDir, pages, theme: theme! };
@@ -72,6 +73,7 @@ export function registerScaffold(program: Command): void {
     .option('--name <name>', 'Project name (used in package.json)')
     .option('--title <title>', 'Site title shown in the app bar and browser tab')
     .option('--theme <themeId>', 'Theme ID — skips interactive theme selection')
+    .option('--offline', 'Use bundled templates (skip GitHub template fetch)')
     .option('--json', 'Output machine-readable JSON')
     .action(async (dir: string | undefined, opts: ScaffoldOptions) => {
       const targetDir = path.resolve(dir ?? process.cwd());
