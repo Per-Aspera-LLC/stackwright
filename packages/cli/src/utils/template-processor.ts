@@ -10,6 +10,7 @@ import {
   getRootPageHints,
   getGettingStartedHints,
 } from './scaffold-hints';
+import { fetchTemplate } from './template-fetcher';
 
 // ---------------------------------------------------------------------------
 // Template Processing
@@ -20,33 +21,41 @@ export interface TemplateConfig {
   siteTitle: string;
   themeId: string;
   targetDir: string;
+  /** Skip network fetch and use bundled templates only. */
+  offline?: boolean;
 }
 
 /**
- * Processes template files by copying from template directory and replacing placeholders
+ * Processes template files from the GitHub template repo (with bundled fallback)
+ * and generates dynamic content via Zod schema introspection.
  */
 export async function processTemplate(config: TemplateConfig): Promise<string[]> {
-  const { projectName, siteTitle, themeId, targetDir } = config;
+  const { projectName, siteTitle, themeId, targetDir, offline } = config;
   const written: string[] = [];
   const year = new Date().getFullYear();
 
-  // Path to template directory.
-  // tsup bundles to dist/cli.js (flat), so __dirname = packages/cli/dist at runtime.
-  // Templates live at packages/cli/templates/scaffold-template — one level up from dist.
-  const templateDir = path.join(__dirname, '..', 'templates', 'scaffold-template');
+  // Fetch static template files from GitHub repo (falls back to bundled copy)
+  const { source } = await fetchTemplate(targetDir, { offline });
 
-  async function processFile(relPath: string, content: string): Promise<void> {
+  // Collect template files that were fetched (excluding README which is repo-only)
+  const templateFiles = await collectFiles(targetDir);
+
+  // Apply placeholder substitution to all fetched text files
+  for (const relPath of templateFiles) {
     const fullPath = path.join(targetDir, relPath);
-    await fs.ensureDir(path.dirname(fullPath));
-
-    // Replace placeholders
-    const processedContent = content
+    const content = await fs.readFile(fullPath, 'utf8');
+    const processed = content
       .replace(/{{projectName}}/g, projectName)
       .replace(/{{siteTitle}}/g, siteTitle)
       .replace(/{{year}}/g, year.toString());
-
-    await fs.writeFile(fullPath, processedContent, 'utf8');
+    await fs.writeFile(fullPath, processed, 'utf8');
     written.push(relPath);
+  }
+
+  // Remove README.md from the template repo (it's for the template, not the project)
+  const readmePath = path.join(targetDir, 'README.md');
+  if (fs.existsSync(readmePath)) {
+    await fs.remove(readmePath);
   }
 
   async function processYamlFile(relPath: string, data: SiteConfig | PageContent): Promise<void> {
@@ -55,29 +64,6 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
     const yamlContent = yaml.dump(data, { lineWidth: 120 });
     await fs.writeFile(fullPath, yamlContent, 'utf8');
     written.push(relPath);
-  }
-
-  // Copy static template files
-  const staticFiles = [
-    '.gitignore',
-    '.env.local.example',
-    'next.config.js',
-    'pages/_app.tsx',
-    'pages/index.ts',
-    'pages/[slug].tsx',
-    '.vscode/settings.json',
-  ];
-
-  for (const file of staticFiles) {
-    const templatePath = path.join(templateDir, file);
-    if (!fs.existsSync(templatePath)) {
-      throw new Error(
-        `Template file missing: ${templatePath}\n` +
-          `This is a packaging error — please reinstall @stackwright/cli.`
-      );
-    }
-    const content = await fs.readFile(templatePath, 'utf8');
-    await processFile(file, content);
   }
 
   // Generate dynamic files via schema introspection + hints
@@ -100,14 +86,37 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
   await processYamlFile('pages/getting-started/content.yml', gettingStartedPage);
 
   // Generate package.json with proper formatting
-  const packageJsonContent = JSON.stringify(buildPackageJson(projectName), null, 2) + '\n';
-  await processFile('package.json', packageJsonContent);
+  const packageJsonPath = path.join(targetDir, 'package.json');
+  await fs.ensureDir(path.dirname(packageJsonPath));
+  await fs.writeFile(packageJsonPath, JSON.stringify(buildPackageJson(projectName), null, 2) + '\n', 'utf8');
+  written.push('package.json');
 
   // Generate tsconfig.json
-  const tsconfigContent = JSON.stringify(buildTsConfig(), null, 2) + '\n';
-  await processFile('tsconfig.json', tsconfigContent);
+  const tsconfigPath = path.join(targetDir, 'tsconfig.json');
+  await fs.writeFile(tsconfigPath, JSON.stringify(buildTsConfig(), null, 2) + '\n', 'utf8');
+  written.push('tsconfig.json');
 
   return written;
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/** Recursively collect all file paths relative to dir, excluding .git */
+async function collectFiles(dir: string, base: string = ''): Promise<string[]> {
+  const results: string[] = [];
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (entry.name === '.git' || entry.name === 'README.md') continue;
+    const rel = base ? `${base}/${entry.name}` : entry.name;
+    if (entry.isDirectory()) {
+      results.push(...(await collectFiles(path.join(dir, entry.name), rel)));
+    } else {
+      results.push(rel);
+    }
+  }
+  return results;
 }
 
 // ---------------------------------------------------------------------------
