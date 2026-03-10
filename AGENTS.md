@@ -1,6 +1,6 @@
 ## Stackwright Framework - AI Guide for Agents
 
-Welcome to Stackwright! This is a YAML-driven React application framework that enables rapid development of professional websites and applications through a "content as code" approach. In this guide, you'll find essential knowledge required to be productive in the Stackwright project. For contributor guidelines (branching, commits, testing, changesets), see [CONTRIBUTING.md](./CONTRIBUTING.md).
+Welcome to Stackwright! This is a YAML-driven React application framework that enables rapid development of professional websites and applications through a "content as code" approach. In this guide, you'll find essential knowledge required to be productive in the Stackwright project.
 
 ### Key Concepts
 - **Framework Architecture**: To understand the big picture, read:
@@ -96,8 +96,17 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
   - Custom events (e.g., `onChange`) can be registered by child components to interact with parents
 
 ### Troubleshooting
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md#troubleshooting) for common issues and debugging tips.
+- **Common Issues**
+  - "Cannot find module" ESM Errors: Missing `.js` extensions in ESM imports. Also verify no `packages/*` package.json has `"type": "module"`.
+  - `module is not defined in ES module scope`: A package has `"type": "module"` set. Remove it.
+  - Components not rendering / blank page: `registerNextJSComponents()` was not called before first render.
+  - Schema Generation Fails: TypeScript compilation errors in source files. Fix TypeScript errors before running `pnpm generate-schemas`.
+  - Changeset Validation Fails: Modified packages without changeset. Run `pnpm changeset` and commit the generated file.
+  - Build Fails After Dependencies Update: Version mismatches in monorepo. Run `pnpm install` from root to resolve dependencies.
+- **Debugging Tips**
+  - Check package versions: Use `pnpm list` to verify installations
+  - Clear build cache: Delete `packages/*/dist` directories
+  - Regenerate schemas: Run `pnpm generate-schemas` after changes
 
 ### References
 - **Framework Documentation**
