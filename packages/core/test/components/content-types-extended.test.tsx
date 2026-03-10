@@ -47,13 +47,23 @@ describe('IconGrid', () => {
   });
 
   it('renders without heading', () => {
-    render(<IconGrid label="icons" icons={[{ src: 'logo', label: 'Logo' }]} />);
+    render(
+      <IconGrid
+        label="icons"
+        icons={[{ src: 'logo', label: 'Logo' }]}
+      />
+    );
     expect(screen.getByText('Logo')).toBeInTheDocument();
     expect(screen.queryByRole('heading')).not.toBeInTheDocument();
   });
 
   it('falls back to text when icon is not in registry', () => {
-    render(<IconGrid label="icons" icons={[{ src: 'unknown-icon', label: 'Mystery' }]} />);
+    render(
+      <IconGrid
+        label="icons"
+        icons={[{ src: 'unknown-icon', label: 'Mystery' }]}
+      />
+    );
     // When icon is not registered, it renders the src as text
     expect(screen.getByText('unknown-icon')).toBeInTheDocument();
     expect(screen.getByText('Mystery')).toBeInTheDocument();
@@ -65,19 +75,31 @@ describe('IconGrid', () => {
     );
     fakeIconRegistry.register('custom-icon', TestIcon);
 
-    render(<IconGrid label="icons" icons={[{ src: 'custom-icon', label: 'Custom' }]} />);
+    render(
+      <IconGrid
+        label="icons"
+        icons={[{ src: 'custom-icon', label: 'Custom' }]}
+      />
+    );
     expect(screen.getByTestId('test-svg')).toBeInTheDocument();
     expect(screen.getByText('Custom')).toBeInTheDocument();
   });
 
   it('renders icons without labels', () => {
-    render(<IconGrid label="icons" icons={[{ src: 'logo' }]} />);
+    render(
+      <IconGrid
+        label="icons"
+        icons={[{ src: 'logo' }]}
+      />
+    );
     // Should render the src text fallback but no label span
     expect(screen.getByText('logo')).toBeInTheDocument();
   });
 
   it('uses auto-fill grid for responsive columns', () => {
-    const { container } = render(<IconGrid label="icons" icons={[{ src: 'a', label: 'A' }]} />);
+    const { container } = render(
+      <IconGrid label="icons" icons={[{ src: 'a', label: 'A' }]} />
+    );
     const gridDiv = Array.from(container.querySelectorAll('div')).find((el) =>
       (el as HTMLElement).style.gridTemplateColumns?.includes('auto-fill')
     );
@@ -91,7 +113,14 @@ describe('IconGrid', () => {
 
 describe('TextGrid', () => {
   it('renders plain text blocks', () => {
-    render(<TextGrid content={[{ text: 'Hello world' }, { text: 'Another paragraph' }]} />);
+    render(
+      <TextGrid
+        content={[
+          { text: 'Hello world' },
+          { text: 'Another paragraph' },
+        ]}
+      />
+    );
     expect(screen.getByText('Hello world')).toBeInTheDocument();
     expect(screen.getByText('Another paragraph')).toBeInTheDocument();
   });
@@ -104,7 +133,14 @@ describe('TextGrid', () => {
   });
 
   it('renders numbered list items with # prefix', () => {
-    render(<TextGrid content={[{ text: '# Step one' }, { text: '# Step two' }]} />);
+    render(
+      <TextGrid
+        content={[
+          { text: '# Step one' },
+          { text: '# Step two' },
+        ]}
+      />
+    );
     expect(screen.getByText('1.')).toBeInTheDocument();
     expect(screen.getByText('Step one')).toBeInTheDocument();
     expect(screen.getByText('2.')).toBeInTheDocument();
@@ -125,7 +161,12 @@ describe('TextGrid', () => {
   });
 
   it('uses custom list_icon from config', () => {
-    render(<TextGrid content={[{ text: '- Bullet item' }]} config={{ list_icon: '→' }} />);
+    render(
+      <TextGrid
+        content={[{ text: '- Bullet item' }]}
+        config={{ list_icon: '→' }}
+      />
+    );
     expect(screen.getByText('→')).toBeInTheDocument();
   });
 
@@ -163,7 +204,12 @@ describe('Timeline', () => {
   });
 
   it('renders without heading', () => {
-    render(<Timeline label="timeline" items={[{ year: '2024', event: 'New milestone' }]} />);
+    render(
+      <Timeline
+        label="timeline"
+        items={[{ year: '2024', event: 'New milestone' }]}
+      />
+    );
     expect(screen.getByText('2024')).toBeInTheDocument();
     expect(screen.getByText('New milestone')).toBeInTheDocument();
   });
@@ -199,7 +245,9 @@ describe('UnknownContentType', () => {
 
   it('includes helpful guidance text', () => {
     render(<UnknownContentType contentType="chart" />);
-    expect(screen.getByText(/not registered/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/not registered/)
+    ).toBeInTheDocument();
   });
 });
 
@@ -210,9 +258,10 @@ describe('UnknownContentType', () => {
 describe('TabbedContentGrid', () => {
   // Register a simple test component for tab content
   beforeEach(() => {
-    registerComponent('faq', ({ heading }: any) => (
-      <div data-testid="faq-content">{heading?.text}</div>
-    ));
+    registerComponent(
+      'faq',
+      ({ heading }: any) => <div data-testid="faq-content">{heading?.text}</div>
+    );
   });
 
   it('renders heading and tab buttons', () => {
@@ -220,7 +269,9 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Learn More', textSize: 'h3' }}
-        tabs={[{ faq: { label: 'FAQ Tab', heading: { text: 'FAQ', textSize: 'h3' }, items: [] } }]}
+        tabs={[
+          { faq: { label: 'FAQ Tab', heading: { text: 'FAQ', textSize: 'h3' }, items: [] } },
+        ]}
       />
     );
     expect(screen.getByText('Learn More')).toBeInTheDocument();
@@ -274,7 +325,9 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Tabs', textSize: 'h3' }}
-        tabs={[{ faq: { label: 'Only Tab', heading: { text: 'X', textSize: 'h3' }, items: [] } }]}
+        tabs={[
+          { faq: { label: 'Only Tab', heading: { text: 'X', textSize: 'h3' }, items: [] } },
+        ]}
       />
     );
     expect(screen.getByRole('tablist')).toBeInTheDocument();
@@ -287,7 +340,9 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Tabs', textSize: 'h3' }}
-        tabs={[{ faq: { heading: { text: 'No Label', textSize: 'h3' }, items: [] } }]}
+        tabs={[
+          { faq: { heading: { text: 'No Label', textSize: 'h3' }, items: [] } },
+        ]}
       />
     );
     // Falls back to "Tab 1" when no label

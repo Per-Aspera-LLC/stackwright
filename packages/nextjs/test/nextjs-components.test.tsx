@@ -52,7 +52,9 @@ import { stackwrightRegistry } from '@stackwright/core';
 
 describe('NextStackwrightImage', () => {
   it('renders an image with src and alt', () => {
-    render(<NextStackwrightImage src="/hero.png" alt="Hero image" aspect_ratio={16 / 9} />);
+    render(
+      <NextStackwrightImage src="/hero.png" alt="Hero image" aspect_ratio={16 / 9} />
+    );
     const img = screen.getByTestId('next-image');
     expect(img).toHaveAttribute('src', '/hero.png');
     expect(img).toHaveAttribute('alt', 'Hero image');
@@ -121,7 +123,9 @@ describe('NextStackwrightImage', () => {
   });
 
   it('does not leak aspect_ratio to the DOM', () => {
-    render(<NextStackwrightImage src="/x.png" alt="X" aspect_ratio={1.5} />);
+    render(
+      <NextStackwrightImage src="/x.png" alt="X" aspect_ratio={1.5} />
+    );
     const img = screen.getByTestId('next-image');
     expect(img.getAttribute('aspect_ratio')).toBeNull();
   });
@@ -148,14 +152,22 @@ describe('NextStackwrightImage', () => {
 
 describe('NextStackwrightLink', () => {
   it('renders internal links via Next.js Link', () => {
-    render(<NextStackwrightLink href="/about">About Us</NextStackwrightLink>);
+    render(
+      <NextStackwrightLink href="/about">
+        About Us
+      </NextStackwrightLink>
+    );
     const link = screen.getByTestId('next-link');
     expect(link).toHaveAttribute('href', '/about');
     expect(link).toHaveTextContent('About Us');
   });
 
   it('renders external http links as plain <a> tags', () => {
-    render(<NextStackwrightLink href="https://example.com">External</NextStackwrightLink>);
+    render(
+      <NextStackwrightLink href="https://example.com">
+        External
+      </NextStackwrightLink>
+    );
     // Should NOT be a next-link, should be a plain <a>
     expect(screen.queryByTestId('next-link')).not.toBeInTheDocument();
     const link = screen.getByText('External');
@@ -164,7 +176,11 @@ describe('NextStackwrightLink', () => {
   });
 
   it('treats protocol-relative URLs as external', () => {
-    render(<NextStackwrightLink href="//cdn.example.com/asset">CDN Link</NextStackwrightLink>);
+    render(
+      <NextStackwrightLink href="//cdn.example.com/asset">
+        CDN Link
+      </NextStackwrightLink>
+    );
     expect(screen.queryByTestId('next-link')).not.toBeInTheDocument();
     const link = screen.getByText('CDN Link');
     expect(link).toHaveAttribute('href', '//cdn.example.com/asset');
@@ -194,11 +210,7 @@ describe('NextStackwrightLink', () => {
 
   it('passes className and style to external links', () => {
     render(
-      <NextStackwrightLink
-        href="https://example.com"
-        className="ext"
-        style={{ fontWeight: 'bold' }}
-      >
+      <NextStackwrightLink href="https://example.com" className="ext" style={{ fontWeight: 'bold' }}>
         Ext
       </NextStackwrightLink>
     );
