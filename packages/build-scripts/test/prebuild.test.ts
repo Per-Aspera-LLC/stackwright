@@ -30,7 +30,7 @@ function writePageContent(root: string, slug: string, content: string): void {
   fs.writeFileSync(path.join(dir, 'content.yml'), content, 'utf8');
 }
 
-function _writeFakeImage(dir: string, filename: string): void {
+function writeFakeImage(dir: string, filename: string): void {
   fs.mkdirSync(dir, { recursive: true });
   // Write a minimal 1x1 PNG header (enough to be non-empty)
   fs.writeFileSync(path.join(dir, filename), Buffer.from([0x89, 0x50, 0x4e, 0x47]));

@@ -29,7 +29,6 @@ const defaultTheme = {
  */
 export function useSafeTheme() {
   try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks -- intentional: try/catch fallback pattern
     const { theme } = useTheme();
     return theme;
   } catch (error) {

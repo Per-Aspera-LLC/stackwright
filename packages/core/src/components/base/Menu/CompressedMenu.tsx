@@ -12,7 +12,7 @@ interface CompressedMenuProps<T = unknown> {
 export function CompressedMenu<T>({
   menuItems,
   menuOpen,
-  anchorEl: _anchorEl,
+  anchorEl,
   onMenuOpen,
   onMenuClose,
   buildMenu,

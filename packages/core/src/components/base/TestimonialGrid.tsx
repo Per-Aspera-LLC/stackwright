@@ -6,7 +6,7 @@ import { Media } from '../media/Media';
 
 export function TestimonialGrid({
   heading,
-  columns: _columns = 3,
+  columns = 3,
   items,
   background,
 }: TestimonialGridContent) {

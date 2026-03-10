@@ -18,8 +18,9 @@ import { outputResult } from '../utils/json-output';
 // Types
 // ---------------------------------------------------------------------------
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDef = Record<string, any>;
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySchema = { def: AnyDef };
 
 export interface GenerateAgentDocsResult {

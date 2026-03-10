@@ -37,8 +37,9 @@ export interface TypesResult {
 // Zod v4 runtime schema introspection helpers
 // ---------------------------------------------------------------------------
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyDef = Record<string, any>;
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnySchema = { def: AnyDef };
 
 function resolveSchema(schema: AnySchema): AnySchema {

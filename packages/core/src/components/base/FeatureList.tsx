@@ -4,12 +4,7 @@ import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { Media } from '../media/Media';
 
-export function FeatureList({
-  heading,
-  columns: _columns = 3,
-  items,
-  background,
-}: FeatureListContent) {
+export function FeatureList({ heading, columns = 3, items, background }: FeatureListContent) {
   const theme = useSafeTheme();
 
   const headingColor = resolveColor(
