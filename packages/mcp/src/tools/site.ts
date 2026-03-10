@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
-import { validateSite, listThemes, readSiteConfig } from '@stackwright/cli';
+import { validateSite, listThemes, readSiteConfig, writeSiteConfig } from '@stackwright/cli';
 
 function resolveSiteConfig(projectRoot: string): string {
   const candidates = ['stackwright.yml', 'stackwright.yaml'];
@@ -85,6 +85,45 @@ export function registerSiteTools(server: McpServer): void {
           ? 'No built-in themes found.'
           : `Built-in themes (${result.themes.length}):\n${lines.join('\n')}`;
       return { content: [{ type: 'text', text }] };
+    }
+  );
+
+  server.tool(
+    'stackwright_write_site_config',
+    'Write or update the stackwright.yml site configuration. Validates against the site config Zod schema before writing — invalid YAML is rejected with field-level errors.',
+    {
+      projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
+      content: z.string().describe('The full YAML content for the site config'),
+    },
+    async ({ projectRoot, content }) => {
+      try {
+        const siteConfigPath = resolveSiteConfig(projectRoot);
+        const result = writeSiteConfig(siteConfigPath, content);
+        const verb = result.created ? 'Created' : 'Updated';
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `${verb} site config at ${result.path}`,
+            },
+          ],
+        };
+      } catch (err) {
+        const code = (err as NodeJS.ErrnoException).code;
+        const message = (err as Error).message;
+        return {
+          content: [
+            {
+              type: 'text',
+              text:
+                code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR'
+                  ? message
+                  : `Error writing site config: ${message}`,
+            },
+          ],
+          isError: true,
+        };
+      }
     }
   );
 }
