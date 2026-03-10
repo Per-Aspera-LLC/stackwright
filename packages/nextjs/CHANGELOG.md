@@ -1,14 +1,5 @@
 # @stackwright/nextjs
 
-## 0.2.8-alpha.10
-
-### Patch Changes
-
-- 681d5d4: Add monorepo-wide ESLint and Prettier with CI enforcement. Auto-formatted all source files to consistent style. No runtime behavior changes.
-- Updated dependencies [681d5d4]
-  - @stackwright/core@0.6.0-alpha.10
-  - @stackwright/types@0.4.0-alpha.3
-
 ## 0.2.8-alpha.9
 
 ### Patch Changes
@@ -140,6 +131,7 @@
 ### Patch Changes
 
 - 076c9e7: fix(deps): dependency hygiene pass — fix peer dep declarations and security floor
+
   - **@stackwright/nextjs**: Remove `next`, `react`, `react-dom` from `dependencies` (they belong only in `peerDependencies` to avoid duplicate installs); bump Next.js peer dep floor from `>=15.2.3` to `>=16.1.6`, targeting the current stable release and closing all open GitHub security advisories (CVEs patched in 15.2.6–15.5.10); add `next`/`react`/`react-dom` to `devDependencies` for local builds
   - **@stackwright/core**: Remove `react`, `react-dom`, `@mui/material`, `@mui/icons-material` from `dependencies` — these were duplicated in `peerDependencies`, risking duplicate React/MUI instances; move them to `devDependencies` for test builds; loosen `@mui` peer dep range from exact `7.3.8` to `^7.3.8`
   - **@stackwright/icons**: Declare `@mui/icons-material`, `@mui/material`, `react` as `peerDependencies` (they were only in `dependencies`); move to `devDependencies` for local builds
@@ -157,6 +149,7 @@
 ### Patch Changes
 
 - 076c9e7: fix(deps): dependency hygiene pass — fix peer dep declarations and security floor
+
   - **@stackwright/nextjs**: Remove `next`, `react`, `react-dom` from `dependencies` (they belong only in `peerDependencies` to avoid duplicate installs); bump Next.js peer dep floor from `>=15.2.3` to `>=16.1.6`, targeting the current stable release and closing all open GitHub security advisories (CVEs patched in 15.2.6–15.5.10); add `next`/`react`/`react-dom` to `devDependencies` for local builds
   - **@stackwright/core**: Remove `react`, `react-dom`, `@mui/material`, `@mui/icons-material` from `dependencies` — these were duplicated in `peerDependencies`, risking duplicate React/MUI instances; move them to `devDependencies` for test builds; loosen `@mui` peer dep range from exact `7.3.8` to `^7.3.8`
   - **@stackwright/icons**: Declare `@mui/icons-material`, `@mui/material`, `react` as `peerDependencies` (they were only in `dependencies`); move to `devDependencies` for local builds
@@ -174,6 +167,7 @@
 ### Patch Changes
 
 - 386acb8: chore(deps): batch dependency maintenance — February 2026
+
   - `@mui/material` + `@mui/icons-material`: 7.2.0 → 7.3.8 (patch)
   - `@fontsource/montserrat-alternates`: 5.2.6 → 5.2.8 (patch)
   - `uuid`: ^11.1.0 → ^13.0.0 (major — API unchanged for v4/v7 usage)
@@ -198,6 +192,7 @@
 ### Patch Changes
 
 - 386acb8: chore(deps): batch dependency maintenance — February 2026
+
   - `@mui/material` + `@mui/icons-material`: 7.2.0 → 7.3.8 (patch)
   - `@fontsource/montserrat-alternates`: 5.2.6 → 5.2.8 (patch)
   - `uuid`: ^11.1.0 → ^13.0.0 (major — API unchanged for v4/v7 usage)
@@ -242,18 +237,21 @@
 - 8910585: Next.js 16 / Turbopack compatibility and prebuild pipeline
 
   **New package: `@stackwright/build-scripts`**
+
   - Introduces `stackwright-prebuild` CLI binary for build-time YAML processing
   - Scans `pages/` for `content.yml` files, copies co-located images to `public/images/`, and writes processed JSON to `public/stackwright-content/`
   - Eliminates all `fs`/`path` usage from `@stackwright/nextjs`, resolving Turbopack browser-bundle conflicts
   - Add `"prebuild": "stackwright-prebuild"` and `"predev": "stackwright-prebuild"` to your `package.json` scripts; `getStaticProps` then reads from `public/stackwright-content/*.json`
 
   **`@stackwright/nextjs`**
+
   - `NextStackwrightStaticGeneration` removed — static generation is now handled by the prebuild pipeline above
   - `createStackwrightNextConfig` adds `turbopack: {}` for Next.js 16+ (silences webpack-without-turbopack warning)
   - Remove `shallow` prop from `StackwrightLinkProps` and `NextStackwrightLink` (removed from `next/link` in Next.js 13)
   - Widen peer dependency to `next: ">=15"` to cover Next.js 16+
 
   **`@stackwright/core`**
+
   - Remove `shallow` from `StackwrightLinkProps` interface
   - Pin workspace `csstype` to `^3.2.0` via pnpm override to resolve DTS build conflict
 
@@ -282,18 +280,21 @@
 - 8910585: Next.js 16 / Turbopack compatibility and prebuild pipeline
 
   **New package: `@stackwright/build-scripts`**
+
   - Introduces `stackwright-prebuild` CLI binary for build-time YAML processing
   - Scans `pages/` for `content.yml` files, copies co-located images to `public/images/`, and writes processed JSON to `public/stackwright-content/`
   - Eliminates all `fs`/`path` usage from `@stackwright/nextjs`, resolving Turbopack browser-bundle conflicts
   - Add `"prebuild": "stackwright-prebuild"` and `"predev": "stackwright-prebuild"` to your `package.json` scripts; `getStaticProps` then reads from `public/stackwright-content/*.json`
 
   **`@stackwright/nextjs`**
+
   - `NextStackwrightStaticGeneration` removed — static generation is now handled by the prebuild pipeline above
   - `createStackwrightNextConfig` adds `turbopack: {}` for Next.js 16+ (silences webpack-without-turbopack warning)
   - Remove `shallow` prop from `StackwrightLinkProps` and `NextStackwrightLink` (removed from `next/link` in Next.js 13)
   - Widen peer dependency to `next: ">=15"` to cover Next.js 16+
 
   **`@stackwright/core`**
+
   - Remove `shallow` from `StackwrightLinkProps` interface
   - Pin workspace `csstype` to `^3.2.0` via pnpm override to resolve DTS build conflict
 

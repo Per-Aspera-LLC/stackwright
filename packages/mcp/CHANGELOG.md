@@ -1,14 +1,5 @@
 # @stackwright/mcp
 
-## 0.2.0-alpha.8
-
-### Patch Changes
-
-- 681d5d4: Add monorepo-wide ESLint and Prettier with CI enforcement. Auto-formatted all source files to consistent style. No runtime behavior changes.
-- Updated dependencies [681d5d4]
-  - @stackwright/cli@0.6.0-alpha.7
-  - @stackwright/types@0.4.0-alpha.3
-
 ## 0.2.0-alpha.7
 
 ### Patch Changes
@@ -20,6 +11,7 @@
 ### Minor Changes
 
 - 163e3b1: Add visual regression tests for all 13 content types and MCP component preview tool
+
   - Screenshot-based visual regression tests (desktop 1280px + mobile 375px) for every content type on the showcase page
   - `data-content-type` and `data-label` attributes on content item wrappers for reliable DOM targeting
   - New `stackwright_preview_component` MCP tool returns PNG screenshots of content types to AI agents

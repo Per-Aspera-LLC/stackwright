@@ -17,7 +17,6 @@
   "changesets": [
     "add-alert-content-type",
     "add-e2e-playwright-tests",
-    "add-eslint-prettier",
     "auto-generate-agent-docs",
     "carousel-keyboard-nav",
     "ci-schema-sync-check",
