@@ -467,6 +467,132 @@ describe('MCP Tools Integration', () => {
       expect(textContent).toMatch(/\d+/); // Should show count
       expect(textContent).toMatch(/\w+\s+—\s+\w+/); // Should contain theme entries
     });
+
+    it('write_site_config creates new config file', async () => {
+      // testDir has no stackwright.yml yet
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerSiteTools(server);
+
+      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        content: makeValidSiteConfig(),
+      });
+
+      expect(result.content[0].text).toContain('Created site config');
+      expect(result.isError).toBeFalsy();
+
+      // Verify file was written
+      const configPath = path.join(testDir, 'stackwright.yml');
+      expect(fs.existsSync(configPath)).toBe(true);
+      expect(fs.readFileSync(configPath, 'utf8')).toContain('Test Site');
+    });
+
+    it('write_site_config updates existing config file', async () => {
+      // Write initial config
+      const configPath = path.join(testDir, 'stackwright.yml');
+      fs.writeFileSync(configPath, makeValidSiteConfig());
+
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerSiteTools(server);
+
+      // Write updated config with different title
+      const updatedConfig = makeValidSiteConfig().replaceAll('Test Site', 'Updated Site');
+      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        content: updatedConfig,
+      });
+
+      expect(result.content[0].text).toContain('Updated site config');
+      expect(result.isError).toBeFalsy();
+
+      // Verify content was updated
+      const content = fs.readFileSync(configPath, 'utf8');
+      expect(content).toContain('Updated Site');
+      expect(content).not.toContain('Test Site');
+    });
+
+    it('write_site_config rejects invalid YAML syntax', async () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerSiteTools(server);
+
+      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        content: 'invalid: yaml: [[broken',
+      });
+
+      expect(result.isError).toBe(true);
+      expect(result.content[0].text).toContain('YAML parse error');
+
+      // Verify no file was written
+      expect(fs.existsSync(path.join(testDir, 'stackwright.yml'))).toBe(false);
+    });
+
+    it('write_site_config rejects schema-invalid config with field errors', async () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerSiteTools(server);
+
+      // Missing required fields (title, navigation, appBar)
+      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        content: 'something_wrong: true\n',
+      });
+
+      expect(result.isError).toBe(true);
+      expect(result.content[0].text).toContain('Validation failed');
+
+      // Verify no file was written
+      expect(fs.existsSync(path.join(testDir, 'stackwright.yml'))).toBe(false);
+    });
+
+    it('write_site_config roundtrip: write then read returns same content', async () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerSiteTools(server);
+
+      const yamlContent = makeValidSiteConfig();
+
+      // Write
+      const writeTool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const writeResult = await writeTool.handler({
+        projectRoot: testDir,
+        content: yamlContent,
+      });
+      expect(writeResult.isError).toBeFalsy();
+
+      // Read back
+      const readTool = (server as any)._registeredTools['stackwright_get_site_config'];
+      const readResult = await readTool.handler({ projectRoot: testDir });
+      expect(readResult.isError).toBeFalsy();
+      expect(readResult.content[0].text).toContain('Test Site');
+      expect(readResult.content[0].text).toContain('per-aspera');
+    });
+
+    it('write_site_config respects existing .yaml extension', async () => {
+      // Create a stackwright.yaml file (not .yml)
+      const configPath = path.join(testDir, 'stackwright.yaml');
+      fs.writeFileSync(configPath, makeValidSiteConfig());
+
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerSiteTools(server);
+
+      const updatedConfig = makeValidSiteConfig().replace('Test Site', 'YAML Extension Site');
+      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        content: updatedConfig,
+      });
+
+      expect(result.content[0].text).toContain('Updated site config');
+      // Should have written to the .yaml file, not .yml
+      expect(result.content[0].text).toContain('stackwright.yaml');
+      expect(fs.readFileSync(configPath, 'utf8')).toContain('YAML Extension Site');
+      // .yml should NOT have been created
+      expect(fs.existsSync(path.join(testDir, 'stackwright.yml'))).toBe(false);
+    });
+
   });
 
   describe('Git Ops Tools', () => {
