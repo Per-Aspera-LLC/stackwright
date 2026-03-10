@@ -29,14 +29,9 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6",
-    "@testing-library/react": "^16.3",
     "@types/react": "^19",
-    "@types/react-dom": "^19",
     "@types/js-yaml": "^4",
-    "jsdom": "^28.1.0",
     "react": "^19",
-    "react-dom": "^19",
     "typescript": "^5",
     "tsup": "^8",
     "vitest": "^4"

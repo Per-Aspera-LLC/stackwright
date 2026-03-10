@@ -1,1 +1,1 @@
-import '@testing-library/jest-dom/vitest';
+// Vitest setup for @stackwright/themes
