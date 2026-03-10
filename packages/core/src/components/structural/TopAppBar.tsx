@@ -45,7 +45,7 @@ export default function TopAppBar({
           onClick={handleMenuClose}
           style={{
             display: 'block',
-            padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+            padding: '8px 16px',
             color: theme.colors.text,
             textDecoration: 'none',
             fontSize: '1rem',
@@ -75,12 +75,12 @@ export default function TopAppBar({
           width: '100%',
           display: 'flex',
           alignItems: 'center',
-          padding: `0 ${theme.spacing.lg}`,
+          padding: '0 24px',
         }}
       >
         {logo ? (
           <>
-            <div style={{ paddingRight: theme.spacing.sm, height: 'auto' }}>
+            <div style={{ paddingRight: '12px', height: 'auto' }}>
               <Media
                 {...logo}
                 style="contained"
@@ -89,12 +89,12 @@ export default function TopAppBar({
                 label={`${title} logo`}
               />
             </div>
-            <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: theme.spacing.xl }}>
+            <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: '32px' }}>
               {title}
             </h1>
           </>
         ) : (
-          <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: theme.spacing.xl }}>
+          <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: '32px' }}>
             {title}
           </h1>
         )}
@@ -113,7 +113,7 @@ export default function TopAppBar({
               buildMenu={buildMenu}
             />
           ) : (
-            <div style={{ display: 'flex', gap: theme.spacing.md }}>
+            <div style={{ display: 'flex', gap: '16px' }}>
               {menuItems.map((item, index) => (
                 <ThemedButton
                   key={index}

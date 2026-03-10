@@ -14,14 +14,14 @@ export function TabbedContentGrid(content: TabbedContent) {
       style={{
         flexGrow: 1,
         width: '100%',
-        padding: theme.spacing.xl,
+        padding: '32px',
       }}
     >
       <div
         style={{
           width: '100%',
           textAlign: 'center',
-          margin: `${theme.spacing.md} 0`,
+          margin: '16px 0',
         }}
       >
         <p
@@ -29,7 +29,7 @@ export function TabbedContentGrid(content: TabbedContent) {
             width: '100%',
             textAlign: 'center',
             color: theme.colors.text,
-            marginBottom: theme.spacing.xs,
+            marginBottom: '8px',
           }}
         >
           {content.heading.text}
@@ -49,7 +49,7 @@ export function TabbedContentGrid(content: TabbedContent) {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              gap: theme.spacing.xs,
+              gap: '4px',
               borderBottom: `2px solid ${theme.colors.textSecondary}22`,
               width: '100%',
               overflowX: 'auto',
@@ -67,7 +67,7 @@ export function TabbedContentGrid(content: TabbedContent) {
                   aria-selected={isActive}
                   onClick={() => setValue(index)}
                   style={{
-                    padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+                    padding: '8px 16px',
                     border: 'none',
                     background: 'none',
                     cursor: 'pointer',
@@ -97,7 +97,7 @@ export function TabbedContentGrid(content: TabbedContent) {
               {value === index && (
                 <div
                   style={{
-                    padding: theme.spacing.lg,
+                    padding: '24px',
                     transition: 'all 0.3s ease-in-out',
                   }}
                 >

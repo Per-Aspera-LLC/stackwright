@@ -52,7 +52,7 @@ These items are grouped because they share a common purpose: making the Stackwri
 
 ## Code Quality (from architectural review)
 
-- [x] **Wire up theme spacing tokens** — All components now use `theme.spacing` tokens instead of hardcoded pixel values (#128).
+- [ ] **Wire up theme spacing tokens** — Components hardcode pixel values; `theme.spacing` config has no effect (#128).
 - [ ] **Remove production console.log calls** — Unconditional logging in `NextStackwrightImage` and `themeLoader`; fix `aspect_ratio` DOM prop leak (#129).
 - [ ] **Add unit tests for `packages/nextjs/`** — Zero test coverage on the Next.js adapter layer (#130).
 - [ ] **Refactor content type discrimination** — `Object.entries(item)[0]` is fragile; consider explicit `type` field (breaking change) (#131).

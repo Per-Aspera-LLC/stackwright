@@ -27,7 +27,7 @@ export function ContactFormStub({
   return (
     <section
       style={{
-        padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
+        padding: '48px 32px',
         background: background || 'transparent',
       }}
     >
@@ -42,7 +42,7 @@ export function ContactFormStub({
           <h3
             style={{
               color: headingColor,
-              marginBottom: theme.spacing.md,
+              marginBottom: '16px',
             }}
           >
             {heading.text}
@@ -54,7 +54,7 @@ export function ContactFormStub({
               color: theme.colors.text,
               opacity: 0.8,
               lineHeight: 1.6,
-              marginBottom: theme.spacing.lg,
+              marginBottom: '24px',
             }}
           >
             {description}
@@ -64,15 +64,15 @@ export function ContactFormStub({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: theme.spacing.sm,
-            marginBottom: theme.spacing.lg,
+            gap: '12px',
+            marginBottom: '24px',
             textAlign: 'left',
             backgroundColor: theme.colors.surface,
             borderRadius: '8px',
-            padding: theme.spacing.lg,
+            padding: '24px',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: theme.spacing.xs }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
             <span style={{ fontWeight: 600, color: theme.colors.text }}>Email:</span>
             <a
               href={mailto}
@@ -87,7 +87,7 @@ export function ContactFormStub({
           </div>
           {phone && (
             <div
-              style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: theme.spacing.xs }}
+              style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}
             >
               <span style={{ fontWeight: 600, color: theme.colors.text }}>Phone:</span>
               <a
@@ -104,7 +104,7 @@ export function ContactFormStub({
           )}
           {address && (
             <div
-              style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: theme.spacing.xs }}
+              style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}
             >
               <span style={{ fontWeight: 600, color: theme.colors.text }}>Address:</span>
               <span style={{ color: theme.colors.text, wordBreak: 'break-word' }}>{address}</span>
@@ -117,7 +117,7 @@ export function ContactFormStub({
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: `${theme.spacing.sm} ${theme.spacing.xl}`,
+            padding: '12px 32px',
             borderRadius: '6px',
             textDecoration: 'none',
             fontWeight: 600,

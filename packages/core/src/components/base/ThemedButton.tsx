@@ -10,6 +10,12 @@ interface ThemedButtonProps {
   className?: string;
 }
 
+const sizeStyles: Record<string, React.CSSProperties> = {
+  small: { padding: '4px 10px', fontSize: '0.8125rem' },
+  medium: { padding: '6px 16px', fontSize: '0.875rem' },
+  large: { padding: '8px 22px', fontSize: '0.9375rem' },
+};
+
 const variantStyles = (
   variant: string | undefined,
   bgColor: string,
@@ -29,12 +35,6 @@ const variantStyles = (
 export function ThemedButton({ button, className }: ThemedButtonProps) {
   const theme = useSafeTheme();
 
-  const sizeStyles: Record<string, React.CSSProperties> = {
-    small: { padding: `${theme.spacing.xs} ${theme.spacing.sm}`, fontSize: '0.8125rem' },
-    medium: { padding: `${theme.spacing.xs} ${theme.spacing.md}`, fontSize: '0.875rem' },
-    large: { padding: `${theme.spacing.xs} ${theme.spacing.lg}`, fontSize: '0.9375rem' },
-  };
-
   const buttonColor = button.bgColor
     ? resolveColor(button.bgColor, theme.colors)
     : theme.colors.primary;
@@ -48,7 +48,7 @@ export function ThemedButton({ button, className }: ThemedButtonProps) {
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: theme.spacing.xs,
+    gap: '8px',
     borderRadius: '4px',
     cursor: 'pointer',
     textDecoration: 'none',

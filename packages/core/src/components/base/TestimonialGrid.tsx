@@ -20,7 +20,7 @@ export function TestimonialGrid({
   return (
     <section
       style={{
-        padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
+        padding: '48px 32px',
         background: background || 'transparent',
       }}
     >
@@ -28,7 +28,7 @@ export function TestimonialGrid({
         <h3
           style={{
             color: headingColor,
-            marginBottom: theme.spacing.xl,
+            marginBottom: '32px',
             textAlign: 'center',
           }}
         >
@@ -39,7 +39,7 @@ export function TestimonialGrid({
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: theme.spacing.lg,
+          gap: '24px',
           maxWidth: '1200px',
           margin: '0 auto',
         }}
@@ -50,7 +50,7 @@ export function TestimonialGrid({
             style={{
               backgroundColor: theme.colors.surface,
               borderRadius: '8px',
-              padding: theme.spacing.lg,
+              padding: '24px',
               boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
               display: 'flex',
               flexDirection: 'column',
@@ -70,11 +70,11 @@ export function TestimonialGrid({
             <div
               style={{
                 borderTop: `1px solid ${theme.colors.secondary || '#e5e7eb'}`,
-                marginTop: theme.spacing.md,
-                paddingTop: theme.spacing.md,
+                marginTop: '16px',
+                paddingTop: '16px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: theme.spacing.sm,
+                gap: '12px',
               }}
             >
               {item.avatar && (

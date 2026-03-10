@@ -18,7 +18,7 @@ export function MainContentGrid(content: MainContent) {
   );
 
   const imageGrid = content.media && (
-    <div style={{ flex: `0 1 calc(${graphicPercent}% - 8px)`, minWidth: 280, padding: theme.spacing.xs }}>
+    <div style={{ flex: `0 1 calc(${graphicPercent}% - 8px)`, minWidth: 280, padding: '8px' }}>
       <div style={{ width: '100%', height: '100%' }}>
         <Media {...content.media} label={`${content.heading?.text} graphic`} />
       </div>
@@ -30,12 +30,12 @@ export function MainContentGrid(content: MainContent) {
       style={{
         flex: `1 1 calc(${content.media ? textPercent : 100}% - 8px)`,
         minWidth: 280,
-        padding: theme.spacing.xs,
+        padding: '8px',
       }}
     >
       <div style={{ width: '100%', height: 'auto' }}>
         {content.heading?.text && (
-          <h2 style={{ color: headerColor, margin: `0 0 ${theme.spacing.xs} 0` }}>{content.heading.text}</h2>
+          <h2 style={{ color: headerColor, margin: '0 0 8px 0' }}>{content.heading.text}</h2>
         )}
         {content.textBlocks && <TextGrid content={content.textBlocks} />}
 
@@ -44,8 +44,8 @@ export function MainContentGrid(content: MainContent) {
             style={{
               display: 'flex',
               flexWrap: 'wrap',
-              gap: theme.spacing.md,
-              marginTop: theme.spacing.md,
+              gap: '16px',
+              marginTop: '16px',
               justifyContent: 'center',
             }}
           >
@@ -63,9 +63,9 @@ export function MainContentGrid(content: MainContent) {
   return (
     <div
       style={{
-        padding: `${theme.spacing.md} 0`,
+        padding: '16px 0',
         background: content?.background || 'transparent',
-        margin: theme.spacing.xl,
+        margin: '32px',
       }}
     >
       <div
@@ -74,7 +74,7 @@ export function MainContentGrid(content: MainContent) {
           flexWrap: 'wrap',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: theme.spacing.md,
+          gap: '16px',
         }}
       >
         {content.media ? (

@@ -9,15 +9,15 @@ export function Timeline(content: TimelineContent) {
     <div
       style={{
         maxWidth: '896px',
-        margin: `${theme.spacing.xl} auto`,
-        padding: `${theme.spacing['2xl']} 0`,
+        margin: '32px auto',
+        padding: '48px 0',
         background: content?.background || 'transparent',
       }}
     >
       {content.heading && (
         <h3
           style={{
-            marginBottom: theme.spacing.xl,
+            marginBottom: '32px',
             textAlign: 'center',
             color: content.heading.textColor || theme.colors.text,
           }}
@@ -31,7 +31,7 @@ export function Timeline(content: TimelineContent) {
         <div
           style={{
             position: 'absolute',
-            left: theme.spacing.xl,
+            left: '32px',
             top: 0,
             bottom: 0,
             width: '2px',
@@ -46,14 +46,14 @@ export function Timeline(content: TimelineContent) {
               position: 'relative',
               display: 'flex',
               alignItems: 'center',
-              marginBottom: theme.spacing.xl,
+              marginBottom: '32px',
             }}
           >
             {/* Timeline dot */}
             <div
               style={{
                 position: 'absolute',
-                left: theme.spacing.lg,
+                left: '24px',
                 width: '16px',
                 height: '16px',
                 backgroundColor: theme.colors.primary || '#d97706',
@@ -64,11 +64,11 @@ export function Timeline(content: TimelineContent) {
             />
 
             {/* Content */}
-            <div style={{ marginLeft: `calc(${theme.spacing.xl} + ${theme.spacing.xl})` }}>
+            <div style={{ marginLeft: '64px' }}>
               <div
                 style={{
                   backgroundColor: theme.colors.surface,
-                  padding: theme.spacing.lg,
+                  padding: '24px',
                   borderRadius: '8px',
                   boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
                 }}
@@ -77,7 +77,7 @@ export function Timeline(content: TimelineContent) {
                   style={{
                     color: theme.colors.primary || '#d97706',
                     fontWeight: 'bold',
-                    marginBottom: theme.spacing.xs,
+                    marginBottom: '8px',
                     marginTop: 0,
                   }}
                 >
