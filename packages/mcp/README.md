@@ -8,7 +8,7 @@ The MCP server runs as a stdio-based service and provides tools for:
 
 - **Content Type Introspection**: Discover available content types and their schemas
 - **Page Management**: List, add, and validate pages in a Stackwright project
-- **Site Management**: Validate site configuration and list available themes
+- **Site Management**: Read, write, and validate site configuration; list available themes
 - **Project Management**: Get project information and scaffold new projects
 - **Git Operations**: Stage content changes and open pull requests for review
 
@@ -130,6 +130,42 @@ const result = await server.callTool('stackwright_validate_site', {
   projectRoot: '/path/to/project'
 });
 // Returns: ✓ Site config is valid (/path/to/project/stackwright.yml).
+```
+
+#### `stackwright_get_site_config`
+
+Read the raw YAML content of the stackwright.yml site configuration file.
+
+**Parameters**:
+- `projectRoot` (string): Absolute path to the root of the Stackwright project
+
+**Returns**: Text with the full YAML content of the site configuration
+
+#### `stackwright_write_site_config`
+
+Write or update the stackwright.yml site configuration. Validates against the site config Zod schema before writing — invalid YAML is rejected with field-level errors.
+
+**Parameters**:
+- `projectRoot` (string): Absolute path to the root of the Stackwright project
+- `content` (string): The full YAML content for the site config
+
+**Returns**: Text confirmation of creation or update, or validation error details
+
+**Example Usage**:
+```typescript
+const result = await server.callTool('stackwright_write_site_config', {
+  projectRoot: '/path/to/project',
+  content: `title: "My Site"
+navigation:
+  - label: "Home"
+    href: "/"
+appBar:
+  titleText: "My Site"
+footer:
+  copyright: "© 2026"
+`
+});
+// Returns: Updated site config at /path/to/project/stackwright.yml
 ```
 
 #### `stackwright_list_themes`
