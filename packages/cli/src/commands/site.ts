@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import type { ZodIssue } from 'zod';
+import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
@@ -59,6 +60,42 @@ export function validateSite(siteConfigPath: string): SiteValidateResult {
   return { valid: false, errors };
 }
 
+export interface WriteSiteConfigResult {
+  path: string;
+  created: boolean;
+}
+
+export function writeSiteConfig(
+  siteConfigPath: string,
+  yamlContent: string
+): WriteSiteConfigResult {
+  let raw: unknown;
+  try {
+    raw = yaml.load(yamlContent);
+  } catch (parseErr) {
+    const err = new Error(`YAML parse error: ${formatError(parseErr)}`);
+    (err as NodeJS.ErrnoException).code = 'YAML_PARSE_ERROR';
+    throw err;
+  }
+
+  const result = siteConfigSchema.safeParse(raw);
+  if (!result.success) {
+    const fieldErrors = result.error.issues.map((issue: ZodIssue) => {
+      const fieldPath = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+      return `${fieldPath}: ${issue.message}`;
+    });
+    const err = new Error(`Validation failed:\n  ${fieldErrors.join('\n  ')}`);
+    (err as NodeJS.ErrnoException).code = 'VALIDATION_FAILED';
+    throw err;
+  }
+
+  const created = !fs.existsSync(siteConfigPath);
+  fs.ensureDirSync(path.dirname(siteConfigPath));
+  fs.writeFileSync(siteConfigPath, yamlContent, 'utf8');
+
+  return { path: siteConfigPath, created };
+}
+
 // ---------------------------------------------------------------------------
 // Commander registration
 // ---------------------------------------------------------------------------
@@ -83,6 +120,44 @@ export function registerSite(program: Command): void {
           outputError(formatError(err), 'NOT_A_PROJECT', { json });
         } else {
           outputError(formatError(err), 'READ_SITE_FAILED', { json }, 2);
+        }
+      }
+    });
+
+  site
+    .command('write')
+    .description('Write YAML content to stackwright.yml (validates before writing)')
+    .option('--json', 'Output machine-readable JSON')
+    .option('--file <path>', 'Read YAML content from a file instead of stdin')
+    .action(async (opts: { json?: boolean; file?: string }) => {
+      const json = Boolean(opts.json);
+      try {
+        const { siteConfig } = detectProject();
+        let yamlContent: string;
+        if (opts.file) {
+          yamlContent = fs.readFileSync(opts.file, 'utf8');
+        } else {
+          const chunks: Buffer[] = [];
+          for await (const chunk of process.stdin) {
+            chunks.push(chunk);
+          }
+          yamlContent = Buffer.concat(chunks).toString('utf8');
+        }
+        const result = writeSiteConfig(siteConfig, yamlContent);
+        outputResult(result, { json }, () => {
+          const verb = result.created ? 'Created' : 'Updated';
+          console.log(chalk.green(`${verb} site config at ${result.path}`));
+        });
+      } catch (err: unknown) {
+        const code = getErrorCode(err);
+        if (
+          code === 'NOT_A_PROJECT' ||
+          code === 'VALIDATION_FAILED' ||
+          code === 'YAML_PARSE_ERROR'
+        ) {
+          outputError(formatError(err), code, { json });
+        } else {
+          outputError(formatError(err), 'WRITE_SITE_FAILED', { json }, 2);
         }
       }
     });

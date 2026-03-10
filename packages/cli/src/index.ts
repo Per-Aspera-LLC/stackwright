@@ -8,7 +8,7 @@ export { outputResult, outputError } from './utils/json-output';
 // Pure command functions — callable as a library without spawning a subprocess
 export { scaffold } from './commands/scaffold';
 export { listPages, addPage, validatePages, readPage, writePage } from './commands/page';
-export { validateSite, readSiteConfig } from './commands/site';
+export { validateSite, readSiteConfig, writeSiteConfig } from './commands/site';
 export { getTypes } from './commands/types';
 export { runPrebuildCommand } from './commands/prebuild';
 export { listThemes } from './commands/theme';
@@ -30,6 +30,7 @@ export type {
   SiteValidateResult,
   SiteValidationError,
   ReadSiteConfigResult,
+  WriteSiteConfigResult,
 } from './commands/site';
 export type { TypesResult, ContentTypeEntry, FieldEntry } from './commands/types';
 export type { PrebuildResult } from './commands/prebuild';
