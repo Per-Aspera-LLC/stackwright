@@ -3,13 +3,6 @@ import path from 'path';
 import yaml from 'js-yaml';
 import type { SiteConfig } from '@stackwright/types';
 import type { PageContent } from '@stackwright/types';
-import { siteConfigSchema, pageContentSchema } from './schema-loader';
-import { generateDefaults } from './schema-defaults';
-import {
-  getSiteConfigHints,
-  getRootPageHints,
-  getGettingStartedHints,
-} from './scaffold-hints';
 
 // ---------------------------------------------------------------------------
 // Template Processing
@@ -80,24 +73,10 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
     await processFile(file, content);
   }
 
-  // Generate dynamic files via schema introspection + hints
-  const siteConfig = generateDefaults(
-    siteConfigSchema as any,
-    getSiteConfigHints(siteTitle, themeId, year)
-  ) as SiteConfig;
-  await processYamlFile('stackwright.yml', siteConfig);
-
-  const rootPage = generateDefaults(
-    pageContentSchema as any,
-    getRootPageHints(siteTitle)
-  ) as PageContent;
-  await processYamlFile('pages/content.yml', rootPage);
-
-  const gettingStartedPage = generateDefaults(
-    pageContentSchema as any,
-    getGettingStartedHints()
-  ) as PageContent;
-  await processYamlFile('pages/getting-started/content.yml', gettingStartedPage);
+  // Generate dynamic files
+  await processYamlFile('stackwright.yml', buildSiteConfig(siteTitle, themeId, year));
+  await processYamlFile('pages/content.yml', buildRootPageContent(siteTitle));
+  await processYamlFile('pages/getting-started/content.yml', buildGettingStartedPageContent());
 
   // Generate package.json with proper formatting
   const packageJsonContent = JSON.stringify(buildPackageJson(projectName), null, 2) + '\n';
@@ -111,8 +90,188 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
 }
 
 // ---------------------------------------------------------------------------
-// Non-schema builders (npm/TypeScript config — not Stackwright grammar)
+// Dynamic content builders (same as before but can be enhanced)
 // ---------------------------------------------------------------------------
+
+function buildSiteConfig(siteTitle: string, themeId: string, year: number): SiteConfig {
+  return {
+    title: siteTitle,
+    themeName: themeId,
+    appBar: {
+      titleText: siteTitle,
+      backgroundColor: 'primary',
+      textColor: 'secondary',
+    },
+    navigation: [
+      { label: 'Home', href: '/' },
+      { label: 'Getting Started', href: '/getting-started' },
+    ],
+    footer: {
+      backgroundColor: 'primary',
+      textColor: 'secondary',
+      copyright: `© ${year} ${siteTitle}. All rights reserved.`,
+      links: [],
+    },
+    customTheme: {
+      id: 'custom',
+      name: `${siteTitle} Theme`,
+      description: `Custom theme for ${siteTitle}`,
+      colors: {
+        primary: '#1976d2',
+        secondary: '#ffffff',
+        accent: '#ff9800',
+        background: '#fdfdfd',
+        surface: '#f5f5f5',
+        text: '#1a1a1a',
+        textSecondary: '#666666',
+      },
+      typography: {
+        fontFamily: {
+          primary: 'Inter',
+          secondary: 'Inter',
+        },
+        scale: {
+          xs: '0.75rem',
+          sm: '0.875rem',
+          base: '1rem',
+          lg: '1.125rem',
+          xl: '1.25rem',
+          '2xl': '1.5rem',
+          '3xl': '1.875rem',
+        },
+      },
+      spacing: {
+        xs: '0.5rem',
+        sm: '0.75rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem',
+        '2xl': '3rem',
+      },
+    },
+  };
+}
+
+function buildRootPageContent(siteTitle: string): PageContent {
+  return {
+    content: {
+      content_items: [
+        {
+          main: {
+            label: 'hero-section',
+            heading: {
+              text: `Welcome to ${siteTitle}`,
+              textSize: 'h1',
+              textColor: 'secondary',
+            },
+            textBlocks: [
+              {
+                text: 'Your new Stackwright site is ready. Pages are YAML files — edit pages/content.yml to update this page.',
+                textSize: 'h6',
+              },
+              {
+                text: 'Add more pages by creating subdirectories under pages/. Each directory with a content.yml becomes a route.',
+                textSize: 'body1',
+              },
+            ],
+            buttons: [
+              {
+                label: 'get-started-btn',
+                text: 'Get Started',
+                textSize: 'body1',
+                variant: 'contained',
+                href: '/getting-started',
+                bgColor: 'secondary',
+                textColor: 'primary',
+                size: 'large',
+              },
+            ],
+          },
+        },
+      ],
+    },
+  };
+}
+
+function buildGettingStartedPageContent(): PageContent {
+  return {
+    content: {
+      content_items: [
+        {
+          main: {
+            label: 'gs-hero',
+            heading: {
+              text: 'Getting Started',
+              textSize: 'h1',
+              textColor: 'secondary',
+            },
+            textBlocks: [
+              {
+                text: 'This page lives at pages/getting-started/content.yml. The directory name becomes the URL slug.',
+                textSize: 'body1',
+              },
+            ],
+          },
+        },
+        {
+          main: {
+            label: 'gs-add-page',
+            heading: {
+              text: 'Adding Pages',
+              textSize: 'h2',
+            },
+            textBlocks: [
+              {
+                text: 'Use the CLI to add a new page, or create the directory and content.yml manually:',
+                textSize: 'body1',
+              },
+            ],
+            background: '#f5f5f5',
+          },
+        },
+        {
+          code_block: {
+            label: 'gs-add-page-code',
+            language: 'bash',
+            code: 'stackwright page add my-page --heading "My New Page"',
+            background: '#f5f5f5',
+          },
+        },
+        {
+          main: {
+            label: 'gs-content-types',
+            heading: {
+              text: 'Content Types',
+              textSize: 'h2',
+            },
+            textBlocks: [
+              {
+                text: 'Each entry in content_items uses a key that maps to a component: main, timeline, carousel, icon_grid, tabbed_content, code_block.',
+                textSize: 'body1',
+              },
+            ],
+          },
+        },
+        {
+          main: {
+            label: 'gs-theme',
+            heading: {
+              text: 'Customizing the Theme',
+              textSize: 'h2',
+            },
+            textBlocks: [
+              {
+                text: 'Edit the customTheme block in stackwright.yml to change colors and typography across every page instantly.',
+                textSize: 'body1',
+              },
+            ],
+            background: '#f5f5f5',
+          },
+        },
+      ],
+    },
+  };
+}
 
 function buildPackageJson(projectName: string): object {
   // MAINTENANCE: Update these versions when cutting major releases of Stackwright.
