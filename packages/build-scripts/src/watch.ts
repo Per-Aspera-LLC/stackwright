@@ -8,14 +8,9 @@
  *
  * Uses Node.js built-in `fs.watch` with `recursive: true` (supported on
  * Node 20+, which is the minimum engine requirement for this package).
- *
- * Includes a lightweight SSE (Server-Sent Events) server that notifies the
- * browser to reload when content changes. The client-side listener lives in
- * `@stackwright/core`'s `useDevContentReload` hook (used by DynamicPage).
  */
 
 import fs from 'fs';
-import http from 'http';
 import path from 'path';
 import { runPrebuild } from './prebuild';
 
@@ -23,59 +18,10 @@ const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.sv
 const YAML_EXTENSIONS = new Set(['.yml', '.yaml']);
 const DEBOUNCE_MS = 150;
 
-/** Default port for the SSE reload server. Matches the client in @stackwright/core. */
-export const DEFAULT_RELOAD_PORT = 35729;
-
 function isWatchedFile(filename: string): boolean {
   const ext = path.extname(filename).toLowerCase();
   return YAML_EXTENSIONS.has(ext) || IMAGE_EXTENSIONS.has(ext);
 }
-
-// ── SSE reload server ────────────────────────────────────────────────────────
-
-let sseClients: http.ServerResponse[] = [];
-
-function startReloadServer(port: number): http.Server {
-  const server = http.createServer((req, res) => {
-    if (req.url === '/__stackwright_sse') {
-      res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        'Access-Control-Allow-Origin': '*',
-      });
-      sseClients.push(res);
-      req.on('close', () => {
-        sseClients = sseClients.filter(c => c !== res);
-      });
-    } else {
-      res.writeHead(404);
-      res.end();
-    }
-  });
-
-  server.listen(port, () => {
-    console.log(`🔄 Content reload server on port ${port}`);
-  });
-
-  server.on('error', (err: NodeJS.ErrnoException) => {
-    if (err.code === 'EADDRINUSE') {
-      console.warn(`⚠️  Port ${port} in use — browser auto-reload disabled. Content will still rebuild; refresh manually.`);
-    } else {
-      console.warn(`⚠️  Reload server failed: ${err.message}`);
-    }
-  });
-
-  return server;
-}
-
-function notifyContentChange() {
-  for (const client of sseClients) {
-    client.write(`event: content-change\ndata: ${Date.now()}\n\n`);
-  }
-}
-
-// ── Main ─────────────────────────────────────────────────────────────────────
 
 export function runWatch(projectRoot = process.cwd()): void {
   const pagesDir = path.join(projectRoot, 'pages');
@@ -83,8 +29,6 @@ export function runWatch(projectRoot = process.cwd()): void {
   const siteConfigFile = siteConfigCandidates
     .map(name => path.join(projectRoot, name))
     .find(p => fs.existsSync(p));
-
-  const reloadPort = parseInt(process.env.STACKWRIGHT_RELOAD_PORT || '', 10) || DEFAULT_RELOAD_PORT;
 
   // Initial full build
   try {
@@ -94,9 +38,6 @@ export function runWatch(projectRoot = process.cwd()): void {
     console.log('👀 Watching for content changes (will retry on next change)...\n');
   }
 
-  // Start SSE server for browser auto-reload
-  const reloadServer = startReloadServer(reloadPort);
-
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   const watchers: fs.FSWatcher[] = [];
 
@@ -105,7 +46,6 @@ export function runWatch(projectRoot = process.cwd()): void {
     debounceTimer = setTimeout(() => {
       try {
         runPrebuild(projectRoot);
-        notifyContentChange();
         console.log(`👀 Rebuilt (${reason})\n`);
       } catch (err) {
         console.error(`❌ ${(err as Error).message}`);
@@ -140,8 +80,6 @@ export function runWatch(projectRoot = process.cwd()): void {
   function cleanup() {
     if (debounceTimer) clearTimeout(debounceTimer);
     for (const w of watchers) w.close();
-    reloadServer.close();
-    sseClients = [];
     console.log('\n👋 Watcher stopped.');
     process.exit(0);
   }
