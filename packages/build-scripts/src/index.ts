@@ -5,4 +5,3 @@
  * For CLI usage, use the `stackwright-prebuild` binary.
  */
 export { runPrebuild } from './prebuild';
-export { runWatch } from './watch';

@@ -205,7 +205,8 @@ export function runPrebuild(projectRoot = process.cwd()): void {
   // 1. Process site config
   const siteConfigFile = siteConfigCandidates.find(p => fs.existsSync(p));
   if (!siteConfigFile) {
-    throw new Error(`Site config not found. Expected stackwright.yml in: ${projectRoot}`);
+    console.error(`❌ Site config not found. Expected stackwright.yml in: ${projectRoot}`);
+    process.exit(1);
   }
 
   console.log('\n📄 Processing site config...');
@@ -213,13 +214,12 @@ export function runPrebuild(projectRoot = process.cwd()): void {
 
   const siteValidation = siteConfigSchema.safeParse(rawConfig);
   if (!siteValidation.success) {
-    const details = siteValidation.error.issues
-      .map(issue => {
-        const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
-        return `  ${field}: ${issue.message}`;
-      })
-      .join('\n');
-    throw new Error(`stackwright.yml is invalid:\n${details}`);
+    console.error('❌ stackwright.yml is invalid:');
+    for (const issue of siteValidation.error.issues) {
+      const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+      console.error(`   ${field}: ${issue.message}`);
+    }
+    process.exit(1);
   }
 
   const processedConfig = processSiteConfig(rawConfig, projectRoot, imagesDir);
@@ -243,13 +243,12 @@ export function runPrebuild(projectRoot = process.cwd()): void {
 
     const pageValidation = pageContentSchema.safeParse(rawContent);
     if (!pageValidation.success) {
-      const details = pageValidation.error.issues
-        .map(issue => {
-          const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
-          return `  ${field}: ${issue.message}`;
-        })
-        .join('\n');
-      throw new Error(`Invalid content: ${filePath}\n${details}`);
+      console.error(`❌ Invalid content: ${filePath}`);
+      for (const issue of pageValidation.error.issues) {
+        const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+        console.error(`   ${field}: ${issue.message}`);
+      }
+      process.exit(1);
     }
 
     // Warn about unknown content type keys in the raw YAML (before Zod strips them)
@@ -283,18 +282,5 @@ export function runPrebuild(projectRoot = process.cwd()): void {
 
 // Run when executed directly as a CLI (not when required as a module)
 if (require.main === module) {
-  const watchMode = process.argv.includes('--watch');
-
-  if (watchMode) {
-    // Dynamic import to avoid loading watch code in non-watch mode
-    const { runWatch } = require('./watch');
-    runWatch();
-  } else {
-    try {
-      runPrebuild();
-    } catch (err) {
-      console.error(`❌ ${(err as Error).message}`);
-      process.exit(1);
-    }
-  }
+  runPrebuild();
 }
