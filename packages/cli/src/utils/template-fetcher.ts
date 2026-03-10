@@ -49,7 +49,12 @@ function fetchTarball(repo: string, ref: string): Promise<Buffer> {
       },
       (res) => {
         // Follow redirects (GitHub returns 302 to a CDN URL)
-        if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        if (
+          res.statusCode &&
+          res.statusCode >= 300 &&
+          res.statusCode < 400 &&
+          res.headers.location
+        ) {
           https
             .get(res.headers.location, { timeout: FETCH_TIMEOUT_MS }, (redirectRes) => {
               const chunks: Buffer[] = [];
