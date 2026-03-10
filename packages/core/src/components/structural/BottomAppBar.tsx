@@ -12,12 +12,8 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
   const theme = useSafeTheme();
   const currentYear = new Date().getFullYear();
 
-  const backgroundColor = footer?.backgroundColor
-    ? resolveColor(footer?.backgroundColor, theme.colors)
-    : theme.colors.primary;
-  const textColor = footer?.textColor
-    ? resolveColor(footer.textColor, theme.colors)
-    : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, backgroundColor);
+  const backgroundColor = footer?.backgroundColor ? resolveColor(footer?.backgroundColor, theme.colors) : theme.colors.primary;
+  const textColor = footer?.textColor ? resolveColor(footer.textColor, theme.colors) : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, backgroundColor)
 
   return (
     <footer
@@ -42,30 +38,27 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
           padding: '0 20px',
         }}
       >
-        {footer?.links &&
-          footer.links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              style={{
-                color: 'inherit',
-                textDecoration: 'none',
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
-
-        {footer?.socialLinks && (
-          <div
+        {footer?.links && footer.links.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
             style={{
-              display: 'flex',
-              flexDirection: footer.socialLinks.length > 3 ? 'column' : 'row',
-              gap: '8px',
+              color: 'inherit',
+              textDecoration: 'none',
             }}
           >
+            {link.label}
+          </a>
+        ))}
+
+        {footer?.socialLinks && (
+          <div style={{
+            display: 'flex',
+            flexDirection: footer.socialLinks.length > 3 ? 'column' : 'row',
+            gap: '8px',
+          }}>
             <h4 style={{ margin: 0, paddingLeft: '40px', fontWeight: 'bold' }}>
-              {footer?.socialText || 'Social Media'}
+              {footer?.socialText || "Social Media"}
             </h4>
             {footer.socialLinks.map((social, index) => (
               <ThemedButton key={social.href || index} button={social} />

@@ -1,7 +1,7 @@
 // packages/core/tests/components/DynamicPage.test.tsx
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import DynamicPage from '../../src/components/DynamicPage';
+import DynamicPage  from '../../src/components/DynamicPage';
 import { ButtonVariant, TypographyVariant } from '@stackwright/types';
 
 describe('DynamicPage', () => {

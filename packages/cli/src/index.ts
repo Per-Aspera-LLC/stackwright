@@ -18,27 +18,11 @@ export { stageChanges, openPr } from './commands/git-ops';
 
 // Result types
 export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
-export type {
-  PageSummary,
-  PageListResult,
-  PageValidateResult,
-  AddPageResult,
-  ReadPageResult,
-  WritePageResult,
-} from './commands/page';
-export type {
-  SiteValidateResult,
-  SiteValidationError,
-  ReadSiteConfigResult,
-} from './commands/site';
+export type { PageSummary, PageListResult, PageValidateResult, AddPageResult, ReadPageResult, WritePageResult } from './commands/page';
+export type { SiteValidateResult, SiteValidationError, ReadSiteConfigResult } from './commands/site';
 export type { TypesResult, ContentTypeEntry, FieldEntry } from './commands/types';
 export type { PrebuildResult } from './commands/prebuild';
 export type { ThemeListResult } from './commands/theme';
 export type { InfoResult, PackageVersions } from './commands/info';
 export type { GenerateAgentDocsResult } from './commands/generate-agent-docs';
-export type {
-  StageChangesResult,
-  StageChangesOptions,
-  OpenPrResult,
-  OpenPrOptions,
-} from './commands/git-ops';
+export type { StageChangesResult, StageChangesOptions, OpenPrResult, OpenPrOptions } from './commands/git-ops';

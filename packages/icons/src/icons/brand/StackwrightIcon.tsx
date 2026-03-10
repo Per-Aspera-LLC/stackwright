@@ -1,12 +1,7 @@
 import React from 'react';
 import { IconProps } from '../../registry/iconRegistry';
 
-export function StackwrightIcon({
-  size = 24,
-  color = 'currentColor',
-  className,
-  style,
-}: IconProps) {
+export function StackwrightIcon({ size = 24, color = 'currentColor', className, style }: IconProps) {
   return (
     <svg
       width={size}

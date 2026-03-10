@@ -1,7 +1,4 @@
-import {
-  StackwrightComponents,
-  StackwrightComponentRegistry,
-} from '../interfaces/stackwright-components';
+import { StackwrightComponents, StackwrightComponentRegistry } from '../interfaces/stackwright-components';
 
 // Debug logging utility for stackwright registry
 const debugLogStackwright = (message: string, data?: any) => {
@@ -15,7 +12,7 @@ class StackwrightComponentRegistryImpl implements StackwrightComponentRegistry {
 
   register(components: Partial<StackwrightComponents>): void {
     debugLogStackwright('Registering components:', Object.keys(components));
-
+    
     for (const [key, component] of Object.entries(components)) {
       debugLogStackwright(`Registering ${key}:`, {
         type: typeof component,
@@ -24,56 +21,48 @@ class StackwrightComponentRegistryImpl implements StackwrightComponentRegistry {
         isFunction: typeof component === 'function',
         isObject: typeof component === 'object',
         keys: typeof component === 'object' && component !== null ? Object.keys(component) : 'N/A',
-        hasDefault: typeof component === 'object' && component !== null && 'default' in component,
+        hasDefault: typeof component === 'object' && component !== null && 'default' in component
       });
     }
-
+    
     this.components = { ...this.components, ...components };
-    debugLogStackwright(
-      'All registered components after registration:',
-      Object.keys(this.components)
-    );
+    debugLogStackwright('All registered components after registration:', Object.keys(this.components));
   }
 
   get<K extends keyof StackwrightComponents>(componentName: K): StackwrightComponents[K] {
     debugLogStackwright(`Registry get called for: ${String(componentName)}`);
     debugLogStackwright('Current registered components:', Object.keys(this.components));
-
+    
     const component = this.components[componentName];
     debugLogStackwright(`Component lookup result for ${String(componentName)}:`, {
       found: !!component,
       type: typeof component,
       name: component?.name,
-      constructor: component?.constructor?.name,
+      constructor: component?.constructor?.name
     });
-
+    
     if (!component) {
       debugLogStackwright(`Component not found: ${String(componentName)}`);
       throw new Error(
         `Stackwright component '${String(componentName)}' is not registered. ` +
-          `Please register it using stackwrightRegistry.register() before use.`
+        `Please register it using stackwrightRegistry.register() before use.`
       );
     }
     return component as StackwrightComponents[K];
   }
 
   getAll(): StackwrightComponents {
-    const requiredComponents: (keyof StackwrightComponents)[] = [
-      'Image',
-      'Link',
-      'Router',
-      'Route',
-    ];
-
+    const requiredComponents: (keyof StackwrightComponents)[] = ['Image', 'Link', 'Router', 'Route'];
+    
     for (const componentName of requiredComponents) {
       if (!this.components[componentName]) {
         throw new Error(
           `Required stackwright component '${componentName}' is not registered. ` +
-            `Please register all required components before use.`
+          `Please register all required components before use.`
         );
       }
     }
-
+    
     return this.components as StackwrightComponents;
   }
 
@@ -99,7 +88,7 @@ export const stackwrightRegistry = new StackwrightComponentRegistryImpl();
 export const getStackwrightImage = () => {
   debugLogStackwright('Getting Image component');
   debugLogStackwright('Registered components:', stackwrightRegistry.getRegisteredComponents());
-
+  
   try {
     const imageComponent = stackwrightRegistry.get('Image');
     debugLogStackwright('Retrieved Image component:', {
@@ -108,14 +97,8 @@ export const getStackwrightImage = () => {
       constructor: imageComponent?.constructor?.name,
       isFunction: typeof imageComponent === 'function',
       isObject: typeof imageComponent === 'object',
-      keys:
-        typeof imageComponent === 'object' && imageComponent !== null
-          ? Object.keys(imageComponent)
-          : 'N/A',
-      hasDefault:
-        typeof imageComponent === 'object' &&
-        imageComponent !== null &&
-        'default' in imageComponent,
+      keys: typeof imageComponent === 'object' && imageComponent !== null ? Object.keys(imageComponent) : 'N/A',
+      hasDefault: typeof imageComponent === 'object' && imageComponent !== null && 'default' in imageComponent
     });
     return imageComponent;
   } catch (error) {

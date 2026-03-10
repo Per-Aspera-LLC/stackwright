@@ -16,12 +16,7 @@ const sizeStyles: Record<string, React.CSSProperties> = {
   large: { padding: '8px 22px', fontSize: '0.9375rem' },
 };
 
-const variantStyles = (
-  variant: string | undefined,
-  bgColor: string,
-  textColor: string,
-  hoverColor: string
-): React.CSSProperties => {
+const variantStyles = (variant: string | undefined, bgColor: string, textColor: string, hoverColor: string): React.CSSProperties => {
   switch (variant) {
     case 'outlined':
       return { backgroundColor: 'transparent', color: bgColor, border: `1px solid ${bgColor}` };
@@ -32,15 +27,14 @@ const variantStyles = (
   }
 };
 
-export function ThemedButton({ button, className }: ThemedButtonProps) {
+export function ThemedButton({
+  button,
+  className
+}: ThemedButtonProps) {
   const theme = useSafeTheme();
 
-  const buttonColor = button.bgColor
-    ? resolveColor(button.bgColor, theme.colors)
-    : theme.colors.primary;
-  const buttonTextColor = button.textColor
-    ? resolveColor(button.textColor, theme.colors)
-    : theme.colors.text;
+  const buttonColor = button.bgColor ? resolveColor(button.bgColor, theme.colors) : theme.colors.primary;
+  const buttonTextColor = button.textColor ? resolveColor(button.textColor, theme.colors) : theme.colors.text;
   const hoverColor = getHoverColor(buttonColor);
   const buttonSize = button.variantSize || 'medium';
 
@@ -56,7 +50,7 @@ export function ThemedButton({ button, className }: ThemedButtonProps) {
     fontFamily: 'inherit',
     lineHeight: 1.75,
     transition: 'background-color 0.2s, box-shadow 0.2s',
-    ...(sizeStyles[buttonSize] || sizeStyles.medium),
+    ...sizeStyles[buttonSize] || sizeStyles.medium,
     ...variantStyles(button.variant, buttonColor, buttonTextColor, hoverColor),
   };
 
@@ -87,4 +81,4 @@ export function ThemedButton({ button, className }: ThemedButtonProps) {
       {content}
     </button>
   );
-}
+}  

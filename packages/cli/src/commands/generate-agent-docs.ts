@@ -64,14 +64,8 @@ function resolveSchema(schema: AnySchema): AnySchema {
   let changed = true;
   while (changed) {
     changed = false;
-    if (s.def.type === 'lazy') {
-      s = s.def.getter() as AnySchema;
-      changed = true;
-    }
-    if (s.def.type === 'optional') {
-      s = s.def.innerType as AnySchema;
-      changed = true;
-    }
+    if (s.def.type === 'lazy')     { s = s.def.getter() as AnySchema;   changed = true; }
+    if (s.def.type === 'optional') { s = s.def.innerType as AnySchema; changed = true; }
   }
   return s;
 }
@@ -84,16 +78,11 @@ function zodSchemaToTypeString(schema: AnySchema): string {
 
   const def = resolved.def;
   switch (def.type) {
-    case 'string':
-      return 'string';
-    case 'number':
-      return 'number';
-    case 'boolean':
-      return 'boolean';
-    case 'optional':
-      return zodSchemaToTypeString(def.innerType as AnySchema);
-    case 'lazy':
-      return zodSchemaToTypeString(def.getter() as AnySchema);
+    case 'string':   return 'string';
+    case 'number':   return 'number';
+    case 'boolean':  return 'boolean';
+    case 'optional': return zodSchemaToTypeString(def.innerType as AnySchema);
+    case 'lazy':     return zodSchemaToTypeString(def.getter() as AnySchema);
     case 'enum': {
       const values: string[] = def.entries ? Object.keys(def.entries) : [];
       return values.map((v) => `\`${v}\``).join(' | ');
@@ -114,10 +103,8 @@ function zodSchemaToTypeString(schema: AnySchema): string {
       });
       return members.join(' | ');
     }
-    case 'object':
-      return 'object';
-    default:
-      return def.type ?? 'unknown';
+    case 'object': return 'object';
+    default:       return def.type ?? 'unknown';
   }
 }
 
@@ -139,7 +126,9 @@ function extractFields(schema: AnySchema): FieldInfo[] {
 }
 
 function fmtField(field: FieldInfo, showOptMark = false): string {
-  const namePart = showOptMark && !field.required ? `\`${field.name}\`?` : `\`${field.name}\``;
+  const namePart = showOptMark && !field.required
+    ? `\`${field.name}\`?`
+    : `\`${field.name}\``;
   return `${namePart} (${field.type})`;
 }
 
@@ -162,19 +151,16 @@ function generateContentTypeTable(): string {
   }
   if (!itemSchema || itemSchema.def.type !== 'object') return '';
 
-  const lines = ['| YAML key | Required fields | Optional fields |', '|---|---|---|'];
+  const lines = [
+    '| YAML key | Required fields | Optional fields |',
+    '|---|---|---|',
+  ];
 
   const shape = itemSchema.def.shape as Record<string, AnySchema>;
   for (const [yamlKey, fieldSchema] of Object.entries(shape)) {
     const fields = extractFields(fieldSchema);
-    const required = fields
-      .filter((f) => f.required)
-      .map((f) => fmtField(f))
-      .join(', ');
-    const optional = fields
-      .filter((f) => !f.required)
-      .map((f) => fmtField(f))
-      .join(', ');
+    const required = fields.filter((f) => f.required).map((f) => fmtField(f)).join(', ');
+    const optional = fields.filter((f) => !f.required).map((f) => fmtField(f)).join(', ');
     lines.push(`| \`${yamlKey}\` | ${required} | ${optional || '—'} |`);
   }
 
@@ -183,16 +169,19 @@ function generateContentTypeTable(): string {
 
 function generateSubTypeTable(): string {
   const subTypes: Array<{ name: string; schema: AnySchema }> = [
-    { name: 'TextBlock', schema: textBlockSchema as unknown as AnySchema },
+    { name: 'TextBlock',     schema: textBlockSchema as unknown as AnySchema },
     { name: 'ButtonContent', schema: buttonContentSchema as unknown as AnySchema },
-    { name: 'MediaItem', schema: mediaItemSchema as unknown as AnySchema },
-    { name: 'ImageContent', schema: imageContentSchema as unknown as AnySchema },
-    { name: 'IconContent', schema: iconContentSchema as unknown as AnySchema },
-    { name: 'CarouselItem', schema: carouselItemSchema as unknown as AnySchema },
-    { name: 'TimelineItem', schema: timelineItemSchema as unknown as AnySchema },
+    { name: 'MediaItem',     schema: mediaItemSchema as unknown as AnySchema },
+    { name: 'ImageContent',  schema: imageContentSchema as unknown as AnySchema },
+    { name: 'IconContent',   schema: iconContentSchema as unknown as AnySchema },
+    { name: 'CarouselItem',  schema: carouselItemSchema as unknown as AnySchema },
+    { name: 'TimelineItem',  schema: timelineItemSchema as unknown as AnySchema },
   ];
 
-  const lines = ['| Type | Fields |', '|---|---|'];
+  const lines = [
+    '| Type | Fields |',
+    '|---|---|',
+  ];
 
   for (const { name, schema } of subTypes) {
     const resolved = resolveSchema(schema);
@@ -212,9 +201,7 @@ function generateSubTypeTable(): string {
         }
         return 'object';
       });
-      lines.push(
-        `| \`${name}\` | Discriminated union: ${members.join(' \\| ')}. \`type\` field is required and acts as discriminator. |`
-      );
+      lines.push(`| \`${name}\` | Discriminated union: ${members.join(' \\| ')}. \`type\` field is required and acts as discriminator. |`);
     } else {
       const fields = extractFields(schema);
       const fieldList = fields.map((f) => fmtField(f, true)).join(', ');
@@ -257,10 +244,7 @@ function buildGeneratedBlock(): string {
 // File update logic
 // ---------------------------------------------------------------------------
 
-function updateAgentsMd(
-  filePath: string,
-  newBlock: string
-): 'updated' | 'up-to-date' | 'no-markers' | 'not-found' {
+function updateAgentsMd(filePath: string, newBlock: string): 'updated' | 'up-to-date' | 'no-markers' | 'not-found' {
   if (!fs.existsSync(filePath)) return 'not-found';
 
   const current = fs.readFileSync(filePath, 'utf-8');
@@ -298,18 +282,10 @@ export function generateAgentDocs(root: string = process.cwd()): GenerateAgentDo
   for (const filePath of targetFiles) {
     const result = updateAgentsMd(filePath, newBlock);
     switch (result) {
-      case 'updated':
-        filesUpdated.push(filePath);
-        break;
-      case 'up-to-date':
-        filesSkipped.push(filePath);
-        break;
-      case 'no-markers':
-        errors.push(`Markers not found in: ${filePath}`);
-        break;
-      case 'not-found':
-        errors.push(`File not found: ${filePath}`);
-        break;
+      case 'updated':    filesUpdated.push(filePath); break;
+      case 'up-to-date': filesSkipped.push(filePath); break;
+      case 'no-markers': errors.push(`Markers not found in: ${filePath}`); break;
+      case 'not-found':  errors.push(`File not found: ${filePath}`); break;
     }
   }
 

@@ -22,11 +22,11 @@ function useMediaQuery(query: string): boolean {
 
 // Default breakpoints matching standard values
 const DEFAULT_BREAKPOINTS = {
-  xs: '(max-width:599px)',
-  sm: '(min-width:600px) and (max-width:899px)',
-  md: '(min-width:900px) and (max-width:1199px)',
-  lg: '(min-width:1200px) and (max-width:1535px)',
-  xl: '(min-width:1536px)',
+  xs: "(max-width:599px)",
+  sm: "(min-width:600px) and (max-width:899px)", 
+  md: "(min-width:900px) and (max-width:1199px)",
+  lg: "(min-width:1200px) and (max-width:1535px)",
+  xl: "(min-width:1536px)"
 };
 
 /**
@@ -60,19 +60,19 @@ export function useBreakpoints() {
     isMd,
     isLg,
     isXl,
-
+    
     // Up breakpoints (at breakpoint and above)
     isSmUp,
     isMdUp,
     isLgUp,
     isXlUp,
-
+    
     // Down breakpoints (at breakpoint and below)
     isSmDown,
     isMdDown,
     isLgDown,
-
+    
     // Raw breakpoint values for custom usage
-    breakpoints,
+    breakpoints
   };
 }

@@ -19,16 +19,7 @@ import http from 'http';
 import path from 'path';
 import { runPrebuild } from './prebuild';
 
-const IMAGE_EXTENSIONS = new Set([
-  '.jpg',
-  '.jpeg',
-  '.png',
-  '.gif',
-  '.webp',
-  '.svg',
-  '.bmp',
-  '.ico',
-]);
+const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico']);
 const YAML_EXTENSIONS = new Set(['.yml', '.yaml']);
 const DEBOUNCE_MS = 150;
 
@@ -50,12 +41,12 @@ function startReloadServer(port: number): http.Server {
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
+        'Connection': 'keep-alive',
         'Access-Control-Allow-Origin': '*',
       });
       sseClients.push(res);
       req.on('close', () => {
-        sseClients = sseClients.filter((c) => c !== res);
+        sseClients = sseClients.filter(c => c !== res);
       });
     } else {
       res.writeHead(404);
@@ -69,9 +60,7 @@ function startReloadServer(port: number): http.Server {
 
   server.on('error', (err: NodeJS.ErrnoException) => {
     if (err.code === 'EADDRINUSE') {
-      console.warn(
-        `⚠️  Port ${port} in use — browser auto-reload disabled. Content will still rebuild; refresh manually.`
-      );
+      console.warn(`⚠️  Port ${port} in use — browser auto-reload disabled. Content will still rebuild; refresh manually.`);
     } else {
       console.warn(`⚠️  Reload server failed: ${err.message}`);
     }
@@ -92,8 +81,8 @@ export function runWatch(projectRoot = process.cwd()): void {
   const pagesDir = path.join(projectRoot, 'pages');
   const siteConfigCandidates = ['stackwright.yml', 'stackwright.yaml'];
   const siteConfigFile = siteConfigCandidates
-    .map((name) => path.join(projectRoot, name))
-    .find((p) => fs.existsSync(p));
+    .map(name => path.join(projectRoot, name))
+    .find(p => fs.existsSync(p));
 
   const reloadPort = parseInt(process.env.STACKWRIGHT_RELOAD_PORT || '', 10) || DEFAULT_RELOAD_PORT;
 

@@ -18,7 +18,9 @@ export function registerPageTools(server: McpServer): void {
     },
     async ({ projectRoot }) => {
       const result = listPages(pagesDir(projectRoot));
-      const lines = result.pages.map((p) => `  ${p.slug}${p.heading ? `  —  ${p.heading}` : ''}`);
+      const lines = result.pages.map(
+        (p) => `  ${p.slug}${p.heading ? `  —  ${p.heading}` : ''}`
+      );
       const text =
         result.pages.length === 0
           ? 'No pages found.'
@@ -51,10 +53,9 @@ export function registerPageTools(server: McpServer): void {
           content: [
             {
               type: 'text',
-              text:
-                code === 'PAGE_NOT_FOUND'
-                  ? `Page not found: "${slug}". Use stackwright_list_pages to see available pages.`
-                  : `Error reading page: ${String((err as Error).message)}`,
+              text: code === 'PAGE_NOT_FOUND'
+                ? `Page not found: "${slug}". Use stackwright_list_pages to see available pages.`
+                : `Error reading page: ${String((err as Error).message)}`,
             },
           ],
           isError: true,
@@ -65,7 +66,7 @@ export function registerPageTools(server: McpServer): void {
 
   server.tool(
     'stackwright_write_page',
-    "Write or update a page's YAML content. Validates against the content schema before writing — invalid YAML is rejected with field-level errors.",
+    'Write or update a page\'s YAML content. Validates against the content schema before writing — invalid YAML is rejected with field-level errors.',
     {
       projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
       slug: z.string().describe('Page slug, e.g. "about" or "team/leadership"'),
@@ -90,10 +91,9 @@ export function registerPageTools(server: McpServer): void {
           content: [
             {
               type: 'text',
-              text:
-                code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR'
-                  ? message
-                  : `Error writing page: ${message}`,
+              text: code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR'
+                ? message
+                : `Error writing page: ${message}`,
             },
           ],
           isError: true,
@@ -136,7 +136,9 @@ export function registerPageTools(server: McpServer): void {
         const target = slug ? `"${slug}"` : 'all pages';
         return { content: [{ type: 'text', text: `✓ Validation passed for ${target}.` }] };
       }
-      const errorLines = result.errors.map((e) => `  [${e.slug}] ${e.message}`);
+      const errorLines = result.errors.map(
+        (e) => `  [${e.slug}] ${e.message}`
+      );
       return {
         content: [
           {

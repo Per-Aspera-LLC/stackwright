@@ -6,6 +6,6 @@ import '@testing-library/jest-dom/vitest';
 beforeAll(() => {
   // Register test components using existing defaults
   stackwrightRegistry.register({
-    Image: DefaultStackwrightImage,
-  });
+        Image: DefaultStackwrightImage
+    });
 });

@@ -1,7 +1,7 @@
 // packages/core/tests/integration.test.tsx
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import SlugPage from '../src/pages/SlugPage';
+import  SlugPage  from '../src/pages/SlugPage';
 import { describe, expect, it } from 'vitest';
 import { ButtonVariant, TypographyVariant } from '@stackwright/types';
 
@@ -41,9 +41,9 @@ describe('Integration Tests', () => {
     const siteConfig = {
       title: 'Stackwright',
       navigation: [
-        { label: 'Home', href: '/' },
-        { label: 'Docs', href: 'docs' },
-      ],
+          { label: 'Home', href: '/' },
+          { label: 'Docs', href: 'docs' },
+        ],
       appBar: {
         titleText: 'Stackwright',
         menuItems: [
@@ -55,7 +55,9 @@ describe('Integration Tests', () => {
       },
       footer: {
         copyright: 'Â© 2023 Stackwright',
-        buttons: [{ text: 'GitHub', href: 'https://github.com/stackwright' }],
+        buttons: [
+          { text: 'GitHub', href: 'https://github.com/stackwright' },
+        ],
       },
     };
     render(<SlugPage pageContent={pageContent} siteConfig={siteConfig} />);

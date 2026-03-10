@@ -24,3 +24,4 @@ export const nextJSStackwrightComponents = {
   Router: NextStackwrightRouter,
   Route: NextStackwrightRoute,
 };
+

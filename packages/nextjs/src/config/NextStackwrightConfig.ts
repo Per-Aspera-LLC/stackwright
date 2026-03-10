@@ -19,14 +19,17 @@ export function createStackwrightNextConfig(userConfig: NextConfig = {}): NextCo
         // Enable watching of YAML files for hot reloading
         config.watchOptions = {
           ...config.watchOptions,
-          ignored:
-            config.watchOptions?.ignored?.filter?.((ignore: any) => {
-              const ignoreStr = ignore?.toString?.() || '';
-              return !ignoreStr.includes('.yml') && !ignoreStr.includes('.yaml');
-            }) || [],
+          ignored: config.watchOptions?.ignored?.filter?.((ignore: any) => {
+            const ignoreStr = ignore?.toString?.() || '';
+            return !ignoreStr.includes('.yml') && !ignoreStr.includes('.yaml');
+          }) || [],
         };
 
-        config.resolve.extensions = [...config.resolve.extensions, '.yml', '.yaml'];
+        config.resolve.extensions = [
+          ...config.resolve.extensions,
+          '.yml',
+          '.yaml',
+        ];
       }
 
       return config;

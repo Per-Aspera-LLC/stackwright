@@ -6,8 +6,8 @@ export interface StackwrightConfig {
 
 export const coreDefaults: StackwrightConfig = {
   content: {
-    list_icon: '•',
-  },
+    list_icon: '•'
+  }
 };
 
 export const mergeConfig = (userConfig?: Partial<StackwrightConfig>): StackwrightConfig => {
@@ -15,7 +15,7 @@ export const mergeConfig = (userConfig?: Partial<StackwrightConfig>): Stackwrigh
     ...coreDefaults,
     content: {
       ...coreDefaults.content,
-      ...userConfig?.content,
-    },
+      ...userConfig?.content
+    }
   };
 };

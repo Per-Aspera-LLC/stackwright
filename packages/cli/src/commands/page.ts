@@ -32,7 +32,11 @@ export function listPages(pagesDir: string): PageListResult {
   return { pages };
 }
 
-function collectPages(pagesDir: string, currentDir: string, results: PageSummary[]): void {
+function collectPages(
+  pagesDir: string,
+  currentDir: string,
+  results: PageSummary[]
+): void {
   for (const entry of fs.readdirSync(currentDir)) {
     const fullPath = path.join(currentDir, entry);
     const stat = fs.statSync(fullPath);
@@ -74,7 +78,9 @@ export interface PageValidateResult {
 
 export function validatePages(pagesDir: string, slug?: string): PageValidateResult {
   const { pages } = listPages(pagesDir);
-  const targets = slug ? pages.filter((p) => p.slug === `/${slug}` || p.slug === slug) : pages;
+  const targets = slug
+    ? pages.filter((p) => p.slug === `/${slug}` || p.slug === slug)
+    : pages;
 
   const errors: ValidationError[] = [];
 
@@ -126,15 +132,16 @@ export interface WritePageResult {
   created: boolean;
 }
 
-export function writePage(pagesDir: string, slug: string, yamlContent: string): WritePageResult {
+export function writePage(
+  pagesDir: string,
+  slug: string,
+  yamlContent: string
+): WritePageResult {
   const cleanSlug = slug.replace(/^\//, '').replace(/\\/g, '/');
 
   // Prevent path traversal
   const resolvedTarget = path.resolve(pagesDir, cleanSlug);
-  if (
-    !resolvedTarget.startsWith(path.resolve(pagesDir) + path.sep) &&
-    resolvedTarget !== path.resolve(pagesDir)
-  ) {
+  if (!resolvedTarget.startsWith(path.resolve(pagesDir) + path.sep) && resolvedTarget !== path.resolve(pagesDir)) {
     const err = new Error(`Invalid slug: "${slug}"`);
     (err as NodeJS.ErrnoException).code = 'INVALID_SLUG';
     throw err;
@@ -191,7 +198,11 @@ export async function addPage(
   const contentPath = path.join(pagesDir, cleanSlug, 'content.yml');
 
   if (fs.existsSync(contentPath)) {
-    outputError(`Page already exists: ${contentPath}`, 'PAGE_EXISTS', { json: Boolean(opts.json) });
+    outputError(
+      `Page already exists: ${contentPath}`,
+      'PAGE_EXISTS',
+      { json: Boolean(opts.json) }
+    );
   }
 
   const heading = opts.heading ?? cleanSlug;
@@ -229,8 +240,11 @@ export function registerPage(program: Command): void {
       const json = Boolean(opts.json);
       try {
         const { pagesDir } = detectProject();
-        const heading =
-          opts.heading ?? (!json ? await input({ message: 'Page heading:', default: slug }) : slug);
+        const heading = opts.heading ?? (
+          !json
+            ? await input({ message: 'Page heading:', default: slug })
+            : slug
+        );
         const result = await addPage(pagesDir, slug, { ...opts, heading });
         outputResult(result, { json }, () => {
           console.log(chalk.green(`Created ${result.path}`));
@@ -246,7 +260,7 @@ export function registerPage(program: Command): void {
 
   page
     .command('get <slug>')
-    .description("Read a page's raw YAML content by slug")
+    .description('Read a page\'s raw YAML content by slug')
     .option('--json', 'Output machine-readable JSON')
     .action((slug: string, opts: { json?: boolean }) => {
       const json = Boolean(opts.json);
@@ -293,12 +307,7 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         const code = getErrorCode(err);
-        if (
-          code === 'NOT_A_PROJECT' ||
-          code === 'VALIDATION_FAILED' ||
-          code === 'YAML_PARSE_ERROR' ||
-          code === 'INVALID_SLUG'
-        ) {
+        if (code === 'NOT_A_PROJECT' || code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR' || code === 'INVALID_SLUG') {
           outputError(formatError(err), code, { json });
         } else {
           outputError(formatError(err), 'WRITE_PAGE_FAILED', { json }, 2);

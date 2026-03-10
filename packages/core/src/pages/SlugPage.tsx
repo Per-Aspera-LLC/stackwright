@@ -1,5 +1,5 @@
 import DynamicPage from '../components/DynamicPage';
-import { PageContent, SiteConfig } from '@stackwright/types';
+import {  PageContent, SiteConfig } from '@stackwright/types';
 import { getStackwrightStaticGeneration } from '../utils/stackwrightUtilityRegistry';
 
 interface SlugPageProps {

@@ -166,9 +166,9 @@ describe('openPr', () => {
   });
 
   it('throws NO_STAGED_CHANGES when nothing is staged', async () => {
-    await expect(openPr(testDir, pagesDir, siteConfigPath)).rejects.toThrow(
-      'No staged changes to commit'
-    );
+    await expect(
+      openPr(testDir, pagesDir, siteConfigPath)
+    ).rejects.toThrow('No staged changes to commit');
 
     try {
       await openPr(testDir, pagesDir, siteConfigPath);
@@ -184,7 +184,9 @@ describe('openPr', () => {
     fs.writeFileSync(path.join(pageDir, 'content.yml'), 'invalid: true\n');
     await exec('git', ['add', 'pages/broken/content.yml'], { cwd: testDir });
 
-    await expect(openPr(testDir, pagesDir, siteConfigPath)).rejects.toThrow('validation failed');
+    await expect(
+      openPr(testDir, pagesDir, siteConfigPath)
+    ).rejects.toThrow('validation failed');
 
     try {
       await openPr(testDir, pagesDir, siteConfigPath);
@@ -198,7 +200,9 @@ describe('openPr', () => {
     fs.writeFileSync(siteConfigPath, 'invalid: true\n');
     await exec('git', ['add', 'stackwright.yml'], { cwd: testDir });
 
-    await expect(openPr(testDir, pagesDir, siteConfigPath)).rejects.toThrow('validation failed');
+    await expect(
+      openPr(testDir, pagesDir, siteConfigPath)
+    ).rejects.toThrow('validation failed');
 
     try {
       await openPr(testDir, pagesDir, siteConfigPath);

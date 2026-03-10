@@ -17,7 +17,7 @@ export const NextStackwrightLink: React.FC<StackwrightLinkProps> = ({
 }) => {
   // Handle external links
   const isExternal = href.startsWith('http') || href.startsWith('//');
-
+  
   if (isExternal) {
     return (
       <a

@@ -55,7 +55,7 @@ export interface StackwrightStaticGeneration {
 
 // Platform-specific component implementations
 export interface StackwrightComponents {
-  Image: ComponentType<StackwrightImageProps>;
+  Image: ComponentType<StackwrightImageProps>;  
   Link: ComponentType<StackwrightLinkProps>;
   Router: ComponentType<StackwrightRouterProps>;
   Route: ComponentType<StackwrightRouteProps>;

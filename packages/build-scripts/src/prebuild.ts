@@ -24,16 +24,7 @@ import { siteConfigSchema, pageContentSchema, KNOWN_CONTENT_TYPE_KEYS } from '@s
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
-const IMAGE_EXTENSIONS = new Set([
-  '.jpg',
-  '.jpeg',
-  '.png',
-  '.gif',
-  '.webp',
-  '.svg',
-  '.bmp',
-  '.ico',
-]);
+const IMAGE_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico']);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -44,7 +35,10 @@ function isImagePath(str: string): boolean {
 /** Copy src → dest only if dest is missing or older than src. */
 function copyIfNewer(src: string, dest: string, rootDir: string): void {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  if (!fs.existsSync(dest) || fs.statSync(src).mtimeMs > fs.statSync(dest).mtimeMs) {
+  if (
+    !fs.existsSync(dest) ||
+    fs.statSync(src).mtimeMs > fs.statSync(dest).mtimeMs
+  ) {
     fs.copyFileSync(src, dest);
     console.log(`  📸 ${path.relative(rootDir, src)} → ${path.relative(rootDir, dest)}`);
   }
@@ -56,7 +50,7 @@ function copyIfNewer(src: string, dest: string, rootDir: string): void {
  */
 function rewritePaths(node: unknown, rewrite: (s: string) => string): unknown {
   if (typeof node === 'string') return rewrite(node);
-  if (Array.isArray(node)) return node.map((item) => rewritePaths(item, rewrite));
+  if (Array.isArray(node)) return node.map(item => rewritePaths(item, rewrite));
   if (node !== null && typeof node === 'object') {
     const result: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(node as Record<string, unknown>)) {
@@ -74,11 +68,18 @@ function rewritePaths(node: unknown, rewrite: (s: string) => string): unknown {
  *   - `./filename.png`  relative with dot-slash
  *   - `filename.png`    bare filename (no slash, not http/data)
  */
-function processSiteConfig(config: unknown, rootDir: string, imagesDir: string): unknown {
-  return rewritePaths(config, (str) => {
+function processSiteConfig(
+  config: unknown,
+  rootDir: string,
+  imagesDir: string
+): unknown {
+  return rewritePaths(config, str => {
     const isRelativeDot = str.startsWith('./') && isImagePath(str);
     const isBareFile =
-      !str.includes('/') && !str.startsWith('http') && !str.startsWith('data:') && isImagePath(str);
+      !str.includes('/') &&
+      !str.startsWith('http') &&
+      !str.startsWith('data:') &&
+      isImagePath(str);
 
     if (!isRelativeDot && !isBareFile) return str;
 
@@ -106,7 +107,7 @@ function processPageContent(
   publicPrefix: string,
   rootDir: string
 ): unknown {
-  return rewritePaths(content, (str) => {
+  return rewritePaths(content, str => {
     if (!str.startsWith('./') || !isImagePath(str)) return str;
 
     const srcPath = path.resolve(contentDir, str);
@@ -159,22 +160,25 @@ const knownContentKeys = new Set<string>(KNOWN_CONTENT_TYPE_KEYS);
  * `feture_list` would pass validation but render as an invisible gap.
  * This check catches those typos at build time.
  */
-function warnUnknownContentKeys(contentItems: Record<string, unknown>[], filePath: string): void {
+function warnUnknownContentKeys(
+  contentItems: Record<string, unknown>[],
+  filePath: string,
+): void {
   for (let i = 0; i < contentItems.length; i++) {
     const item = contentItems[i];
     const keys = Object.keys(item);
-    const unknownKeys = keys.filter((k) => !knownContentKeys.has(k));
+    const unknownKeys = keys.filter(k => !knownContentKeys.has(k));
 
     for (const key of unknownKeys) {
       console.warn(
         `  ⚠️  Unknown content type "${key}" in ${filePath} (content_items[${i}]). ` +
-          `Known types: ${KNOWN_CONTENT_TYPE_KEYS.join(', ')}`
+        `Known types: ${KNOWN_CONTENT_TYPE_KEYS.join(', ')}`,
       );
     }
 
-    if (keys.length > 0 && keys.every((k) => !knownContentKeys.has(k))) {
+    if (keys.length > 0 && keys.every(k => !knownContentKeys.has(k))) {
       console.warn(
-        `  ⚠️  content_items[${i}] in ${filePath} has no recognized content type and will not render.`
+        `  ⚠️  content_items[${i}] in ${filePath} has no recognized content type and will not render.`,
       );
     }
   }
@@ -199,7 +203,7 @@ export function runPrebuild(projectRoot = process.cwd()): void {
   fs.mkdirSync(imagesDir, { recursive: true });
 
   // 1. Process site config
-  const siteConfigFile = siteConfigCandidates.find((p) => fs.existsSync(p));
+  const siteConfigFile = siteConfigCandidates.find(p => fs.existsSync(p));
   if (!siteConfigFile) {
     throw new Error(`Site config not found. Expected stackwright.yml in: ${projectRoot}`);
   }
@@ -210,7 +214,7 @@ export function runPrebuild(projectRoot = process.cwd()): void {
   const siteValidation = siteConfigSchema.safeParse(rawConfig);
   if (!siteValidation.success) {
     const details = siteValidation.error.issues
-      .map((issue) => {
+      .map(issue => {
         const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
         return `  ${field}: ${issue.message}`;
       })
@@ -240,7 +244,7 @@ export function runPrebuild(projectRoot = process.cwd()): void {
     const pageValidation = pageContentSchema.safeParse(rawContent);
     if (!pageValidation.success) {
       const details = pageValidation.error.issues
-        .map((issue) => {
+        .map(issue => {
           const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
           return `  ${field}: ${issue.message}`;
         })
@@ -267,7 +271,10 @@ export function runPrebuild(projectRoot = process.cwd()): void {
     );
 
     const outFile = slug ? `${slug}.json` : '_root.json';
-    fs.writeFileSync(path.join(contentOutDir, outFile), JSON.stringify(processedContent, null, 2));
+    fs.writeFileSync(
+      path.join(contentOutDir, outFile),
+      JSON.stringify(processedContent, null, 2)
+    );
     console.log(`  ✓ ${outFile}  (${label})`);
   }
 
