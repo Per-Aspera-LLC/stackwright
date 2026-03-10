@@ -411,6 +411,7 @@ describe('MCP Tools Integration', () => {
       const tools = Object.keys((server as any)._registeredTools);
       expect(tools).toContain('stackwright_validate_site');
       expect(tools).toContain('stackwright_list_themes');
+      expect(tools).toContain('stackwright_write_site_config');
     });
 
     it('get_site_config returns site config YAML', async () => {
@@ -552,11 +553,12 @@ describe('MCP Tools Integration', () => {
       expect(tools).toContain('stackwright_get_site_config');
       expect(tools).toContain('stackwright_validate_site');
       expect(tools).toContain('stackwright_list_themes');
+      expect(tools).toContain('stackwright_write_site_config');
       expect(tools).toContain('stackwright_stage_changes');
       expect(tools).toContain('stackwright_open_pr');
 
-      // Should have exactly 14 tools (13 from dev + preview_component)
-      expect(tools.length).toBe(14);
+      // Should have exactly 15 tools (14 from dev + preview_component)
+      expect(tools.length).toBe(15);
     });
   });
 });
