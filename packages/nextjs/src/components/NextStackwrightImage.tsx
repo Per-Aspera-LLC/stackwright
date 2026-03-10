@@ -2,16 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import { StackwrightImageProps } from '@stackwright/core';
 
-const debugLog = (message: string, data?: any) => {
-  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
-    console.log(`📸 NextStackwrightImage Debug: ${message}`, data ? data : '');
-  }
-};
-
 export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
   src,
   alt,
-  aspect_ratio: _aspect_ratio,
+  aspect_ratio,
   width,
   height,
   priority = false,
@@ -26,12 +20,18 @@ export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
   style,
   ..._props
 }) => {
-  debugLog('Rendering image', { src });
-  debugLog('Image component type:', { type: typeof Image, name: Image?.name });
+  console.log('Returning NextjsStackwrightImage for src: ', src);
+
+  // Debug the Image component itself
+  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
+    console.log('📸 NextStackwrightImage Debug: Image component type:', typeof Image);
+    console.log('📸 NextStackwrightImage Debug: Image component name:', Image?.name);
+  }
 
   const imageProps = {
     src,
     alt,
+    aspect_ratio,
     width: fill
       ? undefined
       : typeof width === 'number'
@@ -51,7 +51,8 @@ export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
     className,
     style,
   };
-  debugLog('Image props:', imageProps);
+  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true')
+    console.log('📸 NextStackwrightImage Debug: Image props:', imageProps);
 
   try {
     const ImageComponent =
@@ -59,7 +60,9 @@ export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
 
     return React.createElement(ImageComponent, imageProps);
   } catch (error) {
-    debugLog('Error creating image element:', error);
+    if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
+      console.log('📸 NextStackwrightImage Debug: Error creating image element:', error);
+    }
     throw error;
   }
 };

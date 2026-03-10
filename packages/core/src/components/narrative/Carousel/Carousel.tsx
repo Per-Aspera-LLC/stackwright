@@ -52,7 +52,6 @@ export const Carousel = (carouselContent: CarouselContent) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const transitionTimeouts = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const safeTheme = useSafeTheme();
   const { isXs, isSmUp, isMdUp, isLgUp } = useBreakpoints();
 
@@ -66,40 +65,32 @@ export const Carousel = (carouselContent: CarouselContent) => {
   const itemsToShow = Math.min(getItemsToShow(), carouselContent.items.length);
   const scrollAndButtonsEnabled = carouselContent.items.length > itemsToShow;
 
-  const trackTimeout = useCallback((fn: () => void, delay: number) => {
-    const id = setTimeout(() => {
-      transitionTimeouts.current.delete(id);
-      fn();
-    }, delay);
-    transitionTimeouts.current.add(id);
-  }, []);
-
   const next = useCallback(() => {
     setIsTransitioning(true);
-    trackTimeout(() => {
+    setTimeout(() => {
       setCurrentIndex((current) => {
         if (current >= carouselContent.items.length - itemsToShow) {
           return 0;
         }
         return current + 1;
       });
-      trackTimeout(() => setIsTransitioning(false), 50);
+      setTimeout(() => setIsTransitioning(false), 50);
     }, 150);
-  }, [carouselContent.items.length, itemsToShow, trackTimeout]);
+  }, [carouselContent.items.length, itemsToShow]);
 
   const prev = useCallback(() => {
     setLastInteraction(Date.now());
     setIsTransitioning(true);
-    trackTimeout(() => {
+    setTimeout(() => {
       setCurrentIndex((current) => {
         if (current <= 0) {
           return carouselContent.items.length - itemsToShow;
         }
         return current - 1;
       });
-      trackTimeout(() => setIsTransitioning(false), 50);
+      setTimeout(() => setIsTransitioning(false), 50);
     }, 150);
-  }, [carouselContent.items.length, itemsToShow, trackTimeout]);
+  }, [carouselContent.items.length, itemsToShow]);
 
   const manualNext = useCallback(() => {
     setLastInteraction(Date.now());
@@ -124,14 +115,6 @@ export const Carousel = (carouselContent: CarouselContent) => {
     next,
     lastInteraction,
   ]);
-
-  useEffect(() => {
-    const timeouts = transitionTimeouts.current;
-    return () => {
-      timeouts.forEach(clearTimeout);
-      timeouts.clear();
-    };
-  }, []);
 
   useEffect(() => {
     setCurrentIndex(0);

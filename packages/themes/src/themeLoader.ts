@@ -15,6 +15,8 @@ export class ThemeLoader {
   }
 
   static loadThemeFromFile(themeName: string): Theme {
+    // In a real implementation, this would load from the file system
+    // For now, we'll embed the themes
     const themeData = this.getEmbeddedTheme(themeName);
     return this.loadThemeFromYaml(themeData);
   }
@@ -29,6 +31,7 @@ export class ThemeLoader {
 
   static registerCustomTheme(theme: Theme): void {
     this.themes.set(theme.name, theme);
+    console.log(`🎨 Registered custom theme: ${theme.name}`);
   }
 
   static loadCustomTheme(theme: Theme): Theme {
