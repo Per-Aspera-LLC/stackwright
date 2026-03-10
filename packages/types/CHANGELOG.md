@@ -1,12 +1,5 @@
 # @stackwright/types
 
-## 0.4.0-alpha.4
-
-### Patch Changes
-
-- Updated dependencies [77836f7]
-  - @stackwright/themes@0.4.2-alpha.1
-
 ## 0.4.0-alpha.3
 
 ### Patch Changes
