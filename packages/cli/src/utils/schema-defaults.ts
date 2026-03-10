@@ -170,13 +170,7 @@ export function generateDefaults(
         const fieldHint = getHint(hints, fieldPath);
         const optional = isOptional(fieldSchema);
 
-        if (
-          !optional ||
-          fieldHint?.include ||
-          fieldHint?.value !== undefined ||
-          fieldHint?.arrayLength !== undefined ||
-          fieldHint?.pick !== undefined
-        ) {
+        if (!optional || fieldHint?.include || fieldHint?.value !== undefined || fieldHint?.arrayLength !== undefined || fieldHint?.pick !== undefined) {
           const resolvedField = resolveSchema(fieldSchema);
           if (ancestorSet.has(resolvedField)) {
             continue;

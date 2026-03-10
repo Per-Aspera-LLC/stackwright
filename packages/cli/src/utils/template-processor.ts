@@ -5,7 +5,11 @@ import type { SiteConfig } from '@stackwright/types';
 import type { PageContent } from '@stackwright/types';
 import { siteConfigSchema, pageContentSchema } from './schema-loader';
 import { generateDefaults } from './schema-defaults';
-import { getSiteConfigHints, getRootPageHints, getGettingStartedHints } from './scaffold-hints';
+import {
+  getSiteConfigHints,
+  getRootPageHints,
+  getGettingStartedHints,
+} from './scaffold-hints';
 import { fetchTemplate } from './template-fetcher';
 
 // ---------------------------------------------------------------------------
@@ -84,11 +88,7 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
   // Generate package.json with proper formatting
   const packageJsonPath = path.join(targetDir, 'package.json');
   await fs.ensureDir(path.dirname(packageJsonPath));
-  await fs.writeFile(
-    packageJsonPath,
-    JSON.stringify(buildPackageJson(projectName), null, 2) + '\n',
-    'utf8'
-  );
+  await fs.writeFile(packageJsonPath, JSON.stringify(buildPackageJson(projectName), null, 2) + '\n', 'utf8');
   written.push('package.json');
 
   // Generate tsconfig.json
