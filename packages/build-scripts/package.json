@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/build-scripts",
-    "version": "0.3.0-alpha.3",
+    "version": "0.2.2-alpha.2",
     "description": "Build-time scripts for Stackwright projects (prebuild image processing, YAML compilation)",
     "repository": {
         "type": "git",
