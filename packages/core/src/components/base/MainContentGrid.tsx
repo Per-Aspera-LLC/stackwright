@@ -18,13 +18,7 @@ export function MainContentGrid(content: MainContent) {
   );
 
   const imageGrid = content.media && (
-    <div
-      style={{
-        flex: `0 1 calc(${graphicPercent}% - 8px)`,
-        minWidth: 280,
-        padding: theme.spacing.xs,
-      }}
-    >
+    <div style={{ flex: `0 1 calc(${graphicPercent}% - 8px)`, minWidth: 280, padding: theme.spacing.xs }}>
       <div style={{ width: '100%', height: '100%' }}>
         <Media {...content.media} label={`${content.heading?.text} graphic`} />
       </div>
@@ -41,9 +35,7 @@ export function MainContentGrid(content: MainContent) {
     >
       <div style={{ width: '100%', height: 'auto' }}>
         {content.heading?.text && (
-          <h2 style={{ color: headerColor, margin: `0 0 ${theme.spacing.xs} 0` }}>
-            {content.heading.text}
-          </h2>
+          <h2 style={{ color: headerColor, margin: `0 0 ${theme.spacing.xs} 0` }}>{content.heading.text}</h2>
         )}
         {content.textBlocks && <TextGrid content={content.textBlocks} />}
 

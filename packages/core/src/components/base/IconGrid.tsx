@@ -51,12 +51,7 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
           return (
             <div
               key={index}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: theme.spacing.xs,
-              }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: theme.spacing.xs }}
             >
               <div
                 style={{

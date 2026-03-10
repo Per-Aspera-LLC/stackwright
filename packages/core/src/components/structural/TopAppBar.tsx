@@ -89,26 +89,12 @@ export default function TopAppBar({
                 label={`${title} logo`}
               />
             </div>
-            <h1
-              style={{
-                fontSize: '2.125rem',
-                fontWeight: 400,
-                margin: 0,
-                marginRight: theme.spacing.xl,
-              }}
-            >
+            <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: theme.spacing.xl }}>
               {title}
             </h1>
           </>
         ) : (
-          <h1
-            style={{
-              fontSize: '2.125rem',
-              fontWeight: 400,
-              margin: 0,
-              marginRight: theme.spacing.xl,
-            }}
-          >
+          <h1 style={{ fontSize: '2.125rem', fontWeight: 400, margin: 0, marginRight: theme.spacing.xl }}>
             {title}
           </h1>
         )}
