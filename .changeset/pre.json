@@ -18,7 +18,6 @@
     "add-alert-content-type",
     "add-e2e-playwright-tests",
     "add-eslint-prettier",
-    "add-missing-test-coverage",
     "auto-generate-agent-docs",
     "carousel-keyboard-nav",
     "ci-schema-sync-check",

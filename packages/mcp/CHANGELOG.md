@@ -1,12 +1,5 @@
 # @stackwright/mcp
 
-## 0.2.0-alpha.10
-
-### Patch Changes
-
-- @stackwright/cli@0.6.0-alpha.9
-- @stackwright/types@0.4.0-alpha.5
-
 ## 0.2.0-alpha.9
 
 ### Patch Changes
