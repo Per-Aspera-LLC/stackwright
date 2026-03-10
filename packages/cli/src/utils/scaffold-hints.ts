@@ -132,8 +132,7 @@ export function getGettingStartedHints(): HintMap {
     'content.content_items.1.main.heading.textSize': { value: 'h2' },
     'content.content_items.1.main.textBlocks': { arrayLength: 1 },
     'content.content_items.1.main.textBlocks.0.text': {
-      value:
-        'Use the CLI to add a new page, or create the directory and content.yml manually:',
+      value: 'Use the CLI to add a new page, or create the directory and content.yml manually:',
     },
     'content.content_items.1.main.textBlocks.0.textSize': { value: 'body1' },
     'content.content_items.1.main.background': { value: '#f5f5f5', include: true },
