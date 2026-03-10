@@ -7,7 +7,7 @@ This file tracks planned work across the project. Items are roughly ordered by p
 ## Near-term: Developer Experience
 
 - [x] **Fix and modernize the CLI `create` command** — Scaffold command updated (#77). Follow-up: template `_app.tsx` still missing shadcn UI registration (#127).
-- [x] **Expose CLI as a local MCP tool** — `@stackwright/mcp` package ships a stdio-based MCP server (`pnpm stackwright-mcp`) with 14 tools. Content: `stackwright_get_content_types`, `stackwright_preview_component`, `stackwright_list_pages`, `stackwright_get_page`, `stackwright_write_page`, `stackwright_add_page`, `stackwright_validate_pages`. Site: `stackwright_get_site_config`, `stackwright_validate_site`, `stackwright_list_themes`. Project: `stackwright_get_project_info`, `stackwright_scaffold_project`. Git: `stackwright_stage_changes`, `stackwright_open_pr`. Claude Code and any MCP-compatible agent can call these directly without leaving the editor.
+- [x] **Expose CLI as a local MCP tool** — `@stackwright/mcp` package ships a stdio-based MCP server (`pnpm stackwright-mcp`) with 15 tools. Content: `stackwright_get_content_types`, `stackwright_preview_component`, `stackwright_list_pages`, `stackwright_get_page`, `stackwright_write_page`, `stackwright_add_page`, `stackwright_validate_pages`. Site: `stackwright_get_site_config`, `stackwright_write_site_config`, `stackwright_validate_site`, `stackwright_list_themes`. Project: `stackwright_get_project_info`, `stackwright_scaffold_project`. Git: `stackwright_stage_changes`, `stackwright_open_pr`. Claude Code and any MCP-compatible agent can call these directly without leaving the editor.
 - [x] **`STACKWRIGHT_DEBUG` documentation** — Debug logging pattern and `STACKWRIGHT_DEBUG` flag documented in CLAUDE.md and example app README (#116).
 
 ---
@@ -41,11 +41,12 @@ These items are grouped because they share a common purpose: making the Stackwri
 
 ## Infrastructure
 
-- [x] **MCP server for content types** — `@stackwright/mcp` exposes valid YAML keys and field schemas (via Zod runtime introspection), YAML validation for pages and site config, read/write page tools, git staging and PR creation, and component preview screenshots. 14 tools, 21+ tests.
+- [x] **MCP server for content types** — `@stackwright/mcp` exposes valid YAML keys and field schemas (via Zod runtime introspection), YAML validation for pages and site config, read/write page tools, git staging and PR creation, and component preview screenshots. 15 tools, 35 tests.
 - [x] **MCP component screenshots** — `stackwright_preview_component` tool renders component screenshots via Playwright and returns them as MCP image resources (#109).
 - [x] **Automated schema sync check** — CI `check-schemas` job regenerates JSON schemas and fails if they differ from the committed files (#96).
 - [x] **Visual regression tests** — Screenshot-based tests added (#109). Note: CI currently uses `--update-snapshots` so regressions are local-only detection.
 - [x] **End-to-end integration tests** — Playwright E2E tests added (#84) in `packages/e2e/`. Smoke tests verify pages load, no console errors, nav links resolve.
+- [x] **MCP site config write tool** — `stackwright_write_site_config` MCP tool enables agents to programmatically update themes, navigation, and footer configuration (#124).
 - [ ] **AI-driven visual QA (stretch goal)** — Use a vision-capable model (via MCP or CI hook) to screenshot rendered pages and flag visual regressions or layout breaks in natural language. Most useful once the component library stabilizes past ~10 content types and after the MCP server item is in place. Experimental — treat as a demo/spike rather than production CI infrastructure.
 
 ---
@@ -53,7 +54,7 @@ These items are grouped because they share a common purpose: making the Stackwri
 ## Code Quality (from architectural review)
 
 - [x] **Wire up theme spacing tokens** — All components now use `theme.spacing` tokens instead of hardcoded pixel values (#128).
-- [ ] **Remove production console.log calls** — Unconditional logging in `NextStackwrightImage` and `themeLoader`; fix `aspect_ratio` DOM prop leak (#129).
-- [ ] **Add unit tests for `packages/nextjs/`** — Zero test coverage on the Next.js adapter layer (#130).
+- [x] **Remove production console.log calls** — Debug logging gated behind `STACKWRIGHT_DEBUG` flag; `aspect_ratio` prop destructured to prevent DOM leak (#129).
+- [x] **Add unit tests for `packages/nextjs/`** — Full test coverage added for NextStackwrightImage, NextStackwrightLink, NextStackwrightRouter, NextStackwrightRoute, createStackwrightNextConfig, and registerNextJSComponents (#130).
 - [ ] **Refactor content type discrimination** — `Object.entries(item)[0]` is fragile; consider explicit `type` field (breaking change) (#131).
 - [x] **Fix Carousel cleanup and accessibility** — Auto-play interval properly cleared on unmount; keyboard navigation (arrow keys) and ARIA attributes added (#118, #132).
