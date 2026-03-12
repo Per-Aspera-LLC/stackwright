@@ -37,7 +37,14 @@ function writeCollectionConfig(root: string, collection: string, content: string
 }
 
 function readCollectionOutput(root: string, collection: string, file: string): any {
-  const filePath = path.join(root, 'public', 'stackwright-content', 'collections', collection, file);
+  const filePath = path.join(
+    root,
+    'public',
+    'stackwright-content',
+    'collections',
+    collection,
+    file
+  );
   return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 

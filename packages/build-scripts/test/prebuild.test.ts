@@ -218,12 +218,7 @@ describe('runPrebuild — schema validation', () => {
 // collection_list entry injection
 // ---------------------------------------------------------------------------
 
-function writeCollectionEntry(
-  root: string,
-  collection: string,
-  slug: string,
-  yaml: string
-): void {
+function writeCollectionEntry(root: string, collection: string, slug: string, yaml: string): void {
   const dir = path.join(root, 'content', collection);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, `${slug}.yaml`), yaml, 'utf8');
@@ -235,8 +230,18 @@ describe('runPrebuild — collection_list entry injection', () => {
   beforeEach(() => {
     root = makeTmpProject();
     // Create two collection entries
-    writeCollectionEntry(root, 'posts', 'alpha', `title: Alpha Post\ndate: "2026-01-01"\nexcerpt: First post\n`);
-    writeCollectionEntry(root, 'posts', 'beta', `title: Beta Post\ndate: "2026-02-01"\nexcerpt: Second post\n`);
+    writeCollectionEntry(
+      root,
+      'posts',
+      'alpha',
+      `title: Alpha Post\ndate: "2026-01-01"\nexcerpt: First post\n`
+    );
+    writeCollectionEntry(
+      root,
+      'posts',
+      'beta',
+      `title: Beta Post\ndate: "2026-02-01"\nexcerpt: Second post\n`
+    );
   });
 
   it('injects _entries into collection_list content items', () => {
@@ -252,9 +257,7 @@ describe('runPrebuild — collection_list entry injection', () => {
       'utf8'
     );
     const json = JSON.parse(raw);
-    const clItem = json.content.content_items.find(
-      (item: any) => 'collection_list' in item
-    );
+    const clItem = json.content.content_items.find((item: any) => 'collection_list' in item);
     expect(clItem).toBeDefined();
     expect(clItem.collection_list._entries).toBeInstanceOf(Array);
     expect(clItem.collection_list._entries.length).toBe(2);

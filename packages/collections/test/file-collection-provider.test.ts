@@ -127,13 +127,7 @@ describe('FileCollectionProvider', () => {
       makeSamplePosts(basePath);
       const result = await provider.list('posts', { sort: '-date' });
       const dates = result.entries.map((e) => e.date);
-      expect(dates).toEqual([
-        '2026-05-01',
-        '2026-04-01',
-        '2026-03-01',
-        '2026-02-01',
-        '2026-01-01',
-      ]);
+      expect(dates).toEqual(['2026-05-01', '2026-04-01', '2026-03-01', '2026-02-01', '2026-01-01']);
     });
 
     it('filters by exact field match', async () => {
