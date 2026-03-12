@@ -19,8 +19,8 @@ export { mergeConfig, coreDefaults } from './config/defaults';
 export { defaultSiteConfig } from './config/siteDefaults';
 export type { StackwrightConfig } from './config/defaults';
 
-// Export DynamicPage for CLI-generated sites
-export { default as DynamicPage } from './components/DynamicPage';
+// Export DynamicPage and SEO metadata resolution for CLI-generated sites
+export { default as DynamicPage, resolvePageMeta } from './components/DynamicPage';
 
 // Make sure PageLayout is exported
 export { default as PageLayout } from './components/structural/PageLayout';
@@ -36,6 +36,7 @@ export * from './interfaces/stackwright-components';
 export {
   stackwrightRegistry,
   registerStackwrightComponents,
+  getStackwrightHead,
 } from './utils/stackwrightComponentRegistry';
 export {
   stackwrightUtilityRegistry,

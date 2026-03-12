@@ -3,6 +3,8 @@ import { PageContent, SiteConfig } from '@stackwright/types';
 import PageLayout from './structural/PageLayout';
 import { ThemeProvider, ThemeLoader, ThemeStyleInjector, useTheme } from '@stackwright/themes';
 import { useDevContentReload } from '../hooks/useDevContentReload';
+import { getStackwrightHead } from '../utils/stackwrightComponentRegistry';
+import { StackwrightHeadProps } from '../interfaces/stackwright-components';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -54,7 +56,7 @@ class DynamicPageErrorBoundary extends React.Component<
   }
 }
 
-// CSS keyframes for background animations — injected once via <style> tag
+// CSS keyframes for background animations -- injected once via <style> tag
 const ANIMATION_STYLES = `
 @keyframes sf-shimmer {
   0% { left: -100%; }
@@ -69,6 +71,51 @@ const ANIMATION_STYLES = `
   50% { background-position-y: 20px; }
 }
 `;
+
+// ---------------------------------------------------------------------------
+// SEO Metadata Resolution
+// ---------------------------------------------------------------------------
+
+/**
+ * Resolves the effective page metadata by merging page-level overrides with
+ * site-level defaults. Falls back to auto-generated title from the first
+ * content heading when no explicit title is set.
+ */
+export function resolvePageMeta(
+  pageContent: PageContent,
+  siteConfig?: SiteConfig
+): StackwrightHeadProps {
+  const pageMeta = pageContent.content.meta;
+  const siteMeta = siteConfig?.meta;
+  const siteTitle = siteConfig?.title;
+
+  // Auto-generate title from the first main content heading if not explicit
+  const firstHeading = pageContent.content.content_items
+    .map((item) => item.main?.heading?.text)
+    .find(Boolean);
+
+  const title =
+    pageMeta?.title ??
+    (firstHeading && siteTitle ? `${firstHeading} | ${siteTitle}` : undefined) ??
+    siteTitle;
+
+  const ogImage = pageMeta?.og_image ?? siteMeta?.og_image;
+  const baseUrl = siteMeta?.base_url;
+
+  return {
+    title,
+    description: pageMeta?.description ?? siteMeta?.description,
+    ogImage:
+      ogImage && baseUrl && ogImage.startsWith('/') ? `${baseUrl}${ogImage}` : ogImage,
+    ogSiteName: siteMeta?.og_site_name ?? siteTitle,
+    canonical: pageMeta?.canonical,
+    noindex: pageMeta?.noindex ?? undefined,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// DynamicPage
+// ---------------------------------------------------------------------------
 
 interface DynamicPageProps {
   pageContent: PageContent;
@@ -125,6 +172,9 @@ export default function DynamicPage({ pageContent, siteConfig, slug }: DynamicPa
     }
   };
 
+  // Resolve SEO metadata
+  const meta = resolvePageMeta(pageContent, siteConfig);
+
   return (
     <ThemeProvider theme={theme}>
       <ThemeStyleInjector>
@@ -132,6 +182,7 @@ export default function DynamicPage({ pageContent, siteConfig, slug }: DynamicPa
           pageContent={pageContent}
           siteConfig={siteConfig}
           slug={slug}
+          meta={meta}
           backgroundImageStyles={backgroundImageStyles}
           showShimmer={showShimmer}
           getDriftFloatAnimation={getDriftFloatAnimation}
@@ -149,6 +200,7 @@ function DynamicPageInner({
   pageContent,
   siteConfig,
   slug,
+  meta,
   backgroundImageStyles,
   showShimmer,
   getDriftFloatAnimation,
@@ -156,14 +208,17 @@ function DynamicPageInner({
   pageContent: PageContent;
   siteConfig?: SiteConfig;
   slug?: string;
+  meta: StackwrightHeadProps;
   backgroundImageStyles: React.CSSProperties;
   showShimmer: boolean;
   getDriftFloatAnimation: () => string | undefined;
 }) {
   const { theme } = useTheme();
+  const HeadComponent = getStackwrightHead();
 
   return (
     <>
+      {HeadComponent && <HeadComponent {...meta} />}
       <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />
       <div
         style={{
