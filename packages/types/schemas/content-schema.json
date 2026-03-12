@@ -5,6 +5,27 @@
     "content": {
       "type": "object",
       "properties": {
+        "meta": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "og_image": {
+              "type": "string"
+            },
+            "canonical": {
+              "type": "string"
+            },
+            "noindex": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
         "app_bar": {
           "type": "object",
           "properties": {
