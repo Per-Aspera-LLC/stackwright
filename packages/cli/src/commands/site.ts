@@ -65,10 +65,20 @@ export interface WriteSiteConfigResult {
   created: boolean;
 }
 
+const MAX_SITE_CONFIG_SIZE = 1_000_000; // 1MB — generous for any site config
+
 export function writeSiteConfig(
   siteConfigPath: string,
   yamlContent: string
 ): WriteSiteConfigResult {
+  if (yamlContent.length > MAX_SITE_CONFIG_SIZE) {
+    const err = new Error(
+      `Content too large (${yamlContent.length} chars, max ${MAX_SITE_CONFIG_SIZE})`
+    );
+    (err as NodeJS.ErrnoException).code = 'CONTENT_TOO_LARGE';
+    throw err;
+  }
+
   let raw: unknown;
   try {
     raw = yaml.load(yamlContent);
@@ -89,8 +99,14 @@ export function writeSiteConfig(
     throw err;
   }
 
+  const dir = path.dirname(siteConfigPath);
+  if (!fs.existsSync(dir)) {
+    const err = new Error(`Project directory does not exist: ${dir}`);
+    (err as NodeJS.ErrnoException).code = 'INVALID_PROJECT_ROOT';
+    throw err;
+  }
+
   const created = !fs.existsSync(siteConfigPath);
-  fs.ensureDirSync(path.dirname(siteConfigPath));
   fs.writeFileSync(siteConfigPath, yamlContent, 'utf8');
 
   return { path: siteConfigPath, created };
