@@ -1,7 +1,9 @@
 import {
   StackwrightComponents,
   StackwrightComponentRegistry,
+  StackwrightHeadProps,
 } from '../interfaces/stackwright-components';
+import { ComponentType } from 'react';
 
 // Debug logging utility for stackwright registry
 const debugLogStackwright = (message: string, data?: any) => {
@@ -127,6 +129,19 @@ export const getStackwrightImage = () => {
 export const getStackwrightLink = () => stackwrightRegistry.get('Link');
 export const getStackwrightRouter = () => stackwrightRegistry.get('Router');
 export const getStackwrightRoute = () => stackwrightRegistry.get('Route');
+
+/**
+ * Returns the registered Head component, or undefined if none is registered.
+ * Unlike Image/Link/Router/Route, Head is optional -- if no adapter registers
+ * one, SEO meta tags are simply not rendered (graceful degradation).
+ */
+export function getStackwrightHead(): ComponentType<StackwrightHeadProps> | undefined {
+  if (stackwrightRegistry.isRegistered('Head' as keyof StackwrightComponents)) {
+    return stackwrightRegistry.get('Head' as keyof StackwrightComponents) as
+      ComponentType<StackwrightHeadProps>;
+  }
+  return undefined;
+}
 
 // Helper to register components with validation
 export function registerStackwrightComponents(components: Partial<StackwrightComponents>) {
