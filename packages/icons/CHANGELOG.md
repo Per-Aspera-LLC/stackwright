@@ -1,5 +1,15 @@
 # @stackwright/icons
 
+## 0.3.0-alpha.3
+
+### Minor Changes
+
+- Version dependencies
+
+### Patch Changes
+
+- 8d1a637: Dependency updates
+
 ## 0.2.4-alpha.2
 
 ### Patch Changes

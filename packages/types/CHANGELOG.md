@@ -1,5 +1,17 @@
 # @stackwright/types
 
+## 0.4.0-alpha.6
+
+### Minor Changes
+
+- Version dependencies
+
+### Patch Changes
+
+- 8d1a637: Dependency updates
+- Updated dependencies
+  - @stackwright/themes@0.5.0-alpha.3
+
 ## 0.4.0-alpha.5
 
 ### Patch Changes
