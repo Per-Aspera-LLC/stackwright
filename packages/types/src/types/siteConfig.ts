@@ -11,6 +11,8 @@ export const appBarConfigSchema = z.object({
   logo: mediaItemSchema.optional(),
   height: z.string().optional(),
   menuItems: z.array(navigationItemSchema).optional(),
+  /** Show a Sun/Moon toggle for switching between light and dark color modes. */
+  colorModeToggle: z.boolean().optional(),
 });
 
 export const breakpointsConfigSchema = z.object({
