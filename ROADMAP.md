@@ -26,7 +26,7 @@ These items are grouped because they share a common purpose: making the Stackwri
 
 - [x] **Replace MUI with shadcn/ui** — All 19 MUI-dependent components in `@stackwright/core` rewritten to plain HTML + inline styles. New `@stackwright/ui-shadcn` package provides Radix UI + Tailwind CSS components (Button, Tabs, Accordion, Badge, Separator) themed via CSS custom properties. `@stackwright/icons` migrated from `@mui/icons-material` to `lucide-react`. Zero MUI/Emotion dependencies remain (#97).
 - [x] **`tabbed_content` — verify and document** — Live demo added to the getting-started page with three tabs: icon_grid, timeline, and code_block.
-- [ ] **Dark mode support** — Theme system supports color definitions; needs a `darkColors` block in `ThemeConfig` and a toggle mechanism in `ThemesProvider`.
+- [x] **Dark mode support** — Optional `darkColors` block added to `ThemeConfig`. `ThemeProvider` manages `colorMode` (`light` | `dark` | `system`), respects `prefers-color-scheme` by default, and exposes `setColorMode` for programmatic toggling. Colors resolve transparently — zero changes to existing components. `ThemeStyleInjector` now reads from context for reactive CSS var updates (#108).
 - [ ] **Internationalization** — Multi-language content support via per-locale content directories or inline locale maps in YAML.
 
 ---
