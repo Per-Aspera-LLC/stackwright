@@ -46,13 +46,17 @@ describe('LayoutGrid', () => {
         columns={[
           {
             content_items: [
-              { main: { label: 'Left', heading: { text: 'Left Heading', textSize: 'h2' }, textBlocks: [] } },
+              {
+                main: {
+                  label: 'Left',
+                  heading: { text: 'Left Heading', textSize: 'h2' },
+                  textBlocks: [],
+                },
+              },
             ],
           },
           {
-            content_items: [
-              { code_block: { label: 'Right', code: 'console.log("hi")' } },
-            ],
+            content_items: [{ code_block: { label: 'Right', code: 'console.log("hi")' } }],
           },
         ]}
       />
@@ -66,9 +70,42 @@ describe('LayoutGrid', () => {
       <LayoutGrid
         label="three-col"
         columns={[
-          { width: 2, content_items: [{ main: { label: 'Wide', heading: { text: 'Wide Col', textSize: 'h2' }, textBlocks: [] } }] },
-          { width: 1, content_items: [{ main: { label: 'Narrow1', heading: { text: 'Col 2', textSize: 'h2' }, textBlocks: [] } }] },
-          { width: 1, content_items: [{ main: { label: 'Narrow2', heading: { text: 'Col 3', textSize: 'h2' }, textBlocks: [] } }] },
+          {
+            width: 2,
+            content_items: [
+              {
+                main: {
+                  label: 'Wide',
+                  heading: { text: 'Wide Col', textSize: 'h2' },
+                  textBlocks: [],
+                },
+              },
+            ],
+          },
+          {
+            width: 1,
+            content_items: [
+              {
+                main: {
+                  label: 'Narrow1',
+                  heading: { text: 'Col 2', textSize: 'h2' },
+                  textBlocks: [],
+                },
+              },
+            ],
+          },
+          {
+            width: 1,
+            content_items: [
+              {
+                main: {
+                  label: 'Narrow2',
+                  heading: { text: 'Col 3', textSize: 'h2' },
+                  textBlocks: [],
+                },
+              },
+            ],
+          },
         ]}
       />
     );
@@ -84,8 +121,16 @@ describe('LayoutGrid', () => {
       <LayoutGrid
         label="equal"
         columns={[
-          { content_items: [{ main: { label: 'A', heading: { text: 'A', textSize: 'h2' }, textBlocks: [] } }] },
-          { content_items: [{ main: { label: 'B', heading: { text: 'B', textSize: 'h2' }, textBlocks: [] } }] },
+          {
+            content_items: [
+              { main: { label: 'A', heading: { text: 'A', textSize: 'h2' }, textBlocks: [] } },
+            ],
+          },
+          {
+            content_items: [
+              { main: { label: 'B', heading: { text: 'B', textSize: 'h2' }, textBlocks: [] } },
+            ],
+          },
         ]}
       />
     );
@@ -100,7 +145,11 @@ describe('LayoutGrid', () => {
         label="with-heading"
         heading={{ text: 'Section Title', textSize: 'h3' }}
         columns={[
-          { content_items: [{ main: { label: 'A', heading: { text: 'A', textSize: 'h2' }, textBlocks: [] } }] },
+          {
+            content_items: [
+              { main: { label: 'A', heading: { text: 'A', textSize: 'h2' }, textBlocks: [] } },
+            ],
+          },
         ]}
       />
     );
@@ -112,7 +161,13 @@ describe('LayoutGrid', () => {
       <LayoutGrid
         label="no-heading"
         columns={[
-          { content_items: [{ main: { label: 'A', heading: { text: 'Content', textSize: 'h2' }, textBlocks: [] } }] },
+          {
+            content_items: [
+              {
+                main: { label: 'A', heading: { text: 'Content', textSize: 'h2' }, textBlocks: [] },
+              },
+            ],
+          },
         ]}
       />
     );
@@ -129,7 +184,9 @@ describe('LayoutGrid', () => {
         columns={[
           {
             content_items: [
-              { main: { label: 'OK', heading: { text: 'Allowed', textSize: 'h2' }, textBlocks: [] } },
+              {
+                main: { label: 'OK', heading: { text: 'Allowed', textSize: 'h2' }, textBlocks: [] },
+              },
               { grid: { label: 'Bad', columns: [{ content_items: [] }] } } as any,
             ],
           },
@@ -138,19 +195,14 @@ describe('LayoutGrid', () => {
     );
 
     expect(screen.getByText('Allowed')).toBeInTheDocument();
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Nested grids are not supported')
-    );
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Nested grids are not supported'));
 
     warnSpy.mockRestore();
   });
 
   it('handles empty columns without crashing', () => {
     const { container } = render(
-      <LayoutGrid
-        label="empty"
-        columns={[{ content_items: [] }, { content_items: [] }]}
-      />
+      <LayoutGrid label="empty" columns={[{ content_items: [] }, { content_items: [] }]} />
     );
     expect(container.querySelector('section')).toBeTruthy();
   });
@@ -160,7 +212,17 @@ describe('LayoutGrid', () => {
       <LayoutGrid
         label="single"
         columns={[
-          { content_items: [{ main: { label: 'Solo', heading: { text: 'Solo Content', textSize: 'h2' }, textBlocks: [] } }] },
+          {
+            content_items: [
+              {
+                main: {
+                  label: 'Solo',
+                  heading: { text: 'Solo Content', textSize: 'h2' },
+                  textBlocks: [],
+                },
+              },
+            ],
+          },
         ]}
       />
     );
@@ -169,11 +231,7 @@ describe('LayoutGrid', () => {
 
   it('applies background color', () => {
     const { container } = render(
-      <LayoutGrid
-        label="bg"
-        background="#f0f0f0"
-        columns={[{ content_items: [] }]}
-      />
+      <LayoutGrid label="bg" background="#f0f0f0" columns={[{ content_items: [] }]} />
     );
     const section = container.querySelector('section') as HTMLElement;
     // JSDOM normalizes hex to rgb()
@@ -182,11 +240,7 @@ describe('LayoutGrid', () => {
 
   it('applies custom gap', () => {
     const { container } = render(
-      <LayoutGrid
-        label="gap"
-        gap="3rem"
-        columns={[{ content_items: [] }, { content_items: [] }]}
-      />
+      <LayoutGrid label="gap" gap="3rem" columns={[{ content_items: [] }, { content_items: [] }]} />
     );
     const gridDiv = container.querySelector('div[style*="grid"]') as HTMLElement;
     expect(gridDiv.style.gap).toBe('3rem');
@@ -199,7 +253,13 @@ describe('LayoutGrid', () => {
         columns={[
           {
             content_items: [
-              { main: { label: 'First', heading: { text: 'First Item', textSize: 'h2' }, textBlocks: [] } },
+              {
+                main: {
+                  label: 'First',
+                  heading: { text: 'First Item', textSize: 'h2' },
+                  textBlocks: [],
+                },
+              },
               { code_block: { label: 'Second', code: 'x = 1' } },
             ],
           },
@@ -224,13 +284,17 @@ describe('LayoutGrid via contentRenderer', () => {
         columns: [
           {
             content_items: [
-              { main: { label: 'Pipeline', heading: { text: 'From Pipeline', textSize: 'h2' }, textBlocks: [] } },
+              {
+                main: {
+                  label: 'Pipeline',
+                  heading: { text: 'From Pipeline', textSize: 'h2' },
+                  textBlocks: [],
+                },
+              },
             ],
           },
           {
-            content_items: [
-              { code_block: { label: 'Code', code: 'hello()' } },
-            ],
+            content_items: [{ code_block: { label: 'Code', code: 'hello()' } }],
           },
         ],
       },

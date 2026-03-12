@@ -32,9 +32,7 @@ export function LayoutGrid({ heading, columns, gap, stackBelow, background }: Gr
   }, [breakpoint]);
 
   // Build grid-template-columns from width ratios (default 1 each → equal width)
-  const templateColumns = isStacked
-    ? '1fr'
-    : columns.map((col) => `${col.width ?? 1}fr`).join(' ');
+  const templateColumns = isStacked ? '1fr' : columns.map((col) => `${col.width ?? 1}fr`).join(' ');
 
   const headingColor = heading?.textColor
     ? resolveColor(heading.textColor, theme.colors)
