@@ -93,7 +93,7 @@ export function registerSiteTools(server: McpServer): void {
     'Write or update the stackwright.yml site configuration. Validates against the site config Zod schema before writing — invalid YAML is rejected with field-level errors.',
     {
       projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
-      content: z.string().describe('The full YAML content for the site config'),
+      content: z.string().max(1_000_000).describe('The full YAML content for the site config'),
     },
     async ({ projectRoot, content }) => {
       try {
