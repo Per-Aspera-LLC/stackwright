@@ -11,6 +11,7 @@ export { Faq } from './Faq';
 export { PricingTable } from './PricingTable';
 export { ContactFormStub } from './ContactFormStub';
 export { Alert } from './Alert';
+export { LayoutGrid } from './LayoutGrid';
 export { UnknownContentType } from './UnknownContentType';
 
 export * from './Menu';
