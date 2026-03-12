@@ -52,6 +52,9 @@
                   "type": "number"
                 }
               ]
+            },
+            "colorModeToggle": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -1070,6 +1073,76 @@
           "required": [
             "label",
             "columns"
+          ],
+          "additionalProperties": false
+        },
+        "collection_list": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "layout": {
+              "default": "cards",
+              "type": "string",
+              "enum": [
+                "cards",
+                "compact",
+                "list"
+              ]
+            },
+            "columns": {
+              "type": "number"
+            },
+            "limit": {
+              "type": "number"
+            },
+            "hrefPrefix": {
+              "type": "string"
+            },
+            "card": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "subtitle": {
+                  "type": "string"
+                },
+                "meta": {
+                  "type": "string"
+                },
+                "tags": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title"
+              ],
+              "additionalProperties": false
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "background": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label",
+            "source",
+            "layout",
+            "card"
           ],
           "additionalProperties": false
         }

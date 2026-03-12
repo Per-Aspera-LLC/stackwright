@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { baseContentSchema, textBlockSchema, buttonContentSchema } from './base';
 import { iconContentSchema, mediaContentSchema, mediaItemSchema } from './media';
 import { graphicPositionSchema } from './enums';
+import { collectionListContentSchema } from './collection';
 import type { TextBlock } from './base';
 
 export const carouselItemSchema = z.object({
@@ -224,6 +225,7 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
     alert: alertContentSchema.optional(),
     contact_form_stub: contactFormStubContentSchema.optional(),
     grid: gridContentSchema.optional(),
+    collection_list: collectionListContentSchema.optional(),
   })
 );
 
@@ -246,6 +248,7 @@ export const KNOWN_CONTENT_TYPE_KEYS = [
   'alert',
   'contact_form_stub',
   'grid',
+  'collection_list',
 ] as const;
 
 export type ContentItemMap = {
@@ -263,4 +266,5 @@ export type ContentItemMap = {
   alert: AlertContent;
   contact_form_stub: ContactFormStubContent;
   grid: GridContent;
+  collection_list: import('./collection').CollectionListContent;
 };
