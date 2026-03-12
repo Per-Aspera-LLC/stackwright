@@ -56,12 +56,7 @@ describe('CollectionList', () => {
   });
 
   it('renders heading when provided', () => {
-    render(
-      <CollectionList
-        {...defaultProps}
-        heading={{ text: 'Latest Posts', textSize: 'h4' }}
-      />
-    );
+    render(<CollectionList {...defaultProps} heading={{ text: 'Latest Posts', textSize: 'h4' }} />);
     expect(screen.getByText('Latest Posts')).toBeInTheDocument();
   });
 

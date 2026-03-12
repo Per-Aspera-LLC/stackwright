@@ -54,13 +54,17 @@ function ColorModeToggle({ textColor }: { textColor: string }) {
         (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
       }}
     >
-      {resolvedColorMode === 'dark'
-        ? SunIcon
-          ? <SunIcon size={22} />
-          : '☀️'
-        : MoonIcon
-          ? <MoonIcon size={22} />
-          : '🌙'}
+      {resolvedColorMode === 'dark' ? (
+        SunIcon ? (
+          <SunIcon size={22} />
+        ) : (
+          '☀️'
+        )
+      ) : MoonIcon ? (
+        <MoonIcon size={22} />
+      ) : (
+        '🌙'
+      )}
     </button>
   );
 }

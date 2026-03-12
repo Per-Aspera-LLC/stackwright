@@ -259,9 +259,7 @@ function sortEntries(
 ): Record<string, unknown>[] {
   if (!sortField) {
     // Default: alphabetical by slug
-    return [...entries].sort((a, b) =>
-      String(a.slug ?? '').localeCompare(String(b.slug ?? ''))
-    );
+    return [...entries].sort((a, b) => String(a.slug ?? '').localeCompare(String(b.slug ?? '')));
   }
 
   const descending = sortField.startsWith('-');
@@ -354,9 +352,7 @@ function processCollections(
     }
 
     // Build and write the manifest index
-    const indexEntries = allEntries.map((entry) =>
-      pickIndexFields(entry, config.indexFields)
-    );
+    const indexEntries = allEntries.map((entry) => pickIndexFields(entry, config.indexFields));
     const sortedIndex = sortEntries(indexEntries, config.sort);
 
     fs.writeFileSync(
@@ -371,7 +367,6 @@ function processCollections(
 
   return collectionIndexes;
 }
-
 
 /**
  * Walk page content items and inject `_entries` into any `collection_list` blocks.

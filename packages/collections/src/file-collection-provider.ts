@@ -35,10 +35,7 @@ export class FileCollectionProvider implements CollectionProvider {
       .map((entry) => entry.name);
   }
 
-  async list(
-    collection: string,
-    opts: CollectionListOptions = {}
-  ): Promise<CollectionListResult> {
+  async list(collection: string, opts: CollectionListOptions = {}): Promise<CollectionListResult> {
     const indexPath = path.join(this.basePath, collection, '_index.json');
 
     if (!fs.existsSync(indexPath)) {
