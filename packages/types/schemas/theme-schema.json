@@ -12,40 +12,14 @@
       "type": "string"
     },
     "colors": {
-      "type": "object",
-      "properties": {
-        "primary": {
-          "type": "string"
-        },
-        "secondary": {
-          "type": "string"
-        },
-        "accent": {
-          "type": "string"
-        },
-        "background": {
-          "type": "string"
-        },
-        "surface": {
-          "type": "string"
-        },
-        "text": {
-          "type": "string"
-        },
-        "textSecondary": {
-          "type": "string"
+      "$ref": "#/definitions/__schema0"
+    },
+    "darkColors": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/__schema0"
         }
-      },
-      "required": [
-        "primary",
-        "secondary",
-        "accent",
-        "background",
-        "surface",
-        "text",
-        "textSecondary"
-      ],
-      "additionalProperties": false
+      ]
     },
     "backgroundImage": {
       "type": "object",
@@ -198,28 +172,28 @@
         "button": {
           "allOf": [
             {
-              "$ref": "#/definitions/__schema0"
+              "$ref": "#/definitions/__schema1"
             }
           ]
         },
         "card": {
           "allOf": [
             {
-              "$ref": "#/definitions/__schema0"
+              "$ref": "#/definitions/__schema1"
             }
           ]
         },
         "header": {
           "allOf": [
             {
-              "$ref": "#/definitions/__schema0"
+              "$ref": "#/definitions/__schema1"
             }
           ]
         },
         "footer": {
           "allOf": [
             {
-              "$ref": "#/definitions/__schema0"
+              "$ref": "#/definitions/__schema1"
             }
           ]
         }
@@ -238,6 +212,42 @@
   "additionalProperties": false,
   "definitions": {
     "__schema0": {
+      "type": "object",
+      "properties": {
+        "primary": {
+          "type": "string"
+        },
+        "secondary": {
+          "type": "string"
+        },
+        "accent": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "surface": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "textSecondary": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "primary",
+        "secondary",
+        "accent",
+        "background",
+        "surface",
+        "text",
+        "textSecondary"
+      ],
+      "additionalProperties": false
+    },
+    "__schema1": {
       "type": "object",
       "properties": {
         "base": {
