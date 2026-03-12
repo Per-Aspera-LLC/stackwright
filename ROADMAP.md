@@ -26,6 +26,7 @@ These items are grouped because they share a common purpose: making the Stackwri
 
 - [x] **Replace MUI with shadcn/ui** — All 19 MUI-dependent components in `@stackwright/core` rewritten to plain HTML + inline styles. New `@stackwright/ui-shadcn` package provides Radix UI + Tailwind CSS components (Button, Tabs, Accordion, Badge, Separator) themed via CSS custom properties. `@stackwright/icons` migrated from `@mui/icons-material` to `lucide-react`. Zero MUI/Emotion dependencies remain (#97).
 - [x] **`tabbed_content` — verify and document** — Live demo added to the getting-started page with three tabs: icon_grid, timeline, and code_block.
+- [x] **Layout grid content type** — `grid` content type for composable multi-column layouts. Columns contain recursive `content_items` arrays with relative `fr`-unit widths. Responsive stacking via `stackBelow` breakpoint. Nesting guard prevents grid-in-grid recursion (#125).
 - [x] **Dark mode support** — Optional `darkColors` block added to `ThemeConfig`. `ThemeProvider` manages `colorMode` (`light` | `dark` | `system`), respects `prefers-color-scheme` by default, and exposes `setColorMode` for programmatic toggling. Colors resolve transparently — zero changes to existing components. `ThemeStyleInjector` now reads from context for reactive CSS var updates (#108).
 - [ ] **Internationalization** — Multi-language content support via per-locale content directories or inline locale maps in YAML.
 
@@ -56,5 +57,6 @@ These items are grouped because they share a common purpose: making the Stackwri
 - [x] **Wire up theme spacing tokens** — All components now use `theme.spacing` tokens instead of hardcoded pixel values (#128).
 - [x] **Remove production console.log calls** — Debug logging gated behind `STACKWRIGHT_DEBUG` flag; `aspect_ratio` prop destructured to prevent DOM leak (#129).
 - [x] **Add unit tests for `packages/nextjs/`** — Full test coverage added for NextStackwrightImage, NextStackwrightLink, NextStackwrightRouter, NextStackwrightRoute, createStackwrightNextConfig, and registerNextJSComponents (#130).
+- [x] **Clean up contentRenderer and componentRegistry** — Stripped redundant try/catch-rethrow wrappers and verbose debug logging. ~112 lines removed, zero behavioral changes.
 - [ ] **Refactor content type discrimination** — `Object.entries(item)[0]` is fragile; consider explicit `type` field (breaking change) (#131).
 - [x] **Fix Carousel cleanup and accessibility** — Auto-play interval properly cleared on unmount; keyboard navigation (arrow keys) and ARIA attributes added (#118, #132).
