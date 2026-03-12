@@ -36,6 +36,7 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
         menuItems={config.navigation}
         textcolor={config.appBar.textColor}
         backgroundcolor={config.appBar.backgroundColor}
+        colorModeToggle={config.appBar.colorModeToggle}
       />
 
       <main

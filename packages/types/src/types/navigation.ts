@@ -35,6 +35,8 @@ export const appBarContentSchema = z.object({
   textcolor: z.string().optional(),
   backgroundcolor: z.string().optional(),
   height: z.union([z.string(), z.number()]).optional(),
+  /** Show a Sun/Moon toggle for switching between light and dark color modes. */
+  colorModeToggle: z.boolean().optional(),
 });
 
 export type MenuContent = z.infer<typeof buttonContentSchema> & {
