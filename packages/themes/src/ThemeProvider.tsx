@@ -79,8 +79,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     return () => mql.removeEventListener('change', handler);
   }, []);
 
-  const resolvedColorMode: 'light' | 'dark' =
-    colorMode === 'system' ? systemPreference : colorMode;
+  const resolvedColorMode: 'light' | 'dark' = colorMode === 'system' ? systemPreference : colorMode;
 
   // Build the effective theme — swap `colors` for `darkColors` when in dark mode.
   const theme = useMemo<Theme>(() => {
@@ -172,7 +171,11 @@ interface ThemeStyleInjectorProps {
  * Place this inside a `<ThemeProvider>` and it will track color mode
  * changes automatically.
  */
-export function ThemeStyleInjector({ theme: themeProp, children, className }: ThemeStyleInjectorProps) {
+export function ThemeStyleInjector({
+  theme: themeProp,
+  children,
+  className,
+}: ThemeStyleInjectorProps) {
   const ctx = useThemeOptional();
   const theme = themeProp ?? ctx?.theme;
 
