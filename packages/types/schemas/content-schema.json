@@ -1033,6 +1033,45 @@
             "email"
           ],
           "additionalProperties": false
+        },
+        "grid": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "columns": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/__schema24"
+              }
+            },
+            "gap": {
+              "type": "string"
+            },
+            "stackBelow": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "label",
+            "columns"
+          ],
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -1088,6 +1127,24 @@
           "$ref": "#/definitions/__schema6"
         }
       ]
+    },
+    "__schema24": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "number"
+        },
+        "content_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/__schema17"
+          }
+        }
+      },
+      "required": [
+        "content_items"
+      ],
+      "additionalProperties": false
     }
   }
 }
