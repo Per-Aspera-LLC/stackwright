@@ -9,6 +9,68 @@ content:
           - text: "Every content type available in Stackwright, demonstrated live. Each section below is a single YAML block."
             textSize: "h6"
 
+    # --- grid ---
+
+    - grid:
+        label: "grid-demo-2col"
+        heading:
+          text: "grid — two-column layout"
+          textSize: "h2"
+        columns:
+          - width: 2
+            content_items:
+              - main:
+                  label: "grid-left"
+                  heading:
+                    text: "Composable Layouts"
+                    textSize: "h3"
+                  textBlocks:
+                    - text: "The grid content type places any combination of content blocks side by side. Each column holds a full content_items array — the same structure as a page."
+                      textSize: "body1"
+                    - text: "Width ratios are expressed as fr units. This left column is 2fr, the right is 1fr — giving a 2:1 split."
+                      textSize: "body1"
+          - width: 1
+            content_items:
+              - code_block:
+                  label: "grid-right-code"
+                  language: "yaml"
+                  code: |
+                      - grid:
+                          label: "my-grid"
+                          columns:
+                            - width: 2
+                              content_items:
+                                - main: ...
+                            - width: 1
+                              content_items:
+                                - code_block: ...
+
+    - grid:
+        label: "grid-demo-3col"
+        heading:
+          text: "grid — three equal columns"
+          textSize: "h2"
+        background: "#f8f9fa"
+        columns:
+          - content_items:
+              - alert:
+                  label: "grid-col1-alert"
+                  variant: "info"
+                  title: "Column 1"
+                  body: "Each column stacks its content items vertically, just like a page does."
+          - content_items:
+              - alert:
+                  label: "grid-col2-alert"
+                  variant: "success"
+                  title: "Column 2"
+                  body: "Omit the width field and all columns get equal space (1fr each)."
+          - content_items:
+              - alert:
+                  label: "grid-col3-alert"
+                  variant: "tip"
+                  title: "Column 3"
+                  body: "On narrow screens the columns stack automatically. Set stackBelow to control the breakpoint."
+
     # --- main ---
 
     - main:
