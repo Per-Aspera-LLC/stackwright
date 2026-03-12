@@ -24,13 +24,13 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "lucide-react": "^0.525.0"
+    "lucide-react": "^0.577.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6",
     "@testing-library/react": "^16.3",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "jsdom": "^28.1.0",
     "react": "^19",
     "react-dom": "^19",

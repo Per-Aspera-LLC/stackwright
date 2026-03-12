@@ -36,7 +36,7 @@
     "devDependencies": {
         "@types/fs-extra": "11.0.4",
         "@types/js-yaml": "^4.0.5",
-        "@types/react": "^19",
+        "@types/react": "^19.2.14",
         "fs-extra": "^11.3.4",
         "tsup": "^8.5.1",
         "tsx": "^4.21.0",
