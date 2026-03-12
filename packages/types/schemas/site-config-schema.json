@@ -5,6 +5,25 @@
     "title": {
       "type": "string"
     },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "og_image": {
+          "type": "string"
+        },
+        "og_site_name": {
+          "type": "string"
+        },
+        "base_url": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "additionalProperties": false
+    },
     "themeName": {
       "type": "string"
     },
