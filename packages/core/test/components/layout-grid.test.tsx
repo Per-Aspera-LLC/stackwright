@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { LayoutGrid } from '../../src/components/base/LayoutGrid';
-import { registerComponent, componentRegistry } from '../../src/utils/componentRegistry';
+import { componentRegistry } from '../../src/utils/componentRegistry';
 import { renderContent } from '../../src/utils/contentRenderer';
 
 // Simple stub component for testing nested content rendering
@@ -236,7 +236,7 @@ describe('LayoutGrid via contentRenderer', () => {
       },
     };
 
-    const { container } = render(<>{renderContent(contentItem)}</>);
+    render(<>{renderContent(contentItem)}</>);
     expect(screen.getByText('From Pipeline')).toBeInTheDocument();
     expect(screen.getByText('hello()')).toBeInTheDocument();
   });
