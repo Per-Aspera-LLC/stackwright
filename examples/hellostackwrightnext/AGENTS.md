@@ -136,6 +136,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `pricing_table` | `label` (string), `plans` (object[]) | `color` (string), `background` (string), `heading` (TextBlock) |
 | `alert` | `label` (string), `variant` (`info` | `warning` | `success` | `danger` | `note` | `tip`), `body` (string) | `color` (string), `background` (string), `title` (string) |
 | `contact_form_stub` | `label` (string), `email` (string) | `color` (string), `background` (string), `heading` (TextBlock), `description` (string), `email_subject` (string), `phone` (string), `address` (string), `button_text` (string) |
+| `grid` | `label` (string), `columns` (GridColumn[]) | `color` (string), `background` (string), `heading` (TextBlock), `gap` (string), `stackBelow` (number) |
 
 **Sub-type reference:**
 
@@ -148,6 +149,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `IconContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("icon"), `size`? (number | TypographyVariant) |
 | `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? (string) |
 | `TimelineItem` | `year` (string), `event` (string) |
+| `GridColumn` | `width`? (number), `content_items` (object[]) |
 
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
 <!-- stackwright:content-type-table:end -->
