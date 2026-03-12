@@ -50,6 +50,14 @@ colors:
   surface: "#ffffff"
   text: "#1f2937"
   textSecondary: "#6b7280"
+darkColors:
+  primary: "#fbbf24"
+  secondary: "#94a3b8"
+  accent: "#f59e0b"
+  background: "#0f172a"
+  surface: "#1e293b"
+  text: "#f1f5f9"
+  textSecondary: "#94a3b8"
 typography:
   fontFamily:
     primary: "Roboto, sans-serif"
@@ -81,6 +89,14 @@ colors:
   background: "#f9fafb"
   surface: "#ffffff"
   text: "#374151"
+  textSecondary: "#9ca3af"
+darkColors:
+  primary: "#f472b6"
+  secondary: "#9ca3af"
+  accent: "#ec4899"
+  background: "#111827"
+  surface: "#1f2937"
+  text: "#f9fafb"
   textSecondary: "#9ca3af"
 typography:
   fontFamily:
