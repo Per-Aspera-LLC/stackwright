@@ -12,19 +12,26 @@ export const componentStyleSchema = z
   })
   .catchall(z.string().optional());
 
+export const colorsSchema = z.object({
+  primary: z.string(),
+  secondary: z.string(),
+  accent: z.string(),
+  background: z.string(),
+  surface: z.string(),
+  text: z.string(),
+  textSecondary: z.string(),
+});
+
+export type ThemeColors = z.infer<typeof colorsSchema>;
+
+export type ColorMode = 'light' | 'dark' | 'system';
+
 export const themeConfigSchema = z.object({
   id: z.string(),
   name: z.string(),
   description: z.string(),
-  colors: z.object({
-    primary: z.string(),
-    secondary: z.string(),
-    accent: z.string(),
-    background: z.string(),
-    surface: z.string(),
-    text: z.string(),
-    textSecondary: z.string(),
-  }),
+  colors: colorsSchema,
+  darkColors: colorsSchema.optional(),
   backgroundImage: z
     .object({
       url: z.string(),
@@ -75,3 +82,4 @@ export const themeSchema = themeConfigSchema;
 export type ThemeConfig = z.infer<typeof themeConfigSchema>;
 export type ComponentStyle = z.infer<typeof componentStyleSchema>;
 export interface Theme extends ThemeConfig {}
+export type { ThemeColors as ThemeColorsType };
