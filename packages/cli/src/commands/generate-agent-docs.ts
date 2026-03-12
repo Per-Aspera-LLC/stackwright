@@ -9,6 +9,7 @@ import {
   iconContentSchema,
   carouselItemSchema,
   timelineItemSchema,
+  gridColumnSchema,
   typographyVariantSchema,
 } from '@stackwright/types';
 import { pageContentSchema } from '../utils/schema-loader';
@@ -50,6 +51,7 @@ const SCHEMA_NAMES = new Map<object, string>([
   [iconContentSchema as object, 'IconContent'],
   [carouselItemSchema as object, 'CarouselItem'],
   [timelineItemSchema as object, 'TimelineItem'],
+  [gridColumnSchema as object, 'GridColumn'],
   [typographyVariantSchema as object, 'TypographyVariant'],
 ]);
 
@@ -189,6 +191,7 @@ function generateSubTypeTable(): string {
     { name: 'IconContent', schema: iconContentSchema as unknown as AnySchema },
     { name: 'CarouselItem', schema: carouselItemSchema as unknown as AnySchema },
     { name: 'TimelineItem', schema: timelineItemSchema as unknown as AnySchema },
+    { name: 'GridColumn', schema: gridColumnSchema as unknown as AnySchema },
   ];
 
   const lines = ['| Type | Fields |', '|---|---|'];
