@@ -11,6 +11,7 @@ import {
   PricingTable,
   ContactFormStub,
   Alert,
+  LayoutGrid,
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
@@ -36,6 +37,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   pricing_table: PricingTable,
   alert: Alert,
   contact_form_stub: ContactFormStub,
+  grid: LayoutGrid,
   // Stackwright platform components (resolved dynamically via factory)
   'stackwright-image': () => getStackwrightImage(),
   'stackwright-link': () => getStackwrightLink(),
