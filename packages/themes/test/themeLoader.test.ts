@@ -187,3 +187,42 @@ describe('ThemeLoader.getAllThemes', () => {
     expect(names).toContain(uniqueName);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Dark mode colors in embedded themes
+// ---------------------------------------------------------------------------
+
+describe('Embedded themes — darkColors', () => {
+  it('corporate theme includes darkColors', () => {
+    const theme = ThemeLoader.loadThemeFromFile('corporate');
+    expect(theme.darkColors).toBeDefined();
+    expect(typeof theme.darkColors!.primary).toBe('string');
+    expect(theme.darkColors!.primary).toMatch(/^#[0-9a-fA-F]{6}$/);
+  });
+
+  it('soft theme includes darkColors', () => {
+    const theme = ThemeLoader.loadThemeFromFile('soft');
+    expect(theme.darkColors).toBeDefined();
+    expect(typeof theme.darkColors!.primary).toBe('string');
+    expect(theme.darkColors!.primary).toMatch(/^#[0-9a-fA-F]{6}$/);
+  });
+
+  it('darkColors has all required color fields', () => {
+    const theme = ThemeLoader.loadThemeFromFile('corporate');
+    const dark = theme.darkColors!;
+    expect(dark.primary).toBeTruthy();
+    expect(dark.secondary).toBeTruthy();
+    expect(dark.accent).toBeTruthy();
+    expect(dark.background).toBeTruthy();
+    expect(dark.surface).toBeTruthy();
+    expect(dark.text).toBeTruthy();
+    expect(dark.textSecondary).toBeTruthy();
+  });
+
+  it('darkColors differ from light colors', () => {
+    const theme = ThemeLoader.loadThemeFromFile('corporate');
+    // At minimum, background should be different
+    expect(theme.darkColors!.background).not.toBe(theme.colors.background);
+    expect(theme.darkColors!.text).not.toBe(theme.colors.text);
+  });
+});
