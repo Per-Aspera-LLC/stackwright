@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageContent, SiteConfig } from '@stackwright/types';
 import PageLayout from './structural/PageLayout';
-import { ThemeProvider, ThemeLoader, ThemeStyleInjector } from '@stackwright/themes';
+import { ThemeProvider, ThemeLoader, ThemeStyleInjector, useTheme } from '@stackwright/themes';
 import { useDevContentReload } from '../hooks/useDevContentReload';
 
 interface ErrorBoundaryState {
@@ -127,38 +127,73 @@ export default function DynamicPage({ pageContent, siteConfig, slug }: DynamicPa
 
   return (
     <ThemeProvider theme={theme}>
-      <ThemeStyleInjector theme={theme}>
-        <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />
-        <div
-          style={{
-            minHeight: '100vh',
-            position: 'relative',
-            overflow: 'hidden',
-            fontFamily: theme.typography?.fontFamily?.primary || 'sans-serif',
-            ...backgroundImageStyles,
-            animation: getDriftFloatAnimation(),
-          }}
-        >
-          {showShimmer && (
-            <div
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: '-100%',
-                width: '100%',
-                height: '100%',
-                background:
-                  'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
-                animation: 'sf-shimmer 2s ease-in-out infinite',
-                pointerEvents: 'none',
-              }}
-            />
-          )}
-          <DynamicPageErrorBoundary pageName={slug}>
-            <PageLayout pageContent={pageContent} siteConfig={siteConfig} />
-          </DynamicPageErrorBoundary>
-        </div>
+      <ThemeStyleInjector>
+        <DynamicPageInner
+          pageContent={pageContent}
+          siteConfig={siteConfig}
+          slug={slug}
+          backgroundImageStyles={backgroundImageStyles}
+          showShimmer={showShimmer}
+          getDriftFloatAnimation={getDriftFloatAnimation}
+        />
       </ThemeStyleInjector>
     </ThemeProvider>
+  );
+}
+
+/**
+ * Inner component that reads the resolved theme from context so it
+ * reacts to color mode changes (dark / light).
+ */
+function DynamicPageInner({
+  pageContent,
+  siteConfig,
+  slug,
+  backgroundImageStyles,
+  showShimmer,
+  getDriftFloatAnimation,
+}: {
+  pageContent: PageContent;
+  siteConfig?: SiteConfig;
+  slug?: string;
+  backgroundImageStyles: React.CSSProperties;
+  showShimmer: boolean;
+  getDriftFloatAnimation: () => string | undefined;
+}) {
+  const { theme } = useTheme();
+
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />
+      <div
+        style={{
+          minHeight: '100vh',
+          position: 'relative',
+          overflow: 'hidden',
+          fontFamily: theme.typography?.fontFamily?.primary || 'sans-serif',
+          ...backgroundImageStyles,
+          animation: getDriftFloatAnimation(),
+        }}
+      >
+        {showShimmer && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '-100%',
+              width: '100%',
+              height: '100%',
+              background:
+                'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+              animation: 'sf-shimmer 2s ease-in-out infinite',
+              pointerEvents: 'none',
+            }}
+          />
+        )}
+        <DynamicPageErrorBoundary pageName={slug}>
+          <PageLayout pageContent={pageContent} siteConfig={siteConfig} />
+        </DynamicPageErrorBoundary>
+      </div>
+    </>
   );
 }
