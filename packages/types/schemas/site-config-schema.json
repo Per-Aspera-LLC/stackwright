@@ -253,6 +253,9 @@
           "items": {
             "$ref": "#/definitions/__schema2"
           }
+        },
+        "colorModeToggle": {
+          "type": "boolean"
         }
       },
       "required": [
