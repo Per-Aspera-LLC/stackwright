@@ -12,6 +12,7 @@ import {
   ContactFormStub,
   Alert,
   LayoutGrid,
+  CollectionList,
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
@@ -38,6 +39,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   alert: Alert,
   contact_form_stub: ContactFormStub,
   grid: LayoutGrid,
+  collection_list: CollectionList,
   // Stackwright platform components (resolved dynamically via factory)
   'stackwright-image': () => getStackwrightImage(),
   'stackwright-link': () => getStackwrightLink(),

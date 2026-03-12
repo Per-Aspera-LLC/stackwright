@@ -49,3 +49,9 @@ export {
   getRegisteredContentTypes,
   getContentTypeSchema,
 } from './utils/contentTypeRegistry';
+
+// Collection provider registration
+export {
+  registerCollectionProvider,
+  getCollectionProvider,
+} from './utils/collectionProviderRegistry';
