@@ -92,6 +92,26 @@ pnpm test:core
 
 **E2E tests** (`pnpm test:e2e`): Playwright tests in `packages/e2e/` that verify the full YAML → prebuild → Next.js build → browser pipeline against `examples/hellostackwrightnext/`. When adding new content types, add example usage in the example app so E2E smoke tests cover them. The E2E tests check that every page renders content, has no error boundaries, produces no critical console errors, and that all nav links resolve.
 
+## Formatting (Prettier)
+
+**CI enforces Prettier formatting.** Run Prettier before committing to avoid CI failures:
+
+```bash
+# Check for formatting issues
+npx prettier --check "packages/**/*.{ts,tsx}"
+
+# Auto-fix all formatting issues
+npx prettier --write "packages/**/*.{ts,tsx}"
+```
+
+To format only the files you changed (useful on feature branches):
+
+```bash
+git diff --name-only origin/dev...HEAD -- 'packages/' | xargs npx prettier --write
+```
+
+> **Tip:** Configure your editor to format on save with the project's `.prettierrc` config. This avoids formatting-only commits entirely.
+
 ## Naming Conventions
 
 - File names: kebab-case (`main-content-grid.tsx`)
