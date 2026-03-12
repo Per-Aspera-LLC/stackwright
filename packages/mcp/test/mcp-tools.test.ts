@@ -592,7 +592,6 @@ describe('MCP Tools Integration', () => {
       // .yml should NOT have been created
       expect(fs.existsSync(path.join(testDir, 'stackwright.yml'))).toBe(false);
     });
-
   });
 
   describe('Git Ops Tools', () => {
