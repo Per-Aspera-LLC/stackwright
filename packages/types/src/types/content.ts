@@ -145,6 +145,21 @@ export type AlertVariant = z.infer<typeof alertVariantSchema>;
 export type AlertContent = z.infer<typeof alertContentSchema>;
 export type ContactFormStubContent = z.infer<typeof contactFormStubContentSchema>;
 
+export interface GridColumn {
+  width?: number;
+  content_items: ContentItem[];
+}
+
+export interface GridContent {
+  label: string;
+  color?: string;
+  background?: string;
+  heading?: TextBlock;
+  columns: GridColumn[];
+  gap?: string;
+  stackBelow?: number;
+}
+
 export interface TabbedContent {
   label: string;
   color?: string;
@@ -167,7 +182,24 @@ export interface ContentItem {
   pricing_table?: PricingTableContent;
   alert?: AlertContent;
   contact_form_stub?: ContactFormStubContent;
+  grid?: GridContent;
 }
+
+export const gridColumnSchema: z.ZodType<GridColumn> = z.lazy(() =>
+  z.object({
+    width: z.number().optional(),
+    content_items: z.array(contentItemSchema),
+  })
+);
+
+export const gridContentSchema: z.ZodType<GridContent> = z.lazy(() =>
+  baseContentSchema.extend({
+    heading: textBlockSchema.optional(),
+    columns: z.array(gridColumnSchema).min(1),
+    gap: z.string().optional(),
+    stackBelow: z.number().optional(),
+  })
+);
 
 export const tabbedContentSchema: z.ZodType<TabbedContent> = z.lazy(() =>
   baseContentSchema.extend({
@@ -191,6 +223,7 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
     pricing_table: pricingTableContentSchema.optional(),
     alert: alertContentSchema.optional(),
     contact_form_stub: contactFormStubContentSchema.optional(),
+    grid: gridContentSchema.optional(),
   })
 );
 
@@ -212,6 +245,7 @@ export const KNOWN_CONTENT_TYPE_KEYS = [
   'pricing_table',
   'alert',
   'contact_form_stub',
+  'grid',
 ] as const;
 
 export type ContentItemMap = {
@@ -228,4 +262,5 @@ export type ContentItemMap = {
   pricing_table: PricingTableContent;
   alert: AlertContent;
   contact_form_stub: ContactFormStubContent;
+  grid: GridContent;
 };
