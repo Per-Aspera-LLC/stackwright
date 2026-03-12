@@ -1,12 +1,13 @@
 content:
   content_items:
+    # ── Hero ────────────────────────────────────────────────────────────
     - main:
         label: "about-hero"
         heading:
           text: "About Stackwright"
           textSize: "h1"
         textBlocks:
-          - text: "A modern framework for building React applications with YAML configuration."
+          - text: "A typed content layer for Next.js that treats your pages like code — versioned, validated, and reviewable."
             textSize: "h6"
         media:
           type: "image"
@@ -16,47 +17,109 @@ content:
           height: 350
         graphic_position: "left"
 
-    - timeline:
-        label: "framework-timeline"
-        heading:
-          text: "Framework Evolution"
-          textSize: "h2"
-        items:
-          - year: "2024"
-            event: "Initial release with core YAML-to-React transformation"
-          - year: "2024"
-            event: "Added Material-UI integration and theme system"
-          - year: "2024"
-            event: "Introduced CLI tools and AI-powered generation"
-          - year: "Future"
-            event: "Advanced component library and visual editor"
-
+    # ── The Problem ─────────────────────────────────────────────────────
     - main:
-        label: "philosophy-section"
+        label: "the-problem"
         heading:
-          text: "Our Philosophy"
+          text: "The Problem"
           textSize: "h2"
         textBlocks:
-          - text: "Content as Code"
-            textSize: "h5"
-          - text: "We believe in treating content configuration as code, with version control, validation, and collaborative editing capabilities."
+          - text: "Most teams choose between two bad options for managing website content:"
             textSize: "body1"
-          - text: "Developer Experience"
-            textSize: "h5" 
-          - text: "Stackwright prioritizes developer productivity by reducing boilerplate and enabling rapid prototyping through declarative configuration."
+          - text: "Option A: a headless CMS."
+            textSize: "h5"
+          - text: "Your content is locked in somebody else's database. You pay per seat, you depend on their uptime, and you lose Git-native workflows like branching, diffing, and code review. Content and code drift apart."
+            textSize: "body1"
+          - text: "Option B: hand-rolled React pages."
+            textSize: "h5"
+          - text: "Every copy change requires a developer. Non-technical contributors cannot participate without a full dev environment. The gap between 'what we want to say' and 'what ships' grows with every sprint."
             textSize: "body1"
         background: "#f5f5f5"
 
+    # ── The Stackwright Approach ────────────────────────────────────────
+    - main:
+        label: "the-approach"
+        heading:
+          text: "The Stackwright Approach"
+          textSize: "h2"
+        textBlocks:
+          - text: "Content as typed data, living in your repo."
+            textSize: "h5"
+          - text: "Each page is a YAML file that declares structured content items — headings, text blocks, images, carousels, FAQs, grids, and more. At build time, Stackwright validates every file against Zod schemas, copies co-located images into place, indexes collections into static JSON, and hands everything to Next.js for static generation."
+            textSize: "body1"
+          - text: "The result is a standard Next.js app. No runtime dependency on Stackwright, no proprietary data format, no API calls at render time."
+            textSize: "body1"
+
+    # ── Principles ──────────────────────────────────────────────────────
+    - feature_list:
+        label: "principles"
+        heading:
+          text: "Design Principles"
+          textSize: "h2"
+        columns: 2
+        items:
+          - icon:
+                type: "icon"
+                src: "GitBranch"
+                height: 40
+            heading: "Content is code"
+            description: "YAML files live in Git. They get the same review, branching, and CI treatment as application code. There is one source of truth and it is your repository."
+          - icon:
+                type: "icon"
+                src: "ShieldCheck"
+                height: 40
+            heading: "Validate early, validate always"
+            description: "Zod schemas catch structural errors at build time — not after deployment, not in production. If the YAML is wrong, the build fails with a clear message."
+          - icon:
+                type: "icon"
+                src: "Layers"
+                height: 40
+            heading: "Progressive disclosure of complexity"
+            description: "Start with YAML. Add a custom React component when YAML is not enough. The framework does not force an all-or-nothing choice."
+          - icon:
+                type: "icon"
+                src: "DoorOpen"
+                height: 40
+            heading: "Eject gracefully"
+            description: "The output is a Next.js app. If you decide Stackwright is not for you, delete the dependency and keep shipping. No migration tool required."
+
+    # ── Timeline ────────────────────────────────────────────────────────
+    - timeline:
+        label: "framework-timeline"
+        heading:
+          text: "Project Timeline"
+          textSize: "h2"
+        items:
+          - year: "Q1 2024"
+            event: "First YAML-to-React prototype built in a weekend hackathon."
+          - year: "Q3 2024"
+            event: "Core content types stabilized. Theme system, icon registry, and Material-UI integration added."
+          - year: "Q1 2025"
+            event: "CLI tools, prebuild pipeline, and image co-location. First external contributors."
+          - year: "Q2 2025"
+            event: "MCP server for AI-driven content authoring. Agent docs auto-generation. shadcn/ui migration."
+          - year: "Q3 2025"
+            event: "Dark mode, collections system, and the content type showcase."
+          - year: "Next"
+            event: "App Router support, visual content editor, and pluggable collection backends."
+
+    # ── CTA ─────────────────────────────────────────────────────────────
     - main:
         label: "cta-section"
         heading:
-          text: "Ready to Get Started?"
+          text: "Curious?"
           textSize: "h2"
         textBlocks:
-          - text: "Join the growing community of developers building with Stackwright."
+          - text: "The fastest way to understand Stackwright is to read the YAML that builds this very site. Clone the repo and poke around — every page you are reading is a content file."
             textSize: "body1"
         buttons:
-          - text: "Start Building"
+          - text: "Get Started"
             textSize: "body1"
             variant: "contained"
             href: "/getting-started"
+            bgColor: "secondary"
+            textColor: "primary"
+          - text: "View on GitHub"
+            textSize: "body1"
+            variant: "outlined"
+            href: "https://github.com/Per-Aspera-LLC/stackwright/"
