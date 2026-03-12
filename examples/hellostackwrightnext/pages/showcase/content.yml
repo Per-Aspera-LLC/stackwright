@@ -157,13 +157,13 @@ content:
           - year: "Q3 2024"
             event: "Core content types (main, carousel, timeline, tabbed_content) stabilized. Theme system and icon registry added."
           - year: "Q1 2025"
-            event: "CLI tools, prebuild pipeline, and image co-location. First external users onboarded."
+            event: "CLI tools, prebuild pipeline, and image co-location. First external contributors."
+          - year: "Q2 2025"
+            event: "MCP server for AI-driven content authoring. Agent docs auto-generation. shadcn/ui migration."
           - year: "Q3 2025"
-            event: "MCP server for AI-driven content authoring. Agent docs auto-generation."
-          - year: "Q1 2026"
-            event: "shadcn/ui migration. Five new content types added."
+            event: "Dark mode with system preference detection. Collections system for blog posts and structured data. Five new content types."
           - year: "Next"
-            event: "Collections system, App Router support, and the complete AI editorial loop."
+            event: "App Router support, visual content editor, and pluggable collection backends."
 
     # --- icon_grid ---
 
@@ -407,8 +407,8 @@ content:
             answer: "A typed DSL that compiles YAML content files into production-ready Next.js applications. You define pages, layouts, and content in YAML — Stackwright handles the rendering."
           - question: "Do I need to know React?"
             answer: "Not for content authoring. YAML content can be written by anyone. When you need custom functionality beyond the built-in content types, a React developer can extend the app alongside the YAML-driven pages."
-          - question: "How does theming work?"
-            answer: "Themes are defined in YAML with colors, typography, and spacing tokens. These are resolved at render time via CSS custom properties. You can switch themes dynamically or define custom themes per site."
+          - question: "How does theming and dark mode work?"
+            answer: "Themes are defined in YAML with colors, darkColors, typography, and spacing tokens. Light and dark palettes swap automatically based on OS preference, or users can toggle manually via the Sun/Moon button in the header. Define both palettes once and every page respects the choice."
           - question: "What happens when I outgrow the framework?"
             answer: "Nothing breaks. The output is a standard Next.js app. A developer opens the repo and starts writing React components alongside the YAML pages. No migration, no export, no rewrite."
           - question: "Is it free and open source?"
@@ -427,7 +427,7 @@ content:
             price: "Free"
             description: "For personal projects and experiments"
             features:
-              - "All 12 content types"
+              - "All 14 content types"
               - "Theme system"
               - "CLI tools"
               - "Community support"

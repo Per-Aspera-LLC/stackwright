@@ -1,0 +1,14 @@
+title: "Building Your First Page"
+date: "2026-02-28"
+author: "Per Aspera Team"
+excerpt: "A deep dive into Stackwright's content types and how to compose pages."
+tags:
+  - tutorial
+  - content-types
+body: |
+  Every Stackwright page is a YAML file that declares content items.
+  Each content item has a type (main, carousel, timeline, etc.) and
+  a set of typed fields validated by Zod schemas at build time.
+
+  This post covers the most common content types and how to combine
+  them into professional-looking pages.
