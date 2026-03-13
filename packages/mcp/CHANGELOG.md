@@ -1,5 +1,16 @@
 # @stackwright/mcp
 
+## 0.2.0-alpha.15
+
+### Patch Changes
+
+- 948d04d: AI-first scaffold enhancements (Phase 2):
+  - **feat**: Scaffold JSON output now includes `dependencyMode`, `siteConfigPath`, `pagesDir`, and structured `nextSteps` array for AI agent consumption.
+  - **feat**: `--pages` flag for creating multiple pages during scaffold (e.g., `--pages about,contact,pricing`). Navigation auto-updated. MCP tool supports pages parameter.
+
+- Updated dependencies [948d04d]
+  - @stackwright/cli@0.6.0-alpha.14
+
 ## 0.2.0-alpha.14
 
 ### Patch Changes
