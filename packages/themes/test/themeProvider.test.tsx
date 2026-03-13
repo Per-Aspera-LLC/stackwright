@@ -302,6 +302,13 @@ describe('useThemeOptional', () => {
 describe('Dark mode', () => {
   const darkTheme = makeTheme({ darkColors: DARK_COLORS });
 
+  // Clean up cookie and data attribute between tests to prevent leaking
+  // color mode state from setColorMode() calls that now persist to cookies.
+  beforeEach(() => {
+    document.cookie = 'sw-color-mode=; max-age=0; path=/';
+    document.documentElement.removeAttribute('data-sw-color-mode');
+  });
+
   it('defaults colorMode to system', () => {
     function ModeReader() {
       const { colorMode } = useTheme();
@@ -492,5 +499,137 @@ describe('Dark mode', () => {
     expect(wrapper.style.getPropertyValue('--sw-color-bg')).toBe(DARK_COLORS.background);
     expect(wrapper.style.getPropertyValue('--sw-color-text')).toBe(DARK_COLORS.text);
     expect(wrapper.style.getPropertyValue('--sw-color-primary')).toBe(DARK_COLORS.primary);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Color mode persistence (cookie + data attribute)
+// ---------------------------------------------------------------------------
+
+describe('Color mode persistence', () => {
+  const darkTheme = makeTheme({ darkColors: DARK_COLORS });
+
+  beforeEach(() => {
+    document.cookie = 'sw-color-mode=; max-age=0; path=/';
+    document.documentElement.removeAttribute('data-sw-color-mode');
+  });
+
+  it('writes sw-color-mode cookie when setColorMode is called with dark', () => {
+    function Toggle() {
+      const { setColorMode } = useTheme();
+      return <button onClick={() => setColorMode('dark')}>Dark</button>;
+    }
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <Toggle />
+      </ThemeProvider>
+    );
+
+    act(() => {
+      screen.getByText('Dark').click();
+    });
+
+    expect(document.cookie).toContain('sw-color-mode=dark');
+  });
+
+  it('removes sw-color-mode cookie when setColorMode is called with system', () => {
+    // First set to dark
+    document.cookie = 'sw-color-mode=dark; path=/';
+
+    function Toggle() {
+      const { setColorMode } = useTheme();
+      return <button onClick={() => setColorMode('system')}>System</button>;
+    }
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <Toggle />
+      </ThemeProvider>
+    );
+
+    act(() => {
+      screen.getByText('System').click();
+    });
+
+    // Cookie should be cleared
+    expect(document.cookie).not.toContain('sw-color-mode');
+  });
+
+  it('reads saved preference from cookie on mount', async () => {
+    // Set the cookie before rendering
+    document.cookie = 'sw-color-mode=dark; path=/';
+
+    function ModeReader() {
+      const { colorMode } = useTheme();
+      return <span data-testid="mode">{colorMode}</span>;
+    }
+
+    await act(async () => {
+      render(
+        <ThemeProvider theme={darkTheme}>
+          <ModeReader />
+        </ThemeProvider>
+      );
+    });
+
+    expect(screen.getByTestId('mode')).toHaveTextContent('dark');
+  });
+
+  it('reads data-sw-color-mode attribute from blocking script', () => {
+    // Simulate what ColorModeScript does
+    document.documentElement.setAttribute('data-sw-color-mode', 'dark');
+
+    function ResolvedReader() {
+      const { resolvedColorMode } = useTheme();
+      return <span data-testid="resolved">{resolvedColorMode}</span>;
+    }
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <ResolvedReader />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByTestId('resolved')).toHaveTextContent('dark');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ColorModeScript
+// ---------------------------------------------------------------------------
+
+describe('ColorModeScript', () => {
+  // Import inline since it is in a separate module
+  let ColorModeScript: typeof import('../src/ColorModeScript').ColorModeScript;
+
+  beforeEach(async () => {
+    const mod = await import('../src/ColorModeScript');
+    ColorModeScript = mod.ColorModeScript;
+  });
+
+  it('renders a script tag', () => {
+    const { container } = render(<ColorModeScript />);
+    const script = container.querySelector('script');
+    expect(script).toBeTruthy();
+  });
+
+  it('contains sw-color-mode cookie matching logic', () => {
+    const { container } = render(<ColorModeScript />);
+    const script = container.querySelector('script');
+    expect(script!.innerHTML).toContain('sw-color-mode');
+    expect(script!.innerHTML).toContain('data-sw-color-mode');
+  });
+
+  it('uses fallback value in the script', () => {
+    const { container } = render(<ColorModeScript fallback="dark" />);
+    const script = container.querySelector('script');
+    expect(script!.innerHTML).toContain("'dark'");
+  });
+
+  it('defaults fallback to system', () => {
+    const { container } = render(<ColorModeScript />);
+    const script = container.querySelector('script');
+    expect(script!.innerHTML).toContain("'system'");
   });
 });
