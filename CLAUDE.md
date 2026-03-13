@@ -42,6 +42,9 @@ pnpm dev:hellostackwright
 pnpm stackwright -- --help
 pnpm stackwright -- types
 pnpm stackwright -- info
+# View the priority-tiered product board (queries GitHub Issues)
+pnpm stackwright -- board
+
 # Project-aware commands must be run from inside a Stackwright project:
 # cd examples/hellostackwrightnext && pnpm stackwright -- page list
 

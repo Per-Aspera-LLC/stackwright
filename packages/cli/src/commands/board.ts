@@ -129,8 +129,7 @@ export async function getBoard(cwd?: string): Promise<BoardResult> {
 
 function formatIssue(issue: BoardIssue): string {
   const num = chalk.dim(`#${issue.number}`);
-  const assignee =
-    issue.assignees.length > 0 ? chalk.dim(` (${issue.assignees.join(', ')})`) : '';
+  const assignee = issue.assignees.length > 0 ? chalk.dim(` (${issue.assignees.join(', ')})`) : '';
   return `  ${num.padEnd(16)}${issue.title}${assignee}`;
 }
 
