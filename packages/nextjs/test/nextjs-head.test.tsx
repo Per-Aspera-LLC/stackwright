@@ -100,7 +100,9 @@ describe('NextStackwrightHead', () => {
   it('omits empty fields -- no empty meta tags', () => {
     render(<NextStackwrightHead />);
     // Only og:type should be present (always rendered)
-    const swMeta = queryAllHead('meta[property^="og:"], meta[name="description"], meta[name="robots"]');
+    const swMeta = queryAllHead(
+      'meta[property^="og:"], meta[name="description"], meta[name="robots"]'
+    );
     expect(swMeta).toHaveLength(1);
     expect(swMeta[0].getAttribute('property')).toBe('og:type');
 
@@ -122,18 +124,16 @@ describe('NextStackwrightHead', () => {
     );
 
     expect(queryHead('title')!.textContent).toBe('About Us | Acme Corp');
-    expect(
-      queryHead('meta[name="description"]')!.getAttribute('content')
-    ).toBe('Learn about our mission.');
-    expect(
-      queryHead('meta[property="og:title"]')!.getAttribute('content')
-    ).toBe('About Us | Acme Corp');
-    expect(
-      queryHead('meta[property="og:image"]')!.getAttribute('content')
-    ).toBe('https://acme.com/og.jpg');
-    expect(
-      queryHead('link[rel="canonical"]')!.getAttribute('href')
-    ).toBe('https://acme.com/about');
+    expect(queryHead('meta[name="description"]')!.getAttribute('content')).toBe(
+      'Learn about our mission.'
+    );
+    expect(queryHead('meta[property="og:title"]')!.getAttribute('content')).toBe(
+      'About Us | Acme Corp'
+    );
+    expect(queryHead('meta[property="og:image"]')!.getAttribute('content')).toBe(
+      'https://acme.com/og.jpg'
+    );
+    expect(queryHead('link[rel="canonical"]')!.getAttribute('href')).toBe('https://acme.com/about');
     // noindex=false should NOT render robots meta
     expect(queryHead('meta[name="robots"]')).toBeNull();
   });

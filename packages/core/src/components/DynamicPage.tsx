@@ -105,8 +105,7 @@ export function resolvePageMeta(
   return {
     title,
     description: pageMeta?.description ?? siteMeta?.description,
-    ogImage:
-      ogImage && baseUrl && ogImage.startsWith('/') ? `${baseUrl}${ogImage}` : ogImage,
+    ogImage: ogImage && baseUrl && ogImage.startsWith('/') ? `${baseUrl}${ogImage}` : ogImage,
     ogSiteName: siteMeta?.og_site_name ?? siteTitle,
     canonical: pageMeta?.canonical,
     noindex: pageMeta?.noindex ?? undefined,

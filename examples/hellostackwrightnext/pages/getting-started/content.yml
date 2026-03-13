@@ -1,4 +1,7 @@
 content:
+    meta:
+        title: "Getting Started with Stackwright"
+        description: "Install Stackwright, create your first page in YAML, and deploy a production-ready Next.js site in minutes."
     content_items:
         # ── Hero ──────────────────────────────────────────────────────────
         - main:
