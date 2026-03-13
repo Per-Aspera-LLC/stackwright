@@ -1,5 +1,23 @@
 # stackwright-example-app
 
+## 0.2.0-alpha.15
+
+### Patch Changes
+
+- Updated dependencies [27c6083]
+- Updated dependencies [7077f83]
+- Updated dependencies [505002f]
+- Updated dependencies [c0fc647]
+- Updated dependencies [8d1a637]
+- Updated dependencies [a5c1ff4]
+- Updated dependencies [b1f3a30]
+- Updated dependencies [c2f7867]
+  - @stackwright/core@0.6.0-alpha.15
+  - @stackwright/collections@0.1.0-alpha.2
+  - @stackwright/icons@0.3.0-alpha.4
+  - @stackwright/nextjs@0.3.0-alpha.15
+  - @stackwright/ui-shadcn@0.1.0-alpha.2
+
 ## 0.2.0-alpha.14
 
 ### Minor Changes

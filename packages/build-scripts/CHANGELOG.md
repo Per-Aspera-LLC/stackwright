@@ -1,5 +1,86 @@
 # @stackwright/build-scripts
 
+## 0.3.0-alpha.8
+
+### Minor Changes
+
+- 27c6083: ## Collections system, `collection_list` content type, dark mode toggle, and example app overhaul
+
+  ### New: `@stackwright/collections` package
+  - `CollectionProvider` interface for pluggable data backends
+  - `FileCollectionProvider` — reads from prebuild JSON (filesystem, zero async)
+  - `collectionProviderRegistry` in `@stackwright/core` for registration
+
+  ### New: `collection_list` content type
+  - YAML-driven listing of collection entries with `cards`, `list`, and `compact` layouts
+  - Field mapping via `card` config (`title`, `subtitle`, `meta`, `tags`)
+  - Prebuild injects `_entries` at build time — zero async at render time
+  - Zod schemas: `collectionListContentSchema`, `collectionCardMappingSchema`, `entryPageConfigSchema`
+
+  ### New: Dark mode toggle
+  - `colorModeToggle` field added to `appBarContentSchema` and `appBarConfigSchema`
+  - `TopAppBar` renders Sun/Moon toggle when enabled
+  - Removed type intersection hack — both schemas now agree
+
+  ### Prebuild pipeline changes
+  - Collections now process **before** pages (so `collection_list` entries can be injected)
+  - `injectCollectionEntries()` walks page JSON and embeds `_entries` from collection indexes
+  - `collection_list` added to `KNOWN_CONTENT_TYPE_KEYS` for typo detection
+
+  ### Icon additions
+  - Added 20+ Lucide icons to the preset (BookOpen, Calendar, Tag, Bot, Paintbrush, etc.)
+
+  ### Example app overhaul
+  - Complete rewrite of home, about, getting-started, and showcase pages
+  - Dark amber/charcoal theme with `colorModeToggle: true`
+  - Blog index page using `collection_list` content type (pure YAML)
+  - Blog entry pages with `[slug].tsx` dynamic routing
+  - Removed broken `blog/index.tsx` (had two default exports, phantom imports)
+  - Removed `FileCollectionProvider` from `_app.tsx` to prevent `fs` in client bundle
+
+- c0fc647: BREAKING: Content items now use an explicit `type` field for discrimination.
+
+  Before (nested key):
+
+  ```yaml
+  content_items:
+    - main:
+        label: hero
+        heading: { text: 'Hello', textSize: h1 }
+  ```
+
+  After (flat with `type`):
+
+  ```yaml
+  content_items:
+    - type: main
+      label: hero
+      heading: { text: 'Hello', textSize: h1 }
+  ```
+
+  This replaces the fragile `Object.entries(item)[0]` discrimination pattern with a proper
+  discriminated union on the `type` field. Benefits:
+  - TypeScript discriminated union narrowing (`if (item.type === 'main')`)
+  - Clearer Zod validation errors (field-level paths instead of "unrecognized key")
+  - No dependence on JS object insertion order
+  - Simpler content renderer logic
+  - Better MCP tool introspection
+
+  All 15 content types are updated. The prebuild pipeline, CLI scaffolding, MCP tools,
+  and agent docs generation have been adapted to the new format.
+
+### Patch Changes
+
+- a5c1ff4: Update all AGENTS.md files to reflect current architecture. Replace stale MUI/Emotion references with actual stack (Lucide, Radix, Tailwind via ui-shadcn, Zod). Document dark mode, cookie persistence, ColorModeScript, StackwrightDocument, and responsive design patterns. Add missing AGENTS.md for build-scripts, collections, ui-shadcn, mcp, and e2e packages.
+- Updated dependencies [27c6083]
+- Updated dependencies [505002f]
+- Updated dependencies [c0fc647]
+- Updated dependencies [8d1a637]
+- Updated dependencies [a5c1ff4]
+- Updated dependencies [b1f3a30]
+- Updated dependencies [c2f7867]
+  - @stackwright/types@1.0.0-alpha.7
+
 ## 0.3.0-alpha.7
 
 ### Minor Changes

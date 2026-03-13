@@ -1,5 +1,81 @@
 # @stackwright/cli
 
+## 0.6.0-alpha.12
+
+### Minor Changes
+
+- c0fc647: BREAKING: Content items now use an explicit `type` field for discrimination.
+
+  Before (nested key):
+
+  ```yaml
+  content_items:
+    - main:
+        label: hero
+        heading: { text: 'Hello', textSize: h1 }
+  ```
+
+  After (flat with `type`):
+
+  ```yaml
+  content_items:
+    - type: main
+      label: hero
+      heading: { text: 'Hello', textSize: h1 }
+  ```
+
+  This replaces the fragile `Object.entries(item)[0]` discrimination pattern with a proper
+  discriminated union on the `type` field. Benefits:
+  - TypeScript discriminated union narrowing (`if (item.type === 'main')`)
+  - Clearer Zod validation errors (field-level paths instead of "unrecognized key")
+  - No dependence on JS object insertion order
+  - Simpler content renderer logic
+  - Better MCP tool introspection
+
+  All 15 content types are updated. The prebuild pipeline, CLI scaffolding, MCP tools,
+  and agent docs generation have been adapted to the new format.
+
+- daf5955: Add `board` CLI command and `stackwright_get_board` MCP tool for priority-tiered product board
+  - `pnpm stackwright -- board` displays open GitHub Issues organized by priority label (now/next/later/vision)
+  - `--json` flag outputs structured `BoardResult` for scripting and CI
+  - `stackwright_get_board` MCP tool provides the same data to AI agents
+  - Pure `parseBoard()` function exported for programmatic use
+  - ROADMAP.md transformed from stale checklist to architectural narrative document
+  - Priority label system documented in CONTRIBUTING.md
+
+- a81fd0a: Add `stackwright_write_site_config` MCP tool and `writeSiteConfig` CLI function (#124). Agents can now programmatically update site configuration (themes, navigation, app bar, footer) with full Zod schema validation before write. Invalid YAML is rejected with field-level error messages. Also adds `site write` CLI subcommand.
+
+### Patch Changes
+
+- a5c1ff4: Update all AGENTS.md files to reflect current architecture. Replace stale MUI/Emotion references with actual stack (Lucide, Radix, Tailwind via ui-shadcn, Zod). Document dark mode, cookie persistence, ColorModeScript, StackwrightDocument, and responsive design patterns. Add missing AGENTS.md for build-scripts, collections, ui-shadcn, mcp, and e2e packages.
+- b1f3a30: feat(types,core): layout grid content type for composable multi-column layouts (#125)
+  - Add `grid` content type with `GridColumn` and `GridContent` Zod schemas
+  - Columns contain recursive `content_items` arrays (same structure as pages)
+  - Column widths expressed as relative `fr` units (default: equal width)
+  - `LayoutGrid` React component renders CSS Grid with responsive stacking
+  - SSR-safe `matchMedia` hook for mobile breakpoint detection (`stackBelow` prop, default 768px)
+  - Nested grids filtered at render time with `console.warn` to prevent infinite recursion
+  - Registered in `componentRegistry` as `'grid'`
+  - `GridColumn` added to AGENTS.md sub-type reference table via `generate-agent-docs`
+  - JSON schemas regenerated with grid type (circular `z.lazy()` refs handled cleanly)
+  - 12 new unit tests + 1 content renderer integration test
+  - Two grid demos added to showcase page (2-column and 3-column layouts)
+
+  Also includes: refactor(core) — cleaned up verbose debug logging in `contentRenderer.tsx` and `componentRegistry.ts` (~112 lines of redundant try/catch-rethrow wrappers removed, zero behavioral changes)
+
+- Updated dependencies [27c6083]
+- Updated dependencies [7077f83]
+- Updated dependencies [505002f]
+- Updated dependencies [c0fc647]
+- Updated dependencies [8d1a637]
+- Updated dependencies [f0fbf0c]
+- Updated dependencies [a5c1ff4]
+- Updated dependencies [b1f3a30]
+- Updated dependencies [c2f7867]
+  - @stackwright/types@1.0.0-alpha.7
+  - @stackwright/build-scripts@0.3.0-alpha.8
+  - @stackwright/themes@0.5.0-alpha.4
+
 ## 0.6.0-alpha.11
 
 ### Minor Changes
