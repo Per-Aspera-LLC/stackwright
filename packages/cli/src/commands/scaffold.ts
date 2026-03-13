@@ -15,6 +15,8 @@ export interface ScaffoldOptions {
   offline?: boolean;
   force?: boolean;
   noInteractive?: boolean;
+  monorepo?: boolean;
+  standalone?: boolean;
 }
 
 export interface ScaffoldResult {
@@ -67,6 +69,8 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     themeId: theme!,
     targetDir,
     offline: opts.offline,
+    monorepo: opts.monorepo,
+    standalone: opts.standalone,
   });
 
   return { path: targetDir, pages, theme: theme! };
@@ -82,6 +86,8 @@ export function registerScaffold(program: Command): void {
     .option('--offline', 'Use bundled templates (skip GitHub template fetch)')
     .option('--force', 'Scaffold even if the target directory is not empty')
     .option('--no-interactive', 'Skip all interactive prompts, use defaults for missing values')
+    .option('--monorepo', 'Use workspace:* dependencies (for development inside a pnpm monorepo)')
+    .option('--standalone', 'Use versioned npm dependencies (overrides monorepo auto-detection)')
     .option('--json', 'Output machine-readable JSON')
     .action(async (dir: string | undefined, opts: ScaffoldOptions) => {
       const targetDir = path.resolve(dir ?? process.cwd());
