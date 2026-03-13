@@ -51,7 +51,7 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
   const year = new Date().getFullYear();
 
   // Fetch static template files from GitHub repo (falls back to bundled copy)
-  const { source } = await fetchTemplate(targetDir, { offline });
+  await fetchTemplate(targetDir, { offline });
 
   // Collect template files that were fetched (excluding README which is repo-only)
   const templateFiles = await collectFiles(targetDir);
