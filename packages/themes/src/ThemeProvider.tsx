@@ -34,6 +34,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 // Helpers
 // ---------------------------------------------------------------------------
 
+const COLOR_MODE_COOKIE = 'sw-color-mode';
+
 /** Detect OS-level dark mode preference via `matchMedia`. SSR-safe. */
 function getSystemPreference(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
@@ -46,6 +48,30 @@ function resolveColors(theme: Theme, mode: 'light' | 'dark'): ThemeColors {
     return theme.darkColors;
   }
   return theme.colors;
+}
+
+/**
+ * Read a cookie by name. SSR-safe (returns undefined when no document).
+ * Inline to avoid circular dependency on @stackwright/core.
+ */
+function readCookie(name: string): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
+/** Write a cookie. SSR-safe no-op when no document. */
+function writeCookie(name: string, value: string): void {
+  if (typeof document === 'undefined') return;
+  const maxAge = 365 * 24 * 60 * 60;
+  document.cookie =
+    name + '=' + encodeURIComponent(value) + '; max-age=' + maxAge + '; path=/; SameSite=Lax';
+}
+
+/** Remove a cookie by setting max-age=0. */
+function deleteCookie(name: string): void {
+  if (typeof document === 'undefined') return;
+  document.cookie = name + '=; max-age=0; path=/';
 }
 
 // ---------------------------------------------------------------------------
@@ -65,8 +91,24 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   initialColorMode = 'system',
 }) => {
   const [rawTheme, setRawTheme] = useState<Theme>(initialTheme);
-  const [colorMode, setColorMode] = useState<ColorMode>(initialColorMode);
-  const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>(getSystemPreference);
+  const [colorMode, setColorModeState] = useState<ColorMode>(initialColorMode);
+  const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>(() => {
+    // If the blocking ColorModeScript ran, trust its decision for hydration
+    // consistency rather than re-reading matchMedia.
+    if (typeof document !== 'undefined') {
+      const attr = document.documentElement.getAttribute('data-sw-color-mode');
+      if (attr === 'dark' || attr === 'light') return attr;
+    }
+    return getSystemPreference();
+  });
+
+  // On mount, restore saved preference from cookie (if any).
+  useEffect(() => {
+    const saved = readCookie(COLOR_MODE_COOKIE);
+    if (saved === 'light' || saved === 'dark') {
+      setColorModeState(saved);
+    }
+  }, []);
 
   // Listen for OS-level color scheme changes.
   useEffect(() => {
@@ -77,6 +119,16 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     };
     mql.addEventListener('change', handler);
     return () => mql.removeEventListener('change', handler);
+  }, []);
+
+  // Persist color mode to cookie on change, and clear when set to 'system'.
+  const setColorMode = useCallback((mode: ColorMode) => {
+    setColorModeState(mode);
+    if (mode === 'system') {
+      deleteCookie(COLOR_MODE_COOKIE);
+    } else {
+      writeCookie(COLOR_MODE_COOKIE, mode);
+    }
   }, []);
 
   const resolvedColorMode: 'light' | 'dark' = colorMode === 'system' ? systemPreference : colorMode;
@@ -92,7 +144,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const value = useMemo<ThemeContextType>(
     () => ({ theme, rawTheme, setTheme, colorMode, setColorMode, resolvedColorMode }),
-    [theme, rawTheme, setTheme, colorMode, resolvedColorMode]
+    [theme, rawTheme, setTheme, colorMode, setColorMode, resolvedColorMode]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
