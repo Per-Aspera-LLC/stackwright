@@ -342,6 +342,9 @@ importers:
       '@stackwright/core':
         specifier: workspace:*
         version: link:../core
+      '@stackwright/themes':
+        specifier: workspace:*
+        version: link:../themes
       '@stackwright/types':
         specifier: workspace:*
         version: link:../types

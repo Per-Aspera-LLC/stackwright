@@ -4,6 +4,7 @@ export { NextStackwrightImage } from './components/NextStackwrightImage';
 export { NextStackwrightLink } from './components/NextStackwrightLink';
 export { NextStackwrightRouter, NextStackwrightRoute } from './components/NextStackwrightRouter';
 export { NextStackwrightHead } from './components/NextStackwrightHead';
+export { StackwrightDocument } from './components/StackwrightDocument';
 export { createStackwrightNextConfig } from './config/NextStackwrightConfig';
 
 import { NextStackwrightImage } from './components/NextStackwrightImage';
