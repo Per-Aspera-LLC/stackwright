@@ -2,13 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
-import { stageChanges, openPr } from '@stackwright/cli';
-
-const PAGES_SUBDIR = 'content/pages';
-
-function pagesDir(projectRoot: string): string {
-  return path.join(projectRoot, PAGES_SUBDIR);
-}
+import { stageChanges, openPr, resolvePagesDir } from '@stackwright/cli';
 
 function resolveSiteConfig(projectRoot: string): string {
   const candidates = ['stackwright.yml', 'stackwright.yaml'];
@@ -79,7 +73,7 @@ export function registerGitOpsTools(server: McpServer): void {
       try {
         const result = await openPr(
           projectRoot,
-          pagesDir(projectRoot),
+          resolvePagesDir(projectRoot),
           resolveSiteConfig(projectRoot),
           { title, description, branchName, baseBranch, draft }
         );
