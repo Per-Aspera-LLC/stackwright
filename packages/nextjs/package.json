@@ -28,6 +28,7 @@
     },
     "dependencies": {
         "@stackwright/core": "workspace:*",
+        "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0"
     },
