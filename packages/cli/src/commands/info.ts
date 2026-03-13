@@ -118,7 +118,11 @@ export function registerInfo(program: Command): void {
         });
       } catch (err: unknown) {
         if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
         } else {
           outputError(formatError(err), 'INFO_FAILED', { json }, 2);
         }

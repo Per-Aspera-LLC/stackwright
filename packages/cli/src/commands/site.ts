@@ -133,7 +133,11 @@ export function registerSite(program: Command): void {
         });
       } catch (err: unknown) {
         if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
         } else {
           outputError(formatError(err), 'READ_SITE_FAILED', { json }, 2);
         }
@@ -166,11 +170,13 @@ export function registerSite(program: Command): void {
         });
       } catch (err: unknown) {
         const code = getErrorCode(err);
-        if (
-          code === 'NOT_A_PROJECT' ||
-          code === 'VALIDATION_FAILED' ||
-          code === 'YAML_PARSE_ERROR'
-        ) {
+        if (code === 'NOT_A_PROJECT') {
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
+        } else if (code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR') {
           outputError(formatError(err), code, { json });
         } else {
           outputError(formatError(err), 'WRITE_SITE_FAILED', { json }, 2);
@@ -199,7 +205,11 @@ export function registerSite(program: Command): void {
         if (!result.valid) process.exit(1);
       } catch (err: unknown) {
         if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
         } else {
           outputError(formatError(err), 'VALIDATE_FAILED', { json }, 2);
         }

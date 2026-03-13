@@ -243,8 +243,18 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         const code = getErrorCode(err);
-        if (code === 'NOT_A_PROJECT' || code === 'INVALID_SLUG' || code === 'PAGE_EXISTS') {
-          outputError(formatError(err), code, { json });
+        if (code === 'NOT_A_PROJECT') {
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
+        } else if (code === 'INVALID_SLUG' || code === 'PAGE_EXISTS') {
+          const hint =
+            code === 'PAGE_EXISTS'
+              ? '\n  Hint: Use "stackwright page write <slug>" to update an existing page.'
+              : '';
+          outputError(formatError(err) + hint, code, { json });
         } else {
           outputError(formatError(err), 'ADD_PAGE_FAILED', { json }, 2);
         }
@@ -265,7 +275,13 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         const code = getErrorCode(err);
-        if (code === 'NOT_A_PROJECT' || code === 'PAGE_NOT_FOUND') {
+        if (code === 'NOT_A_PROJECT') {
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
+        } else if (code === 'PAGE_NOT_FOUND') {
           outputError(formatError(err), code, { json });
         } else {
           outputError(formatError(err), 'READ_PAGE_FAILED', { json }, 2);
@@ -300,8 +316,13 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         const code = getErrorCode(err);
-        if (
-          code === 'NOT_A_PROJECT' ||
+        if (code === 'NOT_A_PROJECT') {
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
+        } else if (
           code === 'VALIDATION_FAILED' ||
           code === 'YAML_PARSE_ERROR' ||
           code === 'INVALID_SLUG'
@@ -334,7 +355,11 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
         } else {
           outputError(formatError(err), 'LIST_FAILED', { json }, 2);
         }
@@ -362,7 +387,11 @@ export function registerPage(program: Command): void {
         if (!result.valid) process.exit(1);
       } catch (err: unknown) {
         if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
         } else {
           outputError(formatError(err), 'VALIDATE_FAILED', { json }, 2);
         }
