@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { AppBarContent, NavigationItem } from '@stackwright/types';
 import { ThemedButton } from '../base/ThemedButton';
 import { CompressedMenu } from '../base/Menu/CompressedMenu';
@@ -15,6 +15,7 @@ import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
 function ColorModeToggle({ textColor }: { textColor: string }) {
   const themeCtx = useThemeOptional();
+  const uniqueId = useId();
   if (!themeCtx) return null;
 
   const { resolvedColorMode, setColorMode } = themeCtx;
@@ -30,42 +31,47 @@ function ColorModeToggle({ textColor }: { textColor: string }) {
 
   const label = resolvedColorMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
 
+  // CSS class for hover — avoids direct DOM style mutation (#159)
+  const hoverClass = `sw-cm-toggle-${uniqueId.replace(/:/g, '')}`;
+
   return (
-    <button
-      onClick={handleToggle}
-      aria-label={label}
-      title={label}
-      style={{
-        background: 'none',
-        border: 'none',
-        cursor: 'pointer',
-        color: textColor,
-        padding: '6px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: '50%',
-        transition: 'background-color 0.2s',
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(255,255,255,0.15)';
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
-      }}
-    >
-      {resolvedColorMode === 'dark' ? (
-        SunIcon ? (
-          <SunIcon size={22} />
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `.${hoverClass}:hover { background-color: rgba(255,255,255,0.15) !important; }`,
+        }}
+      />
+      <button
+        className={hoverClass}
+        onClick={handleToggle}
+        aria-label={label}
+        title={label}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          color: textColor,
+          padding: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '50%',
+          transition: 'background-color 0.2s',
+        }}
+      >
+        {resolvedColorMode === 'dark' ? (
+          SunIcon ? (
+            <SunIcon size={22} />
+          ) : (
+            '☀️'
+          )
+        ) : MoonIcon ? (
+          <MoonIcon size={22} />
         ) : (
-          '☀️'
-        )
-      ) : MoonIcon ? (
-        <MoonIcon size={22} />
-      ) : (
-        '🌙'
-      )}
-    </button>
+          '🌙'
+        )}
+      </button>
+    </>
   );
 }
 
