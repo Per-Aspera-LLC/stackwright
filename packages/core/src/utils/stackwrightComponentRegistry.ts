@@ -137,8 +137,9 @@ export const getStackwrightRoute = () => stackwrightRegistry.get('Route');
  */
 export function getStackwrightHead(): ComponentType<StackwrightHeadProps> | undefined {
   if (stackwrightRegistry.isRegistered('Head' as keyof StackwrightComponents)) {
-    return stackwrightRegistry.get('Head' as keyof StackwrightComponents) as
-      ComponentType<StackwrightHeadProps>;
+    return stackwrightRegistry.get(
+      'Head' as keyof StackwrightComponents
+    ) as ComponentType<StackwrightHeadProps>;
   }
   return undefined;
 }

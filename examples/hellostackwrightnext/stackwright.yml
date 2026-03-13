@@ -1,4 +1,10 @@
 title: "Hello Stackwright"
+
+meta:
+    description: "Stackwright turns structured YAML into production-ready Next.js pages. Schema-validated, AI-native, fully yours."
+    og_image: "./stackwright-logo.png"
+    og_site_name: "Stackwright"
+
 appBar:
     titleText: "Hello Stackwright"
     backgroundColor: "primary"

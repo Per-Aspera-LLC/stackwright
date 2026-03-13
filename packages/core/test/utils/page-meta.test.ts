@@ -6,10 +6,12 @@ import { PageContent, SiteConfig } from '@stackwright/types';
 // Helpers
 // ---------------------------------------------------------------------------
 
-function makePageContent(overrides: {
-  meta?: PageContent['content']['meta'];
-  firstHeading?: string;
-} = {}): PageContent {
+function makePageContent(
+  overrides: {
+    meta?: PageContent['content']['meta'];
+    firstHeading?: string;
+  } = {}
+): PageContent {
   const contentItems = overrides.firstHeading
     ? [
         {

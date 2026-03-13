@@ -1,4 +1,7 @@
 content:
+  meta:
+    title: "About Stackwright"
+    description: "Learn about the mission, architecture, and philosophy behind content-as-code."
   content_items:
     # ── Hero ────────────────────────────────────────────────────────────
     - main:
