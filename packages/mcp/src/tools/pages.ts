@@ -1,13 +1,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import path from 'path';
-import { listPages, addPage, validatePages, readPage, writePage } from '@stackwright/cli';
-
-const PAGES_SUBDIR = 'content/pages';
-
-function pagesDir(projectRoot: string): string {
-  return path.join(projectRoot, PAGES_SUBDIR);
-}
+import {
+  listPages,
+  addPage,
+  validatePages,
+  readPage,
+  writePage,
+  resolvePagesDir,
+} from '@stackwright/cli';
 
 export function registerPageTools(server: McpServer): void {
   server.tool(
@@ -17,7 +17,7 @@ export function registerPageTools(server: McpServer): void {
       projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
     },
     async ({ projectRoot }) => {
-      const result = listPages(pagesDir(projectRoot));
+      const result = listPages(resolvePagesDir(projectRoot));
       const lines = result.pages.map((p) => `  ${p.slug}${p.heading ? `  —  ${p.heading}` : ''}`);
       const text =
         result.pages.length === 0
@@ -36,7 +36,7 @@ export function registerPageTools(server: McpServer): void {
     },
     async ({ projectRoot, slug }) => {
       try {
-        const result = readPage(pagesDir(projectRoot), slug);
+        const result = readPage(resolvePagesDir(projectRoot), slug);
         return {
           content: [
             {
@@ -73,7 +73,7 @@ export function registerPageTools(server: McpServer): void {
     },
     async ({ projectRoot, slug, content }) => {
       try {
-        const result = writePage(pagesDir(projectRoot), slug, content);
+        const result = writePage(resolvePagesDir(projectRoot), slug, content);
         const verb = result.created ? 'Created' : 'Updated';
         return {
           content: [
@@ -111,7 +111,7 @@ export function registerPageTools(server: McpServer): void {
       heading: z.string().optional().describe('Optional heading for the new page'),
     },
     async ({ projectRoot, slug, heading }) => {
-      const result = await addPage(pagesDir(projectRoot), slug, { heading });
+      const result = await addPage(resolvePagesDir(projectRoot), slug, { heading });
       return {
         content: [
           {
@@ -131,7 +131,7 @@ export function registerPageTools(server: McpServer): void {
       slug: z.string().optional().describe('Validate only this slug; omit to validate all pages'),
     },
     async ({ projectRoot, slug }) => {
-      const result = validatePages(pagesDir(projectRoot), slug);
+      const result = validatePages(resolvePagesDir(projectRoot), slug);
       if (result.valid) {
         const target = slug ? `"${slug}"` : 'all pages';
         return { content: [{ type: 'text', text: `✓ Validation passed for ${target}.` }] };

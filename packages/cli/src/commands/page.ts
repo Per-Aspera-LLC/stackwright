@@ -180,20 +180,24 @@ export interface AddPageResult {
 export async function addPage(
   pagesDir: string,
   slug: string,
-  opts: { heading?: string; json?: boolean }
+  opts: { heading?: string }
 ): Promise<AddPageResult> {
   const cleanSlug = slug.replace(/^\//, '').replace(/\\/g, '/');
 
   // Prevent path traversal: slug must not escape the pages directory
   const resolvedTarget = path.resolve(pagesDir, cleanSlug);
   if (!resolvedTarget.startsWith(path.resolve(pagesDir) + path.sep)) {
-    outputError(`Invalid slug: "${slug}"`, 'INVALID_SLUG', { json: Boolean(opts.json) });
+    const err = new Error(`Invalid slug: "${slug}"`);
+    (err as NodeJS.ErrnoException).code = 'INVALID_SLUG';
+    throw err;
   }
 
   const contentPath = path.join(pagesDir, cleanSlug, 'content.yml');
 
   if (fs.existsSync(contentPath)) {
-    outputError(`Page already exists: ${contentPath}`, 'PAGE_EXISTS', { json: Boolean(opts.json) });
+    const err = new Error(`Page already exists: ${contentPath}`);
+    (err as NodeJS.ErrnoException).code = 'PAGE_EXISTS';
+    throw err;
   }
 
   const heading = opts.heading ?? cleanSlug;
@@ -233,13 +237,24 @@ export function registerPage(program: Command): void {
         const { pagesDir } = detectProject();
         const heading =
           opts.heading ?? (!json ? await input({ message: 'Page heading:', default: slug }) : slug);
-        const result = await addPage(pagesDir, slug, { ...opts, heading });
+        const result = await addPage(pagesDir, slug, { heading });
         outputResult(result, { json }, () => {
           console.log(chalk.green(`Created ${result.path}`));
         });
       } catch (err: unknown) {
-        if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+        const code = getErrorCode(err);
+        if (code === 'NOT_A_PROJECT') {
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
+        } else if (code === 'INVALID_SLUG' || code === 'PAGE_EXISTS') {
+          const hint =
+            code === 'PAGE_EXISTS'
+              ? '\n  Hint: Use "stackwright page write <slug>" to update an existing page.'
+              : '';
+          outputError(formatError(err) + hint, code, { json });
         } else {
           outputError(formatError(err), 'ADD_PAGE_FAILED', { json }, 2);
         }
@@ -260,7 +275,13 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         const code = getErrorCode(err);
-        if (code === 'NOT_A_PROJECT' || code === 'PAGE_NOT_FOUND') {
+        if (code === 'NOT_A_PROJECT') {
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
+        } else if (code === 'PAGE_NOT_FOUND') {
           outputError(formatError(err), code, { json });
         } else {
           outputError(formatError(err), 'READ_PAGE_FAILED', { json }, 2);
@@ -295,8 +316,13 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         const code = getErrorCode(err);
-        if (
-          code === 'NOT_A_PROJECT' ||
+        if (code === 'NOT_A_PROJECT') {
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
+        } else if (
           code === 'VALIDATION_FAILED' ||
           code === 'YAML_PARSE_ERROR' ||
           code === 'INVALID_SLUG'
@@ -329,7 +355,11 @@ export function registerPage(program: Command): void {
         });
       } catch (err: unknown) {
         if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
         } else {
           outputError(formatError(err), 'LIST_FAILED', { json }, 2);
         }
@@ -357,7 +387,11 @@ export function registerPage(program: Command): void {
         if (!result.valid) process.exit(1);
       } catch (err: unknown) {
         if (getErrorCode(err) === 'NOT_A_PROJECT') {
-          outputError(formatError(err), 'NOT_A_PROJECT', { json });
+          outputError(
+            formatError(err) + '\n  Hint: Use "stackwright scaffold" to create a new project.',
+            'NOT_A_PROJECT',
+            { json }
+          );
         } else {
           outputError(formatError(err), 'VALIDATE_FAILED', { json }, 2);
         }

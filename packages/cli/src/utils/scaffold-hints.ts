@@ -172,3 +172,28 @@ export function getGettingStartedHints(): HintMap {
     'content.content_items.4.background': { value: '#f5f5f5', include: true },
   };
 }
+
+// ---------------------------------------------------------------------------
+// Generic Page (for --pages flag slugs)
+// ---------------------------------------------------------------------------
+
+export function getGenericPageHints(slug: string): HintMap {
+  // Convert slug to a human-readable title (e.g., 'about-us' → 'About Us')
+  const title = slug
+    .split(/[-_]/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+
+  return {
+    'content.content_items': { arrayLength: 1 },
+    'content.content_items.0': { pick: 'main' },
+    'content.content_items.0.label': { value: `${slug}-hero` },
+    'content.content_items.0.heading.text': { value: title },
+    'content.content_items.0.heading.textSize': { value: 'h1' },
+    'content.content_items.0.textBlocks': { arrayLength: 1 },
+    'content.content_items.0.textBlocks.0.text': {
+      value: `Welcome to the ${title} page. Edit pages/${slug}/content.yml to customize.`,
+    },
+    'content.content_items.0.textBlocks.0.textSize': { value: 'body1' },
+  };
+}

@@ -1,5 +1,34 @@
 # @stackwright/nextjs
 
+## 0.3.0-alpha.15
+
+### Minor Changes
+
+- 7077f83: First-class cookie & preference persistence support (#162)
+  - **@stackwright/core**: New `getCookie`, `setCookie`, `removeCookie` utilities for SSR-safe cookie handling. New `getConsentState`, `setConsentState`, `hasConsent` for IAB TCF-style consent management.
+  - **@stackwright/themes**: `ThemeProvider` now persists color mode preference in a `sw-color-mode` cookie. Return visitors get their preferred theme on first paint. New `ColorModeScript` blocking script component eliminates flash-of-wrong-theme for SSG dark mode.
+  - **@stackwright/nextjs**: New `StackwrightDocument` component for `pages/_document.tsx` — includes `ColorModeScript` automatically. Two-line setup for flash-free dark mode.
+
+- c2f7867: feat: page-level SEO metadata from YAML (#164)
+
+  Add `meta` block to page content and site config for `<title>`, `<meta description>`, Open Graph tags, canonical URLs, and noindex control. Metadata resolves with page-level overrides falling back to site-level defaults, with auto-generated titles from the first content heading. The `NextStackwrightHead` adapter renders tags via `next/head`; if no Head adapter is registered, SEO tags are silently omitted (graceful degradation). Image co-location works for `og_image` paths with zero special handling. 26 new test cases across core and nextjs packages.
+
+### Patch Changes
+
+- a5c1ff4: Update all AGENTS.md files to reflect current architecture. Replace stale MUI/Emotion references with actual stack (Lucide, Radix, Tailwind via ui-shadcn, Zod). Document dark mode, cookie persistence, ColorModeScript, StackwrightDocument, and responsive design patterns. Add missing AGENTS.md for build-scripts, collections, ui-shadcn, mcp, and e2e packages.
+- Updated dependencies [27c6083]
+- Updated dependencies [7077f83]
+- Updated dependencies [505002f]
+- Updated dependencies [c0fc647]
+- Updated dependencies [8d1a637]
+- Updated dependencies [f0fbf0c]
+- Updated dependencies [a5c1ff4]
+- Updated dependencies [b1f3a30]
+- Updated dependencies [c2f7867]
+  - @stackwright/types@1.0.0-alpha.7
+  - @stackwright/core@0.6.0-alpha.15
+  - @stackwright/themes@0.5.0-alpha.4
+
 ## 0.3.0-alpha.14
 
 ### Minor Changes

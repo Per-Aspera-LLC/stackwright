@@ -36,8 +36,6 @@ export interface BoardResult {
 // Priority tiers — single source of truth
 // ---------------------------------------------------------------------------
 
-const PRIORITY_LABELS = ['priority:now', 'priority:next', 'priority:later', 'priority:vision'];
-
 type PriorityTier = 'now' | 'next' | 'later' | 'vision';
 
 const TIER_CONFIG: Record<PriorityTier, { emoji: string; color: (s: string) => string }> = {

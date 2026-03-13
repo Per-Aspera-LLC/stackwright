@@ -1,5 +1,33 @@
 # @stackwright/themes
 
+## 0.5.0-alpha.4
+
+### Minor Changes
+
+- 7077f83: First-class cookie & preference persistence support (#162)
+  - **@stackwright/core**: New `getCookie`, `setCookie`, `removeCookie` utilities for SSR-safe cookie handling. New `getConsentState`, `setConsentState`, `hasConsent` for IAB TCF-style consent management.
+  - **@stackwright/themes**: `ThemeProvider` now persists color mode preference in a `sw-color-mode` cookie. Return visitors get their preferred theme on first paint. New `ColorModeScript` blocking script component eliminates flash-of-wrong-theme for SSG dark mode.
+  - **@stackwright/nextjs**: New `StackwrightDocument` component for `pages/_document.tsx` — includes `ColorModeScript` automatically. Two-line setup for flash-free dark mode.
+
+- 505002f: feat(themes): dark mode support (#108)
+  - Add optional `darkColors` field to theme schema (same shape as `colors`)
+  - Extract `colorsSchema` as a reusable named constant
+  - Add `ColorMode` type (`'light'` | `'dark'` | `'system'`) and `ThemeColors` type
+  - `ThemeProvider` now manages color mode state with `prefers-color-scheme` media query detection
+  - New context fields: `colorMode`, `setColorMode`, `resolvedColorMode`, `rawTheme`
+  - Colors resolve transparently — zero changes required to existing component consumers
+  - `ThemeStyleInjector` `theme` prop is now optional; reads from context by default (fixes latent reactivity bug where CSS vars didn't update on `setTheme()`)
+  - New `useThemeOptional()` hook for optional-context components
+  - Dark palettes added to built-in corporate and soft themes
+  - `DynamicPage` refactored to consume resolved theme from context
+  - JSON schemas regenerated with `darkColors` field
+  - 16 new dark mode tests, 4 new theme loader tests
+
+### Patch Changes
+
+- f0fbf0c: Fix hydration mismatch in ThemeProvider color mode initialisation. The server always rendered light mode but the client could initialise to dark mode from the ColorModeScript DOM attribute, causing a React hydration error. Now both server and client start with light mode and the real preference is synced via useLayoutEffect before the browser paints.
+- a5c1ff4: Update all AGENTS.md files to reflect current architecture. Replace stale MUI/Emotion references with actual stack (Lucide, Radix, Tailwind via ui-shadcn, Zod). Document dark mode, cookie persistence, ColorModeScript, StackwrightDocument, and responsive design patterns. Add missing AGENTS.md for build-scripts, collections, ui-shadcn, mcp, and e2e packages.
+
 ## 0.5.0-alpha.3
 
 ### Minor Changes
