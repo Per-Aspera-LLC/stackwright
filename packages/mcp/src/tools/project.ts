@@ -48,7 +48,9 @@ export function registerProjectTools(server: McpServer): void {
       monorepo: z
         .boolean()
         .optional()
-        .describe('Use workspace:* dependencies for monorepo development. Auto-detected if omitted.'),
+        .describe(
+          'Use workspace:* dependencies for monorepo development. Auto-detected if omitted.'
+        ),
     },
     async ({ targetDir, name, title, theme, force, monorepo }) => {
       const result = await scaffold(targetDir, { name, title, theme, force, monorepo, json: true });
