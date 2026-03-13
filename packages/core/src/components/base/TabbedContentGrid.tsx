@@ -56,7 +56,7 @@ export function TabbedContentGrid(content: TabbedContent) {
             }}
           >
             {content.tabs.map((tab: ContentItem, index) => {
-              const contentData = Object.values(tab)[0];
+              const contentData = tab;
               const isActive = value === index;
               return (
                 <button

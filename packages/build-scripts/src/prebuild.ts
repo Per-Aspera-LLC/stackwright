@@ -181,19 +181,19 @@ const knownContentKeys = new Set<string>(KNOWN_CONTENT_TYPE_KEYS);
 function warnUnknownContentKeys(contentItems: Record<string, unknown>[], filePath: string): void {
   for (let i = 0; i < contentItems.length; i++) {
     const item = contentItems[i];
-    const keys = Object.keys(item);
-    const unknownKeys = keys.filter((k) => !knownContentKeys.has(k));
+    const itemType = item.type as string | undefined;
 
-    for (const key of unknownKeys) {
+    if (!itemType) {
       console.warn(
-        `  WARNING: Unknown content type "${key}" in ${filePath} (content_items[${i}]). ` +
-          `Known types: ${KNOWN_CONTENT_TYPE_KEYS.join(', ')}`
+        `  WARNING: content_items[${i}] in ${filePath} is missing required "type" field.`
       );
+      continue;
     }
 
-    if (keys.length > 0 && keys.every((k) => !knownContentKeys.has(k))) {
+    if (!knownContentKeys.has(itemType)) {
       console.warn(
-        `  WARNING: content_items[${i}] in ${filePath} has no recognized content type and will not render.`
+        `  WARNING: Unknown content type "${itemType}" in ${filePath} (content_items[${i}]). ` +
+          `Known types: ${KNOWN_CONTENT_TYPE_KEYS.join(', ')}`
       );
     }
   }
@@ -382,25 +382,24 @@ function injectCollectionEntries(
   }
 
   const obj = pageContent as Record<string, unknown>;
-  const result: Record<string, unknown> = {};
 
-  for (const [key, value] of Object.entries(obj)) {
-    if (key === 'collection_list' && value !== null && typeof value === 'object') {
-      const listConfig = value as Record<string, unknown>;
-      const source = listConfig.source as string | undefined;
-      if (source && collectionIndexes.has(source)) {
-        result[key] = { ...listConfig, _entries: collectionIndexes.get(source) };
-      } else {
-        if (source) {
-          console.warn(`  WARNING: collection_list references unknown collection "${source}".`);
-        }
-        result[key] = value;
-      }
-    } else {
-      result[key] = injectCollectionEntries(value, collectionIndexes);
+  // Flat content item with type: 'collection_list' — inject _entries directly
+  if (obj.type === 'collection_list') {
+    const source = obj.source as string | undefined;
+    if (source && collectionIndexes.has(source)) {
+      return { ...obj, _entries: collectionIndexes.get(source) };
     }
+    if (source) {
+      console.warn(`  WARNING: collection_list references unknown collection "${source}".`);
+    }
+    return obj;
   }
 
+  // Recurse into all object values (handles content_items arrays, nested grids, etc.)
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(obj)) {
+    result[key] = injectCollectionEntries(value, collectionIndexes);
+  }
   return result;
 }
 

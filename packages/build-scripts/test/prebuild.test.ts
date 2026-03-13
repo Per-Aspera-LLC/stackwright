@@ -102,7 +102,7 @@ describe('runPrebuild — image collision prevention', () => {
     const pageADir = path.join(root, 'pages', 'page-a');
     const pageBDir = path.join(root, 'pages', 'page-b');
     const pageWithImage = (label: string) =>
-      `content:\n  content_items:\n    - main:\n        label: "${label}"\n        heading:\n          text: "Heading"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "${label}-img"\n          src: "./hero.png"\n          type: "image"\n`;
+      `content:\n  content_items:\n    - type: main\n      label: "${label}"\n      heading:\n        text: "Heading"\n        textSize: "h1"\n      textBlocks: []\n      media:\n        label: "${label}-img"\n        src: "./hero.png"\n        type: "image"\n`;
     writePageContent(root, 'page-a', pageWithImage('page-a'));
     writePageContent(root, 'page-b', pageWithImage('page-b'));
 
@@ -130,7 +130,7 @@ describe('runPrebuild — image collision prevention', () => {
     writePageContent(
       root,
       'blog',
-      `content:\n  content_items:\n    - main:\n        label: "blog-hero"\n        heading:\n          text: "Blog"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "blog-thumb"\n          src: "./thumb.png"\n          type: "image"\n`
+      `content:\n  content_items:\n    - type: main\n      label: "blog-hero"\n      heading:\n        text: "Blog"\n        textSize: "h1"\n      textBlocks: []\n      media:\n        label: "blog-thumb"\n        src: "./thumb.png"\n        type: "image"\n`
     );
     fs.writeFileSync(path.join(pageDir, 'thumb.png'), 'THUMB_DATA');
 
@@ -164,7 +164,7 @@ describe('runPrebuild — missing images', () => {
     writePageContent(
       root,
       'missing-img',
-      `content:\n  content_items:\n    - main:\n        label: "missing-hero"\n        heading:\n          text: "Missing"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "missing-img"\n          src: "./does-not-exist.png"\n          type: "image"\n`
+      `content:\n  content_items:\n    - type: main\n      label: "missing-hero"\n      heading:\n        text: "Missing"\n        textSize: "h1"\n      textBlocks: []\n      media:\n        label: "missing-img"\n        src: "./does-not-exist.png"\n        type: "image"\n`
     );
     // Should warn but not crash
     expect(() => runPrebuild(root)).not.toThrow();
@@ -174,7 +174,7 @@ describe('runPrebuild — missing images', () => {
     writePageContent(
       root,
       'missing-img',
-      `content:\n  content_items:\n    - main:\n        label: "missing-hero"\n        heading:\n          text: "Missing"\n          textSize: "h1"\n        textBlocks: []\n        media:\n          label: "missing-img"\n          src: "./does-not-exist.png"\n          type: "image"\n`
+      `content:\n  content_items:\n    - type: main\n      label: "missing-hero"\n      heading:\n        text: "Missing"\n        textSize: "h1"\n      textBlocks: []\n      media:\n        label: "missing-img"\n        src: "./does-not-exist.png"\n        type: "image"\n`
     );
     runPrebuild(root);
     const raw = fs.readFileSync(
@@ -248,7 +248,7 @@ describe('runPrebuild — collection_list entry injection', () => {
     writePageContent(
       root,
       'blog',
-      `content:\n  content_items:\n    - collection_list:\n        label: "posts-list"\n        source: posts\n        card:\n          title: title\n`
+      `content:\n  content_items:\n    - type: collection_list\n      label: "posts-list"\n      source: posts\n      card:\n        title: title\n`
     );
     runPrebuild(root);
 
@@ -257,17 +257,17 @@ describe('runPrebuild — collection_list entry injection', () => {
       'utf8'
     );
     const json = JSON.parse(raw);
-    const clItem = json.content.content_items.find((item: any) => 'collection_list' in item);
+    const clItem = json.content.content_items.find((item: any) => item.type === 'collection_list');
     expect(clItem).toBeDefined();
-    expect(clItem.collection_list._entries).toBeInstanceOf(Array);
-    expect(clItem.collection_list._entries.length).toBe(2);
+    expect(clItem._entries).toBeInstanceOf(Array);
+    expect(clItem._entries.length).toBe(2);
   });
 
   it('_entries contain expected fields from collection index', () => {
     writePageContent(
       root,
       'blog',
-      `content:\n  content_items:\n    - collection_list:\n        label: "posts-list"\n        source: posts\n        card:\n          title: title\n`
+      `content:\n  content_items:\n    - type: collection_list\n      label: "posts-list"\n      source: posts\n      card:\n        title: title\n`
     );
     runPrebuild(root);
 
@@ -276,7 +276,7 @@ describe('runPrebuild — collection_list entry injection', () => {
       'utf8'
     );
     const json = JSON.parse(raw);
-    const entries = json.content.content_items[0].collection_list._entries;
+    const entries = json.content.content_items[0]._entries;
     const slugs = entries.map((e: any) => e.slug).sort();
     expect(slugs).toEqual(['alpha', 'beta']);
     expect(entries.every((e: any) => 'title' in e)).toBe(true);
@@ -286,7 +286,7 @@ describe('runPrebuild — collection_list entry injection', () => {
     writePageContent(
       root,
       'bad-ref',
-      `content:\n  content_items:\n    - collection_list:\n        label: "missing"\n        source: nonexistent\n        card:\n          title: title\n`
+      `content:\n  content_items:\n    - type: collection_list\n      label: "missing"\n      source: nonexistent\n      card:\n        title: title\n`
     );
     // Should warn but not throw
     expect(() => runPrebuild(root)).not.toThrow();
@@ -296,7 +296,7 @@ describe('runPrebuild — collection_list entry injection', () => {
       'utf8'
     );
     const json = JSON.parse(raw);
-    const cl = json.content.content_items[0].collection_list;
+    const cl = json.content.content_items[0];
     // _entries should be absent (not injected)
     expect(cl._entries).toBeUndefined();
   });
@@ -305,7 +305,7 @@ describe('runPrebuild — collection_list entry injection', () => {
     writePageContent(
       root,
       'mixed',
-      `content:\n  content_items:\n    - main:\n        label: hero\n        heading:\n          text: Hello\n          textSize: h1\n        textBlocks: []\n    - collection_list:\n        label: posts\n        source: posts\n        card:\n          title: title\n`
+      `content:\n  content_items:\n    - type: main\n      label: hero\n      heading:\n        text: Hello\n        textSize: h1\n      textBlocks: []\n    - type: collection_list\n      label: posts\n      source: posts\n      card:\n        title: title\n`
     );
     runPrebuild(root);
 
@@ -315,7 +315,7 @@ describe('runPrebuild — collection_list entry injection', () => {
     );
     const json = JSON.parse(raw);
     expect(json.content.content_items).toHaveLength(2);
-    expect(json.content.content_items[0].main.label).toBe('hero');
-    expect(json.content.content_items[1].collection_list._entries).toBeInstanceOf(Array);
+    expect(json.content.content_items[0].label).toBe('hero');
+    expect(json.content.content_items[1]._entries).toBeInstanceOf(Array);
   });
 });

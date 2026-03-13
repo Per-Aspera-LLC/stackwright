@@ -84,7 +84,7 @@ export function LayoutGrid({ heading, columns, gap, stackBelow, background }: Gr
  */
 function filterNestedGrids(items: ContentItem[]): ContentItem[] {
   return items.filter((item) => {
-    if ('grid' in item && item.grid) {
+    if (item.type === 'grid') {
       console.warn(
         '[Stackwright] Nested grids are not supported. Skipping grid inside grid column.'
       );

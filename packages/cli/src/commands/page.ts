@@ -49,9 +49,11 @@ function collectPages(pagesDir: string, currentDir: string, results: PageSummary
         const items = (raw?.content as Record<string, unknown>)?.content_items;
         if (Array.isArray(items) && items.length > 0) {
           const first = items[0] as Record<string, unknown>;
-          const main = first?.main as Record<string, unknown> | undefined;
-          const headingBlock = main?.heading as Record<string, unknown> | undefined;
-          heading = (headingBlock?.text as string | undefined) ?? null;
+          // Flat content item: { type: 'main', heading: { text: '...' }, ... }
+          if (first?.type === 'main') {
+            const headingBlock = first?.heading as Record<string, unknown> | undefined;
+            heading = (headingBlock?.text as string | undefined) ?? null;
+          }
         }
       } catch {
         // If parsing fails, heading stays null
@@ -197,14 +199,14 @@ export async function addPage(
   const heading = opts.heading ?? cleanSlug;
   const content = `content:
   content_items:
-    - main:
-        label: "${cleanSlug}-hero"
-        heading:
-          text: "${heading}"
-          textSize: "h1"
-        textBlocks:
-          - text: "Edit pages/${cleanSlug}/content.yml to update this page."
-            textSize: "body1"
+    - type: main
+      label: "${cleanSlug}-hero"
+      heading:
+        text: "${heading}"
+        textSize: "h1"
+      textBlocks:
+        - text: "Edit pages/${cleanSlug}/content.yml to update this page."
+          textSize: "body1"
 `;
 
   await fs.ensureDir(path.dirname(contentPath));

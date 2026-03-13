@@ -11,28 +11,27 @@ describe('Integration Tests', () => {
       content: {
         content_items: [
           {
-            main: {
-              label: 'Main Content',
-              heading: {
-                text: 'Welcome to Stackwright',
-                size: 'h1' as TypographyVariant,
-              },
-              textBlocks: [
-                {
-                  text: 'Your React stack development accelerator',
-                  size: 'body1' as TypographyVariant,
-                },
-              ],
-              buttons: [
-                {
-                  text: 'Get Started',
-                  variant: 'contained' as ButtonVariant,
-                  href: '/docs',
-                  label: 'getStartedButton',
-                  size: 'h4' as TypographyVariant,
-                },
-              ],
+            type: 'main' as const,
+            label: 'Main Content',
+            heading: {
+              text: 'Welcome to Stackwright',
+              size: 'h1' as TypographyVariant,
             },
+            textBlocks: [
+              {
+                text: 'Your React stack development accelerator',
+                size: 'body1' as TypographyVariant,
+              },
+            ],
+            buttons: [
+              {
+                text: 'Get Started',
+                variant: 'contained' as ButtonVariant,
+                href: '/docs',
+                label: 'getStartedButton',
+                size: 'h4' as TypographyVariant,
+              },
+            ],
           },
         ],
       },
@@ -54,7 +53,7 @@ describe('Integration Tests', () => {
         backgroundcolor: '#000000',
       },
       footer: {
-        copyright: 'Â© 2023 Stackwright',
+        copyright: '© 2023 Stackwright',
         buttons: [{ text: 'GitHub', href: 'https://github.com/stackwright' }],
       },
     };

@@ -53,6 +53,8 @@ export const collectionCardMappingSchema = z.object({
 });
 
 export const collectionListContentSchema = z.object({
+  /** Content item type discriminator. */
+  type: z.literal('collection_list'),
   /** Content type label (required by all content types). */
   label: z.string(),
   /** Name of the collection to pull entries from. */

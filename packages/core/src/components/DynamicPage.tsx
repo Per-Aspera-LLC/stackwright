@@ -91,7 +91,7 @@ export function resolvePageMeta(
 
   // Auto-generate title from the first main content heading if not explicit
   const firstHeading = pageContent.content.content_items
-    .map((item) => item.main?.heading?.text)
+    .map((item) => (item.type === 'main' ? item.heading?.text : undefined))
     .find(Boolean);
 
   const title =

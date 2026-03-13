@@ -1,80 +1,79 @@
 content:
   content_items:
-    - main:
-        label: "tos-hero"
-        heading:
-          text: "Terms of Service"
-          textSize: "h1"
-        textBlocks:
-          - text: "Last updated: February 2026"
-            textSize: "body2"
-
-    - main:
-        label: "tos-acceptance"
-        heading:
-          text: "Acceptance of Terms"
-          textSize: "h2"
-        textBlocks:
-          - text: "By accessing or using Stackwright, you agree to be bound by these Terms of Service. If you do not agree, please do not use this software or site."
-            textSize: "body1"
-
-    - main:
-        label: "tos-license"
-        heading:
-          text: "License"
-          textSize: "h2"
-        textBlocks:
-          - text: "Stackwright is open-source software. Your use of the framework source code is governed by the license found in the project repository. These terms apply to your use of this website and any hosted services."
-            textSize: "body1"
-
-    - main:
-        label: "tos-use"
-        heading:
-          text: "Acceptable Use"
-          textSize: "h2"
-        textBlocks:
-          - text: "You agree not to use this site or software to:"
-            textSize: "body1"
-          - text: "Violate any applicable laws or regulations, infringe the intellectual property rights of others, distribute malware or harmful code, or attempt to gain unauthorized access to any system."
-            textSize: "body1"
-
-    - main:
-        label: "tos-disclaimer"
-        heading:
-          text: "Disclaimer of Warranties"
-          textSize: "h2"
-        textBlocks:
-          - text: "Stackwright is provided \"as is\" without warranty of any kind, express or implied. We make no guarantees regarding availability, accuracy, or fitness for a particular purpose."
-            textSize: "body1"
-
-    - main:
-        label: "tos-liability"
-        heading:
-          text: "Limitation of Liability"
-          textSize: "h2"
-        textBlocks:
-          - text: "To the fullest extent permitted by law, Per Aspera LLC shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of Stackwright."
-            textSize: "body1"
-
-    - main:
-        label: "tos-changes"
-        heading:
-          text: "Changes to These Terms"
-          textSize: "h2"
-        textBlocks:
-          - text: "We may update these terms from time to time. Continued use of the site after changes are posted constitutes your acceptance of the revised terms."
-            textSize: "body1"
-
-    - main:
-        label: "tos-contact"
-        heading:
-          text: "Contact"
-          textSize: "h2"
-        textBlocks:
-          - text: "Questions about these terms? Please open an issue on GitHub."
-            textSize: "body1"
-        buttons:
-          - text: "Open an Issue on GitHub"
-            textSize: "body1"
-            variant: "outlined"
-            href: "https://github.com/Per-Aspera-LLC/stackwright/issues"
+  - type: main
+    label: tos-hero
+    heading:
+      text: Terms of Service
+      textSize: h1
+    textBlocks:
+    - text: 'Last updated: February 2026'
+      textSize: body2
+  - type: main
+    label: tos-acceptance
+    heading:
+      text: Acceptance of Terms
+      textSize: h2
+    textBlocks:
+    - text: By accessing or using Stackwright, you agree to be bound by these Terms of Service. If you do not agree, please
+        do not use this software or site.
+      textSize: body1
+  - type: main
+    label: tos-license
+    heading:
+      text: License
+      textSize: h2
+    textBlocks:
+    - text: Stackwright is open-source software. Your use of the framework source code is governed by the license found in
+        the project repository. These terms apply to your use of this website and any hosted services.
+      textSize: body1
+  - type: main
+    label: tos-use
+    heading:
+      text: Acceptable Use
+      textSize: h2
+    textBlocks:
+    - text: 'You agree not to use this site or software to:'
+      textSize: body1
+    - text: Violate any applicable laws or regulations, infringe the intellectual property rights of others, distribute malware
+        or harmful code, or attempt to gain unauthorized access to any system.
+      textSize: body1
+  - type: main
+    label: tos-disclaimer
+    heading:
+      text: Disclaimer of Warranties
+      textSize: h2
+    textBlocks:
+    - text: Stackwright is provided "as is" without warranty of any kind, express or implied. We make no guarantees regarding
+        availability, accuracy, or fitness for a particular purpose.
+      textSize: body1
+  - type: main
+    label: tos-liability
+    heading:
+      text: Limitation of Liability
+      textSize: h2
+    textBlocks:
+    - text: To the fullest extent permitted by law, Per Aspera LLC shall not be liable for any indirect, incidental, special,
+        or consequential damages arising from your use of Stackwright.
+      textSize: body1
+  - type: main
+    label: tos-changes
+    heading:
+      text: Changes to These Terms
+      textSize: h2
+    textBlocks:
+    - text: We may update these terms from time to time. Continued use of the site after changes are posted constitutes your
+        acceptance of the revised terms.
+      textSize: body1
+  - type: main
+    label: tos-contact
+    heading:
+      text: Contact
+      textSize: h2
+    textBlocks:
+    - text: Questions about these terms? Please open an issue on GitHub.
+      textSize: body1
+    buttons:
+    - text: Open an Issue on GitHub
+      textSize: body1
+      variant: outlined
+      href: https://github.com/Per-Aspera-LLC/stackwright/issues
