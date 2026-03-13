@@ -1,24 +1,44 @@
-# @stackwright/themes - Theme System
+# @stackwright/themes — Agent Guide
 
-## Overview
+YAML-configurable theme system with first-class dark mode and cookie-based color preference persistence.
 
-The `@stackwright/themes` package provides a YAML-configurable theme system for Stackwright applications. It enables developers and content creators to define custom visual themes declaratively, supporting everything from color palettes to typography scales and component styling variants.
+---
 
-## Key Features
+## What This Package Provides
 
-### YAML-Driven Theme Configuration
-Themes are defined in YAML format, making them accessible to non-developers:
+| Export | Purpose |
+|--------|---------|
+| `ThemeProvider` | React context provider — manages theme state, color mode, and CSS variable injection |
+| `ThemeStyleInjector` | Injects `--sw-color-*` and `--sw-font-*` CSS custom properties onto a wrapper element |
+| `ColorModeScript` | Blocking `<script>` for `<head>` — reads `sw-color-mode` cookie before hydration to prevent flash |
+| `useSafeTheme()` | Hook to read the resolved theme (colors already reflect the active light/dark mode) |
+| `loadTheme()` / `loadThemes()` | Load themes from YAML strings or built-in presets |
+| `colorsSchema`, `themeConfigSchema`, `themeSchema` | Zod schemas — source of truth for theme structure |
+| `ColorMode` type | `'light'` | `'dark'` | `'system'` |
+
+---
+
+## Theme YAML Structure
 
 ```yaml
-id: "custom-brand-theme"
-name: "Custom Brand Theme"
-description: "A theme for our brand identity"
+id: "corporate"
+name: "Corporate"
 colors:
   primary: "#1976d2"
-  secondary: "#dc004e"
-  accent: "#9c27b0"
+  secondary: "#455a64"
+  accent: "#f9a825"
   background: "#ffffff"
+  surface: "#f5f5f5"
   text: "#212121"
+  textSecondary: "#757575"
+darkColors:                    # Optional — enables dark mode
+  primary: "#fbbf24"
+  secondary: "#94a3b8"
+  accent: "#f59e0b"
+  background: "#0f172a"
+  surface: "#1e293b"
+  text: "#f1f5f9"
+  textSecondary: "#94a3b8"
 typography:
   fontFamily:
     primary: "Inter"
@@ -31,192 +51,106 @@ spacing:
   xl: "2rem"
 ```
 
-### Dynamic Color Resolution
-The theme system provides intelligent color resolution that supports:
-- **Hex codes**: Direct color values like `#1976d2`
-- **Theme references**: Named colors from the theme palette
-- **Fallback handling**: Graceful degradation for invalid colors
+### Color Palette Keys
 
-```typescript
-// Color resolution example from core package
-function resolveColor(colorValue: string, themeColors: Record<string, string>): string {
-  if (colorValue.startsWith('#')) {
-    return colorValue; // Already a hex code
-  }
-  return themeColors[colorValue] || colorValue;
-}
-```
+All 7 keys are required in `colors`. `darkColors` is optional but uses the same shape:
 
-### Component Integration
-Themes seamlessly integrate with React components through the `useSafeTheme()` hook:
-
-```typescript
-// Example from ThemedButton component
-const theme = useSafeTheme();
-const buttonColor = button.buttonBackground 
-  ? resolveColor(button.buttonBackground)
-  : background 
-  ? resolveColor(background)
-  : theme.colors.primary;
-```
-
-### Background Image Support
-Themes support background images with automatic transparency handling:
-
-```typescript
-// From PageLayout component
-const hasBackgroundImage = siteConfig?.customTheme?.backgroundImage?.url;
-const backgroundColor = hasBackgroundImage ? 'transparent' : theme.colors.background;
-```
-
-## Architecture
-
-### Dependencies
-- **React**: Core React hooks and components
-- **js-yaml**: YAML parsing and serialization
-- **TypeScript**: Type safety and development experience
-
-### Build Configuration
-The package uses `tsup` for building with dual format support:
-
-```typescript
-// tsup.config.ts
-export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['cjs', 'esm'],
-  dts: true,
-  target: 'es2022',
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-  outExtension({ format }) {
-    return {
-      js: format === 'cjs' ? '.js' : '.mjs',
-    }
-  }
-});
-```
-
-## Development Workflow
-
-### Theme Creation Process
-1. **Define theme YAML** with colors, typography, and spacing
-2. **Add theme exports** in the themes package index
-3. **Test integration** with example applications
-4. **Validate** theme structure and color accessibility
-
-### Custom Theme Generation
-The CLI package can generate custom themes from brand specifications:
-
-```javascript
-// From CLI custom theme generation
-function generateCustomTheme(brand) {
-  const colors = mapBrandColorsToTheme(brand.colors);
-  
-  return {
-    id: `${brand.name.toLowerCase().replace(/\s+/g, '-')}-custom`,
-    name: `${brand.name} Custom`,
-    description: `Custom theme for ${brand.name}`,
-    colors,
-    typography: {
-      fontFamily: {
-        primary: brand.fonts.find(f => f.usage === 'body')?.name || 'Inter',
-        secondary: brand.fonts.find(f => f.usage === 'titles')?.name || 'Cinzel'
-      }
-    }
-  };
-}
-```
-
-## Integration Points
-
-### With Core Framework
-- **Color resolution**: Used throughout component system
-- **Theme hooks**: Provides `useSafeTheme()` for components
-- **Layout integration**: Background and styling support
-
-### With CLI Tools
-- **Theme generation**: AI-powered custom theme creation
-- **Validation**: Schema validation for theme structure
-- **Documentation**: Auto-generated theme reference
-
-### With Next.js Adapter
-- **SSR support**: Server-side theme resolution
-- **Static generation**: Build-time theme optimization
-- **Route integration**: Theme switching capabilities
-
-## Theme Structure
-
-### Core Properties
-- **`id`**: Unique theme identifier
-- **`name`**: Human-readable theme name
-- **`description`**: Theme description and usage notes
-- **`colors`**: Color palette definition
-- **`typography`**: Font family and text styling
-- **`spacing`**: Consistent spacing scale
-
-### Color Palette
-Standard color keys supported:
-- `primary`: Main brand color
-- `secondary`: Secondary brand color  
-- `accent`: Accent/highlight color
-- `background`: Page background color
-- `text`: Primary text color
-
-### Typography System
-Font family configuration:
-- `primary`: Body text font
-- `secondary`: Heading/title font
-
-### Spacing Scale
-Consistent spacing tokens:
-- `xs`, `sm`, `md`, `lg`, `xl`, `2xl`: Progressive spacing scale
-
-## Testing and Validation
-
-### Development Testing
-```bash
-# Build the themes package
-pnpm build:themes
-
-# Test with example application
-pnpm dev:example
-```
-
-### Theme Validation
-- **YAML parsing**: Ensures valid YAML structure
-- **Type checking**: TypeScript validation of theme properties
-- **Color validation**: Hex code and named color validation
-- **Integration testing**: Cross-package theme usage validation
-
-## Future Enhancements
-
-### Planned Features
-- **Theme variants**: Light/dark mode support
-- **Component theming**: Per-component style overrides
-- **Theme inheritance**: Base theme extension capabilities
-- **Advanced typography**: Font weight and size scales
-- **Animation themes**: Motion and transition definitions
-
-### Performance Optimizations
-- **Theme caching**: Runtime theme resolution caching
-- **Build-time optimization**: Static theme extraction
-- **Selective loading**: Dynamic theme loading
-
-## Contributing
-
-### Adding New Themes
-1. Create theme YAML definition
-2. Add to package exports
-3. Update documentation
-4. Test across components
-
-### Extending Theme Properties
-1. Update TypeScript types
-2. Modify parsing logic
-3. Update component integration
-4. Add CLI generation support
+| Key | Purpose |
+|-----|---------|
+| `primary` | Main brand color |
+| `secondary` | Secondary brand color |
+| `accent` | Accent/highlight color |
+| `background` | Page background |
+| `surface` | Card/panel background |
+| `text` | Primary text color |
+| `textSecondary` | Secondary/muted text color |
 
 ---
 
-**Note**: The themes package is currently in active development (version 0.3.1-alpha.1). Theme structure and APIs may evolve as the framework matures.
+## Dark Mode Architecture
+
+### How it works
+
+1. `ThemeProvider` holds `colorMode` state (default: `'system'`).
+2. When `colorMode` is `'dark'` (or `'system'` resolves to dark via `matchMedia`), `theme.colors` is replaced with `theme.darkColors`. If no `darkColors` exists, `colors` is used as fallback.
+3. **Components never need to know about dark mode.** They call `useSafeTheme()`, read `theme.colors.*`, and get the correct palette for the active mode.
+
+### Cookie persistence
+
+- `setColorMode('dark')` writes `sw-color-mode=dark` cookie (365 days, `SameSite=Lax`).
+- `setColorMode('system')` removes the cookie (falls back to OS preference).
+- On mount, `ThemeProvider` reads the cookie and restores the saved preference.
+
+### Flash prevention
+
+`ColorModeScript` renders a blocking `<script>` that reads the `sw-color-mode` cookie and sets `data-sw-color-mode` on `<html>` **before** React hydrates. Use via `StackwrightDocument` from `@stackwright/nextjs` or place manually in `_document.tsx` `<Head>`.
+
+### ThemeProvider context shape
+
+```typescript
+interface ThemeContextType {
+  theme: Theme;                          // Resolved theme (effective colors for current mode)
+  rawTheme: Theme;                       // Original theme with both colors and darkColors
+  setTheme: (theme: Theme) => void;
+  colorMode: ColorMode;                  // Current setting: 'light' | 'dark' | 'system'
+  setColorMode: (mode: ColorMode) => void;
+  resolvedColorMode: 'light' | 'dark';   // What's actually active
+}
+```
+
+---
+
+## CSS Custom Properties
+
+`ThemeStyleInjector` (used internally by `DynamicPage`) injects:
+
+- `--sw-color-primary`, `--sw-color-secondary`, etc. — from resolved `theme.colors`
+- `--sw-font-primary`, `--sw-font-secondary` — from `theme.typography.fontFamily`
+
+These CSS vars are consumed by `@stackwright/ui-shadcn` components. Core components read colors via `useSafeTheme()` directly.
+
+`ThemeStyleInjector` consumes from `ThemeProvider` context by default. An optional `theme` prop override is supported for backwards compatibility.
+
+---
+
+## Built-in Themes
+
+Two themes are embedded in `themeLoader.ts`: **corporate** and **soft**. Both include `darkColors`. Theme YAML files also exist in `src/themes/` for reference.
+
+---
+
+## Package Structure
+
+```
+src/
+  ThemeProvider.tsx     — ThemeProvider, ThemeStyleInjector, useTheme, themeToCSSVars
+  ColorModeScript.tsx   — Blocking script component for flash-free dark mode
+  themeLoader.ts        — Built-in theme loading (corporate, soft)
+  types.ts              — Zod schemas + TypeScript types (colorsSchema, themeConfigSchema, etc.)
+  index.ts              — Public exports
+  themes/               — YAML theme files (corporate.yaml, soft.yaml)
+```
+
+---
+
+## Dependencies
+
+- **React** ^19 (peer)
+- **js-yaml** — YAML parsing
+- **Zod** ^4 — Schema definitions
+
+No MUI. No Emotion. No CSS framework dependencies.
+
+---
+
+## Testing
+
+Tests in `packages/themes/test/`. Key areas:
+- Color mode switching (light → dark → system)
+- Cookie read/write on mode change
+- `ThemeStyleInjector` CSS variable injection
+- `ColorModeScript` output
+- Theme loading and validation
+- Fallback when `darkColors` is undefined
+
+Run: `pnpm test` from monorepo root (or `vitest` from this package).
