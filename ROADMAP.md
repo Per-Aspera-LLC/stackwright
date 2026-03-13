@@ -29,7 +29,7 @@ These items are grouped because they share a common purpose: making the Stackwri
 - [x] **Layout grid content type** — `grid` content type for composable multi-column layouts. Columns contain recursive `content_items` arrays with relative `fr`-unit widths. Responsive stacking via `stackBelow` breakpoint. Nesting guard prevents grid-in-grid recursion (#125).
 - [x] **Dark mode support** — Optional `darkColors` block added to `ThemeConfig`. `ThemeProvider` manages `colorMode` (`light` | `dark` | `system`), respects `prefers-color-scheme` by default, and exposes `setColorMode` for programmatic toggling. Colors resolve transparently — zero changes to existing components. `ThemeStyleInjector` now reads from context for reactive CSS var updates (#108).
 - [x] **Page-level SEO metadata** — Optional `meta` block on page content and site config for `<title>`, `<meta description>`, Open Graph tags, canonical URLs, and noindex. Resolution chain: page → site → auto-generated from first heading. Head adapter pattern follows Image/Link/Router. Zero breaking changes (#164).
-- [ ] **Cookie & preference persistence** — First-class cookie utilities, color mode persistence (eliminate flash-of-wrong-theme), consent state management, and `ColorModeScript` for flash-free SSG dark mode. Functional cookies only — no tracking. (#162)
+- [x] **Cookie & preference persistence** — First-class cookie utilities, color mode persistence (eliminate flash-of-wrong-theme), consent state management, and `ColorModeScript` for flash-free SSG dark mode. Functional cookies only — no tracking. (#162)
 - [ ] **Internationalization** — Multi-language content support via per-locale content directories or inline locale maps in YAML.
 
 ---
