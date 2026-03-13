@@ -15,11 +15,10 @@ function makePageContent(
   const contentItems = overrides.firstHeading
     ? [
         {
-          main: {
-            label: 'hero',
-            heading: { text: overrides.firstHeading, textSize: 'h1' as const },
-            textBlocks: [{ text: 'body', textSize: 'body1' as const }],
-          },
+          type: 'main' as const,
+          label: 'hero',
+          heading: { text: overrides.firstHeading, textSize: 'h1' as const },
+          textBlocks: [{ text: 'body', textSize: 'body1' as const }],
         },
       ]
     : [];

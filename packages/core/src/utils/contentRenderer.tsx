@@ -41,13 +41,8 @@ export function renderContent(
     }
 
     if (content.content.content_items) {
-      const contentItems = content.content.content_items.filter((item: ContentItem) => {
-        const contentType = Object.keys(item)[0];
-        return contentType !== 'app_bar' && contentType !== 'footer';
-      });
-
       elements.push(
-        ...contentItems.map((contentItem: ContentItem, index: number) =>
+        ...content.content.content_items.map((contentItem: ContentItem, index: number) =>
           renderContentItem(contentItem, `content-item-${index}`)
         )
       );
@@ -66,14 +61,14 @@ export function renderContent(
 
 // Helper function to handle individual content item rendering
 const renderContentItem = (contentItem: ContentItem, key?: string) => {
-  const firstEntry = Object.entries(contentItem)[0];
+  // Discriminate on the explicit `type` field
+  const contentType = (contentItem as Record<string, unknown>).type as string | undefined;
 
-  if (!firstEntry) {
-    console.warn('[Stackwright] Empty content item encountered (no content type keys). Skipping.');
+  if (!contentType) {
+    console.warn('[Stackwright] Content item missing required "type" field. Skipping.');
     return null;
   }
 
-  const [contentType, contentData] = firstEntry;
   // Use the caller-provided key (index-based) or the content type as a stable fallback.
   // Never generate a random key here — a new value on every render breaks reconciliation.
   const itemKey = key || contentType;
@@ -90,7 +85,7 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
   if (process.env.NODE_ENV === 'development') {
     const customSchema = getContentTypeSchema(contentType);
     if (customSchema) {
-      const validation = customSchema.safeParse(contentData);
+      const validation = customSchema.safeParse(contentItem);
       if (!validation.success) {
         console.warn(
           `[Stackwright] Invalid props for custom content type "${contentType}":`,
@@ -102,9 +97,13 @@ const renderContentItem = (contentItem: ContentItem, key?: string) => {
 
   debugLog(`Rendering "${contentType}"`, { key: itemKey });
 
+  // Spread content item props into the component. The `type` field is passed
+  // through but harmlessly ignored by React components (it's not a DOM prop).
+  const label = (contentItem as Record<string, unknown>).label as string | undefined;
+
   return (
-    <ContentItemErrorBoundary key={itemKey} contentType={contentType} label={contentData?.label}>
-      <Component {...contentData} />
+    <ContentItemErrorBoundary key={itemKey} contentType={contentType} label={label}>
+      <Component {...contentItem} />
     </ContentItemErrorBoundary>
   );
 };

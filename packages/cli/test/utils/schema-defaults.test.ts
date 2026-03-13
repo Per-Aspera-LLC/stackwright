@@ -259,11 +259,11 @@ describe('generateDefaults — equivalence to old builders', () => {
     const result = generateDefaults(pageContentSchema as any, hints) as any;
 
     const item = result.content.content_items[0];
-    expect(item.main).toBeDefined();
-    expect(item.main.label).toBe('hero-section');
-    expect(item.main.heading.text).toBe('Welcome to Hello');
-    expect(item.main.heading.textSize).toBe('h1');
-    expect(item.main.textBlocks).toHaveLength(2);
+    expect(item.type).toBe('main');
+    expect(item.label).toBe('hero-section');
+    expect(item.heading.text).toBe('Welcome to Hello');
+    expect(item.heading.textSize).toBe('h1');
+    expect(item.textBlocks).toHaveLength(2);
   });
 
   it('getting-started page has 5 content items', () => {
@@ -273,7 +273,7 @@ describe('generateDefaults — equivalence to old builders', () => {
     expect(result.content.content_items).toHaveLength(5);
     // Check code_block item
     const codeItem = result.content.content_items[2];
-    expect(codeItem.code_block).toBeDefined();
-    expect(codeItem.code_block.language).toBe('bash');
+    expect(codeItem.type).toBe('code_block');
+    expect(codeItem.language).toBe('bash');
   });
 });

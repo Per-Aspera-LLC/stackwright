@@ -220,7 +220,7 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Learn More', textSize: 'h3' }}
-        tabs={[{ faq: { label: 'FAQ Tab', heading: { text: 'FAQ', textSize: 'h3' }, items: [] } }]}
+        tabs={[{ type: 'faq' as const, label: 'FAQ Tab', heading: { text: 'FAQ', textSize: 'h3' }, items: [] }]}
       />
     );
     expect(screen.getByText('Learn More')).toBeInTheDocument();
@@ -233,8 +233,8 @@ describe('TabbedContentGrid', () => {
         label="tabs"
         heading={{ text: 'Content', textSize: 'h3' }}
         tabs={[
-          { faq: { label: 'Tab A', heading: { text: 'A', textSize: 'h3' }, items: [] } },
-          { faq: { label: 'Tab B', heading: { text: 'B', textSize: 'h3' }, items: [] } },
+          { type: 'faq' as const, label: 'Tab A', heading: { text: 'A', textSize: 'h3' }, items: [] },
+          { type: 'faq' as const, label: 'Tab B', heading: { text: 'B', textSize: 'h3' }, items: [] },
         ]}
       />
     );
@@ -250,8 +250,8 @@ describe('TabbedContentGrid', () => {
         label="tabs"
         heading={{ text: 'Tabs', textSize: 'h3' }}
         tabs={[
-          { faq: { label: 'First', heading: { text: 'Content A', textSize: 'h3' }, items: [] } },
-          { faq: { label: 'Second', heading: { text: 'Content B', textSize: 'h3' }, items: [] } },
+          { type: 'faq' as const, label: 'First', heading: { text: 'Content A', textSize: 'h3' }, items: [] },
+          { type: 'faq' as const, label: 'Second', heading: { text: 'Content B', textSize: 'h3' }, items: [] },
         ]}
       />
     );
@@ -274,7 +274,7 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Tabs', textSize: 'h3' }}
-        tabs={[{ faq: { label: 'Only Tab', heading: { text: 'X', textSize: 'h3' }, items: [] } }]}
+        tabs={[{ type: 'faq' as const, label: 'Only Tab', heading: { text: 'X', textSize: 'h3' }, items: [] }]}
       />
     );
     expect(screen.getByRole('tablist')).toBeInTheDocument();
@@ -287,7 +287,7 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Tabs', textSize: 'h3' }}
-        tabs={[{ faq: { heading: { text: 'No Label', textSize: 'h3' }, items: [] } }]}
+        tabs={[{ type: 'faq' as const, heading: { text: 'No Label', textSize: 'h3' }, items: [] }]}
       />
     );
     // Falls back to "Tab 1" when no label

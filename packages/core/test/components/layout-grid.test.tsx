@@ -47,16 +47,17 @@ describe('LayoutGrid', () => {
           {
             content_items: [
               {
-                main: {
-                  label: 'Left',
-                  heading: { text: 'Left Heading', textSize: 'h2' },
-                  textBlocks: [],
-                },
+                type: 'main' as const,
+                label: 'Left',
+                heading: { text: 'Left Heading', textSize: 'h2' as const },
+                textBlocks: [],
               },
             ],
           },
           {
-            content_items: [{ code_block: { label: 'Right', code: 'console.log("hi")' } }],
+            content_items: [
+              { type: 'code_block' as const, label: 'Right', code: 'console.log("hi")' },
+            ],
           },
         ]}
       />
@@ -74,11 +75,10 @@ describe('LayoutGrid', () => {
             width: 2,
             content_items: [
               {
-                main: {
-                  label: 'Wide',
-                  heading: { text: 'Wide Col', textSize: 'h2' },
-                  textBlocks: [],
-                },
+                type: 'main' as const,
+                label: 'Wide',
+                heading: { text: 'Wide Col', textSize: 'h2' as const },
+                textBlocks: [],
               },
             ],
           },
@@ -86,11 +86,10 @@ describe('LayoutGrid', () => {
             width: 1,
             content_items: [
               {
-                main: {
-                  label: 'Narrow1',
-                  heading: { text: 'Col 2', textSize: 'h2' },
-                  textBlocks: [],
-                },
+                type: 'main' as const,
+                label: 'Narrow1',
+                heading: { text: 'Col 2', textSize: 'h2' as const },
+                textBlocks: [],
               },
             ],
           },
@@ -98,11 +97,10 @@ describe('LayoutGrid', () => {
             width: 1,
             content_items: [
               {
-                main: {
-                  label: 'Narrow2',
-                  heading: { text: 'Col 3', textSize: 'h2' },
-                  textBlocks: [],
-                },
+                type: 'main' as const,
+                label: 'Narrow2',
+                heading: { text: 'Col 3', textSize: 'h2' as const },
+                textBlocks: [],
               },
             ],
           },
@@ -123,12 +121,22 @@ describe('LayoutGrid', () => {
         columns={[
           {
             content_items: [
-              { main: { label: 'A', heading: { text: 'A', textSize: 'h2' }, textBlocks: [] } },
+              {
+                type: 'main' as const,
+                label: 'A',
+                heading: { text: 'A', textSize: 'h2' as const },
+                textBlocks: [],
+              },
             ],
           },
           {
             content_items: [
-              { main: { label: 'B', heading: { text: 'B', textSize: 'h2' }, textBlocks: [] } },
+              {
+                type: 'main' as const,
+                label: 'B',
+                heading: { text: 'B', textSize: 'h2' as const },
+                textBlocks: [],
+              },
             ],
           },
         ]}
@@ -147,7 +155,12 @@ describe('LayoutGrid', () => {
         columns={[
           {
             content_items: [
-              { main: { label: 'A', heading: { text: 'A', textSize: 'h2' }, textBlocks: [] } },
+              {
+                type: 'main' as const,
+                label: 'A',
+                heading: { text: 'A', textSize: 'h2' as const },
+                textBlocks: [],
+              },
             ],
           },
         ]}
@@ -164,7 +177,10 @@ describe('LayoutGrid', () => {
           {
             content_items: [
               {
-                main: { label: 'A', heading: { text: 'Content', textSize: 'h2' }, textBlocks: [] },
+                type: 'main' as const,
+                label: 'A',
+                heading: { text: 'Content', textSize: 'h2' as const },
+                textBlocks: [],
               },
             ],
           },
@@ -185,9 +201,12 @@ describe('LayoutGrid', () => {
           {
             content_items: [
               {
-                main: { label: 'OK', heading: { text: 'Allowed', textSize: 'h2' }, textBlocks: [] },
+                type: 'main' as const,
+                label: 'OK',
+                heading: { text: 'Allowed', textSize: 'h2' as const },
+                textBlocks: [],
               },
-              { grid: { label: 'Bad', columns: [{ content_items: [] }] } } as any,
+              { type: 'grid', label: 'Bad', columns: [{ content_items: [] }] } as any,
             ],
           },
         ]}
@@ -215,11 +234,10 @@ describe('LayoutGrid', () => {
           {
             content_items: [
               {
-                main: {
-                  label: 'Solo',
-                  heading: { text: 'Solo Content', textSize: 'h2' },
-                  textBlocks: [],
-                },
+                type: 'main' as const,
+                label: 'Solo',
+                heading: { text: 'Solo Content', textSize: 'h2' as const },
+                textBlocks: [],
               },
             ],
           },
@@ -254,13 +272,12 @@ describe('LayoutGrid', () => {
           {
             content_items: [
               {
-                main: {
-                  label: 'First',
-                  heading: { text: 'First Item', textSize: 'h2' },
-                  textBlocks: [],
-                },
+                type: 'main' as const,
+                label: 'First',
+                heading: { text: 'First Item', textSize: 'h2' as const },
+                textBlocks: [],
               },
-              { code_block: { label: 'Second', code: 'x = 1' } },
+              { type: 'code_block' as const, label: 'Second', code: 'x = 1' },
             ],
           },
         ]}
@@ -277,27 +294,26 @@ describe('LayoutGrid', () => {
 
 describe('LayoutGrid via contentRenderer', () => {
   it('renders grid content type through the content pipeline', () => {
-    // Register our grid component is already done via componentRegistry import
     const contentItem = {
-      grid: {
-        label: 'pipeline-test',
-        columns: [
-          {
-            content_items: [
-              {
-                main: {
-                  label: 'Pipeline',
-                  heading: { text: 'From Pipeline', textSize: 'h2' },
-                  textBlocks: [],
-                },
-              },
-            ],
-          },
-          {
-            content_items: [{ code_block: { label: 'Code', code: 'hello()' } }],
-          },
-        ],
-      },
+      type: 'grid' as const,
+      label: 'pipeline-test',
+      columns: [
+        {
+          content_items: [
+            {
+              type: 'main' as const,
+              label: 'Pipeline',
+              heading: { text: 'From Pipeline', textSize: 'h2' as const },
+              textBlocks: [],
+            },
+          ],
+        },
+        {
+          content_items: [
+            { type: 'code_block' as const, label: 'Code', code: 'hello()' },
+          ],
+        },
+      ],
     };
 
     render(<>{renderContent(contentItem)}</>);

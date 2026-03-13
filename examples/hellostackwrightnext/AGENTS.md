@@ -78,8 +78,8 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 |---|---|---|
 | `carousel` | `label` (string), `heading` (string), `items` (CarouselItem[]) | `color` (string), `background` (string), `autoPlaySpeed` (number), `infinite` (boolean), `autoPlay` (boolean) |
 | `main` | `label` (string), `heading` (TextBlock), `textBlocks` (TextBlock[]) | `color` (string), `background` (string), `media` (MediaItem), `graphic_position` (`left` | `right`), `buttons` (ButtonContent[]), `textToGraphic` (number) |
-| `tabbed_content` | `label` (string), `heading` (TextBlock), `tabs` (object[]) | `color` (string), `background` (string) |
-| `media` | `label` (string), `src` (string), `type` ("media") | `color` (string), `background` (string), `alt` (string), `height` (number | string), `width` (number | string), `style` (`contained` | `overflow`) |
+| `tabbed_content` | `label` (string), `heading` (TextBlock), `tabs` (object | object | object | object | object | object | object | object | object | object | object | object | object | object | object[]) | `color` (string), `background` (string) |
+| `media` | `label` (string), `src` (string) | `color` (string), `background` (string), `alt` (string), `height` (number | string), `width` (number | string), `style` (`contained` | `overflow`) |
 | `timeline` | `label` (string), `items` (TimelineItem[]) | `color` (string), `background` (string), `heading` (TextBlock) |
 | `icon_grid` | `label` (string), `icons` (IconContent[]) | `color` (string), `background` (string), `heading` (TextBlock) |
 | `code_block` | `label` (string), `code` (string) | `color` (string), `background` (string), `language` (string), `lineNumbers` (boolean) |
@@ -103,7 +103,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `IconContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("icon"), `size`? (number | TypographyVariant) |
 | `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? (string) |
 | `TimelineItem` | `year` (string), `event` (string) |
-| `GridColumn` | `width`? (number), `content_items` (object[]) |
+| `GridColumn` | `width`? (number), `content_items` (object | object | object | object | object | object | object | object | object | object | object | object | object | object | object[]) |
 
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
 <!-- stackwright:content-type-table:end -->

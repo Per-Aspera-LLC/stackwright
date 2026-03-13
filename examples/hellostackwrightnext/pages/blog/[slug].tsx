@@ -77,8 +77,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     content: {
       content_items: [
         {
-          main: {
-            label: `blog-entry-${safeSlug}`,
+          type: 'main' as const,
+          label: `blog-entry-${safeSlug}`,
             heading: {
               text: entry.title || safeSlug,
               textSize: 'h3',
@@ -117,7 +117,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
                 href: '/blog',
               },
             ],
-          },
         },
       ],
     },

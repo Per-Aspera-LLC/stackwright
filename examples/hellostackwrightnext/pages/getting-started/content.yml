@@ -1,248 +1,189 @@
 content:
-    meta:
-        title: "Getting Started with Stackwright"
-        description: "Install Stackwright, create your first page in YAML, and deploy a production-ready Next.js site in minutes."
-    content_items:
-        # ── Hero ──────────────────────────────────────────────────────────
-        - main:
-              label: "getting-started-hero"
-              heading:
-                  text: "Getting Started with Stackwright"
-                  textSize: "h1"
-                  textColor: "secondary"
-              textBlocks:
-                  - text: "From zero to validated, themed, dark-mode-ready site in five minutes. This page is itself a Stackwright YAML file — view source on GitHub to see exactly how it works."
-                    textSize: "h6"
+  meta:
+    title: Getting Started with Stackwright
+    description: Install Stackwright, create your first page in YAML, and deploy a production-ready Next.js site in minutes.
+  content_items:
+  - type: main
+    label: getting-started-hero
+    heading:
+      text: Getting Started with Stackwright
+      textSize: h1
+      textColor: secondary
+    textBlocks:
+    - text: From zero to validated, themed, dark-mode-ready site in five minutes. This page is itself a Stackwright YAML file
+        — view source on GitHub to see exactly how it works.
+      textSize: h6
+  - type: main
+    label: prerequisites
+    heading:
+      text: What You Need
+      textSize: h2
+    textBlocks:
+    - text: Node.js 20+, pnpm 10+, and a terminal. You do not need to write React components to build pages.
+      textSize: body1
+    background: '#f8f9fa'
+  - type: main
+    label: step-clone
+    heading:
+      text: 1. Clone the Example
+      textSize: h2
+    textBlocks:
+    - text: Fork or clone the monorepo. The hellostackwrightnext directory is the same project you are looking at right now.
+      textSize: body1
+  - type: code_block
+    label: step-clone-code
+    language: bash
+    code: 'git clone https://github.com/Per-Aspera-LLC/stackwright.git
 
-        # ── Prerequisites ─────────────────────────────────────────────────
-        - main:
-              label: "prerequisites"
-              heading:
-                  text: "What You Need"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Node.js 20+, pnpm 10+, and a terminal. You do not need to write React components to build pages."
-                    textSize: "body1"
-              background: "#f8f9fa"
+      cd stackwright/examples/hellostackwrightnext
 
-        # ── Step 1 ────────────────────────────────────────────────────────
-        - main:
-              label: "step-clone"
-              heading:
-                  text: "1. Clone the Example"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Fork or clone the monorepo. The hellostackwrightnext directory is the same project you are looking at right now."
-                    textSize: "body1"
+      pnpm install
 
-        - code_block:
-              label: "step-clone-code"
-              language: "bash"
-              code: |
-                  git clone https://github.com/Per-Aspera-LLC/stackwright.git
-                  cd stackwright/examples/hellostackwrightnext
-                  pnpm install
+      '
+  - type: main
+    label: step-run
+    heading:
+      text: 2. Build and Run
+      textSize: h2
+    textBlocks:
+    - text: Build the framework packages first, then start the dev server. The prebuild step validates your YAML, copies images,
+        and indexes collections — all before Next.js touches anything.
+      textSize: body1
+    background: '#f8f9fa'
+  - type: code_block
+    label: step-run-code
+    language: bash
+    code: '# From the monorepo root
 
-        # ── Step 2 ────────────────────────────────────────────────────────
-        - main:
-              label: "step-run"
-              heading:
-                  text: "2. Build and Run"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Build the framework packages first, then start the dev server. The prebuild step validates your YAML, copies images, and indexes collections — all before Next.js touches anything."
-                    textSize: "body1"
-              background: "#f8f9fa"
+      pnpm build
 
-        - code_block:
-              label: "step-run-code"
-              language: "bash"
-              code: |
-                  # From the monorepo root
-                  pnpm build
-                  pnpm dev:example
-              background: "#f8f9fa"
+      pnpm dev:example
 
-        - alert:
-              label: "step-run-note"
-              variant: "tip"
-              title: "Hot Reload"
-              body: "The dev server watches for YAML content changes and rebuilds automatically. Edit a content.yml, save, and the page refreshes in your browser."
-
-        # ── Step 3 ────────────────────────────────────────────────────────
-        - main:
-              label: "step-page"
-              heading:
-                  text: "3. Add a Page"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Pages live in pages/ as directories containing a content.yml. The directory name becomes the URL slug."
-                    textSize: "body1"
-
-        - code_block:
-              label: "step-page-slug"
-              language: "text"
-              code: "pages/my-page/content.yml  →  /my-page"
-
-        - code_block:
-              label: "step-page-code"
-              language: "yaml"
-              code: |
-                  content:
-                    content_items:
-                      - main:
-                          label: "hero"
-                          heading:
-                            text: "Hello World"
-                            textSize: "h1"
-                          textBlocks:
-                            - text: "My first Stackwright page."
-                              textSize: "body1"
-                          buttons:
-                            - text: "Learn More"
-                              variant: "contained"
-                              href: "/about"
-
-        # ── Step 4 ────────────────────────────────────────────────────────
-        - main:
-              label: "step-theme"
-              heading:
-                  text: "4. Customize Your Theme"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Open stackwright.yml in the project root. The customTheme block defines your color palette, dark mode colors, typography, and spacing. Changes apply across every page."
-                    textSize: "body1"
-              background: "#f8f9fa"
-
-        - code_block:
-              label: "step-theme-code"
-              language: "yaml"
-              code: |
-                  customTheme:
-                    colors:
-                      primary: "#fdc13c"
-                      secondary: "#1a9fd4"
-                      background: "#fdfdfd"
-                      text: "#393837"
-                    darkColors:
-                      primary: "#e5a820"
-                      secondary: "#60ccf0"
-                      background: "#1a1a1e"
-                      text: "#e8e8e4"
-              background: "#f8f9fa"
-
-        - alert:
-              label: "dark-mode-note"
-              variant: "info"
-              title: "Dark Mode"
-              body: "Define a darkColors block alongside colors. Stackwright detects the user's OS preference automatically and swaps palettes. Add colorModeToggle: true to your appBar config to render a Sun/Moon toggle in the header."
-
-        # ── Step 5 ────────────────────────────────────────────────────────
-        - main:
-              label: "step-images"
-              heading:
-                  text: "5. Add Images"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Place images in the same directory as content.yml and reference them with a relative path. Stackwright copies them to public/ and rewrites paths automatically at build time."
-                    textSize: "body1"
-
-        - code_block:
-              label: "step-images-code"
-              language: "yaml"
-              code: |
-                  media:
-                    type: "image"
-                    src: ./my-image.png
-                    alt: "A description of the image"
-                    height: 350
-                    aspect_ratio: 1.5
-
-        # ── Step 6 ────────────────────────────────────────────────────────
-        - main:
-              label: "step-collections"
-              heading:
-                  text: "6. Create a Collection"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "Collections are directories of YAML entries under content/ — blog posts, docs, changelog entries, anything with a repeating structure. The prebuild pipeline compiles them into static JSON with a lightweight index manifest."
-                    textSize: "body1"
-              background: "#f8f9fa"
-
-        - code_block:
-              label: "step-collections-structure"
-              language: "text"
-              code: |
-                  content/
-                    posts/
-                      _collection.yaml      ← sort & index config
-                      hello-world.yaml      ← individual entry
-                      advanced-theming.yaml
-              background: "#f8f9fa"
-
-        - code_block:
-              label: "step-collections-config"
-              language: "yaml"
-              code: |
-                  # _collection.yaml — controls the index manifest
-                  sort: -date
-                  indexFields:
-                    - title
-                    - date
-                    - author
-                    - excerpt
-                    - tags
-              background: "#f8f9fa"
-
-        - code_block:
-              label: "step-collections-entry"
-              language: "yaml"
-              code: |
-                  # content/posts/hello-world.yaml
-                  title: "Hello World"
-                  date: "2026-01-15"
-                  author: "Your Name"
-                  excerpt: "A short summary for the index page."
-                  tags:
-                    - tutorial
-                  body: |
-                    The full content of your post goes here.
-                    Use any YAML scalar — strings, multiline blocks,
-                    nested objects. It is all available via the
-                    CollectionProvider API.
-              background: "#f8f9fa"
-
-        - alert:
-              label: "collections-tip"
-              variant: "tip"
-              title: "Swappable Backends"
-              body: "FileCollectionProvider reads from the prebuild output. Swap it for a Contentful, Sanity, or S3 provider — one line change in _app.tsx, zero changes to your content YAML."
-
-        # ── Next Steps ────────────────────────────────────────────────────
-        - main:
-              label: "next-steps"
-              heading:
-                  text: "Where to Go Next"
-                  textSize: "h2"
-              textBlocks:
-                  - text: "See all available content types in the Showcase, browse the Blog (built with the collections system), or explore the source on GitHub."
-                    textSize: "body1"
-              buttons:
-                  - label: "showcase-btn"
-                    text: "Content Type Showcase"
-                    textSize: "body1"
-                    variant: "contained"
-                    href: "/showcase"
-                    bgColor: "secondary"
-                    textColor: "primary"
-                  - label: "blog-btn"
-                    text: "Blog"
-                    textSize: "body1"
-                    variant: "outlined"
-                    href: "/blog"
-                  - label: "github-btn"
-                    text: "View on GitHub"
-                    textSize: "body1"
-                    variant: "outlined"
-                    href: "https://github.com/Per-Aspera-LLC/stackwright/"
-              background: "#f8f9fa"
+      '
+    background: '#f8f9fa'
+  - type: alert
+    label: step-run-note
+    variant: tip
+    title: Hot Reload
+    body: The dev server watches for YAML content changes and rebuilds automatically. Edit a content.yml, save, and the page
+      refreshes in your browser.
+  - type: main
+    label: step-page
+    heading:
+      text: 3. Add a Page
+      textSize: h2
+    textBlocks:
+    - text: Pages live in pages/ as directories containing a content.yml. The directory name becomes the URL slug.
+      textSize: body1
+  - type: code_block
+    label: step-page-slug
+    language: text
+    code: pages/my-page/content.yml  →  /my-page
+  - type: code_block
+    label: step-page-code
+    language: yaml
+    code: "content:\n  content_items:\n    - main:\n        label: \"hero\"\n        heading:\n          text: \"Hello World\"\
+      \n          textSize: \"h1\"\n        textBlocks:\n          - text: \"My first Stackwright page.\"\n            textSize:\
+      \ \"body1\"\n        buttons:\n          - text: \"Learn More\"\n            variant: \"contained\"\n            href:\
+      \ \"/about\"\n"
+  - type: main
+    label: step-theme
+    heading:
+      text: 4. Customize Your Theme
+      textSize: h2
+    textBlocks:
+    - text: Open stackwright.yml in the project root. The customTheme block defines your color palette, dark mode colors,
+        typography, and spacing. Changes apply across every page.
+      textSize: body1
+    background: '#f8f9fa'
+  - type: code_block
+    label: step-theme-code
+    language: yaml
+    code: "customTheme:\n  colors:\n    primary: \"#fdc13c\"\n    secondary: \"#1a9fd4\"\n    background: \"#fdfdfd\"\n  \
+      \  text: \"#393837\"\n  darkColors:\n    primary: \"#e5a820\"\n    secondary: \"#60ccf0\"\n    background: \"#1a1a1e\"\
+      \n    text: \"#e8e8e4\"\n"
+    background: '#f8f9fa'
+  - type: alert
+    label: dark-mode-note
+    variant: info
+    title: Dark Mode
+    body: 'Define a darkColors block alongside colors. Stackwright detects the user''s OS preference automatically and swaps
+      palettes. Add colorModeToggle: true to your appBar config to render a Sun/Moon toggle in the header.'
+  - type: main
+    label: step-images
+    heading:
+      text: 5. Add Images
+      textSize: h2
+    textBlocks:
+    - text: Place images in the same directory as content.yml and reference them with a relative path. Stackwright copies
+        them to public/ and rewrites paths automatically at build time.
+      textSize: body1
+  - type: code_block
+    label: step-images-code
+    language: yaml
+    code: "media:\n  type: \"image\"\n  src: ./my-image.png\n  alt: \"A description of the image\"\n  height: 350\n  aspect_ratio:\
+      \ 1.5\n"
+  - type: main
+    label: step-collections
+    heading:
+      text: 6. Create a Collection
+      textSize: h2
+    textBlocks:
+    - text: Collections are directories of YAML entries under content/ — blog posts, docs, changelog entries, anything with
+        a repeating structure. The prebuild pipeline compiles them into static JSON with a lightweight index manifest.
+      textSize: body1
+    background: '#f8f9fa'
+  - type: code_block
+    label: step-collections-structure
+    language: text
+    code: "content/\n  posts/\n    _collection.yaml      ← sort & index config\n    hello-world.yaml      ← individual entry\n\
+      \    advanced-theming.yaml\n"
+    background: '#f8f9fa'
+  - type: code_block
+    label: step-collections-config
+    language: yaml
+    code: "# _collection.yaml — controls the index manifest\nsort: -date\nindexFields:\n  - title\n  - date\n  - author\n\
+      \  - excerpt\n  - tags\n"
+    background: '#f8f9fa'
+  - type: code_block
+    label: step-collections-entry
+    language: yaml
+    code: "# content/posts/hello-world.yaml\ntitle: \"Hello World\"\ndate: \"2026-01-15\"\nauthor: \"Your Name\"\nexcerpt:\
+      \ \"A short summary for the index page.\"\ntags:\n  - tutorial\nbody: |\n  The full content of your post goes here.\n\
+      \  Use any YAML scalar — strings, multiline blocks,\n  nested objects. It is all available via the\n  CollectionProvider\
+      \ API.\n"
+    background: '#f8f9fa'
+  - type: alert
+    label: collections-tip
+    variant: tip
+    title: Swappable Backends
+    body: FileCollectionProvider reads from the prebuild output. Swap it for a Contentful, Sanity, or S3 provider — one line
+      change in _app.tsx, zero changes to your content YAML.
+  - type: main
+    label: next-steps
+    heading:
+      text: Where to Go Next
+      textSize: h2
+    textBlocks:
+    - text: See all available content types in the Showcase, browse the Blog (built with the collections system), or explore
+        the source on GitHub.
+      textSize: body1
+    buttons:
+    - label: showcase-btn
+      text: Content Type Showcase
+      textSize: body1
+      variant: contained
+      href: /showcase
+      bgColor: secondary
+      textColor: primary
+    - label: blog-btn
+      text: Blog
+      textSize: body1
+      variant: outlined
+      href: /blog
+    - label: github-btn
+      text: View on GitHub
+      textSize: body1
+      variant: outlined
+      href: https://github.com/Per-Aspera-LLC/stackwright/
+    background: '#f8f9fa'

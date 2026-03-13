@@ -25,14 +25,14 @@ function makeTmpDir(): string {
 function makePageYaml(slug: string, heading?: string): string {
   return `content:
   content_items:
-    - main:
-        label: "${slug}"
-        heading:
-          text: "${heading || slug}"
-          textSize: "h1"
-        textBlocks:
-          - text: "Test page body"
-            textSize: "body1"
+    - type: main
+      label: "${slug}"
+      heading:
+        text: "${heading || slug}"
+        textSize: "h1"
+      textBlocks:
+        - text: "Test page body"
+          textSize: "body1"
 `;
 }
 
