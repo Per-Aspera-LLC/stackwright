@@ -202,9 +202,11 @@ export function generateDefaults(
           if (res.def.type === 'object') {
             const shape = res.def.shape as Record<string, AnySchema>;
             const typeField = shape.type ? resolveSchema(shape.type) : undefined;
-            return typeField?.def.type === 'literal' &&
+            return (
+              typeField?.def.type === 'literal' &&
               (typeField.def.value === pickType ||
-               (Array.isArray(typeField.def.values) && typeField.def.values[0] === pickType));
+                (Array.isArray(typeField.def.values) && typeField.def.values[0] === pickType))
+            );
           }
           return false;
         });

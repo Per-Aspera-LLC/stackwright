@@ -309,9 +309,7 @@ describe('LayoutGrid via contentRenderer', () => {
           ],
         },
         {
-          content_items: [
-            { type: 'code_block' as const, label: 'Code', code: 'hello()' },
-          ],
+          content_items: [{ type: 'code_block' as const, label: 'Code', code: 'hello()' }],
         },
       ],
     };
