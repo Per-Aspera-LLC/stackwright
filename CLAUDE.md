@@ -188,3 +188,29 @@ const debugLog = (message: string, data?: any) => {
 ### Troubleshooting
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md#troubleshooting) for common issues and solutions.
+
+### Cookie & Color Mode Persistence
+
+Stackwright provides first-class cookie utilities and color mode persistence to eliminate flash-of-wrong-theme for return visitors.
+
+**Setup (example app already configured):**
+1. Use `StackwrightDocument` in `pages/_document.tsx`:
+   ```tsx
+   import { StackwrightDocument } from '@stackwright/nextjs';
+   export default StackwrightDocument;
+   ```
+2. The `ColorModeScript` blocking `<script>` is included automatically. It reads the `sw-color-mode` cookie before React hydrates and sets `data-sw-color-mode` on `<html>`.
+
+**How it works:**
+- `ThemeProvider.setColorMode('dark')` writes `sw-color-mode=dark` cookie
+- `ThemeProvider.setColorMode('system')` removes the cookie (falls back to OS preference)
+- On mount, `ThemeProvider` reads the cookie and restores the saved preference
+- `ColorModeScript` (in `<Head>`) reads the cookie before React hydrates → no flash
+
+**Cookie utilities** (`@stackwright/core`): `getCookie`, `setCookie`, `removeCookie` — SSR-safe, zero dependencies.
+
+**Consent utilities** (`@stackwright/core`): `getConsentState`, `setConsentState`, `hasConsent` — IAB TCF categories (`necessary`, `functional`, `analytics`, `marketing`). `necessary` is always `true`.
+
+**Cookie names used by the framework:**
+- `sw-color-mode` — color mode preference (`light` | `dark`, absent = system)
+- `sw-consent` — consent state (JSON object with category booleans)
