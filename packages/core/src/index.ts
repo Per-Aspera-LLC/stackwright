@@ -56,3 +56,9 @@ export {
   registerCollectionProvider,
   getCollectionProvider,
 } from './utils/collectionProviderRegistry';
+
+// Cookie & consent utilities
+export { getCookie, setCookie, removeCookie } from './utils/cookies';
+export type { CookieOptions } from './utils/cookies';
+export { getConsentState, setConsentState, hasConsent } from './utils/consent';
+export type { ConsentCategory, ConsentState } from './utils/consent';
