@@ -17,6 +17,7 @@ export interface ScaffoldOptions {
   noInteractive?: boolean;
   monorepo?: boolean;
   standalone?: boolean;
+  pages?: string;
 }
 
 export interface ScaffoldResult {
@@ -91,6 +92,7 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     offline: opts.offline,
     monorepo: opts.monorepo,
     standalone: opts.standalone,
+    pages: opts.pages,
   });
 
   const dependencyMode = determineDependencyMode(targetDir, opts);
@@ -122,6 +124,7 @@ export function registerScaffold(program: Command): void {
     .option('--no-interactive', 'Skip all interactive prompts, use defaults for missing values')
     .option('--monorepo', 'Use workspace:* dependencies (for development inside a pnpm monorepo)')
     .option('--standalone', 'Use versioned npm dependencies (overrides monorepo auto-detection)')
+    .option('--pages <slugs>', 'Comma-separated list of page slugs to create (e.g., about,contact,pricing)')
     .option('--json', 'Output machine-readable JSON')
     .action(async (dir: string | undefined, opts: ScaffoldOptions) => {
       const targetDir = path.resolve(dir ?? process.cwd());
