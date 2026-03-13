@@ -49,8 +49,7 @@ function getSystemPreference(): 'light' | 'dark' {
  * color-mode state updates happen before the browser paints — preventing
  * a visible flash of the wrong theme.
  */
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 /** Pick the effective colors for the given mode. */
 function resolveColors(theme: Theme, mode: 'light' | 'dark'): ThemeColors {
