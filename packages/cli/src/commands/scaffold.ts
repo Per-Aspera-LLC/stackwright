@@ -17,12 +17,33 @@ export interface ScaffoldOptions {
   noInteractive?: boolean;
   monorepo?: boolean;
   standalone?: boolean;
+  pages?: string;
 }
 
 export interface ScaffoldResult {
   path: string;
   pages: string[];
   theme: string;
+  dependencyMode: 'workspace' | 'standalone';
+  siteConfigPath: string;
+  pagesDir: string;
+  nextSteps: { command: string; description: string }[];
+}
+
+function determineDependencyMode(
+  targetDir: string,
+  opts: ScaffoldOptions
+): 'workspace' | 'standalone' {
+  if (opts.standalone) return 'standalone';
+  if (opts.monorepo) return 'workspace';
+  // Auto-detect: check for pnpm-workspace.yaml up the tree
+  let dir = path.resolve(targetDir);
+  while (true) {
+    if (fs.existsSync(path.join(dir, 'pnpm-workspace.yaml'))) return 'workspace';
+    const parent = path.dirname(dir);
+    if (parent === dir) return 'standalone';
+    dir = parent;
+  }
 }
 
 export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promise<ScaffoldResult> {
@@ -71,9 +92,24 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     offline: opts.offline,
     monorepo: opts.monorepo,
     standalone: opts.standalone,
+    pages: opts.pages,
   });
 
-  return { path: targetDir, pages, theme: theme! };
+  const dependencyMode = determineDependencyMode(targetDir, opts);
+
+  return {
+    path: targetDir,
+    pages,
+    theme: theme!,
+    dependencyMode,
+    siteConfigPath: path.join(targetDir, 'stackwright.yml'),
+    pagesDir: path.join(targetDir, 'pages'),
+    nextSteps: [
+      { command: `cd ${targetDir}`, description: 'Enter the project directory' },
+      { command: 'pnpm install', description: 'Install dependencies' },
+      { command: 'pnpm dev', description: 'Start the development server' },
+    ],
+  };
 }
 
 export function registerScaffold(program: Command): void {
@@ -88,6 +124,10 @@ export function registerScaffold(program: Command): void {
     .option('--no-interactive', 'Skip all interactive prompts, use defaults for missing values')
     .option('--monorepo', 'Use workspace:* dependencies (for development inside a pnpm monorepo)')
     .option('--standalone', 'Use versioned npm dependencies (overrides monorepo auto-detection)')
+    .option(
+      '--pages <slugs>',
+      'Comma-separated list of page slugs to create (e.g., about,contact,pricing)'
+    )
     .option('--json', 'Output machine-readable JSON')
     .action(async (dir: string | undefined, opts: ScaffoldOptions) => {
       const targetDir = path.resolve(dir ?? process.cwd());

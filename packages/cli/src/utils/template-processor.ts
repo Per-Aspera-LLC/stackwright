@@ -5,7 +5,12 @@ import type { SiteConfig } from '@stackwright/types';
 import type { PageContent } from '@stackwright/types';
 import { siteConfigSchema, pageContentSchema } from './schema-loader';
 import { generateDefaults } from './schema-defaults';
-import { getSiteConfigHints, getRootPageHints, getGettingStartedHints } from './scaffold-hints';
+import {
+  getSiteConfigHints,
+  getRootPageHints,
+  getGettingStartedHints,
+  getGenericPageHints,
+} from './scaffold-hints';
 import { fetchTemplate } from './template-fetcher';
 
 /**
@@ -24,6 +29,14 @@ function detectMonorepoRoot(startDir: string): string | null {
   }
 }
 
+/** Convert a slug like 'about-us' to a title like 'About Us'. */
+function slugToTitle(slug: string): string {
+  return slug
+    .split(/[-_]/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
 // ---------------------------------------------------------------------------
 // Template Processing
 // ---------------------------------------------------------------------------
@@ -39,6 +52,8 @@ export interface TemplateConfig {
   monorepo?: boolean;
   /** Force versioned dependencies for standalone usage (overrides auto-detection). */
   standalone?: boolean;
+  /** Comma-separated list of page slugs to create in addition to defaults. */
+  pages?: string;
 }
 
 /**
@@ -82,11 +97,22 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
     written.push(relPath);
   }
 
-  // Generate dynamic files via schema introspection + hints
-  const siteConfig = generateDefaults(
-    siteConfigSchema as any,
-    getSiteConfigHints(siteTitle, themeId, year)
-  ) as SiteConfig;
+  // Parse extra page slugs from --pages flag (used for nav hints + page generation)
+  const extraSlugs = parseExtraSlugs(config.pages);
+
+  // Generate site config with navigation for all pages
+  const siteHints = getSiteConfigHints(siteTitle, themeId, year);
+  if (extraSlugs.length > 0) {
+    const totalNavItems = 2 + extraSlugs.length;
+    siteHints.navigation = { arrayLength: totalNavItems };
+    extraSlugs.forEach((slug, i) => {
+      const navIndex = 2 + i;
+      const title = slugToTitle(slug);
+      siteHints[`navigation.${navIndex}.label`] = { value: title };
+      siteHints[`navigation.${navIndex}.href`] = { value: `/${slug}` };
+    });
+  }
+  const siteConfig = generateDefaults(siteConfigSchema as any, siteHints) as SiteConfig;
   await processYamlFile('stackwright.yml', siteConfig);
 
   const rootPage = generateDefaults(
@@ -100,6 +126,15 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
     getGettingStartedHints()
   ) as PageContent;
   await processYamlFile('pages/getting-started/content.yml', gettingStartedPage);
+
+  // Generate custom pages from --pages flag
+  for (const slug of extraSlugs) {
+    const customPage = generateDefaults(
+      pageContentSchema as any,
+      getGenericPageHints(slug)
+    ) as PageContent;
+    await processYamlFile(`pages/${slug}/content.yml`, customPage);
+  }
 
   // Determine dependency mode: explicit flags override auto-detection
   let useWorkspaceDeps = false;
@@ -133,6 +168,16 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+/** Parse comma-separated page slugs, filtering out built-in pages. */
+function parseExtraSlugs(pages: string | undefined): string[] {
+  if (!pages) return [];
+  return pages
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .filter((s) => s !== '/' && s !== 'getting-started');
+}
 
 /** Recursively collect all file paths relative to dir, excluding .git */
 async function collectFiles(dir: string, base: string = ''): Promise<string[]> {
