@@ -32,6 +32,10 @@ vi.mock('next/router', () => ({
   }),
 }));
 
+vi.mock('next/head', () => ({
+  default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 // ---------------------------------------------------------------------------
 // Imports (after mocks)
 // ---------------------------------------------------------------------------
@@ -43,6 +47,7 @@ import {
   NextStackwrightRoute,
 } from '../src/components/NextStackwrightRouter';
 import { createStackwrightNextConfig } from '../src/config/NextStackwrightConfig';
+import { NextStackwrightHead } from '../src/components/NextStackwrightHead';
 import { registerNextJSComponents } from '../src/index';
 import { stackwrightRegistry } from '@stackwright/core';
 
@@ -348,13 +353,14 @@ describe('registerNextJSComponents', () => {
     stackwrightRegistry.clear();
   });
 
-  it('registers all four framework components', () => {
+  it('registers all five framework components', () => {
     registerNextJSComponents();
 
     expect(stackwrightRegistry.isRegistered('Image')).toBe(true);
     expect(stackwrightRegistry.isRegistered('Link')).toBe(true);
     expect(stackwrightRegistry.isRegistered('Router')).toBe(true);
     expect(stackwrightRegistry.isRegistered('Route')).toBe(true);
+    expect(stackwrightRegistry.isRegistered('Head' as any)).toBe(true);
   });
 
   it('registered Image is the NextStackwrightImage component', () => {
