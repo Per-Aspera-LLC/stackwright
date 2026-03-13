@@ -23,6 +23,26 @@ export interface ScaffoldResult {
   path: string;
   pages: string[];
   theme: string;
+  dependencyMode: 'workspace' | 'standalone';
+  siteConfigPath: string;
+  pagesDir: string;
+  nextSteps: { command: string; description: string }[];
+}
+
+function determineDependencyMode(
+  targetDir: string,
+  opts: ScaffoldOptions
+): 'workspace' | 'standalone' {
+  if (opts.standalone) return 'standalone';
+  if (opts.monorepo) return 'workspace';
+  // Auto-detect: check for pnpm-workspace.yaml up the tree
+  let dir = path.resolve(targetDir);
+  while (true) {
+    if (fs.existsSync(path.join(dir, 'pnpm-workspace.yaml'))) return 'workspace';
+    const parent = path.dirname(dir);
+    if (parent === dir) return 'standalone';
+    dir = parent;
+  }
 }
 
 export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promise<ScaffoldResult> {
@@ -73,7 +93,21 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     standalone: opts.standalone,
   });
 
-  return { path: targetDir, pages, theme: theme! };
+  const dependencyMode = determineDependencyMode(targetDir, opts);
+
+  return {
+    path: targetDir,
+    pages,
+    theme: theme!,
+    dependencyMode,
+    siteConfigPath: path.join(targetDir, 'stackwright.yml'),
+    pagesDir: path.join(targetDir, 'pages'),
+    nextSteps: [
+      { command: `cd ${targetDir}`, description: 'Enter the project directory' },
+      { command: 'pnpm install', description: 'Install dependencies' },
+      { command: 'pnpm dev', description: 'Start the development server' },
+    ],
+  };
 }
 
 export function registerScaffold(program: Command): void {
