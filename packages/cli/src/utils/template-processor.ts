@@ -8,6 +8,22 @@ import { generateDefaults } from './schema-defaults';
 import { getSiteConfigHints, getRootPageHints, getGettingStartedHints } from './scaffold-hints';
 import { fetchTemplate } from './template-fetcher';
 
+/**
+ * Walk up from the given directory looking for a pnpm-workspace.yaml.
+ * Returns the monorepo root path if found, null otherwise.
+ */
+function detectMonorepoRoot(startDir: string): string | null {
+  let dir = path.resolve(startDir);
+  while (true) {
+    if (fs.existsSync(path.join(dir, 'pnpm-workspace.yaml'))) {
+      return dir;
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) return null; // reached filesystem root
+    dir = parent;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Template Processing
 // ---------------------------------------------------------------------------
@@ -19,6 +35,10 @@ export interface TemplateConfig {
   targetDir: string;
   /** Skip network fetch and use bundled templates only. */
   offline?: boolean;
+  /** Force workspace:* dependencies for monorepo usage. */
+  monorepo?: boolean;
+  /** Force versioned dependencies for standalone usage (overrides auto-detection). */
+  standalone?: boolean;
 }
 
 /**
@@ -81,12 +101,23 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
   ) as PageContent;
   await processYamlFile('pages/getting-started/content.yml', gettingStartedPage);
 
+  // Determine dependency mode: explicit flags override auto-detection
+  let useWorkspaceDeps = false;
+  if (config.standalone) {
+    useWorkspaceDeps = false;
+  } else if (config.monorepo) {
+    useWorkspaceDeps = true;
+  } else {
+    // Auto-detect: if scaffolding inside a pnpm workspace, use workspace deps
+    useWorkspaceDeps = detectMonorepoRoot(targetDir) !== null;
+  }
+
   // Generate package.json with proper formatting
   const packageJsonPath = path.join(targetDir, 'package.json');
   await fs.ensureDir(path.dirname(packageJsonPath));
   await fs.writeFile(
     packageJsonPath,
-    JSON.stringify(buildPackageJson(projectName), null, 2) + '\n',
+    JSON.stringify(buildPackageJson(projectName, useWorkspaceDeps), null, 2) + '\n',
     'utf8'
   );
   written.push('package.json');
@@ -123,8 +154,7 @@ async function collectFiles(dir: string, base: string = ''): Promise<string[]> {
 // Non-schema builders (npm/TypeScript config — not Stackwright grammar)
 // ---------------------------------------------------------------------------
 
-function buildPackageJson(projectName: string): object {
-  // MAINTENANCE: Update these versions when cutting major releases of Stackwright.
+function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false): object {
   const VERSIONS = {
     tailwindcss: '^4.1.11',
     stackwright: 'latest',
@@ -141,6 +171,8 @@ function buildPackageJson(projectName: string): object {
     typescript: '^5.9.3',
   };
 
+  const sw = useWorkspaceDeps ? 'workspace:*' : VERSIONS.stackwright;
+
   return {
     name: projectName,
     version: '0.1.0',
@@ -155,17 +187,17 @@ function buildPackageJson(projectName: string): object {
       'type-check': 'tsc --noEmit',
     },
     dependencies: {
-      '@stackwright/ui-shadcn': VERSIONS.stackwright,
-      '@stackwright/core': VERSIONS.stackwright,
-      '@stackwright/icons': VERSIONS.stackwright,
-      '@stackwright/nextjs': VERSIONS.stackwright,
+      '@stackwright/ui-shadcn': sw,
+      '@stackwright/core': sw,
+      '@stackwright/icons': sw,
+      '@stackwright/nextjs': sw,
       'js-yaml': VERSIONS.jsYaml,
       next: VERSIONS.next,
       react: VERSIONS.react,
       'react-dom': VERSIONS.reactDom,
     },
     devDependencies: {
-      '@stackwright/build-scripts': VERSIONS.stackwright,
+      '@stackwright/build-scripts': sw,
       '@types/js-yaml': VERSIONS.typesJsYaml,
       '@types/node': VERSIONS.typesNode,
       '@types/react': VERSIONS.typesReact,

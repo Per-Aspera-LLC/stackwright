@@ -45,9 +45,13 @@ export function registerProjectTools(server: McpServer): void {
         .optional()
         .default(true)
         .describe('Allow scaffolding in non-empty directories (default: true for agents)'),
+      monorepo: z
+        .boolean()
+        .optional()
+        .describe('Use workspace:* dependencies for monorepo development. Auto-detected if omitted.'),
     },
-    async ({ targetDir, name, title, theme, force }) => {
-      const result = await scaffold(targetDir, { name, title, theme, force, json: true });
+    async ({ targetDir, name, title, theme, force, monorepo }) => {
+      const result = await scaffold(targetDir, { name, title, theme, force, monorepo, json: true });
       const text = [
         `Scaffolded project at: ${result.path}`,
         `Theme: ${result.theme}`,
