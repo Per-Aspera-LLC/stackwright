@@ -13,6 +13,7 @@ export interface ScaffoldOptions {
   theme?: string;
   json?: boolean;
   offline?: boolean;
+  force?: boolean;
 }
 
 export interface ScaffoldResult {
@@ -22,9 +23,11 @@ export interface ScaffoldResult {
 }
 
 export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promise<ScaffoldResult> {
-  // Validate target directory
-  if (fs.existsSync(targetDir) && fs.readdirSync(targetDir).length > 0) {
-    const err = new Error(`Directory ${targetDir} already exists and is not empty`);
+  // Validate target directory (skip if --force)
+  if (!opts.force && fs.existsSync(targetDir) && fs.readdirSync(targetDir).length > 0) {
+    const err = new Error(
+      `Directory ${targetDir} already exists and is not empty. Use --force to overwrite.`
+    );
     (err as NodeJS.ErrnoException).code = 'DIR_EXISTS';
     throw err;
   }
@@ -76,6 +79,7 @@ export function registerScaffold(program: Command): void {
     .option('--title <title>', 'Site title shown in the app bar and browser tab')
     .option('--theme <themeId>', 'Theme ID — skips interactive theme selection')
     .option('--offline', 'Use bundled templates (skip GitHub template fetch)')
+    .option('--force', 'Scaffold even if the target directory is not empty')
     .option('--json', 'Output machine-readable JSON')
     .action(async (dir: string | undefined, opts: ScaffoldOptions) => {
       const targetDir = path.resolve(dir ?? process.cwd());
