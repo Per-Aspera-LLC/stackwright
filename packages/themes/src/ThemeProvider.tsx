@@ -3,6 +3,7 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useCallback,
   ReactNode,
@@ -41,6 +42,15 @@ function getSystemPreference(): 'light' | 'dark' {
   if (typeof window === 'undefined') return 'light';
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
+
+/**
+ * SSR-safe `useLayoutEffect`. Falls back to `useEffect` on the server to
+ * avoid React warnings, but uses `useLayoutEffect` on the client so that
+ * color-mode state updates happen before the browser paints — preventing
+ * a visible flash of the wrong theme.
+ */
+const useIsomorphicLayoutEffect =
+  typeof window !== 'undefined' ? useLayoutEffect : useEffect;
 
 /** Pick the effective colors for the given mode. */
 function resolveColors(theme: Theme, mode: 'light' | 'dark'): ThemeColors {
@@ -92,21 +102,27 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 }) => {
   const [rawTheme, setRawTheme] = useState<Theme>(initialTheme);
   const [colorMode, setColorModeState] = useState<ColorMode>(initialColorMode);
-  const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>(() => {
-    // If the blocking ColorModeScript ran, trust its decision for hydration
-    // consistency rather than re-reading matchMedia.
-    if (typeof document !== 'undefined') {
-      const attr = document.documentElement.getAttribute('data-sw-color-mode');
-      if (attr === 'dark' || attr === 'light') return attr;
-    }
-    return getSystemPreference();
-  });
+  // Always initialise to 'light' — this matches the server render and
+  // avoids the hydration mismatch that occurred when the useState
+  // initialiser read from the DOM attribute set by ColorModeScript.
+  const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>('light');
 
-  // On mount, restore saved preference from cookie (if any).
-  useEffect(() => {
+  // After hydration, sync the real color mode from cookie / blocking-script
+  // attribute / OS preference. Uses layoutEffect to run before the browser
+  // paints, so the user never sees the wrong theme.
+  useIsomorphicLayoutEffect(() => {
     const saved = readCookie(COLOR_MODE_COOKIE);
     if (saved === 'light' || saved === 'dark') {
       setColorModeState(saved);
+    }
+
+    // Trust the blocking ColorModeScript's attribute first, then fall back
+    // to matchMedia.
+    const attr = document.documentElement.getAttribute('data-sw-color-mode');
+    if (attr === 'dark' || attr === 'light') {
+      setSystemPreference(attr);
+    } else {
+      setSystemPreference(getSystemPreference());
     }
   }, []);
 
