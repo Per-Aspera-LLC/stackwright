@@ -377,6 +377,13 @@ describe('registerNextJSComponents', () => {
     expect(RegisteredLink).toBe(NextStackwrightLink);
   });
 
+  it('registered Head is the NextStackwrightHead component', () => {
+    registerNextJSComponents();
+
+    const RegisteredHead = stackwrightRegistry.get('Head' as any);
+    expect(RegisteredHead).toBe(NextStackwrightHead);
+  });
+
   it('getAll returns all components after registration', () => {
     registerNextJSComponents();
 
@@ -385,5 +392,6 @@ describe('registerNextJSComponents', () => {
     expect(all.Link).toBe(NextStackwrightLink);
     expect(all.Router).toBe(NextStackwrightRouter);
     expect(all.Route).toBe(NextStackwrightRoute);
+    expect((all as any).Head).toBe(NextStackwrightHead);
   });
 });
