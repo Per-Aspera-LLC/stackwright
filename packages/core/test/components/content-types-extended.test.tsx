@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import React from 'react';
 import { IconGrid } from '../../src/components/base/IconGrid';
@@ -220,7 +220,14 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Learn More', textSize: 'h3' }}
-        tabs={[{ type: 'faq' as const, label: 'FAQ Tab', heading: { text: 'FAQ', textSize: 'h3' }, items: [] }]}
+        tabs={[
+          {
+            type: 'faq' as const,
+            label: 'FAQ Tab',
+            heading: { text: 'FAQ', textSize: 'h3' },
+            items: [],
+          },
+        ]}
       />
     );
     expect(screen.getByText('Learn More')).toBeInTheDocument();
@@ -233,8 +240,18 @@ describe('TabbedContentGrid', () => {
         label="tabs"
         heading={{ text: 'Content', textSize: 'h3' }}
         tabs={[
-          { type: 'faq' as const, label: 'Tab A', heading: { text: 'A', textSize: 'h3' }, items: [] },
-          { type: 'faq' as const, label: 'Tab B', heading: { text: 'B', textSize: 'h3' }, items: [] },
+          {
+            type: 'faq' as const,
+            label: 'Tab A',
+            heading: { text: 'A', textSize: 'h3' },
+            items: [],
+          },
+          {
+            type: 'faq' as const,
+            label: 'Tab B',
+            heading: { text: 'B', textSize: 'h3' },
+            items: [],
+          },
         ]}
       />
     );
@@ -250,8 +267,18 @@ describe('TabbedContentGrid', () => {
         label="tabs"
         heading={{ text: 'Tabs', textSize: 'h3' }}
         tabs={[
-          { type: 'faq' as const, label: 'First', heading: { text: 'Content A', textSize: 'h3' }, items: [] },
-          { type: 'faq' as const, label: 'Second', heading: { text: 'Content B', textSize: 'h3' }, items: [] },
+          {
+            type: 'faq' as const,
+            label: 'First',
+            heading: { text: 'Content A', textSize: 'h3' },
+            items: [],
+          },
+          {
+            type: 'faq' as const,
+            label: 'Second',
+            heading: { text: 'Content B', textSize: 'h3' },
+            items: [],
+          },
         ]}
       />
     );
@@ -274,7 +301,14 @@ describe('TabbedContentGrid', () => {
       <TabbedContentGrid
         label="tabs"
         heading={{ text: 'Tabs', textSize: 'h3' }}
-        tabs={[{ type: 'faq' as const, label: 'Only Tab', heading: { text: 'X', textSize: 'h3' }, items: [] }]}
+        tabs={[
+          {
+            type: 'faq' as const,
+            label: 'Only Tab',
+            heading: { text: 'X', textSize: 'h3' },
+            items: [],
+          },
+        ]}
       />
     );
     expect(screen.getByRole('tablist')).toBeInTheDocument();
