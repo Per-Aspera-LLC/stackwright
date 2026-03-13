@@ -5,7 +5,12 @@ import type { SiteConfig } from '@stackwright/types';
 import type { PageContent } from '@stackwright/types';
 import { siteConfigSchema, pageContentSchema } from './schema-loader';
 import { generateDefaults } from './schema-defaults';
-import { getSiteConfigHints, getRootPageHints, getGettingStartedHints, getGenericPageHints } from './scaffold-hints';
+import {
+  getSiteConfigHints,
+  getRootPageHints,
+  getGettingStartedHints,
+  getGenericPageHints,
+} from './scaffold-hints';
 import { fetchTemplate } from './template-fetcher';
 
 /**
@@ -61,7 +66,7 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
   const year = new Date().getFullYear();
 
   // Fetch static template files from GitHub repo (falls back to bundled copy)
-  const { source } = await fetchTemplate(targetDir, { offline });
+  await fetchTemplate(targetDir, { offline });
 
   // Collect template files that were fetched (excluding README which is repo-only)
   const templateFiles = await collectFiles(targetDir);
@@ -107,10 +112,7 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
       siteHints[`navigation.${navIndex}.href`] = { value: `/${slug}` };
     });
   }
-  const siteConfig = generateDefaults(
-    siteConfigSchema as any,
-    siteHints
-  ) as SiteConfig;
+  const siteConfig = generateDefaults(siteConfigSchema as any, siteHints) as SiteConfig;
   await processYamlFile('stackwright.yml', siteConfig);
 
   const rootPage = generateDefaults(

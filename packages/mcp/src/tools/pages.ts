@@ -1,6 +1,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
-import { listPages, addPage, validatePages, readPage, writePage, resolvePagesDir } from '@stackwright/cli';
+import {
+  listPages,
+  addPage,
+  validatePages,
+  readPage,
+  writePage,
+  resolvePagesDir,
+} from '@stackwright/cli';
 
 export function registerPageTools(server: McpServer): void {
   server.tool(

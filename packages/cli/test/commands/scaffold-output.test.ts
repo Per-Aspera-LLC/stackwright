@@ -44,7 +44,17 @@ function readJson(filePath: string): Record<string, unknown> {
 /** Recursively collect text files, skipping node_modules and .git. */
 function collectTextFiles(dir: string): string[] {
   const results: string[] = [];
-  const TEXT_EXTS = new Set(['.ts', '.tsx', '.js', '.jsx', '.json', '.yml', '.yaml', '.md', '.css']);
+  const TEXT_EXTS = new Set([
+    '.ts',
+    '.tsx',
+    '.js',
+    '.jsx',
+    '.json',
+    '.yml',
+    '.yaml',
+    '.md',
+    '.css',
+  ]);
 
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.name === 'node_modules' || entry.name === '.git') continue;
@@ -85,9 +95,9 @@ describe('scaffold output — file structure', () => {
   });
 
   it('creates getting-started page', () => {
-    expect(
-      fs.existsSync(path.join(targetDir, 'pages', 'getting-started', 'content.yml'))
-    ).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'pages', 'getting-started', 'content.yml'))).toBe(
+      true
+    );
   });
 
   it('creates package.json', () => {
@@ -230,28 +240,20 @@ describe('scaffold output — page content', () => {
   });
 
   it('getting-started page passes Zod schema validation', () => {
-    const gsPage = readYaml(
-      path.join(targetDir, 'pages', 'getting-started', 'content.yml')
-    );
+    const gsPage = readYaml(path.join(targetDir, 'pages', 'getting-started', 'content.yml'));
     const parsed = pageContentSchema.parse(gsPage);
     expect(parsed.content.content_items).toHaveLength(5);
   });
 
   it('getting-started page has code_block item', () => {
-    const gsPage = readYaml(
-      path.join(targetDir, 'pages', 'getting-started', 'content.yml')
-    ) as any;
-    const codeItem = gsPage.content.content_items.find(
-      (item: any) => item.type === 'code_block'
-    );
+    const gsPage = readYaml(path.join(targetDir, 'pages', 'getting-started', 'content.yml')) as any;
+    const codeItem = gsPage.content.content_items.find((item: any) => item.type === 'code_block');
     expect(codeItem).toBeDefined();
     expect(codeItem.language).toBe('bash');
   });
 
   it('getting-started page YAML round-trips', () => {
-    const gsPage = readYaml(
-      path.join(targetDir, 'pages', 'getting-started', 'content.yml')
-    );
+    const gsPage = readYaml(path.join(targetDir, 'pages', 'getting-started', 'content.yml'));
     const yamlStr = yaml.dump(gsPage, { lineWidth: 120 });
     const reparsed = yaml.load(yamlStr);
     const validated = pageContentSchema.parse(reparsed);
@@ -333,14 +335,9 @@ describe('scaffold output — extra pages via --pages', () => {
 
   it('handles hyphenated slugs in title conversion', async () => {
     const freshDir = path.join(tmpDir, 'hyphen');
-    await scaffold(
-      freshDir,
-      baseOpts({ name: 'hyph', title: 'Hyph', pages: 'about-us' })
-    );
+    await scaffold(freshDir, baseOpts({ name: 'hyph', title: 'Hyph', pages: 'about-us' }));
 
-    const aboutPage = readYaml(
-      path.join(freshDir, 'pages', 'about-us', 'content.yml')
-    ) as any;
+    const aboutPage = readYaml(path.join(freshDir, 'pages', 'about-us', 'content.yml')) as any;
     expect(aboutPage.content.content_items[0].heading.text).toBe('About Us');
   });
 });
