@@ -1,0 +1,13 @@
+title: "Getting Started with Stackwright"
+date: "2026-02-15"
+author: "Per Aspera Team"
+excerpt: "Learn how to create your first Stackwright site from scratch."
+tags:
+  - tutorial
+  - getting-started
+body: |
+  Stackwright makes it easy to build professional websites using YAML
+  configuration. In this post, we walk through setting up your first
+  project, defining pages, and deploying to production.
+
+  Start with `pnpm create stackwright my-app` and you're off to the races.

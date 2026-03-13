@@ -1,0 +1,7 @@
+sort: -date
+indexFields:
+  - title
+  - date
+  - author
+  - excerpt
+  - tags

@@ -17,6 +17,24 @@ colors:
     secondary: "#9ca3af"
     inverse: "#ffffff"
 
+darkColors:
+  primary:
+    50: "#500724"
+    100: "#831843"
+    500: "#f472b6"
+    600: "#ec4899"
+    700: "#db2777"
+  neutral:
+    50: "#111827"
+    100: "#1f2937"
+    700: "#9ca3af"
+    800: "#d1d5db"
+    900: "#f9fafb"
+  text:
+    primary: "#f9fafb"
+    secondary: "#9ca3af"
+    inverse: "#111827"
+
 spacing:
   section: "py-16"
   container: "max-w-6xl mx-auto px-6 sm:px-8 lg:px-10"

@@ -10,6 +10,7 @@ import { registerTheme } from './commands/theme';
 import { registerInfo } from './commands/info';
 import { registerGenerateAgentDocs } from './commands/generate-agent-docs';
 import { registerGitOps } from './commands/git-ops';
+import { registerBoard } from './commands/board';
 
 const { version } = require('../package.json') as { version: string };
 
@@ -32,6 +33,7 @@ async function main(): Promise<void> {
   registerInfo(program);
   registerGenerateAgentDocs(program);
   registerGitOps(program);
+  registerBoard(program);
 
   // Pre-parse to extract global options (including --plugin-dir) before full dispatch.
   // parseOptions() does NOT dispatch commands — it only extracts options.

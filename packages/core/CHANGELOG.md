@@ -1,5 +1,19 @@
 # @stackwright/core
 
+## 0.6.0-alpha.14
+
+### Minor Changes
+
+- Version dependencies
+
+### Patch Changes
+
+- 8d1a637: Dependency updates
+- Updated dependencies [8d1a637]
+- Updated dependencies
+  - @stackwright/types@0.4.0-alpha.6
+  - @stackwright/themes@0.5.0-alpha.3
+
 ## 0.6.0-alpha.13
 
 ### Patch Changes

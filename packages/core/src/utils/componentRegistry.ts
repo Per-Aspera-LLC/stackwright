@@ -11,6 +11,8 @@ import {
   PricingTable,
   ContactFormStub,
   Alert,
+  LayoutGrid,
+  CollectionList,
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
@@ -21,7 +23,7 @@ import {
   getStackwrightRoute,
 } from './stackwrightComponentRegistry';
 
-// Component registry mapping yamlKey to component
+// Component registry mapping YAML key → React component (or lazy factory for stackwright- prefixed)
 export const componentRegistry: Record<string, ComponentType<any> | (() => ComponentType<any>)> = {
   carousel: Carousel,
   main: MainContentGrid,
@@ -36,66 +38,33 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   pricing_table: PricingTable,
   alert: Alert,
   contact_form_stub: ContactFormStub,
-  // Stackwright components (will be resolved dynamically)
+  grid: LayoutGrid,
+  collection_list: CollectionList,
+  // Stackwright platform components (resolved dynamically via factory)
   'stackwright-image': () => getStackwrightImage(),
   'stackwright-link': () => getStackwrightLink(),
   'stackwright-router': () => getStackwrightRouter(),
   'stackwright-route': () => getStackwrightRoute(),
 };
 
-// Debug logging utility for component registry
-const debugLogRegistry = (message: string, data?: any) => {
-  if (process.env.NODE_ENV === 'development' && process.env.STACKWRIGHT_DEBUG === 'true') {
-    console.log(`🔧 ComponentRegistry Debug: ${message}`, data ? data : '');
-  }
-};
-
 // Helper to get component by content type
 export function getComponentByType(contentType: string): ComponentType<any> | null {
-  debugLogRegistry(`Looking up component for: ${contentType}`);
-  debugLogRegistry('Available component types:', Object.keys(componentRegistry));
-
   const component = componentRegistry[contentType];
-  debugLogRegistry(`Raw component lookup result:`, {
-    found: !!component,
-    type: typeof component,
-    name: component?.name,
-    constructor: component?.constructor?.name,
-  });
 
-  if (!component) {
-    debugLogRegistry(`No component found for: ${contentType}`);
-    return null;
-  }
+  if (!component) return null;
 
-  // Handle stackwright components that need dynamic resolution
+  // Stackwright platform components are registered as factories — resolve them
   if (contentType.startsWith('stackwright-')) {
-    debugLogRegistry(`Resolving stackwright component: ${contentType}`);
-    // These are factory functions that return ComponentTypes
     const factory = component as () => ComponentType<any>;
     try {
-      const resolvedComponent = factory();
-      debugLogRegistry(`Stackwright component resolved:`, {
-        type: typeof resolvedComponent,
-        name: resolvedComponent?.name,
-        constructor: resolvedComponent?.constructor?.name,
-      });
-      return resolvedComponent;
+      return factory();
     } catch (error) {
-      debugLogRegistry(`Failed to resolve stackwright component '${contentType}':`, error);
-      console.error(`Failed to resolve stackwright component '${contentType}':`, error);
+      console.error(`[Stackwright] Failed to resolve component '${contentType}':`, error);
       return null;
     }
   }
 
-  // Return the component directly if it's already a ComponentType
-  const finalComponent = component as ComponentType<any>;
-  debugLogRegistry(`Returning standard component:`, {
-    type: typeof finalComponent,
-    name: finalComponent?.name,
-    constructor: finalComponent?.constructor?.name,
-  });
-  return finalComponent;
+  return component as ComponentType<any>;
 }
 
 // Helper to register new components

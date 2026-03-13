@@ -1,5 +1,17 @@
 # @stackwright/build-scripts
 
+## 0.3.0-alpha.7
+
+### Minor Changes
+
+- Version dependencies
+
+### Patch Changes
+
+- Updated dependencies [8d1a637]
+- Updated dependencies
+  - @stackwright/types@0.4.0-alpha.6
+
 ## 0.3.0-alpha.6
 
 ### Patch Changes

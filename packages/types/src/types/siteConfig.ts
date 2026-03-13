@@ -11,6 +11,8 @@ export const appBarConfigSchema = z.object({
   logo: mediaItemSchema.optional(),
   height: z.string().optional(),
   menuItems: z.array(navigationItemSchema).optional(),
+  /** Show a Sun/Moon toggle for switching between light and dark color modes. */
+  colorModeToggle: z.boolean().optional(),
 });
 
 export const breakpointsConfigSchema = z.object({
@@ -31,8 +33,16 @@ export const footerConfigSchema = z.object({
   socialText: z.string().optional(),
 });
 
+export const siteMetaSchema = z.object({
+  description: z.string().optional(),
+  og_image: z.string().optional(),
+  og_site_name: z.string().optional(),
+  base_url: z.string().url().optional(),
+});
+
 export const siteConfigSchema = z.object({
   title: z.string(),
+  meta: siteMetaSchema.optional(),
   themeName: z.string().optional(),
   customTheme: themeSchema.optional(),
   navigation: z.array(navigationItemSchema),
@@ -41,6 +51,7 @@ export const siteConfigSchema = z.object({
   breakpoints: breakpointsConfigSchema.optional(),
 });
 
+export type SiteMeta = z.infer<typeof siteMetaSchema>;
 export type AppBarConfig = z.infer<typeof appBarConfigSchema>;
 export type BreakpointsConfig = z.infer<typeof breakpointsConfigSchema>;
 export type FooterConfig = z.infer<typeof footerConfigSchema>;

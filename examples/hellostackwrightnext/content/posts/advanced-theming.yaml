@@ -1,0 +1,16 @@
+title: "Advanced Theming"
+date: "2026-03-10"
+author: "Per Aspera Team"
+excerpt: "Customize colors, typography, and spacing with Stackwright themes."
+tags:
+  - theming
+  - advanced
+featured: true
+body: |
+  Stackwright themes are defined in YAML and compiled to CSS custom
+  properties. You can define custom color palettes, typography scales,
+  and spacing tokens — including dark mode variants via the darkColors
+  block.
+
+  This post covers the theme system in depth, including how to create
+  your own theme from scratch.

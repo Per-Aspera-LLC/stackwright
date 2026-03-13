@@ -92,6 +92,30 @@ pnpm test:core
 
 **E2E tests** (`pnpm test:e2e`): Playwright tests in `packages/e2e/` that verify the full YAML → prebuild → Next.js build → browser pipeline against `examples/hellostackwrightnext/`. When adding new content types, add example usage in the example app so E2E smoke tests cover them. The E2E tests check that every page renders content, has no error boundaries, produces no critical console errors, and that all nav links resolve.
 
+## Pre-Push Checklist
+
+**CI enforces linting and formatting. Run these before every push:**
+
+```bash
+pnpm format          # Auto-fix Prettier formatting
+pnpm lint            # Check ESLint (warnings are fine, errors are not)
+pnpm test            # Run all unit tests
+```
+
+Or as a one-liner:
+
+```bash
+pnpm format && pnpm lint && pnpm test
+```
+
+> **Tip:** Configure your editor to format on save with the project's `.prettierrc` config. This avoids formatting-only commits entirely.
+
+To check formatting without writing (useful in CI or to see what's wrong):
+
+```bash
+pnpm format:check    # Exits non-zero if any file needs formatting
+```
+
 ## Naming Conventions
 
 - File names: kebab-case (`main-content-grid.tsx`)
@@ -120,9 +144,29 @@ pnpm release            # Build and publish to NPM
 
 The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the tables are out of sync.
 
-## Roadmap Maintenance
+## Priority Labels & Product Board
 
-**When opening a PR against `dev`, check if `ROADMAP.md` needs updating.** If the PR completes, advances, or invalidates a roadmap item, update it in the same PR. Mark completed items with `[x]` and add the PR number. This keeps the roadmap accurate for new contributors and agents.
+Work is tracked via GitHub Issues with priority labels. `ROADMAP.md` is a narrative document describing architectural direction — not a task tracker.
+
+| Label | Meaning |
+|-------|--------|
+| `priority:now` 🔴 | Actively in progress or next up |
+| `priority:next` 🟡 | Committed — starting soon |
+| `priority:later` 🟢 | Planned but not yet committed |
+| `priority:vision` 🟣 | Aspirational — shapes direction, no timeline |
+
+**View the board:**
+```bash
+# Terminal
+pnpm stackwright -- board
+
+# JSON output (CI / scripts)
+pnpm stackwright -- board --json
+```
+
+Agents can call `stackwright_get_board` via MCP for the same data.
+
+The architect sets priority tiers. Contributors and agents should pick work from `priority:now` first, then `priority:next`. When a PR closes an issue, GitHub handles it automatically — no manual ROADMAP.md updates needed.
 
 ## Package Structure
 

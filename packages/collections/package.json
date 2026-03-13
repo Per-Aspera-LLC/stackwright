@@ -1,0 +1,33 @@
+{
+  "name": "@stackwright/collections",
+  "version": "0.1.0-alpha.1",
+  "description": "CollectionProvider interface and file-backed implementation for Stackwright",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Per-Aspera-LLC/stackwright"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^25.4.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.8.3",
+    "vitest": "^4.0.18"
+  }
+}

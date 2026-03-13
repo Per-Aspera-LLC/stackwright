@@ -5,6 +5,27 @@
     "content": {
       "type": "object",
       "properties": {
+        "meta": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "og_image": {
+              "type": "string"
+            },
+            "canonical": {
+              "type": "string"
+            },
+            "noindex": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
         "app_bar": {
           "type": "object",
           "properties": {
@@ -52,6 +73,9 @@
                   "type": "number"
                 }
               ]
+            },
+            "colorModeToggle": {
+              "type": "boolean"
             }
           },
           "required": [
@@ -392,9 +416,8 @@
       "type": "string"
     },
     "__schema17": {
-      "type": "object",
-      "properties": {
-        "carousel": {
+      "anyOf": [
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -405,6 +428,10 @@
             },
             "background": {
               "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "const": "carousel"
             },
             "heading": {
               "type": "string"
@@ -447,12 +474,13 @@
           },
           "required": [
             "label",
+            "type",
             "heading",
             "items"
           ],
           "additionalProperties": false
         },
-        "main": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -463,6 +491,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "main"
             },
             "heading": {
               "$ref": "#/definitions/__schema18"
@@ -499,12 +531,13 @@
           },
           "required": [
             "label",
+            "type",
             "heading",
             "textBlocks"
           ],
           "additionalProperties": false
         },
-        "tabbed_content": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -515,6 +548,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "tabbed_content"
             },
             "heading": {
               "$ref": "#/definitions/__schema18"
@@ -528,12 +565,13 @@
           },
           "required": [
             "label",
+            "type",
             "heading",
             "tabs"
           ],
           "additionalProperties": false
         },
-        "media": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -572,7 +610,7 @@
           ],
           "additionalProperties": false
         },
-        "timeline": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -583,6 +621,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "timeline"
             },
             "heading": {
               "allOf": [
@@ -613,11 +655,12 @@
           },
           "required": [
             "label",
+            "type",
             "items"
           ],
           "additionalProperties": false
         },
-        "icon_grid": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -628,6 +671,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "icon_grid"
             },
             "heading": {
               "allOf": [
@@ -691,11 +738,12 @@
           },
           "required": [
             "label",
+            "type",
             "icons"
           ],
           "additionalProperties": false
         },
-        "code_block": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -706,6 +754,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "code_block"
             },
             "code": {
               "type": "string"
@@ -719,11 +771,12 @@
           },
           "required": [
             "label",
+            "type",
             "code"
           ],
           "additionalProperties": false
         },
-        "feature_list": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -734,6 +787,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "feature_list"
             },
             "heading": {
               "allOf": [
@@ -774,11 +831,12 @@
           },
           "required": [
             "label",
+            "type",
             "items"
           ],
           "additionalProperties": false
         },
-        "testimonial_grid": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -789,6 +847,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "testimonial_grid"
             },
             "heading": {
               "allOf": [
@@ -835,11 +897,12 @@
           },
           "required": [
             "label",
+            "type",
             "items"
           ],
           "additionalProperties": false
         },
-        "faq": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -850,6 +913,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "faq"
             },
             "heading": {
               "allOf": [
@@ -880,11 +947,12 @@
           },
           "required": [
             "label",
+            "type",
             "items"
           ],
           "additionalProperties": false
         },
-        "pricing_table": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -895,6 +963,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "pricing_table"
             },
             "heading": {
               "allOf": [
@@ -949,11 +1021,12 @@
           },
           "required": [
             "label",
+            "type",
             "plans"
           ],
           "additionalProperties": false
         },
-        "alert": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -964,6 +1037,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "alert"
             },
             "variant": {
               "type": "string",
@@ -985,12 +1062,13 @@
           },
           "required": [
             "label",
+            "type",
             "variant",
             "body"
           ],
           "additionalProperties": false
         },
-        "contact_form_stub": {
+        {
           "type": "object",
           "properties": {
             "label": {
@@ -1001,6 +1079,10 @@
             },
             "background": {
               "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "contact_form_stub"
             },
             "heading": {
               "allOf": [
@@ -1030,12 +1112,131 @@
           },
           "required": [
             "label",
+            "type",
             "email"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "type": {
+              "type": "string",
+              "const": "grid"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "columns": {
+              "minItems": 1,
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/__schema24"
+              }
+            },
+            "gap": {
+              "type": "string"
+            },
+            "stackBelow": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "label",
+            "type",
+            "columns"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "const": "collection_list"
+            },
+            "label": {
+              "type": "string"
+            },
+            "source": {
+              "type": "string"
+            },
+            "layout": {
+              "default": "cards",
+              "type": "string",
+              "enum": [
+                "cards",
+                "compact",
+                "list"
+              ]
+            },
+            "columns": {
+              "type": "number"
+            },
+            "limit": {
+              "type": "number"
+            },
+            "hrefPrefix": {
+              "type": "string"
+            },
+            "card": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "subtitle": {
+                  "type": "string"
+                },
+                "meta": {
+                  "type": "string"
+                },
+                "tags": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title"
+              ],
+              "additionalProperties": false
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema18"
+                }
+              ]
+            },
+            "background": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "label",
+            "source",
+            "layout",
+            "card"
+          ],
+          "additionalProperties": false
         }
-      },
-      "additionalProperties": false
+      ]
     },
     "__schema18": {
       "type": "object",
@@ -1088,6 +1289,24 @@
           "$ref": "#/definitions/__schema6"
         }
       ]
+    },
+    "__schema24": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "number"
+        },
+        "content_items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/__schema17"
+          }
+        }
+      },
+      "required": [
+        "content_items"
+      ],
+      "additionalProperties": false
     }
   }
 }

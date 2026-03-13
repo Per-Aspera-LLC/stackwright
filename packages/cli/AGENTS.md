@@ -1,79 +1,74 @@
-# @stackwright/cli - AI Guide for Agents
+# @stackwright/cli — Agent Guide
 
-Welcome to the Stackwright CLI package! This package provides command-line tools and utilities for working with Stackwright projects.
+Command-line interface for Stackwright. Provides project scaffolding, content management, theme operations, and the product board.
 
-## Key Concepts
-- **CLI Commands**: Command-line interface for Stackwright operations
-- **Project Scaffolding**: Tools for creating and managing Stackwright projects
-- **AI Pipeline**: AI-powered content generation and analysis
+---
+
+## Running the CLI
+
+From the monorepo root (note the `--` separator):
+
+```bash
+pnpm stackwright -- --help
+pnpm stackwright -- board
+pnpm stackwright -- info
+pnpm stackwright -- types
+```
+
+Project-aware commands must be run from inside a Stackwright project:
+```bash
+cd examples/hellostackwrightnext
+pnpm stackwright -- page list
+```
+
+---
+
+## Available Commands
+
+| Command | File | Purpose |
+|---------|------|---------|
+| `board` | `src/commands/board.ts` | Display the priority-tiered product board (queries GitHub Issues) |
+| `generate-agent-docs` | `src/commands/generate-agent-docs.ts` | Regenerate content type tables in all AGENTS.md files from live Zod schemas |
+| `git-ops` | `src/commands/git-ops.ts` | Git workflow helpers |
+| `info` | `src/commands/info.ts` | Display project and environment info |
+| `page` | `src/commands/page.ts` | Page management (list, create, validate) |
+| `prebuild` | `src/commands/prebuild.ts` | Trigger the prebuild pipeline manually |
+| `scaffold` | `src/commands/scaffold.ts` | Scaffold a new Stackwright project |
+| `site` | `src/commands/site.ts` | Site configuration management |
+| `theme` | `src/commands/theme.ts` | Theme operations (list, create, validate) |
+| `types` | `src/commands/types.ts` | Display registered content types |
+
+---
 
 ## Package Structure
-- `src/cli.ts`: Main CLI entry point
-- `src/commands/`: CLI command implementations
-- `src/ai-pipeline.ts`: AI-powered content generation
-- `src/test-analyzer.ts`: Test analysis utilities
-- `src/types/`: CLI-specific types
-- `src/utils/`: Utility functions
-- `src/index.ts`: Main exports
 
-## Developer Workflows
-- **Build**: Run `pnpm build` from the package root or project root
-- **CLI Usage**: Use `stackwright` command after installation
-- **Development**: Run specific commands with `ts-node` during development
+```
+src/
+  cli.ts           — Main CLI entry point (commander setup)
+  commands/        — One file per command
+  types.ts         — CLI-specific types
+  utils/           — Shared utility functions
+  index.ts         — Public exports
+```
 
-## Project Conventions
-- **File Organization**: Commands organized by functionality
-- **Naming Conventions**: 
-  - Kebab-case for command names (e.g., `generate-content`)
-  - PascalCase for command classes (e.g., `GenerateContentCommand`)
+---
 
-## Integration Points
-- **Dependencies**: 
-  - `@stackwright/core`: Core framework components
-  - `@stackwright/themes`: Theme management
-  - commander: CLI framework
-  - inquirer: Interactive prompts
-  - openai: AI content generation
-  - ts-morph: TypeScript AST manipulation
+## Dependencies
 
-## Key Components
-- **CLI Commands**: 
-  - Project initialization
-  - Content generation
-  - Theme management
-  - Build and deployment utilities
-- **AI Pipeline**: Content generation using OpenAI API
-- **Test Analyzer**: Test result analysis and reporting
+- **commander** — CLI framework
+- **@inquirer/prompts** — Interactive prompts
+- **chalk** — Terminal colors
+- **@stackwright/build-scripts** — Prebuild pipeline
+- **@stackwright/themes** — Theme loading/validation
+- **@stackwright/types** — Zod schemas for validation
+- **js-yaml** — YAML parsing
+- **fs-extra** — File operations
+- **zod** ^4 — Schema validation
 
-## Troubleshooting
-- **Common Issues**:
-  - Command not found: Ensure CLI is properly installed and in PATH
-  - Permission errors: Check file system permissions
-  - API errors: Verify OpenAI API key and network connectivity
-  - Build failures: Run `pnpm install` to resolve dependencies
+---
 
-## References
-- **Core Files**:
-  - `src/cli.ts`: Main CLI implementation
-  - `src/commands/`: Command implementations
-  - `src/ai-pipeline.ts`: AI content generation
+## Key Notes
 
-## Best Practices
-- Use commander for consistent command structure
-- Provide clear help text and examples for all commands
-- Handle errors gracefully with user-friendly messages
-- Use inquirer for interactive user input when appropriate
-- Follow semantic versioning for CLI tool releases
-
-## Command Structure
-- **Global Options**: 
-  - `--help`: Show help information
-  - `--version`: Show version information
-  - `--verbose`: Enable verbose output
-  - `--debug`: Enable debug mode
-
-## AI Integration
-- **Content Generation**: Use OpenAI API for generating content
-- **Prompt Engineering**: Carefully craft prompts for consistent results
-- **Error Handling**: Handle API rate limits and errors gracefully
-- **Caching**: Cache generated content to avoid redundant API calls
+- The `board` command queries **GitHub Issues** via the GitHub API and displays them sorted by priority labels (`priority:now`, `priority:next`, `priority:later`, `priority:vision`).
+- The `generate-agent-docs` command introspects live Zod schemas and writes the content type reference tables into AGENTS.md files. **Do not edit those tables manually.**
+- All commands use `commander` for consistent structure and `--help` output.

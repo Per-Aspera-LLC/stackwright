@@ -1,5 +1,11 @@
 # @stackwright/themes
 
+## 0.5.0-alpha.3
+
+### Minor Changes
+
+- Version dependencies
+
 ## 0.4.2-alpha.2
 
 ### Patch Changes

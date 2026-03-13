@@ -10,8 +10,17 @@ export const footerContentSchema = baseContentSchema.extend({
   socialtext: z.string().optional(),
 });
 
+export const pageMetaSchema = z.object({
+  title: z.string().optional(),
+  description: z.string().optional(),
+  og_image: z.string().optional(),
+  canonical: z.string().optional(),
+  noindex: z.boolean().optional(),
+});
+
 export const pageContentSchema = z.object({
   content: z.object({
+    meta: pageMetaSchema.optional(),
     app_bar: appBarContentSchema.optional(),
     footer: footerContentSchema.optional(),
     content_items: z.array(contentItemSchema),
@@ -19,5 +28,6 @@ export const pageContentSchema = z.object({
   }),
 });
 
+export type PageMeta = z.infer<typeof pageMetaSchema>;
 export type FooterContent = z.infer<typeof footerContentSchema>;
 export type PageContent = z.infer<typeof pageContentSchema>;

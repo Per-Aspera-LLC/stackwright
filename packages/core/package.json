@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/core",
-    "version": "0.6.0-alpha.13",
+    "version": "0.6.0-alpha.14",
     "description": "Core framework for building applications from YAML configuration",
     "repository": {
         "type": "git",
@@ -38,6 +38,7 @@
         "prepublishOnly": "npm run build"
     },
     "dependencies": {
+        "@stackwright/collections": "workspace:*",
         "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0",

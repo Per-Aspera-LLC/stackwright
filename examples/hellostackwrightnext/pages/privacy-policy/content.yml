@@ -1,68 +1,68 @@
 content:
   content_items:
-    - main:
-        label: "privacy-hero"
-        heading:
-          text: "Privacy Policy"
-          textSize: "h1"
-        textBlocks:
-          - text: "Last updated: February 2026"
-            textSize: "body2"
-
-    - main:
-        label: "privacy-overview"
-        heading:
-          text: "Overview"
-          textSize: "h2"
-        textBlocks:
-          - text: "Stackwright (\"we\", \"us\", or \"our\") is committed to protecting your privacy. This policy describes what information we collect, how we use it, and your rights with respect to it."
-            textSize: "body1"
-
-    - main:
-        label: "privacy-data-collected"
-        heading:
-          text: "Information We Collect"
-          textSize: "h2"
-        textBlocks:
-          - text: "We collect minimal information necessary to operate this service:"
-            textSize: "body1"
-          - text: "Usage Data"
-            textSize: "h5"
-          - text: "We may collect anonymized information about how you interact with our site, such as pages visited and time spent. This data is used only in aggregate to improve the framework and documentation."
-            textSize: "body1"
-          - text: "Voluntarily Provided Information"
-            textSize: "h5"
-          - text: "If you contact us via email or GitHub issues, we receive the information you choose to share. We use this only to respond to your inquiry."
-            textSize: "body1"
-
-    - main:
-        label: "privacy-no-sale"
-        heading:
-          text: "We Do Not Sell Your Data"
-          textSize: "h2"
-        textBlocks:
-          - text: "We do not sell, trade, or rent your personal information to third parties. We do not use your data for advertising purposes."
-            textSize: "body1"
-
-    - main:
-        label: "privacy-third-party"
-        heading:
-          text: "Third-Party Services"
-          textSize: "h2"
-        textBlocks:
-          - text: "This site may link to external services such as GitHub. Those services have their own privacy policies and we are not responsible for their practices."
-            textSize: "body1"
-
-    - main:
-        label: "privacy-contact"
-        heading:
-          text: "Contact"
-          textSize: "h2"
-        textBlocks:
-          - text: "If you have questions about this privacy policy, please open an issue on our GitHub repository."
-            textSize: "body1"
-        buttons:
-          - text: "Open an Issue on GitHub"
-            textSize: "body1"
-            variant: "outlined"
-            href: "https://github.com/Per-Aspera-LLC/stackwright/issues"
+  - type: main
+    label: privacy-hero
+    heading:
+      text: Privacy Policy
+      textSize: h1
+    textBlocks:
+    - text: 'Last updated: February 2026'
+      textSize: body2
+  - type: main
+    label: privacy-overview
+    heading:
+      text: Overview
+      textSize: h2
+    textBlocks:
+    - text: Stackwright ("we", "us", or "our") is committed to protecting your privacy. This policy describes what information
+        we collect, how we use it, and your rights with respect to it.
+      textSize: body1
+  - type: main
+    label: privacy-data-collected
+    heading:
+      text: Information We Collect
+      textSize: h2
+    textBlocks:
+    - text: 'We collect minimal information necessary to operate this service:'
+      textSize: body1
+    - text: Usage Data
+      textSize: h5
+    - text: We may collect anonymized information about how you interact with our site, such as pages visited and time spent.
+        This data is used only in aggregate to improve the framework and documentation.
+      textSize: body1
+    - text: Voluntarily Provided Information
+      textSize: h5
+    - text: If you contact us via email or GitHub issues, we receive the information you choose to share. We use this only
+        to respond to your inquiry.
+      textSize: body1
+  - type: main
+    label: privacy-no-sale
+    heading:
+      text: We Do Not Sell Your Data
+      textSize: h2
+    textBlocks:
+    - text: We do not sell, trade, or rent your personal information to third parties. We do not use your data for advertising
+        purposes.
+      textSize: body1
+  - type: main
+    label: privacy-third-party
+    heading:
+      text: Third-Party Services
+      textSize: h2
+    textBlocks:
+    - text: This site may link to external services such as GitHub. Those services have their own privacy policies and we
+        are not responsible for their practices.
+      textSize: body1
+  - type: main
+    label: privacy-contact
+    heading:
+      text: Contact
+      textSize: h2
+    textBlocks:
+    - text: If you have questions about this privacy policy, please open an issue on our GitHub repository.
+      textSize: body1
+    buttons:
+    - text: Open an Issue on GitHub
+      textSize: body1
+      variant: outlined
+      href: https://github.com/Per-Aspera-LLC/stackwright/issues

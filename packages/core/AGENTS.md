@@ -1,181 +1,120 @@
-# @stackwright/core Rules & Architecture
+# @stackwright/core — Agent Guide
 
-## Purpose
+The rendering engine of Stackwright. Transforms YAML content definitions into React component trees. **No MUI, no Emotion, no Tailwind** — core components use inline `style={{}}` props exclusively.
 
-The `@stackwright/core` package is the foundational framework for building applications from YAML configuration. It provides the runtime components, rendering engine, and component system that transforms declarative YAML content into fully functional React applications.
+---
 
-## Core Architecture
+## Architecture
+
+### Rendering Pipeline
+
+YAML → `js-yaml` parse → Zod validation → `contentRenderer.tsx` → React component tree
+
+The content renderer (`src/utils/contentRenderer.tsx`) iterates `content_items`, looks up each content type key in the component registry, and instantiates the matching React component with the parsed props.
 
 ### Component System
 
-- **Base Components**: Pre-built React components for common UI elements (Graphic, etc.)
-- **Structural Components**: Layout and page structure components (PageLayout, DefaultPageLayout)
-- **Component Registry**: Dynamic component resolution system for both built-in and external components
-- **Stackwright Components**: Framework-specific components that require runtime registration (Image, Link, Router, etc.)
+Three registries coexist:
 
-### Content Rendering
+| Registry | File | Purpose |
+|----------|------|---------|
+| **Component registry** | `src/utils/componentRegistry.ts` | Built-in UI components, keyed by lowercase-hyphenated name |
+| **Stackwright registry** | `src/utils/stackwrightComponentRegistry.ts` | Framework components (Image, Link, Router, Route, Head) registered at runtime |
+| **Content type registry** | `src/utils/contentTypeRegistry.ts` | Extensible content types via `registerContentType()` |
 
-- **Content Renderer**: Core engine that transforms YAML content definitions into React component trees
-- **Type Safety**: Full TypeScript integration with `@stackwright/types` for content validation
-- **Dynamic Resolution**: Runtime component lookup and instantiation
+### Component Categories
 
-### Configuration Management
+```
+src/components/
+  DynamicPage.tsx              — Main page component, wires ThemeProvider + layout
+  ContentItemErrorBoundary.tsx — Error boundary per content item
+  base/                        — Content components (MainContentGrid, TabbedContentGrid, etc.)
+  structural/                  — Layout (PageLayout, TopAppBar, BottomAppBar)
+  narrative/                   — Storytelling (Carousel, Timeline)
+  media/                       — Media rendering
+  stackwright/                 — Default framework component implementations
+```
 
-- **Site Configuration**: Centralized site-wide settings (theme, navigation, app bar, footer)
-- **Default Configuration**: Sensible defaults for rapid prototyping
-- **Context System**: React context for sharing configuration across components
+### Hooks
 
-## Key Features
+| Hook | Purpose |
+|------|---------|
+| `useSafeTheme()` | Read the current resolved theme (colors already reflect dark/light mode) |
+| `useBreakpoints()` | Responsive breakpoints via `window.matchMedia` — returns `{ isXs, isSm, isMdUp, ... }` |
+| `useSiteConfig()` | Access the global site configuration context |
+| `useDevContentReload()` | Hot-reload content during development via SSE |
 
-### 1. YAML-to-React Transformation
+### Utilities
 
-- Declarative content definition through YAML
-- Type-safe content parsing with js-yaml
-- Dynamic component instantiation from content types
+| Utility | Purpose |
+|---------|---------|
+| `cookies.ts` | `getCookie`, `setCookie`, `removeCookie` — SSR-safe, zero dependencies |
+| `consent.ts` | `getConsentState`, `setConsentState`, `hasConsent` — IAB TCF consent categories |
+| `colorUtils.ts` | Color resolution (hex passthrough, theme palette lookup, fallback) |
+| `collectionProviderRegistry.ts` | Singleton `registerCollectionProvider` / `getCollectionProvider` |
+| `contentDebug.ts` | Debug logging gated by `STACKWRIGHT_DEBUG=true` |
+| `prismHighlighter.ts` | Syntax highlighting for `code_block` content type |
 
-### 2. Theme System Integration
+---
 
-- Material-UI theming with `@stackwright/themes`
-- Custom theme support with background images
-- Emotion-based styling system
+## Dependencies
 
-### 3. Component Registration
+### Runtime
+- **React / React-DOM** ^19 (peer)
+- **@stackwright/types** — Zod schemas and TypeScript types
+- **@stackwright/themes** — Theme provider, color mode, CSS variable injection
+- **@stackwright/collections** — `CollectionProvider` interface
+- **js-yaml** — YAML parsing
+- **prismjs** — Syntax highlighting
+- **zod** ^4 — Runtime validation
 
-- Built-in component registry for framework components  
-- Stackwright component registry for framework-specific components (Image, Link, Router)
-- Error handling for missing components
-- Debug utilities for component inspection
+### No MUI, No Emotion, No Tailwind
 
-### 4. Layout Management
+Core was migrated from MUI to plain HTML + inline styles. This is architecturally deliberate:
+- `@stackwright/core` has no CSS build pipeline (tsup compiles JS/TS only)
+- Layout values are dynamic, driven by YAML theme config at runtime
+- Only `@stackwright/ui-shadcn` uses Tailwind, pre-compiling its own CSS at build time
 
-- Flexible page layout system
-- App bar and footer integration
-- Responsive design with Material-UI Grid2
-- Background image support
+**Do not add CSS files, media query stylesheets, or Tailwind classes to this package.**
 
-## Dependencies & Integration
+---
 
-### Required Dependencies
+## Responsive Design Rules
 
-- **React & React-DOM**: ^18.0.0 (peer dependency)
-- **Material-UI**: Complete UI component library
-- **Emotion**: CSS-in-JS styling system
-- **js-yaml**: YAML parsing
-- **@stackwright/types**: Type definitions
-- **@stackwright/themes**: Theme system
+Two patterns are used, and new/modified components must follow them:
 
-### Framework Integration
+1. **CSS-only (preferred):** `gridTemplateColumns: "repeat(auto-fill, minmax(Xpx, 1fr))"` — naturally responsive, no JS, no SSR hydration flash. Used by `IconGrid`, `FeatureList`, `TestimonialGrid`.
 
-- Designed for Next.js integration via `@stackwright/nextjs`
-- CLI support through `@stackwright/cli`
-- Extensible component system for custom implementations
+2. **JS hook (when CSS alone is insufficient):** `useBreakpoints()` — only use when CSS cannot express the logic (e.g., TopAppBar hamburger menu vs desktop nav). Has a one-frame SSR flash.
 
-## Component Registry Rules
+**Rules:**
+- All grid/multi-column components must render correctly from **320px to 1440px**.
+- Never hardcode `repeat(N, 1fr)`. Use `repeat(auto-fill, minmax(Xpx, 1fr))` instead.
+- For flex layouts that must stack on mobile, use `flexWrap: 'wrap'` with `minWidth: 'min(Xpx, 100%)'`.
+- For text that may overflow (emails, URLs), add `wordBreak: 'break-word'`.
 
-### Built-in Components
+---
 
-- Must be registered in `componentRegistry.ts`
-- Should follow naming convention: lowercase with hyphens
-- Must accept content properties as props
+## Registration Pattern
 
-### Stackwright Components
+Components that depend on a specific framework (Next.js, etc.) must be registered at runtime — never via import side effects:
 
-- Must be registered via `stackwrightRegistry.register()`
-- Required components: Image, Link, Router, Route, StaticGeneration
-- Factory function pattern for dynamic resolution
-- Clear error messages for missing registrations
+```typescript
+// In _app.tsx or layout.tsx
+import { registerNextJSComponents } from '@stackwright/nextjs';
+import { registerDefaultIcons } from '@stackwright/icons';
+import { registerShadcnComponents } from '@stackwright/ui-shadcn';
 
-## Development Guidelines
+registerNextJSComponents();
+registerDefaultIcons();
+registerShadcnComponents();
+```
 
-### Type Safety
+---
 
-- All content interfaces must extend types from `@stackwright/types`
-- Use TypeScript strict mode
-- Provide comprehensive type definitions for all public APIs
+## Testing
 
-### Error Handling
-
-- Graceful degradation for missing components
-- Clear error messages with actionable guidance
-- Debug utilities for development environments
-
-### Performance
-
-- Lazy loading for non-critical components
-- Efficient re-rendering through proper React patterns
-- Image optimization with blur placeholders
-
-### Testing
-
-- Unit tests with Vitest
+- **Vitest** with JSDOM environment
+- Tests live in `packages/core/test/`
 - React Testing Library for component tests
-- Coverage reporting enabled
-- JSDOM environment for DOM testing
-
-## Build & Distribution
-
-### Build System
-
-- **tsup**: Primary build tool for TypeScript compilation
-- **Multiple formats**: ESM, CJS, and TypeScript definitions
-- **Watch mode**: Development with hot reloading
-
-### Package Exports
-
-```json
-{
-  ".": "Main package entry",
-  "./DynamicPage": "Direct component access",
-  "./pages/slug": "Page-specific components"
-}
-```
-
-### Versioning
-
-- Follows Semantic Versioning (SemVer)
-- dev branch for active development, autopublishes alpha versions to NPM
-- changeset-based release management
-
-### Usage Patterns
-
-#### Basic implementation
-
-```typescript
-import { renderContent, stackwrightRegistry } from '@stackwright/core';
-import { SiteConfigProvider } from '@stackwright/core/hooks/useSiteConfig';
-
-// Register framework components
-stackwrightRegistry.register({
-  Image: NextImage,
-  Link: NextLink,
-  Router: NextRouter
-});
-
-// Render YAML content
-function MyPage({ content, siteConfig }) {
-  return (
-    <SiteConfigProvider value={siteConfig}>
-      {renderContent(content)}
-    </SiteConfigProvider>
-  );
-}
-```
-
-#### Custom component Registration
-
-```typescript
-import { registerComponent } from '@stackwright/core';
-
-registerComponent('my-custom-component', MyCustomComponent);
-```
-
-###  Framework Extensions
-
-The core package is designed to be extended by:
-
-- Framework packages (@stackwright/nextjs)
-- Custom component libraries
-- Theme packages
-- Plugin systems
-
-All extensions should follow the component registration patterns and maintain type safety with the shared type system.
+- Run: `pnpm test:core` from monorepo root

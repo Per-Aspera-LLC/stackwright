@@ -10,28 +10,27 @@ describe('DynamicPage', () => {
       content: {
         content_items: [
           {
-            main: {
-              label: 'Main Content',
-              heading: {
-                text: 'Welcome to Stackwright',
-                size: 'h1' as TypographyVariant,
-              },
-              textBlocks: [
-                {
-                  text: 'Your React stack development accelerator',
-                  size: 'body1' as TypographyVariant,
-                },
-              ],
-              buttons: [
-                {
-                  text: 'Get Started',
-                  variant: 'contained' as ButtonVariant,
-                  href: '/docs',
-                  label: 'getStartedButton',
-                  size: 'h4' as TypographyVariant,
-                },
-              ],
+            type: 'main' as const,
+            label: 'Main Content',
+            heading: {
+              text: 'Welcome to Stackwright',
+              size: 'h1' as TypographyVariant,
             },
+            textBlocks: [
+              {
+                text: 'Your React stack development accelerator',
+                size: 'body1' as TypographyVariant,
+              },
+            ],
+            buttons: [
+              {
+                text: 'Get Started',
+                variant: 'contained' as ButtonVariant,
+                href: '/docs',
+                label: 'getStartedButton',
+                size: 'h4' as TypographyVariant,
+              },
+            ],
           },
         ],
       },

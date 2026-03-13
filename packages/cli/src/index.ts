@@ -15,6 +15,7 @@ export { listThemes } from './commands/theme';
 export { getInfo } from './commands/info';
 export { generateAgentDocs } from './commands/generate-agent-docs';
 export { stageChanges, openPr } from './commands/git-ops';
+export { getBoard, parseBoard } from './commands/board';
 
 // Result types
 export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
@@ -43,3 +44,4 @@ export type {
   OpenPrResult,
   OpenPrOptions,
 } from './commands/git-ops';
+export type { BoardResult, BoardIssue, GhIssueRaw } from './commands/board';
