@@ -14,6 +14,7 @@ export interface ScaffoldOptions {
   json?: boolean;
   offline?: boolean;
   force?: boolean;
+  noInteractive?: boolean;
 }
 
 export interface ScaffoldResult {
@@ -32,11 +33,11 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     throw err;
   }
 
-  const json = Boolean(opts.json);
+  const nonInteractive = Boolean(opts.json) || Boolean(opts.noInteractive);
 
   let { name, title, theme } = opts;
 
-  if (!json) {
+  if (!nonInteractive) {
     // Interactive mode — prompt for anything not supplied as flags
     if (!name) {
       name = await input({
@@ -80,6 +81,7 @@ export function registerScaffold(program: Command): void {
     .option('--theme <themeId>', 'Theme ID — skips interactive theme selection')
     .option('--offline', 'Use bundled templates (skip GitHub template fetch)')
     .option('--force', 'Scaffold even if the target directory is not empty')
+    .option('--no-interactive', 'Skip all interactive prompts, use defaults for missing values')
     .option('--json', 'Output machine-readable JSON')
     .action(async (dir: string | undefined, opts: ScaffoldOptions) => {
       const targetDir = path.resolve(dir ?? process.cwd());
