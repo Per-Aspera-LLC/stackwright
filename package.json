@@ -13,6 +13,7 @@
         "build:themes": "pnpm --filter @stackwright/themes build",
         "build:nextjs": "pnpm --filter @stackwright/nextjs build",
         "build:build-scripts": "pnpm --filter @stackwright/build-scripts build",
+        "build:collections": "pnpm --filter @stackwright/collections build",
         "build:mcp": "pnpm --filter @stackwright/mcp build",
         "dev:hellostackwright": "pnpm --filter stackwright-example-app dev",
         "build:hellostackwright": "pnpm --filter stackwright-example-app build",

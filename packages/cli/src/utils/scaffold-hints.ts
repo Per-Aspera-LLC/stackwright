@@ -77,30 +77,30 @@ export function getRootPageHints(siteTitle: string): HintMap {
   return {
     'content.content_items': { arrayLength: 1 },
     'content.content_items.0': { pick: 'main' },
-    'content.content_items.0.main.label': { value: 'hero-section' },
-    'content.content_items.0.main.heading.text': { value: `Welcome to ${siteTitle}` },
-    'content.content_items.0.main.heading.textSize': { value: 'h1' },
-    'content.content_items.0.main.heading.textColor': { value: 'secondary', include: true },
-    'content.content_items.0.main.textBlocks': { arrayLength: 2 },
-    'content.content_items.0.main.textBlocks.0.text': {
+    'content.content_items.0.label': { value: 'hero-section' },
+    'content.content_items.0.heading.text': { value: `Welcome to ${siteTitle}` },
+    'content.content_items.0.heading.textSize': { value: 'h1' },
+    'content.content_items.0.heading.textColor': { value: 'secondary', include: true },
+    'content.content_items.0.textBlocks': { arrayLength: 2 },
+    'content.content_items.0.textBlocks.0.text': {
       value:
         'Your new Stackwright site is ready. Pages are YAML files — edit pages/content.yml to update this page.',
     },
-    'content.content_items.0.main.textBlocks.0.textSize': { value: 'h6' },
-    'content.content_items.0.main.textBlocks.1.text': {
+    'content.content_items.0.textBlocks.0.textSize': { value: 'h6' },
+    'content.content_items.0.textBlocks.1.text': {
       value:
         'Add more pages by creating subdirectories under pages/. Each directory with a content.yml becomes a route.',
     },
-    'content.content_items.0.main.textBlocks.1.textSize': { value: 'body1' },
-    'content.content_items.0.main.buttons': { arrayLength: 1, include: true },
-    'content.content_items.0.main.buttons.0.label': { value: 'get-started-btn' },
-    'content.content_items.0.main.buttons.0.text': { value: 'Get Started' },
-    'content.content_items.0.main.buttons.0.textSize': { value: 'body1' },
-    'content.content_items.0.main.buttons.0.variant': { value: 'contained' },
-    'content.content_items.0.main.buttons.0.href': { value: '/getting-started', include: true },
-    'content.content_items.0.main.buttons.0.bgColor': { value: 'secondary', include: true },
-    'content.content_items.0.main.buttons.0.textColor': { value: 'primary', include: true },
-    'content.content_items.0.main.buttons.0.size': { value: 'large', include: true },
+    'content.content_items.0.textBlocks.1.textSize': { value: 'body1' },
+    'content.content_items.0.buttons': { arrayLength: 1, include: true },
+    'content.content_items.0.buttons.0.label': { value: 'get-started-btn' },
+    'content.content_items.0.buttons.0.text': { value: 'Get Started' },
+    'content.content_items.0.buttons.0.textSize': { value: 'body1' },
+    'content.content_items.0.buttons.0.variant': { value: 'contained' },
+    'content.content_items.0.buttons.0.href': { value: '/getting-started', include: true },
+    'content.content_items.0.buttons.0.bgColor': { value: 'secondary', include: true },
+    'content.content_items.0.buttons.0.textColor': { value: 'primary', include: true },
+    'content.content_items.0.buttons.0.size': { value: 'large', include: true },
   };
 }
 
@@ -114,61 +114,61 @@ export function getGettingStartedHints(): HintMap {
 
     // Item 0: Hero
     'content.content_items.0': { pick: 'main' },
-    'content.content_items.0.main.label': { value: 'gs-hero' },
-    'content.content_items.0.main.heading.text': { value: 'Getting Started' },
-    'content.content_items.0.main.heading.textSize': { value: 'h1' },
-    'content.content_items.0.main.heading.textColor': { value: 'secondary', include: true },
-    'content.content_items.0.main.textBlocks': { arrayLength: 1 },
-    'content.content_items.0.main.textBlocks.0.text': {
+    'content.content_items.0.label': { value: 'gs-hero' },
+    'content.content_items.0.heading.text': { value: 'Getting Started' },
+    'content.content_items.0.heading.textSize': { value: 'h1' },
+    'content.content_items.0.heading.textColor': { value: 'secondary', include: true },
+    'content.content_items.0.textBlocks': { arrayLength: 1 },
+    'content.content_items.0.textBlocks.0.text': {
       value:
         'This page lives at pages/getting-started/content.yml. The directory name becomes the URL slug.',
     },
-    'content.content_items.0.main.textBlocks.0.textSize': { value: 'body1' },
+    'content.content_items.0.textBlocks.0.textSize': { value: 'body1' },
 
     // Item 1: Adding Pages
     'content.content_items.1': { pick: 'main' },
-    'content.content_items.1.main.label': { value: 'gs-add-page' },
-    'content.content_items.1.main.heading.text': { value: 'Adding Pages' },
-    'content.content_items.1.main.heading.textSize': { value: 'h2' },
-    'content.content_items.1.main.textBlocks': { arrayLength: 1 },
-    'content.content_items.1.main.textBlocks.0.text': {
+    'content.content_items.1.label': { value: 'gs-add-page' },
+    'content.content_items.1.heading.text': { value: 'Adding Pages' },
+    'content.content_items.1.heading.textSize': { value: 'h2' },
+    'content.content_items.1.textBlocks': { arrayLength: 1 },
+    'content.content_items.1.textBlocks.0.text': {
       value: 'Use the CLI to add a new page, or create the directory and content.yml manually:',
     },
-    'content.content_items.1.main.textBlocks.0.textSize': { value: 'body1' },
-    'content.content_items.1.main.background': { value: '#f5f5f5', include: true },
+    'content.content_items.1.textBlocks.0.textSize': { value: 'body1' },
+    'content.content_items.1.background': { value: '#f5f5f5', include: true },
 
     // Item 2: Code block
     'content.content_items.2': { pick: 'code_block' },
-    'content.content_items.2.code_block.label': { value: 'gs-add-page-code' },
-    'content.content_items.2.code_block.language': { value: 'bash', include: true },
-    'content.content_items.2.code_block.code': {
+    'content.content_items.2.label': { value: 'gs-add-page-code' },
+    'content.content_items.2.language': { value: 'bash', include: true },
+    'content.content_items.2.code': {
       value: 'stackwright page add my-page --heading "My New Page"',
     },
-    'content.content_items.2.code_block.background': { value: '#f5f5f5', include: true },
+    'content.content_items.2.background': { value: '#f5f5f5', include: true },
 
     // Item 3: Content Types
     'content.content_items.3': { pick: 'main' },
-    'content.content_items.3.main.label': { value: 'gs-content-types' },
-    'content.content_items.3.main.heading.text': { value: 'Content Types' },
-    'content.content_items.3.main.heading.textSize': { value: 'h2' },
-    'content.content_items.3.main.textBlocks': { arrayLength: 1 },
-    'content.content_items.3.main.textBlocks.0.text': {
+    'content.content_items.3.label': { value: 'gs-content-types' },
+    'content.content_items.3.heading.text': { value: 'Content Types' },
+    'content.content_items.3.heading.textSize': { value: 'h2' },
+    'content.content_items.3.textBlocks': { arrayLength: 1 },
+    'content.content_items.3.textBlocks.0.text': {
       value:
         'Each entry in content_items uses a key that maps to a component: main, timeline, carousel, icon_grid, tabbed_content, code_block.',
     },
-    'content.content_items.3.main.textBlocks.0.textSize': { value: 'body1' },
+    'content.content_items.3.textBlocks.0.textSize': { value: 'body1' },
 
     // Item 4: Theme Customization
     'content.content_items.4': { pick: 'main' },
-    'content.content_items.4.main.label': { value: 'gs-theme' },
-    'content.content_items.4.main.heading.text': { value: 'Customizing the Theme' },
-    'content.content_items.4.main.heading.textSize': { value: 'h2' },
-    'content.content_items.4.main.textBlocks': { arrayLength: 1 },
-    'content.content_items.4.main.textBlocks.0.text': {
+    'content.content_items.4.label': { value: 'gs-theme' },
+    'content.content_items.4.heading.text': { value: 'Customizing the Theme' },
+    'content.content_items.4.heading.textSize': { value: 'h2' },
+    'content.content_items.4.textBlocks': { arrayLength: 1 },
+    'content.content_items.4.textBlocks.0.text': {
       value:
         'Edit the customTheme block in stackwright.yml to change colors and typography across every page instantly.',
     },
-    'content.content_items.4.main.textBlocks.0.textSize': { value: 'body1' },
-    'content.content_items.4.main.background': { value: '#f5f5f5', include: true },
+    'content.content_items.4.textBlocks.0.textSize': { value: 'body1' },
+    'content.content_items.4.background': { value: '#f5f5f5', include: true },
   };
 }

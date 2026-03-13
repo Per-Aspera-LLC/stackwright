@@ -6,6 +6,10 @@
  * content authored by AI agents (via MCP write_page) or humans appears in the
  * browser without restarting the dev server.
  *
+ * Watches:
+ *   pages/    - page content YAML and co-located images
+ *   content/  - collection entry YAML and co-located images
+ *
  * Uses Node.js built-in `fs.watch` with `recursive: true` (supported on
  * Node 20+, which is the minimum engine requirement for this package).
  *
@@ -40,7 +44,7 @@ function isWatchedFile(filename: string): boolean {
   return YAML_EXTENSIONS.has(ext) || IMAGE_EXTENSIONS.has(ext);
 }
 
-// ── SSE reload server ────────────────────────────────────────────────────────
+// -- SSE reload server ------------------------------------------------------
 
 let sseClients: http.ServerResponse[] = [];
 
@@ -64,16 +68,16 @@ function startReloadServer(port: number): http.Server {
   });
 
   server.listen(port, () => {
-    console.log(`🔄 Content reload server on port ${port}`);
+    console.log(`Content reload server on port ${port}`);
   });
 
   server.on('error', (err: NodeJS.ErrnoException) => {
     if (err.code === 'EADDRINUSE') {
       console.warn(
-        `⚠️  Port ${port} in use — browser auto-reload disabled. Content will still rebuild; refresh manually.`
+        `WARNING: Port ${port} in use -- browser auto-reload disabled. Content will still rebuild; refresh manually.`
       );
     } else {
-      console.warn(`⚠️  Reload server failed: ${err.message}`);
+      console.warn(`WARNING: Reload server failed: ${err.message}`);
     }
   });
 
@@ -86,10 +90,11 @@ function notifyContentChange() {
   }
 }
 
-// ── Main ─────────────────────────────────────────────────────────────────────
+// -- Main -------------------------------------------------------------------
 
 export function runWatch(projectRoot = process.cwd()): void {
   const pagesDir = path.join(projectRoot, 'pages');
+  const contentDir = path.join(projectRoot, 'content');
   const siteConfigCandidates = ['stackwright.yml', 'stackwright.yaml'];
   const siteConfigFile = siteConfigCandidates
     .map((name) => path.join(projectRoot, name))
@@ -101,8 +106,8 @@ export function runWatch(projectRoot = process.cwd()): void {
   try {
     runPrebuild(projectRoot);
   } catch (err) {
-    console.error(`❌ ${(err as Error).message}`);
-    console.log('👀 Watching for content changes (will retry on next change)...\n');
+    console.error(`ERROR: ${(err as Error).message}`);
+    console.log('Watching for content changes (will retry on next change)...\n');
   }
 
   // Start SSE server for browser auto-reload
@@ -117,10 +122,10 @@ export function runWatch(projectRoot = process.cwd()): void {
       try {
         runPrebuild(projectRoot);
         notifyContentChange();
-        console.log(`👀 Rebuilt (${reason})\n`);
+        console.log(`Rebuilt (${reason})\n`);
       } catch (err) {
-        console.error(`❌ ${(err as Error).message}`);
-        console.log('👀 Watching for content changes (will retry on next change)...\n');
+        console.error(`ERROR: ${(err as Error).message}`);
+        console.log('Watching for content changes (will retry on next change)...\n');
       }
     }, DEBOUNCE_MS);
   }
@@ -134,6 +139,15 @@ export function runWatch(projectRoot = process.cwd()): void {
     watchers.push(pagesWatcher);
   }
 
+  // Watch content/ directory recursively for collection changes
+  if (fs.existsSync(contentDir)) {
+    const contentWatcher = fs.watch(contentDir, { recursive: true }, (_event, filename) => {
+      if (!filename || !isWatchedFile(filename)) return;
+      scheduleRebuild(`collection: ${filename}`);
+    });
+    watchers.push(contentWatcher);
+  }
+
   // Watch site config file by watching its parent directory
   if (siteConfigFile) {
     const configBasename = path.basename(siteConfigFile);
@@ -145,7 +159,7 @@ export function runWatch(projectRoot = process.cwd()): void {
     watchers.push(configWatcher);
   }
 
-  console.log('👀 Watching for content changes...\n');
+  console.log('Watching for content changes...\n');
 
   // Clean shutdown
   function cleanup() {
@@ -153,7 +167,7 @@ export function runWatch(projectRoot = process.cwd()): void {
     for (const w of watchers) w.close();
     reloadServer.close();
     sseClients = [];
-    console.log('\n👋 Watcher stopped.');
+    console.log('\nWatcher stopped.');
     process.exit(0);
   }
 

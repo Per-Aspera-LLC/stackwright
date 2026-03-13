@@ -5,6 +5,7 @@ import { registerPageTools } from './tools/pages.js';
 import { registerSiteTools } from './tools/site.js';
 import { registerProjectTools } from './tools/project.js';
 import { registerGitOpsTools } from './tools/git-ops.js';
+import { registerBoardTools } from './tools/board.js';
 import { version } from '../package.json';
 
 const server = new McpServer({
@@ -17,6 +18,7 @@ registerPageTools(server);
 registerSiteTools(server);
 registerProjectTools(server);
 registerGitOpsTools(server);
+registerBoardTools(server);
 
 async function main() {
   const transport = new StdioServerTransport();

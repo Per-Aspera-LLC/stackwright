@@ -1,37 +1,164 @@
 content:
-    content_items:
-        - main:
-              label: "hero-section"
-              heading:
-                  text: "Welcome to Stackwright"
-                  textSize: "h1"
-                  textColor: "secondary"
-              textBlocks:
-                  - text: "Build beautiful, responsive applications using YAML configuration files instead of writing React components from scratch."
-                    textSize: "h6"
-                  - text: "Stackwright is a YAML-driven React framework that enables rapid development through a 'content as code' approach. Define your UI structure, styling, and behavior in simple YAML files."
-                    textSize: "body1"
-              buttons:
-                  - label: "get-started-btn"
-                    text: "Get Started"
-                    textSize: "h5"
-                    variant: "contained"
-                    href: "/getting-started"
-                    textColor: "primary"
-                    size: "large"
-                    bgColor: "secondary"
-                  - label: "learn-more-btn"
-                    text: "Learn More"
-                    textSize: "h5"
-                    variant: "contained"
-                    href: "/about"
-                    textColor: "primary"
-                    bgColor: "secondary"
-                    size: "small"
-              media:
-                  type: "image"
-                  label: "hero-graphic"
-                  src: "./otterficer-digital.png"
-                  aspect_ratio: 1
-                  height: 350
-              graphic_position: "right"
+  content_items:
+  - type: main
+    label: hero-section
+    heading:
+      text: Your content. Your repo. Your rules.
+      textSize: h1
+      textColor: secondary
+    textBlocks:
+    - text: Stackwright turns structured YAML into production-ready Next.js pages — with schema validation, dark mode, theming,
+        and AI-native authoring built in.
+      textSize: h6
+    - text: No CMS login. No vendor lock-in. Content lives in your Git repo, validated at build time by Zod schemas. When
+        you outgrow YAML, you drop to React in the same codebase — no migration, no rewrite.
+      textSize: body1
+    buttons:
+    - label: get-started-btn
+      text: Get Started
+      textSize: h5
+      variant: contained
+      href: /getting-started
+      textColor: primary
+      size: large
+      bgColor: secondary
+    - label: showcase-btn
+      text: See the Showcase
+      textSize: h5
+      variant: contained
+      href: /showcase
+      textColor: primary
+      bgColor: secondary
+      size: small
+    media:
+      type: image
+      label: hero-graphic
+      src: ./otterficer-digital.png
+      aspect_ratio: 1
+      height: 350
+    graphic_position: right
+  - type: feature_list
+    label: why-stackwright
+    heading:
+      text: Why Stackwright?
+      textSize: h2
+    columns: 3
+    items:
+    - icon:
+        type: icon
+        src: GitBranch
+        height: 48
+      heading: Content Owns Itself
+      description: Pages are YAML files in your repo. Version history, branching, pull requests, and rollbacks come free.
+        No database to back up, no CMS to keep patched.
+    - icon:
+        type: icon
+        src: ShieldCheck
+        height: 48
+      heading: Validated at Build Time
+      description: Every content file is checked against Zod schemas before a single byte ships. Typos in field names, missing
+        required fields, wrong types — caught before deploy, every time.
+    - icon:
+        type: icon
+        src: Bot
+        height: 48
+      heading: AI-Native Authoring
+      description: Tight schemas make AI-generated content reliable. Describe a page in English, let an AI agent write the
+        YAML, validate it, and open a PR. The MCP server makes this a first-class workflow.
+    - icon:
+        type: icon
+        src: Layers
+        height: 48
+      heading: Progressive Complexity
+      description: Start with YAML. When you need a chart library or a custom widget, write a React component in the same
+        codebase. YAML pages and custom pages coexist — there is no cliff.
+    - icon:
+        type: icon
+        src: Paintbrush
+        height: 48
+      heading: Theming & Dark Mode
+      description: Define colors, typography, and spacing once in your site config. Light and dark palettes switch automatically
+        based on OS preference, or let users toggle with a single click.
+    - icon:
+        type: icon
+        src: DoorOpen
+        height: 48
+      heading: No Lock-In — By Design
+      description: The output is a standard Next.js app. Hand it to any React developer. The framework disappears when you
+        outgrow it, and that is the point.
+  - type: tabbed_content
+    label: how-it-works
+    heading:
+      text: How It Works
+      textSize: h2
+    tabs:
+    - type: code_block
+      label: 1. Write YAML
+      language: yaml
+      code: "content:\n  content_items:\n    - main:\n        label: \"hero\"\n        heading:\n          text: \"Hello World\"\
+        \n          textSize: \"h1\"\n        textBlocks:\n          - text: \"My first Stackwright page.\"\n            textSize:\
+        \ \"body1\"\n        buttons:\n          - text: \"Learn More\"\n            variant: \"contained\"\n            href:\
+        \ \"/about\"\n"
+    - type: code_block
+      label: 2. Configure Your Theme
+      language: yaml
+      code: "customTheme:\n  colors:\n    primary: \"#fdc13c\"\n    secondary: \"#1a9fd4\"\n    background: \"#fdfdfd\"\n\
+        \    text: \"#393837\"\n  darkColors:\n    primary: \"#e5a820\"\n    secondary: \"#60ccf0\"\n    background: \"#1a1a1e\"\
+        \n    text: \"#e8e8e4\"\n"
+    - type: code_block
+      label: 3. Ship It
+      language: bash
+      code: '# Build — YAML is validated, images are copied,
+
+        # collections are indexed, and Next.js runs SSG.
+
+        pnpm build
+
+
+        # Deploy to Vercel, Netlify, or your own infra.
+
+        # It''s just a Next.js app.
+
+        vercel deploy --prod
+
+        '
+  - type: main
+    label: blog-teaser
+    heading:
+      text: From the Blog
+      textSize: h2
+    textBlocks:
+    - text: Guides, deep dives, and release notes — written in YAML, compiled by Stackwright's collections system, served
+        as static JSON.
+      textSize: body1
+    buttons:
+    - label: blog-link
+      text: Read the Blog →
+      textSize: body1
+      variant: contained
+      href: /blog
+      bgColor: secondary
+      textColor: primary
+    background: '#f8f9fa'
+  - type: main
+    label: bottom-cta
+    heading:
+      text: Ready to Own Your Content?
+      textSize: h2
+    textBlocks:
+    - text: Clone the example, run pnpm dev, and start editing YAML. You will have a validated, themed, dark-mode-ready site
+        in minutes.
+      textSize: body1
+    buttons:
+    - label: cta-get-started
+      text: Get Started
+      textSize: body1
+      variant: contained
+      href: /getting-started
+      bgColor: secondary
+      textColor: primary
+    - label: cta-github
+      text: View on GitHub
+      textSize: body1
+      variant: outlined
+      href: https://github.com/Per-Aspera-LLC/stackwright/

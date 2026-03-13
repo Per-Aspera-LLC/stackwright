@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 import { AppBarContent, NavigationItem } from '@stackwright/types';
 import { ThemedButton } from '../base/ThemedButton';
 import { CompressedMenu } from '../base/Menu/CompressedMenu';
@@ -6,6 +6,78 @@ import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
 import { Media } from '../media/Media';
 import { useBreakpoints } from '../../hooks/useBreakpoints';
+import { useThemeOptional } from '@stackwright/themes';
+import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
+
+// ---------------------------------------------------------------------------
+// Color Mode Toggle
+// ---------------------------------------------------------------------------
+
+function ColorModeToggle({ textColor }: { textColor: string }) {
+  const themeCtx = useThemeOptional();
+  const uniqueId = useId();
+  if (!themeCtx) return null;
+
+  const { resolvedColorMode, setColorMode } = themeCtx;
+
+  // Try to grab Sun/Moon from the icon registry, fall back to text labels
+  const registry = getIconRegistry();
+  const SunIcon = registry?.get('Sun');
+  const MoonIcon = registry?.get('Moon');
+
+  const handleToggle = () => {
+    setColorMode(resolvedColorMode === 'dark' ? 'light' : 'dark');
+  };
+
+  const label = resolvedColorMode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+
+  // CSS class for hover — avoids direct DOM style mutation (#159)
+  const hoverClass = `sw-cm-toggle-${uniqueId.replace(/:/g, '')}`;
+
+  return (
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `.${hoverClass}:hover { background-color: rgba(255,255,255,0.15) !important; }`,
+        }}
+      />
+      <button
+        className={hoverClass}
+        onClick={handleToggle}
+        aria-label={label}
+        title={label}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          color: textColor,
+          padding: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '50%',
+          transition: 'background-color 0.2s',
+        }}
+      >
+        {resolvedColorMode === 'dark' ? (
+          SunIcon ? (
+            <SunIcon size={22} />
+          ) : (
+            '☀️'
+          )
+        ) : MoonIcon ? (
+          <MoonIcon size={22} />
+        ) : (
+          '🌙'
+        )}
+      </button>
+    </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// TopAppBar
+// ---------------------------------------------------------------------------
 
 export default function TopAppBar({
   title,
@@ -13,6 +85,7 @@ export default function TopAppBar({
   menuItems,
   textcolor,
   backgroundcolor,
+  colorModeToggle,
 }: AppBarContent) {
   const theme = useSafeTheme();
   const { isSmDown } = useBreakpoints();
@@ -127,7 +200,7 @@ export default function TopAppBar({
               buildMenu={buildMenu}
             />
           ) : (
-            <div style={{ display: 'flex', gap: theme.spacing.md }}>
+            <div style={{ display: 'flex', gap: theme.spacing.md, alignItems: 'center' }}>
               {menuItems.map((item, index) => (
                 <ThemedButton
                   key={index}
@@ -142,8 +215,14 @@ export default function TopAppBar({
                   size="medium"
                 />
               ))}
+              {colorModeToggle && <ColorModeToggle textColor={headerTextColor} />}
             </div>
           ))}
+
+        {/* Show toggle even without menu items, or on mobile */}
+        {colorModeToggle && (!menuItems || menuItems.length === 0 || isSmDown) && (
+          <ColorModeToggle textColor={headerTextColor} />
+        )}
       </nav>
     </header>
   );

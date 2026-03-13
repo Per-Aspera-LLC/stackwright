@@ -1,8 +1,15 @@
 title: "Hello Stackwright"
+
+meta:
+    description: "Stackwright turns structured YAML into production-ready Next.js pages. Schema-validated, AI-native, fully yours."
+    og_image: "./stackwright-logo.png"
+    og_site_name: "Stackwright"
+
 appBar:
     titleText: "Hello Stackwright"
     backgroundColor: "primary"
     textColor: "secondary"
+    colorModeToggle: true
     logo:
         type: "image"
         src: "./stackwright-logo.png"
@@ -15,10 +22,12 @@ navigation:
       href: "/"
     - label: "Getting Started"
       href: "/getting-started"
-    - label: "About"
-      href: "/about"
+    - label: "Blog"
+      href: "/blog"
     - label: "Showcase"
       href: "/showcase"
+    - label: "About"
+      href: "/about"
 
 footer:
     backgroundColor: "primary"
@@ -62,6 +71,14 @@ customTheme:
         surface: "#7ce1f1"
         text: "#393837"
         textSecondary: "#787772"
+    darkColors:
+        primary: "#e5a820"
+        accent: "#f09030"
+        secondary: "#60ccf0"
+        background: "#1a1a1e"
+        surface: "#2a2a30"
+        text: "#e8e8e4"
+        textSecondary: "#a0a09a"
     typography:
         fontFamily:
             primary: Inter

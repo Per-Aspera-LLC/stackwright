@@ -1,0 +1,33 @@
+content:
+  content_items:
+  - type: main
+    label: blog-hero
+    heading:
+      text: Blog
+      textSize: h2
+      textColor: secondary
+    textBlocks:
+    - text: Thoughts on YAML-driven development, AI-native tooling, and building frameworks that get out of your way.
+      textSize: subtitle1
+    graphic_position: right
+    media:
+      type: icon
+      src: BookOpen
+      label: blog-icon
+      height: 120
+      width: 120
+      color: accent
+  - type: collection_list
+    label: recent-posts
+    source: posts
+    layout: cards
+    hrefPrefix: /blog/
+    card:
+      title: title
+      subtitle: excerpt
+      meta: date
+      tags: tags
+    heading:
+      text: Recent Posts
+      textSize: h4
+      textColor: primary

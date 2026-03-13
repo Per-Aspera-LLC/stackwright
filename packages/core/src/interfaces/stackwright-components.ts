@@ -53,12 +53,23 @@ export interface StackwrightStaticGeneration {
   getStaticProps: (...args: any[]) => any;
 }
 
+// Stackwright Head Interface (SEO metadata)
+export interface StackwrightHeadProps {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogSiteName?: string;
+  canonical?: string;
+  noindex?: boolean;
+}
+
 // Platform-specific component implementations
 export interface StackwrightComponents {
   Image: ComponentType<StackwrightImageProps>;
   Link: ComponentType<StackwrightLinkProps>;
   Router: ComponentType<StackwrightRouterProps>;
   Route: ComponentType<StackwrightRouteProps>;
+  Head?: ComponentType<StackwrightHeadProps>;
 }
 
 // Create separate interface for utilities

@@ -2,7 +2,10 @@ import { z } from 'zod';
 import { baseContentSchema, textBlockSchema, buttonContentSchema } from './base';
 import { iconContentSchema, mediaContentSchema, mediaItemSchema } from './media';
 import { graphicPositionSchema } from './enums';
+import { collectionListContentSchema } from './collection';
 import type { TextBlock } from './base';
+import type { MediaContent } from './media';
+import type { CollectionListContent } from './collection';
 
 export const carouselItemSchema = z.object({
   title: z.string(),
@@ -12,6 +15,7 @@ export const carouselItemSchema = z.object({
 });
 
 export const carouselContentSchema = baseContentSchema.extend({
+  type: z.literal('carousel'),
   heading: z.string(),
   autoPlaySpeed: z.number().optional(),
   infinite: z.boolean().optional(),
@@ -21,6 +25,7 @@ export const carouselContentSchema = baseContentSchema.extend({
 });
 
 export const mainContentSchema = baseContentSchema.extend({
+  type: z.literal('main'),
   heading: textBlockSchema,
   textBlocks: z.array(textBlockSchema),
   media: mediaItemSchema.optional(),
@@ -35,16 +40,19 @@ export const timelineItemSchema = z.object({
 });
 
 export const timelineContentSchema = baseContentSchema.extend({
+  type: z.literal('timeline'),
   heading: textBlockSchema.optional(),
   items: z.array(timelineItemSchema),
 });
 
 export const iconGridContentSchema = baseContentSchema.extend({
+  type: z.literal('icon_grid'),
   heading: textBlockSchema.optional(),
   icons: z.array(iconContentSchema),
 });
 
 export const codeBlockContentSchema = baseContentSchema.extend({
+  type: z.literal('code_block'),
   code: z.string(),
   language: z.string().optional(),
   lineNumbers: z.boolean().optional(),
@@ -59,6 +67,7 @@ export const featureItemSchema = z.object({
 });
 
 export const featureListContentSchema = baseContentSchema.extend({
+  type: z.literal('feature_list'),
   heading: textBlockSchema.optional(),
   columns: z.number().optional(),
   items: z.array(featureItemSchema),
@@ -73,6 +82,7 @@ export const testimonialItemSchema = z.object({
 });
 
 export const testimonialGridContentSchema = baseContentSchema.extend({
+  type: z.literal('testimonial_grid'),
   heading: textBlockSchema.optional(),
   columns: z.number().optional(),
   items: z.array(testimonialItemSchema),
@@ -84,6 +94,7 @@ export const faqItemSchema = z.object({
 });
 
 export const faqContentSchema = baseContentSchema.extend({
+  type: z.literal('faq'),
   heading: textBlockSchema.optional(),
   items: z.array(faqItemSchema),
 });
@@ -100,6 +111,7 @@ export const pricingPlanSchema = z.object({
 });
 
 export const pricingTableContentSchema = baseContentSchema.extend({
+  type: z.literal('pricing_table'),
   heading: textBlockSchema.optional(),
   plans: z.array(pricingPlanSchema),
 });
@@ -107,12 +119,14 @@ export const pricingTableContentSchema = baseContentSchema.extend({
 export const alertVariantSchema = z.enum(['info', 'warning', 'success', 'danger', 'note', 'tip']);
 
 export const alertContentSchema = baseContentSchema.extend({
+  type: z.literal('alert'),
   variant: alertVariantSchema,
   title: z.string().optional(),
   body: z.string(),
 });
 
 export const contactFormStubContentSchema = baseContentSchema.extend({
+  type: z.literal('contact_form_stub'),
   heading: textBlockSchema.optional(),
   description: z.string().optional(),
   email: z.string(),
@@ -122,9 +136,9 @@ export const contactFormStubContentSchema = baseContentSchema.extend({
   button_text: z.string().optional(),
 });
 
-// ContentItem and TabbedContent are mutually recursive: TabbedContent.tabs is ContentItem[],
-// and ContentItem contains tabbed_content?: TabbedContent.
-// We break the cycle with explicit TypeScript interface declarations + z.lazy().
+// ---------------------------------------------------------------------------
+// Inferred types for non-recursive content schemas
+// ---------------------------------------------------------------------------
 
 export type CarouselItem = z.infer<typeof carouselItemSchema>;
 export type CarouselContent = z.infer<typeof carouselContentSchema>;
@@ -145,7 +159,32 @@ export type AlertVariant = z.infer<typeof alertVariantSchema>;
 export type AlertContent = z.infer<typeof alertContentSchema>;
 export type ContactFormStubContent = z.infer<typeof contactFormStubContentSchema>;
 
+// ---------------------------------------------------------------------------
+// Recursive types: TabbedContent, GridContent, ContentItem
+//
+// These are mutually recursive (TabbedContent.tabs → ContentItem[],
+// GridColumn.content_items → ContentItem[], ContentItem → TabbedContent | GridContent).
+// We break the cycle with explicit TypeScript interface declarations + z.lazy().
+// ---------------------------------------------------------------------------
+
+export interface GridColumn {
+  width?: number;
+  content_items: ContentItem[];
+}
+
+export interface GridContent {
+  type: 'grid';
+  label: string;
+  color?: string;
+  background?: string;
+  heading?: TextBlock;
+  columns: GridColumn[];
+  gap?: string;
+  stackBelow?: number;
+}
+
 export interface TabbedContent {
+  type: 'tabbed_content';
   label: string;
   color?: string;
   background?: string;
@@ -153,50 +192,100 @@ export interface TabbedContent {
   tabs: ContentItem[];
 }
 
-export interface ContentItem {
-  carousel?: CarouselContent;
-  main?: MainContent;
-  tabbed_content?: TabbedContent;
-  media?: import('./media').MediaContent;
-  timeline?: TimelineContent;
-  icon_grid?: IconGridContent;
-  code_block?: CodeBlockContent;
-  feature_list?: FeatureListContent;
-  testimonial_grid?: TestimonialGridContent;
-  faq?: FaqContent;
-  pricing_table?: PricingTableContent;
-  alert?: AlertContent;
-  contact_form_stub?: ContactFormStubContent;
-}
+/**
+ * ContentItem — discriminated union on `type`.
+ *
+ * Each content item carries an explicit `type` field that identifies which
+ * content type it represents. This enables proper TypeScript discriminated
+ * union narrowing and reliable Zod validation.
+ *
+ * YAML format (flat):
+ * ```yaml
+ * content_items:
+ *   - type: main
+ *     label: hero
+ *     heading:
+ *       text: Hello
+ *       textSize: h1
+ * ```
+ */
+export type ContentItem =
+  | CarouselContent
+  | MainContent
+  | TabbedContent
+  | MediaContent
+  | TimelineContent
+  | IconGridContent
+  | CodeBlockContent
+  | FeatureListContent
+  | TestimonialGridContent
+  | FaqContent
+  | PricingTableContent
+  | AlertContent
+  | ContactFormStubContent
+  | GridContent
+  | CollectionListContent;
+
+// ---------------------------------------------------------------------------
+// Zod schemas for recursive types
+// ---------------------------------------------------------------------------
+
+export const gridColumnSchema: z.ZodType<GridColumn> = z.lazy(() =>
+  z.object({
+    width: z.number().optional(),
+    content_items: z.array(contentItemSchema),
+  })
+);
+
+export const gridContentSchema: z.ZodType<GridContent> = z.lazy(() =>
+  baseContentSchema.extend({
+    type: z.literal('grid'),
+    heading: textBlockSchema.optional(),
+    columns: z.array(gridColumnSchema).min(1),
+    gap: z.string().optional(),
+    stackBelow: z.number().optional(),
+  })
+);
 
 export const tabbedContentSchema: z.ZodType<TabbedContent> = z.lazy(() =>
   baseContentSchema.extend({
+    type: z.literal('tabbed_content'),
     heading: textBlockSchema,
     tabs: z.array(contentItemSchema),
   })
 );
 
+/**
+ * Zod schema for ContentItem — a union of all content type schemas.
+ *
+ * Uses z.union() (not z.discriminatedUnion()) because the recursive types
+ * (tabbedContentSchema, gridContentSchema) are z.lazy() wrappers, which
+ * z.discriminatedUnion() cannot inspect at registration time. TypeScript
+ * still gets a proper discriminated union via the ContentItem type above.
+ */
 export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
-  z.object({
-    carousel: carouselContentSchema.optional(),
-    main: mainContentSchema.optional(),
-    tabbed_content: tabbedContentSchema.optional(),
-    media: mediaContentSchema.optional(),
-    timeline: timelineContentSchema.optional(),
-    icon_grid: iconGridContentSchema.optional(),
-    code_block: codeBlockContentSchema.optional(),
-    feature_list: featureListContentSchema.optional(),
-    testimonial_grid: testimonialGridContentSchema.optional(),
-    faq: faqContentSchema.optional(),
-    pricing_table: pricingTableContentSchema.optional(),
-    alert: alertContentSchema.optional(),
-    contact_form_stub: contactFormStubContentSchema.optional(),
-  })
+  z.union([
+    carouselContentSchema,
+    mainContentSchema,
+    tabbedContentSchema,
+    mediaContentSchema,
+    timelineContentSchema,
+    iconGridContentSchema,
+    codeBlockContentSchema,
+    featureListContentSchema,
+    testimonialGridContentSchema,
+    faqContentSchema,
+    pricingTableContentSchema,
+    alertContentSchema,
+    contactFormStubContentSchema,
+    gridContentSchema,
+    collectionListContentSchema,
+  ])
 );
 
 /**
  * All recognized built-in content type keys.
- * Used by the prebuild pipeline to warn on typos in YAML content files.
+ * Used by the prebuild pipeline to validate the `type` field in YAML content files.
  */
 export const KNOWN_CONTENT_TYPE_KEYS = [
   'carousel',
@@ -212,20 +301,9 @@ export const KNOWN_CONTENT_TYPE_KEYS = [
   'pricing_table',
   'alert',
   'contact_form_stub',
+  'grid',
+  'collection_list',
 ] as const;
 
-export type ContentItemMap = {
-  carousel: CarouselContent;
-  main: MainContent;
-  tabbed_content: TabbedContent;
-  media: import('./media').MediaContent;
-  timeline: TimelineContent;
-  icon_grid: IconGridContent;
-  code_block: CodeBlockContent;
-  feature_list: FeatureListContent;
-  testimonial_grid: TestimonialGridContent;
-  faq: FaqContent;
-  pricing_table: PricingTableContent;
-  alert: AlertContent;
-  contact_form_stub: ContactFormStubContent;
-};
+/** Union type of all known content type key strings. */
+export type ContentItemType = (typeof KNOWN_CONTENT_TYPE_KEYS)[number];

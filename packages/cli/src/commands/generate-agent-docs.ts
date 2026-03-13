@@ -9,6 +9,7 @@ import {
   iconContentSchema,
   carouselItemSchema,
   timelineItemSchema,
+  gridColumnSchema,
   typographyVariantSchema,
 } from '@stackwright/types';
 import { pageContentSchema } from '../utils/schema-loader';
@@ -50,6 +51,7 @@ const SCHEMA_NAMES = new Map<object, string>([
   [iconContentSchema as object, 'IconContent'],
   [carouselItemSchema as object, 'CarouselItem'],
   [timelineItemSchema as object, 'TimelineItem'],
+  [gridColumnSchema as object, 'GridColumn'],
   [typographyVariantSchema as object, 'TypographyVariant'],
 ]);
 
@@ -159,15 +161,36 @@ function generateContentTypeTable(): string {
   if (contentItemsField.def.type === 'array') {
     itemSchema = resolveSchema(contentItemsField.def.element as AnySchema);
   }
-  if (!itemSchema || itemSchema.def.type !== 'object') return '';
+  if (!itemSchema) return '';
+
+  // ContentItem is a union of content type schemas (each with a `type` literal).
+  const variants: AnySchema[] =
+    itemSchema.def.type === 'union' || itemSchema.def.type === 'discriminated_union'
+      ? (itemSchema.def.options as AnySchema[])
+      : itemSchema.def.type === 'object'
+        ? [itemSchema]
+        : [];
+
+  if (variants.length === 0) return '';
 
   const lines = ['| YAML key | Required fields | Optional fields |', '|---|---|---|'];
 
-  const shape = itemSchema.def.shape as Record<string, AnySchema>;
-  for (const [yamlKey, fieldSchema] of Object.entries(shape)) {
-    const fields = extractFields(fieldSchema);
+  for (const variant of variants) {
+    const resolved = resolveSchema(variant);
+    if (resolved.def.type !== 'object') continue;
+    const shape = resolved.def.shape as Record<string, AnySchema>;
+    // Extract the `type` literal to get the YAML key
+    const typeField = shape.type ? resolveSchema(shape.type) : null;
+    let yamlKey: string | null = null;
+    if (typeField?.def.type === 'literal') {
+      yamlKey =
+        typeField.def.value ??
+        (Array.isArray(typeField.def.values) ? typeField.def.values[0] : null);
+    }
+    if (!yamlKey) continue;
+    const fields = extractFields(variant);
     const required = fields
-      .filter((f) => f.required)
+      .filter((f) => f.required && f.name !== 'type')
       .map((f) => fmtField(f))
       .join(', ');
     const optional = fields
@@ -189,6 +212,7 @@ function generateSubTypeTable(): string {
     { name: 'IconContent', schema: iconContentSchema as unknown as AnySchema },
     { name: 'CarouselItem', schema: carouselItemSchema as unknown as AnySchema },
     { name: 'TimelineItem', schema: timelineItemSchema as unknown as AnySchema },
+    { name: 'GridColumn', schema: gridColumnSchema as unknown as AnySchema },
   ];
 
   const lines = ['| Type | Fields |', '|---|---|'];

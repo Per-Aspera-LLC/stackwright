@@ -1,5 +1,20 @@
 # stackwright-example-app
 
+## 0.2.0-alpha.14
+
+### Minor Changes
+
+- Version dependencies
+
+### Patch Changes
+
+- Updated dependencies [8d1a637]
+- Updated dependencies
+  - @stackwright/icons@0.3.0-alpha.3
+  - @stackwright/core@0.6.0-alpha.14
+  - @stackwright/ui-shadcn@0.1.0-alpha.1
+  - @stackwright/nextjs@0.3.0-alpha.14
+
 ## 0.1.8-alpha.13
 
 ### Patch Changes

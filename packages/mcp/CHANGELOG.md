@@ -1,5 +1,20 @@
 # @stackwright/mcp
 
+## 0.2.0-alpha.12
+
+### Minor Changes
+
+- Version dependencies
+- a81fd0a: Add `stackwright_write_site_config` MCP tool and `writeSiteConfig` CLI function (#124). Agents can now programmatically update site configuration (themes, navigation, app bar, footer) with full Zod schema validation before write. Invalid YAML is rejected with field-level error messages. Also adds `site write` CLI subcommand.
+
+### Patch Changes
+
+- Updated dependencies [8d1a637]
+- Updated dependencies
+- Updated dependencies [a81fd0a]
+  - @stackwright/types@0.4.0-alpha.6
+  - @stackwright/cli@0.6.0-alpha.11
+
 ## 0.2.0-alpha.11
 
 ### Patch Changes

@@ -193,6 +193,32 @@ export function generateDefaults(
     case 'union':
     case 'discriminated_union': {
       const options = resolved.def.options as AnySchema[];
+
+      // If a pick hint is provided, find the variant whose `type` literal matches
+      if (hint?.pick && options.length > 0) {
+        const pickType = hint.pick;
+        const match = options.find((opt) => {
+          const res = resolveSchema(opt);
+          if (res.def.type === 'object') {
+            const shape = res.def.shape as Record<string, AnySchema>;
+            const typeField = shape.type ? resolveSchema(shape.type) : undefined;
+            return (
+              typeField?.def.type === 'literal' &&
+              (typeField.def.value === pickType ||
+                (Array.isArray(typeField.def.values) && typeField.def.values[0] === pickType))
+            );
+          }
+          return false;
+        });
+        if (match) {
+          // Remove the pick hint so the object case doesn't also treat this as pick-one.
+          // Child path hints still apply because they use absolute dot-paths.
+          const cleanHints = hints ? { ...hints } : undefined;
+          if (cleanHints) delete cleanHints[path];
+          return generateDefaults(match, cleanHints, path, seen);
+        }
+      }
+
       if (options.length > 0) {
         return generateDefaults(options[0], hints, path, seen);
       }
