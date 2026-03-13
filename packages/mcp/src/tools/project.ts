@@ -40,9 +40,14 @@ export function registerProjectTools(server: McpServer): void {
         .string()
         .optional()
         .describe('Theme ID to use (run stackwright_list_themes to see options)'),
+      force: z
+        .boolean()
+        .optional()
+        .default(true)
+        .describe('Allow scaffolding in non-empty directories (default: true for agents)'),
     },
-    async ({ targetDir, name, title, theme }) => {
-      const result = await scaffold(targetDir, { name, title, theme });
+    async ({ targetDir, name, title, theme, force }) => {
+      const result = await scaffold(targetDir, { name, title, theme, force, json: true });
       const text = [
         `Scaffolded project at: ${result.path}`,
         `Theme: ${result.theme}`,
