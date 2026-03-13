@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import chalk from 'chalk';
 import { promptThemeSelection } from '../utils/theme-selector';
 import { processTemplate } from '../utils/template-processor';
-import { outputResult, outputError } from '../utils/json-output';
+import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 export interface ScaffoldOptions {
   name?: string;
@@ -22,12 +22,14 @@ export interface ScaffoldResult {
 }
 
 export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promise<ScaffoldResult> {
-  const json = Boolean(opts.json);
-
   // Validate target directory
   if (fs.existsSync(targetDir) && fs.readdirSync(targetDir).length > 0) {
-    outputError(`Directory ${targetDir} already exists and is not empty`, 'DIR_EXISTS', { json });
+    const err = new Error(`Directory ${targetDir} already exists and is not empty`);
+    (err as NodeJS.ErrnoException).code = 'DIR_EXISTS';
+    throw err;
   }
+
+  const json = Boolean(opts.json);
 
   let { name, title, theme } = opts;
 
@@ -90,8 +92,11 @@ export function registerScaffold(program: Command): void {
           );
         });
       } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        outputError(msg, 'SCAFFOLD_FAILED', { json }, 2);
+        const code = getErrorCode(err);
+        if (code === 'DIR_EXISTS') {
+          outputError(formatError(err), 'DIR_EXISTS', { json });
+        }
+        outputError(formatError(err), 'SCAFFOLD_FAILED', { json }, 2);
       }
     });
 }
