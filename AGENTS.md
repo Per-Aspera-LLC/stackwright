@@ -88,15 +88,29 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
 <!-- stackwright:content-type-table:end -->
 
+### Dark Mode & Color Preferences
+
+Stackwright has first-class dark mode and cookie-based preference persistence:
+
+- **`darkColors`** field in theme YAML — same shape as `colors`, used when dark mode is active.
+- **`ThemeProvider`** manages `colorMode` (`'light'` | `'dark'` | `'system'`), exposes `setColorMode()` via context. Components read `theme.colors` and get the resolved palette automatically — zero changes needed in content components.
+- **`ColorModeScript`** (from `@stackwright/themes`) — a blocking `<script>` placed in `<head>` that reads the `sw-color-mode` cookie before React hydrates, preventing flash-of-wrong-theme.
+- **`StackwrightDocument`** (from `@stackwright/nextjs`) — a drop-in `_document.tsx` that includes `ColorModeScript` automatically.
+- **Cookie utilities** (`@stackwright/core`): `getCookie`, `setCookie`, `removeCookie` — SSR-safe, zero dependencies.
+- **Consent utilities** (`@stackwright/core`): `getConsentState`, `setConsentState`, `hasConsent` — IAB TCF categories (`necessary`, `functional`, `analytics`, `marketing`).
+
 ### Integration Points and Cross-Component Communication
-- **Service Boundaries**: No obvious service boundaries, all code resides within the project's monorepo
-- **Data Flows**: Data primarily flows from configuration files to React components via the core framework
+- **Service Boundaries**: No obvious service boundaries — all code resides within the project's monorepo.
+- **Data Flows**: Data primarily flows from YAML configuration files → prebuild pipeline → JSON → React components via the core framework.
 - **External Dependencies**
-  - Material-UI: Provides pre-built UI components and styles
-  - Emotion: Allows for dynamic styling of components
+  - **Lucide React**: Icon library (replaced MUI icons). Static imports registered via `registerDefaultIcons()`.
+  - **Radix UI**: Headless primitives powering `@stackwright/ui-shadcn` (Tabs, Accordion).
+  - **Tailwind CSS**: Used exclusively by `@stackwright/ui-shadcn`. Core components use inline `style={{}}` props — no Tailwind in `@stackwright/core`.
+  - **js-yaml**: YAML parsing throughout the framework.
+  - **Zod (v4)**: Runtime schema validation, JSON schema generation, and MCP tool introspection.
 - **Cross-Component Communication**
-  - Themes can be changed dynamically: `ThemeProvider` exposes `setTheme` via context (call `useTheme().setTheme(newTheme)` from any child component)
-  - Custom events (e.g., `onChange`) can be registered by child components to interact with parents
+  - Themes and color mode can be changed dynamically: `ThemeProvider` exposes `setTheme` and `setColorMode` via context.
+  - Custom events (e.g., `onChange`) can be registered by child components to interact with parents.
 
 ### Troubleshooting
 
@@ -105,12 +119,14 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md#troubleshooting) for common issues and d
 ### References
 - **Framework Documentation**
   - [React Documentation](https://react.dev/)
-  - [Material-UI Documentation](https://mui.com/)
   - [Next.js Documentation](https://nextjs.org/docs)
+  - [Lucide Icons](https://lucide.dev/)
+  - [Radix UI Primitives](https://www.radix-ui.com/)
+  - [Tailwind CSS](https://tailwindcss.com/) (used by `@stackwright/ui-shadcn` only)
 - **Development Tools**
   - [PNPM Documentation](https://pnpm.io/)
   - [Changesets Documentation](https://github.com/changesets/changesets)
   - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+  - [Zod Documentation](https://zod.dev/)
 - **Monorepo Management**
   - [PNPM Workspaces](https://pnpm.io/workspaces)
-  - [Turborepo Guide](https://turbo.build/repo/docs) (potential future enhancement)
