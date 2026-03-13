@@ -140,9 +140,29 @@ pnpm release            # Build and publish to NPM
 
 The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the tables are out of sync.
 
-## Roadmap Maintenance
+## Priority Labels & Product Board
 
-**When opening a PR against `dev`, check if `ROADMAP.md` needs updating.** If the PR completes, advances, or invalidates a roadmap item, update it in the same PR. Mark completed items with `[x]` and add the PR number. This keeps the roadmap accurate for new contributors and agents.
+Work is tracked via GitHub Issues with priority labels. `ROADMAP.md` is a narrative document describing architectural direction — not a task tracker.
+
+| Label | Meaning |
+|-------|--------|
+| `priority:now` 🔴 | Actively in progress or next up |
+| `priority:next` 🟡 | Committed — starting soon |
+| `priority:later` 🟢 | Planned but not yet committed |
+| `priority:vision` 🟣 | Aspirational — shapes direction, no timeline |
+
+**View the board:**
+```bash
+# Terminal
+pnpm stackwright -- board
+
+# JSON output (CI / scripts)
+pnpm stackwright -- board --json
+```
+
+Agents can call `stackwright_get_board` via MCP for the same data.
+
+The architect sets priority tiers. Contributors and agents should pick work from `priority:now` first, then `priority:next`. When a PR closes an issue, GitHub handles it automatically — no manual ROADMAP.md updates needed.
 
 ## Package Structure
 
