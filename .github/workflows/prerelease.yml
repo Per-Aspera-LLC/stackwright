@@ -16,11 +16,7 @@ jobs:
     steps:
       - name: Generate PerAsperaCI token
         id: app-token
-<<<<<<< dependabot/github_actions/actions/upload-artifact-7
         uses: actions/create-github-app-token@v2
-=======
-        uses: actions/create-github-app-token@v1
->>>>>>> dev
         with:
           app-id: ${{ secrets.PERASPECRACI_APP_ID }}
           private-key: ${{ secrets.PERASPERA_CI_PRIVATE_KEY }}
