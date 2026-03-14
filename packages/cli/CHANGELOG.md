@@ -1,5 +1,11 @@
 # @stackwright/cli
 
+## 0.6.0-alpha.15
+
+### Patch Changes
+
+- 840779f: Add ESM output to CLI package to fix Vite/Vitest module resolution in downstream packages
+
 ## 0.6.0-alpha.14
 
 ### Minor Changes

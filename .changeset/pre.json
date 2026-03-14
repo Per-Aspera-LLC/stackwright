@@ -32,6 +32,7 @@
     "explicit-type-field",
     "feat-product-board",
     "fiery-roses-itch",
+    "fix-cli-esm-output",
     "fix-console-log-carousel-cleanup",
     "fix-hydration-color-mode",
     "fix-layout-regressions",
