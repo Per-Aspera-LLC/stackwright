@@ -10,7 +10,14 @@
     "bin": {
         "stackwright-mcp": "dist/server.js"
     },
-    "main": "dist/server.js",
+    "main": "./dist/server.js",
+    "types": "./dist/server.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/server.d.ts",
+            "require": "./dist/server.js"
+        }
+    },
     "files": [
         "dist"
     ],
