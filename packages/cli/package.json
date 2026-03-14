@@ -11,8 +11,14 @@
     "dist",
     "templates"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    }
+  },
   "bin": {
     "stackwright": "dist/cli.js"
   },
