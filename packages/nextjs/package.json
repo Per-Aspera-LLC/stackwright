@@ -2,6 +2,7 @@
     "name": "@stackwright/nextjs",
     "version": "0.3.0-alpha.15",
     "description": "Next.js implementations for Stackwright components",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/Per-Aspera-LLC/stackwright"

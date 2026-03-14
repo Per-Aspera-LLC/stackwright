@@ -2,6 +2,7 @@
     "name": "@stackwright/build-scripts",
     "version": "0.3.0-alpha.8",
     "description": "Build-time scripts for Stackwright projects (prebuild image processing, YAML compilation)",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/Per-Aspera-LLC/stackwright"
