@@ -7,11 +7,16 @@ export default defineConfig({
     cli: 'src/cli.ts',
     index: 'src/index.ts',
   },
-  format: ['cjs'],
+  format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
   sourcemap: false,
   clean: true,
+  outExtension({ format }) {
+    return {
+      js: format === 'cjs' ? '.js' : '.mjs',
+    };
+  },
   // Add shebang to cli.js only after build completes
   async onSuccess() {
     const cliPath = path.join(__dirname, 'dist', 'cli.js');
