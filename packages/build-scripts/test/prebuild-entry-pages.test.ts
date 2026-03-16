@@ -284,4 +284,335 @@ describe('runPrebuild — entry page generation', () => {
     const page = readEntryPageOutput(root, 'blog', 'my-post.json');
     expect(page.content.content_items[0].label).toBe('posts-entry-my-post');
   });
+
+  describe('template-based entry pages', () => {
+    it('resolves {{field}} placeholders in template', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: "{{slug}}-entry"',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        textBlocks:',
+          '          - text: "{{body}}"',
+          '            textSize: body1',
+        ].join('\n')
+      );
+      writeCollectionEntry(
+        root,
+        'posts',
+        'hello.yaml',
+        'title: Hello World\nbody: This is the body.\n'
+      );
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'hello.json');
+      expect(page.content.content_items[0].heading.text).toBe('Hello World');
+      expect(page.content.content_items[0].textBlocks[0].text).toBe('This is the body.');
+      expect(page.content.content_items[0].label).toBe('hello-entry');
+    });
+
+    it('interpolates multiple {{fields}} in a single string', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        textBlocks:',
+          '          - text: "{{date}} \u00b7 {{author}}"',
+          '            textSize: subtitle2',
+        ].join('\n')
+      );
+      writeCollectionEntry(
+        root,
+        'posts',
+        'post.yaml',
+        'title: Post\ndate: "2025-06-15"\nauthor: Charles\n'
+      );
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'post.json');
+      const metaBlock = page.content.content_items[0].textBlocks[0];
+      expect(metaBlock.text).toBe('2025-06-15 \u00b7 Charles');
+    });
+
+    it('resolves {{tags}} array to comma-separated string in interpolation', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        textBlocks:',
+          '          - text: "Tags: {{tags}}"',
+          '            textSize: caption',
+        ].join('\n')
+      );
+      writeCollectionEntry(
+        root,
+        'posts',
+        'tagged.yaml',
+        'title: Tagged\ntags:\n  - javascript\n  - react\n'
+      );
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'tagged.json');
+      expect(page.content.content_items[0].textBlocks[0].text).toBe('Tags: javascript, react');
+    });
+
+    it('omits text blocks when {{field}} resolves to null (missing field)', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        textBlocks:',
+          '          - text: "{{subtitle}}"',
+          '            textSize: subtitle1',
+          '          - text: "{{body}}"',
+          '            textSize: body1',
+        ].join('\n')
+      );
+      // Entry has body but NOT subtitle
+      writeCollectionEntry(
+        root,
+        'posts',
+        'no-subtitle.yaml',
+        'title: No Subtitle\nbody: Has body though\n'
+      );
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'no-subtitle.json');
+      const textBlocks = page.content.content_items[0].textBlocks;
+      // Only the body block should remain; subtitle was omitted
+      expect(textBlocks).toHaveLength(1);
+      expect(textBlocks[0].text).toBe('Has body though');
+      expect(textBlocks[0].textSize).toBe('body1');
+    });
+
+    it('omits interpolated string when ALL fields are missing', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        textBlocks:',
+          '          - text: "{{date}} \u00b7 {{author}}"',
+          '            textSize: subtitle2',
+          '          - text: "{{body}}"',
+          '            textSize: body1',
+        ].join('\n')
+      );
+      // Entry has title and body but NOT date or author
+      writeCollectionEntry(root, 'posts', 'minimal.yaml', 'title: Minimal\nbody: Just the body\n');
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'minimal.json');
+      const textBlocks = page.content.content_items[0].textBlocks;
+      // The "{{date}} · {{author}}" block should be omitted since both fields are missing
+      expect(textBlocks).toHaveLength(1);
+      expect(textBlocks[0].text).toBe('Just the body');
+    });
+
+    it('passes through literal strings without {{}} unchanged', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: blog-entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        buttons:',
+          '          - text: "\u2190 Back to Blog"',
+          '            textSize: body1',
+          '            variant: text',
+          '            href: /blog',
+        ].join('\n')
+      );
+      writeCollectionEntry(root, 'posts', 'post.yaml', 'title: My Post\n');
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'post.json');
+      const buttons = page.content.content_items[0].buttons;
+      expect(buttons[0].text).toBe('\u2190 Back to Blog');
+      expect(buttons[0].href).toBe('/blog');
+    });
+
+    it('supports multiple content items in template', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: header',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h2',
+          '      - type: main',
+          '        label: body-section',
+          '        heading:',
+          '          text: Content',
+          '          textSize: h4',
+          '        textBlocks:',
+          '          - text: "{{body}}"',
+          '            textSize: body1',
+          '      - type: main',
+          '        label: footer',
+          '        heading:',
+          '          text: "Written by {{author}}"',
+          '          textSize: h6',
+        ].join('\n')
+      );
+      writeCollectionEntry(
+        root,
+        'posts',
+        'multi.yaml',
+        'title: Multi Section\nauthor: Alice\nbody: The main content\n'
+      );
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'multi.json');
+      expect(page.content.content_items).toHaveLength(3);
+      expect(page.content.content_items[0].heading.text).toBe('Multi Section');
+      expect(page.content.content_items[1].textBlocks[0].text).toBe('The main content');
+      expect(page.content.content_items[2].heading.text).toBe('Written by Alice');
+    });
+
+    it('supports media blocks with {{field}} src', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        media:',
+          '          type: image',
+          '          src: "{{cover_image}}"',
+          '          label: "{{title}}"',
+        ].join('\n')
+      );
+      writeCollectionEntry(
+        root,
+        'posts',
+        'with-image.yaml',
+        'title: Has Image\ncover_image: /images/hero.png\n'
+      );
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'with-image.json');
+      const mainItem = page.content.content_items[0];
+      expect(mainItem.media.src).toBe('/images/hero.png');
+      expect(mainItem.media.label).toBe('Has Image');
+    });
+
+    it('omits media object keys when {{field}} is missing', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        media:',
+          '          type: image',
+          '          src: "{{cover_image}}"',
+          '          label: "{{title}}"',
+        ].join('\n')
+      );
+      // Entry does NOT have cover_image
+      writeCollectionEntry(root, 'posts', 'no-image.yaml', 'title: No Image\n');
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'no-image.json');
+      const mainItem = page.content.content_items[0];
+      // media object should be present but without src (since it resolved to null and was omitted)
+      // The media object has type: "image" and label: "No Image" but no src
+      expect(mainItem.media?.src).toBeUndefined();
+    });
+
+    it('preserves numeric and boolean values in template', () => {
+      writeCollectionConfig(
+        root,
+        'posts',
+        [
+          'entryPage:',
+          '  basePath: /blog/',
+          '  template:',
+          '    content_items:',
+          '      - type: main',
+          '        label: entry',
+          '        heading:',
+          '          text: "{{title}}"',
+          '          textSize: h3',
+          '        textToGraphic: 65',
+        ].join('\n')
+      );
+      writeCollectionEntry(root, 'posts', 'post.yaml', 'title: Post\n');
+      runPrebuild(root);
+
+      const page = readEntryPageOutput(root, 'blog', 'post.json');
+      expect(page.content.content_items[0].textToGraphic).toBe(65);
+    });
+  });
 });

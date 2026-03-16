@@ -9,12 +9,22 @@ import { textBlockSchema } from './base';
 export const entryPageConfigSchema = z.object({
   /** URL path prefix. Each entry generates a page at `<basePath><slug>`. */
   basePath: z.string(),
-  /** Field name whose value is rendered as the main content body. */
-  body: z.string(),
-  /** Field names shown as metadata (date, author, etc.). */
+  /** Field name whose value is rendered as the main content body. Used by the default template. */
+  body: z.string().optional(),
+  /** Field names shown as metadata (date, author, etc.). Used by the default template. */
   meta: z.array(z.string()).optional(),
-  /** Field name containing tags / categories. */
+  /** Field name containing tags / categories. Used by the default template. */
   tags: z.string().optional(),
+  /**
+   * Custom layout template using Stackwright content types with `{{fieldName}}` placeholders.
+   * When present, `body`, `meta`, and `tags` are ignored — the template has full control.
+   * The shape mirrors a page's `content` block: `{ content_items: [...] }`.
+   */
+  template: z
+    .object({
+      content_items: z.array(z.record(z.string(), z.unknown())),
+    })
+    .optional(),
 });
 
 /**
