@@ -1,5 +1,126 @@
 # @stackwright/types
 
+## 1.0.0
+
+### Major Changes
+
+- c0fc647: BREAKING: Content items now use an explicit `type` field for discrimination.
+
+  Before (nested key):
+
+  ```yaml
+  content_items:
+    - main:
+        label: hero
+        heading: { text: 'Hello', textSize: h1 }
+  ```
+
+  After (flat with `type`):
+
+  ```yaml
+  content_items:
+    - type: main
+      label: hero
+      heading: { text: 'Hello', textSize: h1 }
+  ```
+
+  This replaces the fragile `Object.entries(item)[0]` discrimination pattern with a proper
+  discriminated union on the `type` field. Benefits:
+  - TypeScript discriminated union narrowing (`if (item.type === 'main')`)
+  - Clearer Zod validation errors (field-level paths instead of "unrecognized key")
+  - No dependence on JS object insertion order
+  - Simpler content renderer logic
+  - Better MCP tool introspection
+
+  All 15 content types are updated. The prebuild pipeline, CLI scaffolding, MCP tools,
+  and agent docs generation have been adapted to the new format.
+
+### Minor Changes
+
+- a6c3fcf: Add alert/admonition content type with info, warning, success, danger, note, and tip variants. Replaces the dead Callout component with a proper implementation including Zod schema, themed React component, severity icons, unit tests, and example usage.
+- 27c6083: ## Collections system, `collection_list` content type, dark mode toggle, and example app overhaul
+
+  ### New: `@stackwright/collections` package
+  - `CollectionProvider` interface for pluggable data backends
+  - `FileCollectionProvider` — reads from prebuild JSON (filesystem, zero async)
+  - `collectionProviderRegistry` in `@stackwright/core` for registration
+
+  ### New: `collection_list` content type
+  - YAML-driven listing of collection entries with `cards`, `list`, and `compact` layouts
+  - Field mapping via `card` config (`title`, `subtitle`, `meta`, `tags`)
+  - Prebuild injects `_entries` at build time — zero async at render time
+  - Zod schemas: `collectionListContentSchema`, `collectionCardMappingSchema`, `entryPageConfigSchema`
+
+  ### New: Dark mode toggle
+  - `colorModeToggle` field added to `appBarContentSchema` and `appBarConfigSchema`
+  - `TopAppBar` renders Sun/Moon toggle when enabled
+  - Removed type intersection hack — both schemas now agree
+
+  ### Prebuild pipeline changes
+  - Collections now process **before** pages (so `collection_list` entries can be injected)
+  - `injectCollectionEntries()` walks page JSON and embeds `_entries` from collection indexes
+  - `collection_list` added to `KNOWN_CONTENT_TYPE_KEYS` for typo detection
+
+  ### Icon additions
+  - Added 20+ Lucide icons to the preset (BookOpen, Calendar, Tag, Bot, Paintbrush, etc.)
+
+  ### Example app overhaul
+  - Complete rewrite of home, about, getting-started, and showcase pages
+  - Dark amber/charcoal theme with `colorModeToggle: true`
+  - Blog index page using `collection_list` content type (pure YAML)
+  - Blog entry pages with `[slug].tsx` dynamic routing
+  - Removed broken `blog/index.tsx` (had two default exports, phantom imports)
+  - Removed `FileCollectionProvider` from `_app.tsx` to prevent `fs` in client bundle
+
+- b1f3a30: feat(types,core): layout grid content type for composable multi-column layouts (#125)
+  - Add `grid` content type with `GridColumn` and `GridContent` Zod schemas
+  - Columns contain recursive `content_items` arrays (same structure as pages)
+  - Column widths expressed as relative `fr` units (default: equal width)
+  - `LayoutGrid` React component renders CSS Grid with responsive stacking
+  - SSR-safe `matchMedia` hook for mobile breakpoint detection (`stackBelow` prop, default 768px)
+  - Nested grids filtered at render time with `console.warn` to prevent infinite recursion
+  - Registered in `componentRegistry` as `'grid'`
+  - `GridColumn` added to AGENTS.md sub-type reference table via `generate-agent-docs`
+  - JSON schemas regenerated with grid type (circular `z.lazy()` refs handled cleanly)
+  - 12 new unit tests + 1 content renderer integration test
+  - Two grid demos added to showcase page (2-column and 3-column layouts)
+
+  Also includes: refactor(core) — cleaned up verbose debug logging in `contentRenderer.tsx` and `componentRegistry.ts` (~112 lines of redundant try/catch-rethrow wrappers removed, zero behavioral changes)
+
+- c2f7867: feat: page-level SEO metadata from YAML (#164)
+
+  Add `meta` block to page content and site config for `<title>`, `<meta description>`, Open Graph tags, canonical URLs, and noindex control. Metadata resolves with page-level overrides falling back to site-level defaults, with auto-generated titles from the first content heading. The `NextStackwrightHead` adapter renders tags via `next/head`; if no Head adapter is registered, SEO tags are silently omitted (graceful degradation). Image co-location works for `og_image` paths with zero special handling. 26 new test cases across core and nextjs packages.
+
+### Patch Changes
+
+- 94d556a: Add monorepo-wide ESLint and Prettier with CI enforcement. Auto-formatted all source files to consistent style. No runtime behavior changes.
+- 6820928: Move JSON schema output from `dist/schemas/` to `schemas/` (committed to git) so CI can detect drift. Update package exports and `files` field. Update scaffold `.vscode/settings.json` to reference the new schema path.
+- 62a97d5: Add error handling for unknown content types: visible inline warnings instead of silent nulls, item-level error boundaries, and prebuild detection of unrecognized content type keys
+- 505002f: feat(themes): dark mode support (#108)
+  - Add optional `darkColors` field to theme schema (same shape as `colors`)
+  - Extract `colorsSchema` as a reusable named constant
+  - Add `ColorMode` type (`'light'` | `'dark'` | `'system'`) and `ThemeColors` type
+  - `ThemeProvider` now manages color mode state with `prefers-color-scheme` media query detection
+  - New context fields: `colorMode`, `setColorMode`, `resolvedColorMode`, `rawTheme`
+  - Colors resolve transparently — zero changes required to existing component consumers
+  - `ThemeStyleInjector` `theme` prop is now optional; reads from context by default (fixes latent reactivity bug where CSS vars didn't update on `setTheme()`)
+  - New `useThemeOptional()` hook for optional-context components
+  - Dark palettes added to built-in corporate and soft themes
+  - `DynamicPage` refactored to consume resolved theme from context
+  - JSON schemas regenerated with `darkColors` field
+  - 16 new dark mode tests, 4 new theme loader tests
+
+- f1e4b70: Dependency updates
+- a5c1ff4: Update all AGENTS.md files to reflect current architecture. Replace stale MUI/Emotion references with actual stack (Lucide, Radix, Tailwind via ui-shadcn, Zod). Document dark mode, cookie persistence, ColorModeScript, StackwrightDocument, and responsive design patterns. Add missing AGENTS.md for build-scripts, collections, ui-shadcn, mcp, and e2e packages.
+- Updated dependencies [94d556a]
+- Updated dependencies [ff06128]
+- Updated dependencies [7077f83]
+- Updated dependencies [505002f]
+- Updated dependencies [2e78e6f]
+- Updated dependencies [f0fbf0c]
+- Updated dependencies [a5c1ff4]
+  - @stackwright/themes@0.5.0
+
 ## 1.0.0-alpha.7
 
 ### Major Changes
