@@ -92,9 +92,7 @@ export function composeSite(
   const MAX_PAGE_COUNT = 500;
   const pageCount = Object.keys(pages).length;
   if (pageCount > MAX_PAGE_COUNT) {
-    const err = new Error(
-      `Page count ${pageCount} exceeds maximum ${MAX_PAGE_COUNT}`
-    );
+    const err = new Error(`Page count ${pageCount} exceeds maximum ${MAX_PAGE_COUNT}`);
     (err as NodeJS.ErrnoException).code = 'PAYLOAD_TOO_LARGE';
     throw err;
   }
@@ -105,9 +103,7 @@ export function composeSite(
   });
 
   if (!validation.valid) {
-    const errorLines = validation.errors.map(
-      (e) => `  [${e.source}] (${e.category}) ${e.message}`
-    );
+    const errorLines = validation.errors.map((e) => `  [${e.source}] (${e.category}) ${e.message}`);
     const err = new Error(
       `Site composition validation failed (${validation.errors.length} error(s)):\n${errorLines.join('\n')}`
     );
@@ -200,16 +196,9 @@ export function registerCompose(program: Command): void {
     .option('--project-root <path>', 'Project root directory (default: cwd)')
     .option('--json', 'Output machine-readable JSON')
     .action(
-      async (opts: {
-        config: string;
-        pagesDir: string;
-        projectRoot?: string;
-        json?: boolean;
-      }) => {
+      async (opts: { config: string; pagesDir: string; projectRoot?: string; json?: boolean }) => {
         const json = Boolean(opts.json);
-        const projectRoot = opts.projectRoot
-          ? path.resolve(opts.projectRoot)
-          : process.cwd();
+        const projectRoot = opts.projectRoot ? path.resolve(opts.projectRoot) : process.cwd();
 
         try {
           // Read site config

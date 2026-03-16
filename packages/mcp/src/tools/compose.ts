@@ -46,10 +46,7 @@ For editing individual pages on an existing site, use stackwright_write_page ins
         .string()
         .refine((p) => path.isAbsolute(p), 'projectRoot must be an absolute path')
         .describe('Absolute path to the root of the Stackwright project'),
-      siteConfig: z
-        .string()
-        .max(1_000_000)
-        .describe('Full YAML content for stackwright.yml'),
+      siteConfig: z.string().max(1_000_000).describe('Full YAML content for stackwright.yml'),
       pages: z
         .record(
           z.string().max(200).describe('Page slug (e.g. "/" for root, "about", "pricing")'),

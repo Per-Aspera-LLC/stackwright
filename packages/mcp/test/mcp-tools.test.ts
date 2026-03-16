@@ -683,7 +683,7 @@ appBar:
         siteConfig,
         pages: {
           '/': makePageYaml('home', 'Welcome'),
-          'about': makePageYaml('about', 'About Us'),
+          about: makePageYaml('about', 'About Us'),
         },
       });
 
@@ -748,7 +748,7 @@ appBar:
         siteConfig,
         pages: {
           '/': makePageYaml('home', 'Welcome'),
-          'about': makePageYaml('about', 'About Us'),
+          about: makePageYaml('about', 'About Us'),
         },
       });
 

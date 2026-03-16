@@ -81,7 +81,7 @@ describe('validateSiteComposition — schema validation', () => {
   it('returns valid: true for a coherent site', () => {
     const result = validateSiteComposition(VALID_SITE_CONFIG, {
       '/': VALID_ROOT_PAGE,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
     expect(result.valid).toBe(true);
     expect(result.errors).toHaveLength(0);
@@ -177,8 +177,8 @@ appBar:
   it('reports warning for orphan pages not in navigation', () => {
     const result = validateSiteComposition(VALID_SITE_CONFIG, {
       '/': VALID_ROOT_PAGE,
-      'about': VALID_ABOUT_PAGE,
-      'secret': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
+      secret: VALID_ABOUT_PAGE,
     });
     const orphanWarning = result.warnings.find(
       (w) => w.category === 'navigation' && w.message.includes('secret')
@@ -248,7 +248,7 @@ content:
 `;
     const result = validateSiteComposition(VALID_SITE_CONFIG, {
       '/': pageWithButton,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
     const linkWarnings = result.warnings.filter((w) => w.category === 'links');
     expect(linkWarnings).toHaveLength(0);
@@ -379,7 +379,7 @@ content:
 `;
     const result = validateSiteComposition(VALID_SITE_CONFIG, {
       '/': page1,
-      'about': page2,
+      about: page2,
     });
     const seoWarning = result.warnings.find(
       (w) => w.category === 'seo' && w.message.includes('Same Title')
@@ -409,7 +409,7 @@ content:
 `;
     const result = validateSiteComposition(VALID_SITE_CONFIG, {
       '/': pageWithBadColor,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
     const themeWarning = result.warnings.find(
       (w) => w.category === 'theme' && w.message.includes('nonexistent-color')
@@ -433,7 +433,7 @@ content:
 `;
     const result = validateSiteComposition(VALID_SITE_CONFIG, {
       '/': pageWithHexColor,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
     const themeWarnings = result.warnings.filter((w) => w.category === 'theme');
     expect(themeWarnings).toHaveLength(0);
@@ -455,7 +455,7 @@ content:
 `;
     const result = validateSiteComposition(VALID_SITE_CONFIG, {
       '/': pageWithPaletteRef,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
     const themeWarnings = result.warnings.filter((w) => w.category === 'theme');
     expect(themeWarnings).toHaveLength(0);

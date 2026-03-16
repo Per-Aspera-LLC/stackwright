@@ -63,7 +63,7 @@ describe('composeSite — happy path', () => {
   it('creates site config and all pages', () => {
     const result = composeSite(tmpDir, VALID_SITE_CONFIG, {
       '/': VALID_ROOT_PAGE,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
 
     expect(result.siteConfigPath).toBe(path.join(tmpDir, 'stackwright.yml'));
@@ -81,7 +81,7 @@ describe('composeSite — happy path', () => {
   it('reports pages as created when they are new', () => {
     const result = composeSite(tmpDir, VALID_SITE_CONFIG, {
       '/': VALID_ROOT_PAGE,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
 
     expect(result.pagesCreated).toContain('/');
@@ -93,13 +93,13 @@ describe('composeSite — happy path', () => {
     // First write
     composeSite(tmpDir, VALID_SITE_CONFIG, {
       '/': VALID_ROOT_PAGE,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
 
     // Second write — same pages
     const result = composeSite(tmpDir, VALID_SITE_CONFIG, {
       '/': VALID_ROOT_PAGE,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
 
     expect(result.pagesCreated).toHaveLength(0);
@@ -118,7 +118,7 @@ appBar:
 `;
     const result = composeSite(tmpDir, siteConfig, {
       '/': VALID_ROOT_PAGE,
-      'about': VALID_ABOUT_PAGE,
+      about: VALID_ABOUT_PAGE,
     });
 
     // Should succeed (warnings don't block writes)
@@ -155,7 +155,7 @@ describe('composeSite — validation failures', () => {
     try {
       composeSite(tmpDir, VALID_SITE_CONFIG, {
         '/': 'content:\n  content_items: "not-an-array"\n',
-        'about': VALID_ABOUT_PAGE,
+        about: VALID_ABOUT_PAGE,
       });
       expect.unreachable('should have thrown');
     } catch (err) {
