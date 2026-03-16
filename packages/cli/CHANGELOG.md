@@ -1,5 +1,11 @@
 # @stackwright/cli
 
+## 0.6.0
+
+### Patch Changes
+
+- d673906: Fix shell injection vulnerability in template-fetcher by replacing execSync with execFileSync (CodeQL CWE-78/CWE-88). Add pnpm overrides for vulnerable transitive dependencies (undici, flatted, hono, @hono/node-server, express-rate-limit) to resolve all open Dependabot alerts.
+
 ## 0.6.0-alpha.16
 
 ### Patch Changes
