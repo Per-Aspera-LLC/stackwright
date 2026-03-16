@@ -9,7 +9,7 @@
 import https from 'https';
 import fs from 'fs-extra';
 import path from 'path';
-import { execSync } from 'child_process';
+import { execFileSync } from 'child_process';
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -97,7 +97,9 @@ async function extractTarball(tarballBuffer: Buffer, targetDir: string): Promise
     await fs.writeFile(tmpFile, tarballBuffer);
     // Use system tar (available on Linux, macOS, and modern Windows)
     // --strip-components=1 removes the top-level directory GitHub adds
-    execSync(`tar -xzf "${tmpFile}" --strip-components=1`, {
+    // execFileSync avoids shell interpretation, preventing command injection
+    // via targetDir or tmpFile (CodeQL: js/shell-command-constructed-from-input)
+    execFileSync('tar', ['-xzf', tmpFile, '--strip-components=1'], {
       cwd: targetDir,
       stdio: 'ignore',
     });
