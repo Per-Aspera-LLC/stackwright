@@ -128,10 +128,10 @@ pnpm format:check    # Exits non-zero if any file needs formatting
 **Every PR that changes user-facing behavior MUST include a changeset.** Run `pnpm changeset` before committing, select the affected packages, choose the bump type (patch for fixes, minor for features), and write a short summary. Commit the generated `.changeset/*.md` file with your PR. CI will fail if a changeset is missing for changed packages.
 
 ```bash
-pnpm changeset          # Create a changeset
-pnpm version-packages   # Update versions based on changesets
-pnpm release            # Build and publish to NPM
+pnpm changeset          # Create a changeset (required per PR)
 ```
+
+Versioning and publishing are **fully automated**. When `dev` is merged to `main`, CI exits prerelease mode, consumes all pending changesets, publishes stable versions to npm, and back-merges the version bumps into `dev`. No manual `version-packages` or `release` steps needed.
 
 ## Content Type Maintenance Rule
 
@@ -182,7 +182,7 @@ The architect sets priority tiers. Contributors and agents should pick work from
 
 ## Build System Notes
 
-Each package uses **tsup** to produce dual-format output (ESM `.mjs` + CJS `.js`) with TypeScript declarations. All packages are in alpha (`0.x.x-alpha.x`); releases are managed via Changesets.
+Each package uses **tsup** to produce dual-format output (ESM `.mjs` + CJS `.js`) with TypeScript declarations. Alpha prereleases are published automatically from `dev`; stable releases are published automatically when `dev` is merged to `main`. Both flows are managed via Changesets.
 
 **Important**: Do NOT add `"type": "module"` to `package.json` in any `packages/*` directory. tsup uses `.mjs`/`.js` file extensions to signal ESM vs CJS format. Adding `"type": "module"` causes Node to treat CJS `.js` output as ESM, breaking `require()` in Next.js config files.
 
