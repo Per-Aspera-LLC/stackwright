@@ -29,7 +29,12 @@ import {
   KNOWN_CONTENT_TYPE_KEYS,
   collectionConfigSchema,
 } from '@stackwright/types';
-import type { CollectionConfig, EntryPageConfig } from '@stackwright/types';
+import type {
+  CollectionConfig,
+  EntryPageConfig,
+  PageContent,
+  TypographyVariant,
+} from '@stackwright/types';
 
 // -- Config -----------------------------------------------------------------
 
@@ -335,9 +340,7 @@ function generateEntryPages(
     const bodyContent = entryPage.body ? entry[entryPage.body] : undefined;
 
     // Build meta line: configured meta fields + tags
-    const metaParts = metaFields
-      .map((field) => formatMetaValue(entry[field]))
-      .filter(Boolean);
+    const metaParts = metaFields.map((field) => formatMetaValue(entry[field])).filter(Boolean);
 
     if (entryPage.tags) {
       const tagsVal = entry[entryPage.tags];
@@ -350,7 +353,7 @@ function generateEntryPages(
 
     const metaLine = metaParts.join(' \u00b7 ');
 
-    const textBlocks: Record<string, unknown>[] = [];
+    const textBlocks: Array<{ text: string; textSize: TypographyVariant }> = [];
     if (metaLine) {
       textBlocks.push({ text: metaLine, textSize: 'subtitle2' });
     }
@@ -362,35 +365,33 @@ function generateEntryPages(
       content: {
         content_items: [
           {
-            type: 'main',
+            type: 'main' as const,
             label: `${collectionName}-entry-${slug}`,
             heading: {
               text: titleValue,
-              textSize: 'h3',
+              textSize: 'h3' as const,
               textColor: 'secondary',
             },
             textBlocks,
             buttons: [
               {
                 text: '\u2190 Back',
-                textSize: 'body1',
-                variant: 'text',
+                textSize: 'body1' as const,
+                variant: 'text' as const,
                 href: backHref,
               },
             ],
           },
         ],
       },
-    };
+    } satisfies PageContent;
 
     const outFile = path.join(outDir, `${slug}.json`);
 
     // Security: verify entry file path stays within outDir
     const resolvedOutFile = path.resolve(outFile);
     if (!resolvedOutFile.startsWith(resolvedOutDir + path.sep)) {
-      console.warn(
-        `  WARNING: Skipping entry "${slug}" — resolved path escapes output directory.`
-      );
+      console.warn(`  WARNING: Skipping entry "${slug}" — resolved path escapes output directory.`);
       continue;
     }
 

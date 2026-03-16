@@ -1,17 +1,17 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import path from 'path';
 import { z } from 'zod';
-import {
-  listCollections,
-  addCollection,
-  resolveContentDir,
-} from '@stackwright/cli';
+import { listCollections, addCollection, resolveContentDir } from '@stackwright/cli';
 
 export function registerCollectionTools(server: McpServer): void {
   server.tool(
     'stackwright_list_collections',
     'List all collections in a Stackwright project. Shows collection names, entry counts, and whether entry page generation is configured.',
     {
-      projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
+      projectRoot: z
+        .string()
+        .refine((p) => path.isAbsolute(p), 'projectRoot must be an absolute path')
+        .describe('Absolute path to the root of the Stackwright project'),
     },
     async ({ projectRoot }) => {
       const result = listCollections(resolveContentDir(projectRoot));
@@ -46,7 +46,10 @@ export function registerCollectionTools(server: McpServer): void {
     'stackwright_create_collection',
     'Create a new collection directory with _collection.yaml config and a sample entry. Use --entry-page to enable automatic page generation for each entry.',
     {
-      projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
+      projectRoot: z
+        .string()
+        .refine((p) => path.isAbsolute(p), 'projectRoot must be an absolute path')
+        .describe('Absolute path to the root of the Stackwright project'),
       name: z
         .string()
         .regex(
@@ -57,11 +60,15 @@ export function registerCollectionTools(server: McpServer): void {
       entryPage: z
         .boolean()
         .optional()
-        .describe('Enable entry page generation. When true, each entry generates a page at basePath/slug'),
+        .describe(
+          'Enable entry page generation. When true, each entry generates a page at basePath/slug'
+        ),
       basePath: z
         .string()
         .optional()
-        .describe('URL base path for entry pages (default: /<name>/). Only used when entryPage is true'),
+        .describe(
+          'URL base path for entry pages (default: /<name>/). Only used when entryPage is true'
+        ),
       sort: z
         .string()
         .optional()
@@ -99,7 +106,9 @@ export function registerCollectionTools(server: McpServer): void {
               text:
                 code === 'COLLECTION_EXISTS'
                   ? `Collection "${name}" already exists. Use stackwright_list_collections to see existing collections.`
-                  : `Error creating collection: ${(err as Error).message}`,
+                  : code === 'INVALID_NAME'
+                    ? `Invalid collection name "${name}". Use only alphanumeric characters, hyphens, and underscores.`
+                    : `Error creating collection: ${(err as Error).message}`,
             },
           ],
           isError: true,

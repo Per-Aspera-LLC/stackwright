@@ -67,10 +67,10 @@ export function listCollections(contentDir: string): CollectionListResult {
       const cfgPath = path.join(collDir, cfgName);
       if (fs.existsSync(cfgPath)) {
         try {
-          const cfg = yaml.load(fs.readFileSync(cfgPath, 'utf8')) as Record<string, any>;
-          if (cfg?.entryPage) {
+          const cfg = yaml.load(fs.readFileSync(cfgPath, 'utf8')) as Record<string, unknown>;
+          if (cfg?.entryPage && typeof cfg.entryPage === 'object') {
             hasEntryPage = true;
-            basePath = cfg.entryPage.basePath;
+            basePath = (cfg.entryPage as Record<string, unknown>).basePath as string | undefined;
           }
         } catch {
           // ignore parse errors
@@ -167,9 +167,7 @@ export function addCollection(
 // ---------------------------------------------------------------------------
 
 export function registerCollection(program: Command): void {
-  const cmd = program
-    .command('collection')
-    .description('Manage Stackwright collections');
+  const cmd = program.command('collection').description('Manage Stackwright collections');
 
   cmd
     .command('list')
@@ -184,7 +182,11 @@ export function registerCollection(program: Command): void {
 
         outputResult(result, { json }, () => {
           if (result.collections.length === 0) {
-            console.log(chalk.yellow('No collections found. Create one with: stackwright collection add <name>'));
+            console.log(
+              chalk.yellow(
+                'No collections found. Create one with: stackwright collection add <name>'
+              )
+            );
             return;
           }
 
@@ -193,7 +195,9 @@ export function registerCollection(program: Command): void {
             const entryPageIndicator = coll.hasEntryPage
               ? chalk.green(` → entry pages at ${coll.basePath}`)
               : '';
-            console.log(`  ${chalk.cyan(coll.name)}  (${coll.entryCount} entries)${entryPageIndicator}`);
+            console.log(
+              `  ${chalk.cyan(coll.name)}  (${coll.entryCount} entries)${entryPageIndicator}`
+            );
           }
           console.log();
         });
@@ -246,8 +250,9 @@ export function registerCollection(program: Command): void {
           const code = (err as NodeJS.ErrnoException).code;
           if (code === 'COLLECTION_EXISTS') {
             outputError(formatError(err), 'COLLECTION_EXISTS', { json });
+          } else {
+            outputError(formatError(err), 'ADD_FAILED', { json }, 2);
           }
-          outputError(formatError(err), 'ADD_FAILED', { json }, 2);
         }
       }
     );
