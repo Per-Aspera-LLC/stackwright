@@ -195,12 +195,14 @@ function checkDuplicateTitles(
 
   for (const [title, slugs] of titleToSlugs) {
     if (slugs.length > 1) {
-      issues.push({
-        severity: 'warning',
-        category: 'seo',
-        source: slugs[1],
-        message: `Duplicate meta.title "${title}" — also used by page "${slugs[0]}"`,
-      });
+      for (const slug of slugs.slice(1)) {
+        issues.push({
+          severity: 'warning',
+          category: 'seo',
+          source: slug,
+          message: `Duplicate meta.title "${title}" — also used by page "${slugs[0]}"`,
+        });
+      }
     }
   }
 }
@@ -228,6 +230,11 @@ function checkThemeColorReferences(
       }
     }
   });
+}
+
+/** Normalize a slug to a consistent format: "/" for root, "/slug" for others. */
+function normalizeSlug(slug: string): string {
+  return slug === '' || slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -321,8 +328,7 @@ export function validateSiteComposition(
     // Build the set of page slugs (normalize: '/' for root, '/about' for others)
     const pageSlugs = new Set<string>();
     for (const slug of Object.keys(pages)) {
-      const normalized = slug === '' || slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`;
-      pageSlugs.add(normalized);
+      pageSlugs.add(normalizeSlug(slug));
     }
 
     // Extract navigation items
@@ -341,15 +347,13 @@ export function validateSiteComposition(
 
     // Check 3c: Internal button links (warning)
     for (const [slug, parsed] of parsedPages) {
-      const normalizedSlug = slug === '' || slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`;
-      checkInternalButtonLinks(normalizedSlug, parsed, pageSlugs, allIssues);
+      checkInternalButtonLinks(normalizeSlug(slug), parsed, pageSlugs, allIssues);
     }
 
     // Check 3d: Collection source references (warning, only if collections provided)
     if (options?.existingCollections) {
       for (const [slug, parsed] of parsedPages) {
-        const normalizedSlug = slug === '' || slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`;
-        checkCollectionSources(normalizedSlug, parsed, options.existingCollections, allIssues);
+        checkCollectionSources(normalizeSlug(slug), parsed, options.existingCollections, allIssues);
       }
     }
 
@@ -362,8 +366,7 @@ export function validateSiteComposition(
     if (colors) {
       const paletteKeys = new Set(Object.keys(colors));
       for (const [slug, parsed] of parsedPages) {
-        const normalizedSlug = slug === '' || slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`;
-        checkThemeColorReferences(normalizedSlug, parsed, paletteKeys, allIssues);
+        checkThemeColorReferences(normalizeSlug(slug), parsed, paletteKeys, allIssues);
       }
     }
   }

@@ -16,7 +16,6 @@ import {
   type ComposeIssue,
   type ValidateSiteCompositionResult,
 } from '../utils/site-validator';
-import { detectProject } from '../utils/project-detector';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
@@ -89,6 +88,17 @@ export function composeSite(
     throw err;
   }
 
+  // Page count guard
+  const MAX_PAGE_COUNT = 500;
+  const pageCount = Object.keys(pages).length;
+  if (pageCount > MAX_PAGE_COUNT) {
+    const err = new Error(
+      `Page count ${pageCount} exceeds maximum ${MAX_PAGE_COUNT}`
+    );
+    (err as NodeJS.ErrnoException).code = 'PAYLOAD_TOO_LARGE';
+    throw err;
+  }
+
   // 1. Holistic validation
   const validation = validateSiteComposition(siteConfigYaml, pages, {
     existingCollections: options?.existingCollections,
@@ -107,28 +117,26 @@ export function composeSite(
     throw err;
   }
 
-  // 2. Atomic write — write to temp dir first, then move into place
+  // 2. Validated write — pre-flight all path checks, then write sequentially.
+  //    All path traversal checks run BEFORE any file is written, ensuring
+  //    no partial state on security violations.
   const pagesDir = path.join(projectRoot, 'pages');
   const siteConfigPath = path.join(projectRoot, 'stackwright.yml');
+  const resolvedPagesDir = path.resolve(pagesDir);
 
-  // Track what we're creating vs updating
-  const pagesCreated: string[] = [];
-  const pagesUpdated: string[] = [];
+  // Pre-flight: resolve all paths and check for traversal BEFORE writing anything
+  const writeManifest: Array<{
+    slug: string;
+    displaySlug: string;
+    contentPath: string;
+    yamlContent: string;
+  }> = [];
 
-  // Ensure project directory exists
-  fs.ensureDirSync(projectRoot);
-
-  // Write site config
-  fs.writeFileSync(siteConfigPath, siteConfigYaml, 'utf8');
-
-  // Write pages
   for (const [slug, yamlContent] of Object.entries(pages)) {
     const cleanSlug = slug.replace(/^\//, '').replace(/\\/g, '/');
 
-    // Determine the content file path
     let contentPath: string;
     if (cleanSlug === '' || cleanSlug === '/') {
-      // Root page
       contentPath = path.join(pagesDir, 'content.yml');
     } else {
       contentPath = path.join(pagesDir, cleanSlug, 'content.yml');
@@ -136,7 +144,6 @@ export function composeSite(
 
     // Security: prevent path traversal
     const resolvedPath = path.resolve(contentPath);
-    const resolvedPagesDir = path.resolve(pagesDir);
     if (
       !resolvedPath.startsWith(resolvedPagesDir + path.sep) &&
       resolvedPath !== path.join(resolvedPagesDir, 'content.yml')
@@ -146,12 +153,22 @@ export function composeSite(
       throw err;
     }
 
-    const isNew = !fs.existsSync(contentPath);
+    const displaySlug = cleanSlug === '' ? '/' : `/${cleanSlug}`;
+    writeManifest.push({ slug, displaySlug, contentPath, yamlContent });
+  }
 
+  // All checks passed — now write files
+  const pagesCreated: string[] = [];
+  const pagesUpdated: string[] = [];
+
+  fs.ensureDirSync(projectRoot);
+  fs.writeFileSync(siteConfigPath, siteConfigYaml, 'utf8');
+
+  for (const { displaySlug, contentPath, yamlContent } of writeManifest) {
+    const isNew = !fs.existsSync(contentPath);
     fs.ensureDirSync(path.dirname(contentPath));
     fs.writeFileSync(contentPath, yamlContent, 'utf8');
 
-    const displaySlug = cleanSlug === '' ? '/' : `/${cleanSlug}`;
     if (isNew) {
       pagesCreated.push(displaySlug);
     } else {

@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
-import { composeSite, resolvePagesDir, resolveContentDir } from '@stackwright/cli';
+import { composeSite } from '@stackwright/cli';
 
 /**
  * Resolve the list of existing collection names in a project.
@@ -52,9 +52,10 @@ For editing individual pages on an existing site, use stackwright_write_page ins
         .describe('Full YAML content for stackwright.yml'),
       pages: z
         .record(
-          z.string().describe('Page slug (e.g. "/" for root, "about", "pricing")'),
-          z.string().describe('Full YAML content for the page')
+          z.string().max(200).describe('Page slug (e.g. "/" for root, "about", "pricing")'),
+          z.string().max(1_000_000).describe('Full YAML content for the page')
         )
+        .refine((obj) => Object.keys(obj).length <= 500, 'Maximum 500 pages per compose operation')
         .describe(
           'Map of page slug to YAML content. Use "/" or "" for the root page. Use bare slugs like "about" for other pages.'
         ),
