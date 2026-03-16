@@ -1,36 +1,105 @@
 name: Release
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
-# Versioning is done manually before merging to main (changeset pre exit +
-# changeset version). This workflow only publishes — it never writes back to
-# the repository, so it works with protected-branch rules and requires no
-# elevated token permissions.
 permissions:
-    contents: read
-    id-token: write  # required for npm provenance attestation
+  contents: write
+  id-token: write # required for npm provenance attestation
 
 jobs:
-    release:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    steps:
+      - name: Generate PerAsperaCI token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.PERASPECRACI_APP_ID }}
+          private-key: ${{ secrets.PERASPERA_CI_PRIVATE_KEY }}
 
-            - uses: pnpm/action-setup@v3
-              with:
-                  version: 10
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
 
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  registry-url: "https://registry.npmjs.org"
-                  cache: "pnpm"
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 10
 
-            - run: pnpm install --frozen-lockfile
-            - run: pnpm build
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
-            - name: Publish to npm
-              run: pnpm publish -r --provenance --access public --no-git-checks
+      - run: pnpm install --frozen-lockfile
+
+      # -----------------------------------------------------------
+      # Gate: skip the entire release if there's nothing to publish
+      # -----------------------------------------------------------
+      - name: Check for releasable changes
+        id: check
+        run: |
+          CHANGESETS=$(find .changeset -name '*.md' ! -name 'README.md' 2>/dev/null | wc -l)
+          HAS_PRE=$( [ -f ".changeset/pre.json" ] && echo "true" || echo "false" )
+          if [ "$CHANGESETS" -eq 0 ] && [ "$HAS_PRE" = "false" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "No pending changesets — nothing to release."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "Found $CHANGESETS changeset(s), prerelease mode: $HAS_PRE"
+          fi
+
+      # -----------------------------------------------------------
+      # Version: exit alpha prerelease mode, then consume changesets
+      # -----------------------------------------------------------
+      - name: Exit prerelease mode
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          if [ -f ".changeset/pre.json" ]; then
+            pnpm changeset pre exit
+            echo "Exited prerelease mode."
+          else
+            echo "Not in prerelease mode — skipping."
+          fi
+
+      - name: Version packages
+        if: steps.check.outputs.skip != 'true'
+        run: pnpm changeset version
+
+      # -----------------------------------------------------------
+      # Build & publish
+      # -----------------------------------------------------------
+      - name: Build
+        if: steps.check.outputs.skip != 'true'
+        run: pnpm build
+
+      - name: Publish to npm
+        if: steps.check.outputs.skip != 'true'
+        run: pnpm publish -r --provenance --access public --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # -----------------------------------------------------------
+      # Push version bumps back, then sync dev
+      # -----------------------------------------------------------
+      - name: Commit and push version bumps
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore: version packages for release [skip ci]" || echo "No changes to commit"
+          git push origin main
+
+      - name: Back-merge into dev
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          git checkout dev
+          git pull origin dev
+          git merge main --no-edit -m "chore: back-merge main after release [skip ci]"
+          git push origin dev
