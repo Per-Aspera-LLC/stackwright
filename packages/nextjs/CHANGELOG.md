@@ -1,51 +1,5 @@
 # @stackwright/nextjs
 
-## 0.3.0
-
-### Minor Changes
-
-- 7077f83: First-class cookie & preference persistence support (#162)
-  - **@stackwright/core**: New `getCookie`, `setCookie`, `removeCookie` utilities for SSR-safe cookie handling. New `getConsentState`, `setConsentState`, `hasConsent` for IAB TCF-style consent management.
-  - **@stackwright/themes**: `ThemeProvider` now persists color mode preference in a `sw-color-mode` cookie. Return visitors get their preferred theme on first paint. New `ColorModeScript` blocking script component eliminates flash-of-wrong-theme for SSG dark mode.
-  - **@stackwright/nextjs**: New `StackwrightDocument` component for `pages/_document.tsx` — includes `ColorModeScript` automatically. Two-line setup for flash-free dark mode.
-
-- c2f7867: feat: page-level SEO metadata from YAML (#164)
-
-  Add `meta` block to page content and site config for `<title>`, `<meta description>`, Open Graph tags, canonical URLs, and noindex control. Metadata resolves with page-level overrides falling back to site-level defaults, with auto-generated titles from the first content heading. The `NextStackwrightHead` adapter renders tags via `next/head`; if no Head adapter is registered, SEO tags are silently omitted (graceful degradation). Image co-location works for `og_image` paths with zero special handling. 26 new test cases across core and nextjs packages.
-
-### Patch Changes
-
-- 94d556a: Add monorepo-wide ESLint and Prettier with CI enforcement. Auto-formatted all source files to consistent style. No runtime behavior changes.
-- ff06128: Add 87 unit tests across four packages that previously had zero or incomplete test coverage. Covers the Next.js adapter layer (Image, Link, Router, config), icon registry and presets, ThemeProvider and CSS variable injection, and five core content type components (IconGrid, TextGrid, Timeline, TabbedContentGrid, UnknownContentType).
-- 2e78e6f: Remove unconditional console.log calls from NextStackwrightImage and ThemeLoader, fix aspect_ratio DOM prop leak, and clean up Carousel setTimeout on unmount.
-- a5c1ff4: Update all AGENTS.md files to reflect current architecture. Replace stale MUI/Emotion references with actual stack (Lucide, Radix, Tailwind via ui-shadcn, Zod). Document dark mode, cookie persistence, ColorModeScript, StackwrightDocument, and responsive design patterns. Add missing AGENTS.md for build-scripts, collections, ui-shadcn, mcp, and e2e packages.
-- Updated dependencies [a6c3fcf]
-- Updated dependencies [8f052e1]
-- Updated dependencies [94d556a]
-- Updated dependencies [ff06128]
-- Updated dependencies [a4c573a]
-- Updated dependencies [6820928]
-- Updated dependencies [27c6083]
-- Updated dependencies [62a97d5]
-- Updated dependencies [7077f83]
-- Updated dependencies [505002f]
-- Updated dependencies [c0fc647]
-- Updated dependencies [f1e4b70]
-- Updated dependencies [2e78e6f]
-- Updated dependencies [f0fbf0c]
-- Updated dependencies [2ce66eb]
-- Updated dependencies [1b2eef6]
-- Updated dependencies [a5c1ff4]
-- Updated dependencies [138b604]
-- Updated dependencies [b1f3a30]
-- Updated dependencies [c2f7867]
-- Updated dependencies [8086e12]
-- Updated dependencies [fa497e1]
-- Updated dependencies [163e3b1]
-  - @stackwright/types@1.0.0
-  - @stackwright/core@0.6.0
-  - @stackwright/themes@0.5.0
-
 ## 0.3.0-alpha.15
 
 ### Minor Changes
