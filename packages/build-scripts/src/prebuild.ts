@@ -15,6 +15,7 @@
  *   <slug>.json                           - processed content for each slug page
  *   collections/<name>/_index.json        - sorted manifest for each collection
  *   collections/<name>/<slug>.json        - full entry data
+ *   <basePath>/<slug>.json                - generated entry pages (from entryPage config)
  *
  * Images are copied to public/images/ with directory structure preserved.
  */
@@ -28,7 +29,7 @@ import {
   KNOWN_CONTENT_TYPE_KEYS,
   collectionConfigSchema,
 } from '@stackwright/types';
-import type { CollectionConfig } from '@stackwright/types';
+import type { CollectionConfig, EntryPageConfig } from '@stackwright/types';
 
 // -- Config -----------------------------------------------------------------
 
@@ -276,18 +277,126 @@ function sortEntries(
   });
 }
 
+/** Format a single meta field value for display in entry pages. */
+function formatMetaValue(val: unknown): string {
+  if (val == null) return '';
+  if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}/.test(val)) {
+    try {
+      return new Date(val).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    } catch {
+      return val;
+    }
+  }
+  return `${val}`;
+}
+
+/**
+ * Generate a PageContent JSON file for each collection entry.
+ * Returns the list of output paths relative to contentOutDir (without .json extension).
+ */
+function generateEntryPages(
+  collectionName: string,
+  entryPage: EntryPageConfig,
+  entries: Record<string, unknown>[],
+  titleField: string,
+  contentOutDir: string
+): string[] {
+  const generatedPaths: string[] = [];
+  const baseDirRelative = entryPage.basePath.replace(/^\//, '').replace(/\/$/, '');
+  const outDir = path.join(contentOutDir, baseDirRelative);
+  fs.mkdirSync(outDir, { recursive: true });
+
+  const metaFields = entryPage.meta ?? [];
+  const backHref = entryPage.basePath.replace(/\/$/, '');
+
+  for (const entry of entries) {
+    const slug = String(entry.slug ?? '');
+    if (!slug) continue;
+
+    const titleValue = String(entry[titleField] || slug);
+    const bodyContent = entryPage.body ? entry[entryPage.body] : undefined;
+
+    // Build meta line: configured meta fields + tags
+    const metaParts = metaFields
+      .map((field) => formatMetaValue(entry[field]))
+      .filter(Boolean);
+
+    if (entryPage.tags) {
+      const tagsVal = entry[entryPage.tags];
+      if (Array.isArray(tagsVal) && tagsVal.length > 0) {
+        metaParts.push(tagsVal.join(', '));
+      } else if (tagsVal != null && String(tagsVal)) {
+        metaParts.push(String(tagsVal));
+      }
+    }
+
+    const metaLine = metaParts.join(' \u00b7 ');
+
+    const textBlocks: Record<string, unknown>[] = [];
+    if (metaLine) {
+      textBlocks.push({ text: metaLine, textSize: 'subtitle2' });
+    }
+    if (bodyContent) {
+      textBlocks.push({ text: String(bodyContent), textSize: 'body1' });
+    }
+
+    const pageContent = {
+      content: {
+        content_items: [
+          {
+            type: 'main',
+            label: `${collectionName}-entry-${slug}`,
+            heading: {
+              text: titleValue,
+              textSize: 'h3',
+              textColor: 'secondary',
+            },
+            textBlocks,
+            buttons: [
+              {
+                text: '\u2190 Back',
+                textSize: 'body1',
+                variant: 'text',
+                href: backHref,
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    const outFile = path.join(outDir, `${slug}.json`);
+    fs.writeFileSync(outFile, JSON.stringify(pageContent, null, 2));
+
+    const relativePath = baseDirRelative ? `${baseDirRelative}/${slug}` : slug;
+    generatedPaths.push(relativePath);
+  }
+
+  return generatedPaths;
+}
+
+interface CollectionProcessResult {
+  indexes: Map<string, Record<string, unknown>[]>;
+  entryPagePaths: string[];
+}
+
 function processCollections(
   contentDir: string,
   contentOutDir: string,
   imagesDir: string,
   rootDir: string
-): Map<string, Record<string, unknown>[]> {
+): CollectionProcessResult {
   const collectionIndexes = new Map<string, Record<string, unknown>[]>();
+  const allEntryPagePaths: string[] = [];
   const collectionsDirs = fs
     .readdirSync(contentDir, { withFileTypes: true })
     .filter((entry) => entry.isDirectory());
 
-  if (collectionsDirs.length === 0) return collectionIndexes;
+  if (collectionsDirs.length === 0) return { indexes: collectionIndexes, entryPagePaths: [] };
 
   console.log('\nProcessing collections...');
 
@@ -363,9 +472,23 @@ function processCollections(
     collectionIndexes.set(collectionName, sortedIndex);
 
     console.log(`  OK ${collectionName}: ${allEntries.length} entries`);
+
+    // Generate entry pages if entryPage config is present
+    if (config.entryPage) {
+      const titleField = config.indexFields?.[0] ?? 'title';
+      const entryPaths = generateEntryPages(
+        collectionName,
+        config.entryPage,
+        allEntries,
+        titleField,
+        contentOutDir
+      );
+      allEntryPagePaths.push(...entryPaths);
+      console.log(`  OK ${collectionName}: ${entryPaths.length} entry pages generated`);
+    }
   }
 
-  return collectionIndexes;
+  return { indexes: collectionIndexes, entryPagePaths: allEntryPagePaths };
 }
 
 /**
@@ -451,8 +574,11 @@ export function runPrebuild(projectRoot = process.cwd()): void {
   // 2. Process collections (before pages, so collection_list can be expanded)
   const contentDir = path.join(projectRoot, 'content');
   let collectionIndexes = new Map<string, Record<string, unknown>[]>();
+  let entryPagePaths: string[] = [];
   if (fs.existsSync(contentDir)) {
-    collectionIndexes = processCollections(contentDir, contentOutDir, imagesDir, projectRoot);
+    const result = processCollections(contentDir, contentOutDir, imagesDir, projectRoot);
+    collectionIndexes = result.indexes;
+    entryPagePaths = result.entryPagePaths;
   }
 
   // 3. Process page content files (collection_list entries are injected here)
@@ -502,6 +628,19 @@ export function runPrebuild(projectRoot = process.cwd()): void {
     const outFile = slug ? `${slug}.json` : '_root.json';
     fs.writeFileSync(path.join(contentOutDir, outFile), JSON.stringify(expandedContent, null, 2));
     console.log(`  OK ${outFile}  (${label})`);
+  }
+
+  // Warn about collisions between generated entry pages and manually-authored pages
+  if (entryPagePaths.length > 0) {
+    const pageSlugs = new Set(contentFiles.map(({ slug }) => slug).filter(Boolean));
+    for (const entryPath of entryPagePaths) {
+      if (pageSlugs.has(entryPath)) {
+        console.warn(
+          `  WARNING: Collection entry page "${entryPath}" collides with a manually-authored page. ` +
+            'The manual page will take precedence.'
+        );
+      }
+    }
   }
 
   console.log('\nStackwright prebuild complete.\n');

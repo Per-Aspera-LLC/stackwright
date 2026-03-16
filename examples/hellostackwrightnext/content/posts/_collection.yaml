@@ -5,3 +5,10 @@ indexFields:
   - author
   - excerpt
   - tags
+entryPage:
+  basePath: /blog/
+  body: body
+  meta:
+    - date
+    - author
+  tags: tags
