@@ -16,6 +16,7 @@ export { getInfo } from './commands/info';
 export { generateAgentDocs } from './commands/generate-agent-docs';
 export { stageChanges, openPr } from './commands/git-ops';
 export { getBoard, parseBoard } from './commands/board';
+export { listCollections, addCollection, resolveContentDir } from './commands/collection';
 export { detectProject, resolvePagesDir } from './utils/project-detector';
 
 // Result types
@@ -46,4 +47,9 @@ export type {
   OpenPrOptions,
 } from './commands/git-ops';
 export type { BoardResult, BoardIssue, GhIssueRaw } from './commands/board';
+export type {
+  CollectionSummary,
+  CollectionListResult,
+  AddCollectionResult,
+} from './commands/collection';
 export type { ProjectPaths } from './utils/project-detector';
