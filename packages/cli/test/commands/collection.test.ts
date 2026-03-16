@@ -161,6 +161,21 @@ describe('addCollection', () => {
     expect(config.entryPage.body).toBe('content');
   });
 
+
+  it('rejects names with path traversal characters', () => {
+    expect(() => addCollection(contentDir, '../../../evil')).toThrow(/Invalid collection name/);
+  });
+
+  it('rejects names starting with special characters', () => {
+    expect(() => addCollection(contentDir, '.hidden')).toThrow(/Invalid collection name/);
+    expect(() => addCollection(contentDir, '-dash')).toThrow(/Invalid collection name/);
+  });
+
+  it('accepts valid collection names', () => {
+    expect(() => addCollection(contentDir, 'my-posts')).not.toThrow();
+    expect(() => addCollection(contentDir, 'docs_v2')).not.toThrow();
+    expect(() => addCollection(contentDir, 'Blog123')).not.toThrow();
+  });
   it('throws when collection already exists', () => {
     addCollection(contentDir, 'posts');
     expect(() => addCollection(contentDir, 'posts')).toThrow(/already exists/);
