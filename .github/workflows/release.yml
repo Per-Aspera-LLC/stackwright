@@ -101,5 +101,12 @@ jobs:
         run: |
           git checkout dev
           git pull origin dev
-          git merge main --no-edit -m "chore: back-merge main after release [skip ci]"
+          # -X theirs: main's graduated versions win over dev's stale alphas
+          git merge main -X theirs --no-edit -m "chore: back-merge main after release [skip ci]"
+          # Re-enter prerelease mode so the next dev push produces alphas
+          if [ ! -f ".changeset/pre.json" ]; then
+            pnpm changeset pre enter alpha
+            git add .changeset/pre.json
+            git commit -m "chore: re-enter prerelease mode after back-merge [skip ci]"
+          fi
           git push origin dev

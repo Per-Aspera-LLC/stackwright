@@ -1,0 +1,21 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "stackwright-example-app": "0.1.7",
+    "@stackwright/build-scripts": "0.2.1",
+    "@stackwright/cli": "0.5.1",
+    "@stackwright/core": "0.5.1",
+    "@stackwright/icons": "0.2.3",
+    "@stackwright/mcp": "0.1.1",
+    "@stackwright/nextjs": "0.2.7",
+    "@stackwright/themes": "0.4.1",
+    "@stackwright/types": "0.3.1",
+    "@stackwright/ui-shadcn": "0.1.0-alpha.0",
+    "@stackwright/e2e": "0.0.0",
+    "@stackwright/collections": "0.1.0-alpha.1"
+  },
+  "changesets": [
+    "fix-security-findings"
+  ]
+}
