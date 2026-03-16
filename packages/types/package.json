@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/types",
-    "version": "1.0.0",
+    "version": "1.0.0-alpha.7",
     "description": "TypeScript types and JSON schemas for Stackwright",
     "license": "MIT",
     "repository": {
