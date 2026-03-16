@@ -16,6 +16,7 @@
     "@stackwright/ui-shadcn": "0.1.0"
   },
   "changesets": [
+    "compose-site-atomic",
     "declarative-entry-pages"
   ]
 }
