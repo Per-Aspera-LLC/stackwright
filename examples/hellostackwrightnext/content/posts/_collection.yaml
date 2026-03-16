@@ -7,8 +7,21 @@ indexFields:
   - tags
 entryPage:
   basePath: /blog/
-  body: body
-  meta:
-    - date
-    - author
-  tags: tags
+  template:
+    content_items:
+      - type: main
+        label: "{{slug}}-entry"
+        heading:
+          text: "{{title}}"
+          textSize: h3
+          textColor: secondary
+        textBlocks:
+          - text: "{{date}} · {{author}} · {{tags}}"
+            textSize: subtitle2
+          - text: "{{body}}"
+            textSize: body1
+        buttons:
+          - text: "← Back"
+            textSize: body1
+            variant: text
+            href: /blog

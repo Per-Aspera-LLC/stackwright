@@ -300,6 +300,79 @@ function formatMetaValue(val: unknown): string {
 }
 
 /**
+ * Recursively resolve `{{fieldName}}` placeholders in a template against entry data.
+ *
+ * Resolution rules:
+ * - `"{{fieldName}}"` as the entire string value → returns the raw field value (preserves type).
+ *   Returns `null` if the field is missing (signals "omit this").
+ * - `"text {{field1}} more {{field2}}"` → string interpolation.
+ *   Arrays are joined with ", ". Missing fields resolve to "".
+ *   If no `{{…}}` token resolved to non-empty content, returns `null`.
+ * - Arrays: each item is resolved; `null` items are filtered out.
+ * - Objects: each value is resolved; keys whose values resolved to `null` are omitted.
+ * - Primitives (numbers, booleans): passed through unchanged.
+ */
+function resolveTemplate(template: unknown, entry: Record<string, unknown>): unknown {
+  // Strings: handle {{field}} references
+  if (typeof template === 'string') {
+    // No field references → literal passthrough
+    if (!template.includes('{{')) {
+      return template;
+    }
+
+    // Entire value is a single field reference → return raw value (preserves arrays, objects, etc.)
+    const singleMatch = template.match(/^\{\{(\w+)\}\}$/);
+    if (singleMatch) {
+      const val = entry[singleMatch[1]];
+      return val != null ? val : null;
+    }
+
+    // Interpolate multiple/inline references
+    let hasResolvedContent = false;
+    const result = template.replace(/\{\{(\w+)\}\}/g, (_, field) => {
+      const val = entry[field];
+      if (val == null || val === '') return '';
+      hasResolvedContent = true;
+      if (Array.isArray(val)) return val.join(', ');
+      return String(val);
+    });
+
+    return hasResolvedContent ? result : null;
+  }
+
+  // Arrays: resolve each item, filter nulls
+  if (Array.isArray(template)) {
+    const resolved = template
+      .map((item) => resolveTemplate(item, entry))
+      .filter((item) => item != null);
+    return resolved;
+  }
+
+  // Objects: resolve each value, omit keys whose values are null
+  if (template != null && typeof template === 'object') {
+    const obj = template as Record<string, unknown>;
+    const resolved: Record<string, unknown> = {};
+    let hadTemplateRef = false;
+    let hadResolvedTemplateRef = false;
+    for (const [key, value] of Object.entries(obj)) {
+      const isTemplateValue = typeof value === 'string' && value.includes('{{');
+      if (isTemplateValue) hadTemplateRef = true;
+      const resolvedValue = resolveTemplate(value, entry);
+      if (resolvedValue != null) {
+        resolved[key] = resolvedValue;
+        if (isTemplateValue) hadResolvedTemplateRef = true;
+      }
+    }
+    // If ALL template-bearing values resolved to null, the object is content-less — signal removal
+    if (hadTemplateRef && !hadResolvedTemplateRef) return null;
+    return resolved;
+  }
+
+  // Primitives (numbers, booleans, null) pass through
+  return template;
+}
+
+/**
  * Generate a PageContent JSON file for each collection entry.
  * Returns the list of output paths relative to contentOutDir (without .json extension).
  */
@@ -336,55 +409,64 @@ function generateEntryPages(
     const slug = String(entry.slug ?? '');
     if (!slug) continue;
 
-    const titleValue = String(entry[titleField] || slug);
-    const bodyContent = entryPage.body ? entry[entryPage.body] : undefined;
+    let pageContent: PageContent;
 
-    // Build meta line: configured meta fields + tags
-    const metaParts = metaFields.map((field) => formatMetaValue(entry[field])).filter(Boolean);
+    if (entryPage.template) {
+      // Template-based: resolve {{field}} placeholders against entry data
+      const resolvedContent = resolveTemplate(entryPage.template, entry);
+      pageContent = { content: resolvedContent as PageContent['content'] };
+    } else {
+      // Default template (legacy body/meta/tags config)
+      const titleValue = String(entry[titleField] || slug);
+      const bodyContent = entryPage.body ? entry[entryPage.body] : undefined;
 
-    if (entryPage.tags) {
-      const tagsVal = entry[entryPage.tags];
-      if (Array.isArray(tagsVal) && tagsVal.length > 0) {
-        metaParts.push(tagsVal.join(', '));
-      } else if (tagsVal != null && String(tagsVal)) {
-        metaParts.push(String(tagsVal));
+      // Build meta line: configured meta fields + tags
+      const metaParts = metaFields.map((field) => formatMetaValue(entry[field])).filter(Boolean);
+
+      if (entryPage.tags) {
+        const tagsVal = entry[entryPage.tags];
+        if (Array.isArray(tagsVal) && tagsVal.length > 0) {
+          metaParts.push(tagsVal.join(', '));
+        } else if (tagsVal != null && String(tagsVal)) {
+          metaParts.push(String(tagsVal));
+        }
       }
-    }
 
-    const metaLine = metaParts.join(' \u00b7 ');
+      const metaLine = metaParts.join(' \u00b7 ');
 
-    const textBlocks: Array<{ text: string; textSize: TypographyVariant }> = [];
-    if (metaLine) {
-      textBlocks.push({ text: metaLine, textSize: 'subtitle2' });
-    }
-    if (bodyContent) {
-      textBlocks.push({ text: String(bodyContent), textSize: 'body1' });
-    }
+      const textBlocks: Array<{ text: string; textSize: TypographyVariant }> = [];
+      if (metaLine) {
+        textBlocks.push({ text: metaLine, textSize: 'subtitle2' });
+      }
+      if (bodyContent) {
+        textBlocks.push({ text: String(bodyContent), textSize: 'body1' });
+      }
 
-    const pageContent = {
-      content: {
-        content_items: [
-          {
-            type: 'main' as const,
-            label: `${collectionName}-entry-${slug}`,
-            heading: {
-              text: titleValue,
-              textSize: 'h3' as const,
-              textColor: 'secondary',
-            },
-            textBlocks,
-            buttons: [
-              {
-                text: '\u2190 Back',
-                textSize: 'body1' as const,
-                variant: 'text' as const,
-                href: backHref,
+      pageContent = {
+        content: {
+          content_items: [
+            {
+              type: 'main' as const,
+              label: `${collectionName}-entry-${slug}`,
+              heading: {
+                text: titleValue,
+                textSize: 'h3' as const,
+                textColor: 'secondary',
               },
-            ],
-          },
-        ],
-      },
-    } satisfies PageContent;
+              textBlocks,
+              buttons: [
+                {
+                  text: '\u2190 Back',
+                  textSize: 'body1' as const,
+                  variant: 'text' as const,
+                  href: backHref,
+                },
+              ],
+            },
+          ],
+        },
+      } satisfies PageContent;
+    }
 
     const outFile = path.join(outDir, `${slug}.json`);
 
@@ -500,6 +582,12 @@ function processCollections(
 
     // Generate entry pages if entryPage config is present
     if (config.entryPage) {
+      if (!config.entryPage.template) {
+        console.log(
+          `  ℹ  "${collectionName}" is using the default entry page template.\n` +
+            `     Define a custom template in _collection.yaml for full control over layout.`
+        );
+      }
       const titleField = config.indexFields?.[0] ?? 'title';
       const entryPaths = generateEntryPages(
         collectionName,
