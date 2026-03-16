@@ -37,6 +37,7 @@
     "fix-hydration-color-mode",
     "fix-layout-regressions",
     "fix-mobile-responsiveness",
+    "fix-security-findings",
     "fix-stale-agents-docs",
     "hot-recompilation-watch",
     "layout-grid-content-type",
