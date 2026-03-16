@@ -17,6 +17,8 @@ export { generateAgentDocs } from './commands/generate-agent-docs';
 export { stageChanges, openPr } from './commands/git-ops';
 export { getBoard, parseBoard } from './commands/board';
 export { listCollections, addCollection, resolveContentDir } from './commands/collection';
+export { composeSite } from './commands/compose';
+export { validateSiteComposition } from './utils/site-validator';
 export { detectProject, resolvePagesDir } from './utils/project-detector';
 
 // Result types
@@ -52,4 +54,12 @@ export type {
   CollectionListResult,
   AddCollectionResult,
 } from './commands/collection';
+export type { ComposeSiteResult, ComposeSiteOptions } from './commands/compose';
+export type {
+  ValidateSiteCompositionResult,
+  ValidateSiteCompositionOptions,
+  ComposeIssue,
+  ComposeSeverity,
+  ComposeCheckCategory,
+} from './utils/site-validator';
 export type { ProjectPaths } from './utils/project-detector';
