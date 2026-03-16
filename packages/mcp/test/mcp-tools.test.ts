@@ -5,6 +5,7 @@ import { registerPageTools } from '../src/tools/pages';
 import { registerProjectTools } from '../src/tools/project';
 import { registerSiteTools } from '../src/tools/site';
 import { registerGitOpsTools } from '../src/tools/git-ops';
+import { registerComposeTools } from '../src/tools/compose';
 import { getTypes } from '@stackwright/cli';
 import fs from 'fs-extra';
 import path from 'path';
@@ -653,6 +654,110 @@ describe('MCP Tools Integration', () => {
     });
   });
 
+  describe('Compose Tools', () => {
+    it('registers compose tool', () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerComposeTools(server);
+
+      const tools = Object.keys((server as any)._registeredTools);
+      expect(tools).toContain('stackwright_compose_site');
+    });
+
+    it('compose_site creates site config and pages on success', async () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerComposeTools(server);
+
+      const siteConfig = `title: "Composed Site"
+navigation:
+  - label: "Home"
+    href: "/"
+  - label: "About"
+    href: "/about"
+appBar:
+  titleText: "Composed Site"
+`;
+
+      const tool = (server as any)._registeredTools['stackwright_compose_site'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        siteConfig,
+        pages: {
+          '/': makePageYaml('home', 'Welcome'),
+          about: makePageYaml('about', 'About Us'),
+        },
+      });
+
+      expect(result.isError).toBeFalsy();
+      expect(result.content[0].text).toContain('Site composed successfully');
+      expect(result.content[0].text).toContain('Pages created');
+
+      // Verify files were written
+      expect(fs.existsSync(path.join(testDir, 'stackwright.yml'))).toBe(true);
+      expect(fs.existsSync(path.join(testDir, 'pages', 'content.yml'))).toBe(true);
+      expect(fs.existsSync(path.join(testDir, 'pages', 'about', 'content.yml'))).toBe(true);
+    });
+
+    it('compose_site reports validation errors and writes nothing', async () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerComposeTools(server);
+
+      const siteConfig = `title: "Test"
+navigation:
+  - label: "Home"
+    href: "/"
+  - label: "Missing"
+    href: "/missing"
+appBar:
+  titleText: "Test"
+`;
+
+      const tool = (server as any)._registeredTools['stackwright_compose_site'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        siteConfig,
+        pages: {
+          '/': makePageYaml('home', 'Welcome'),
+        },
+      });
+
+      expect(result.isError).toBe(true);
+      expect(result.content[0].text).toContain('composition failed');
+      expect(result.content[0].text).toContain('/missing');
+      expect(result.content[0].text).toContain('No files were written');
+
+      // Nothing should have been written
+      expect(fs.existsSync(path.join(testDir, 'stackwright.yml'))).toBe(false);
+    });
+
+    it('compose_site reports warnings without failing', async () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerComposeTools(server);
+
+      // "about" page exists but no nav entry for it
+      const siteConfig = `title: "Test"
+navigation:
+  - label: "Home"
+    href: "/"
+appBar:
+  titleText: "Test"
+`;
+
+      const tool = (server as any)._registeredTools['stackwright_compose_site'];
+      const result = await tool.handler({
+        projectRoot: testDir,
+        siteConfig,
+        pages: {
+          '/': makePageYaml('home', 'Welcome'),
+          about: makePageYaml('about', 'About Us'),
+        },
+      });
+
+      expect(result.isError).toBeFalsy();
+      expect(result.content[0].text).toContain('Site composed successfully');
+      expect(result.content[0].text).toContain('warning');
+    });
+  });
+
   describe('Server Integration', () => {
     it('registers all tool categories', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
@@ -662,6 +767,7 @@ describe('MCP Tools Integration', () => {
       registerProjectTools(server);
       registerSiteTools(server);
       registerGitOpsTools(server);
+      registerComposeTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
 
@@ -681,9 +787,10 @@ describe('MCP Tools Integration', () => {
       expect(tools).toContain('stackwright_write_site_config');
       expect(tools).toContain('stackwright_stage_changes');
       expect(tools).toContain('stackwright_open_pr');
+      expect(tools).toContain('stackwright_compose_site');
 
-      // Should have exactly 15 tools (14 from dev + preview_component)
-      expect(tools.length).toBe(15);
+      // Should have exactly 16 tools
+      expect(tools.length).toBe(16);
     });
   });
 });
