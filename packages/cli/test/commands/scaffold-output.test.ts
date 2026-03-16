@@ -111,7 +111,7 @@ describe('scaffold output — file structure', () => {
   it('creates Next.js template files', () => {
     expect(fs.existsSync(path.join(targetDir, 'next.config.js'))).toBe(true);
     expect(fs.existsSync(path.join(targetDir, 'pages', '_app.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'pages', '[slug].tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'pages', '[...slug].tsx'))).toBe(true);
     expect(fs.existsSync(path.join(targetDir, 'pages', 'index.ts'))).toBe(true);
   });
 
