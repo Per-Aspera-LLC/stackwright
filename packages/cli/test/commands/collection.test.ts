@@ -161,7 +161,6 @@ describe('addCollection', () => {
     expect(config.entryPage.body).toBe('content');
   });
 
-
   it('rejects names with path traversal characters', () => {
     expect(() => addCollection(contentDir, '../../../evil')).toThrow(/Invalid collection name/);
   });

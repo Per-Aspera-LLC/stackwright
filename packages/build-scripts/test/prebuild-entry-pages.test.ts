@@ -41,9 +41,7 @@ function readEntryPageOutput(root: string, ...segments: string[]): any {
 }
 
 function entryPageExists(root: string, ...segments: string[]): boolean {
-  return fs.existsSync(
-    path.join(root, 'public', 'stackwright-content', ...segments)
-  );
+  return fs.existsSync(path.join(root, 'public', 'stackwright-content', ...segments));
 }
 
 // ---------------------------------------------------------------------------
@@ -66,19 +64,29 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('generates entry page JSON when entryPage config is present', () => {
-    writeCollectionConfig(root, 'posts',
+    writeCollectionConfig(
+      root,
+      'posts',
       'sort: -date\nentryPage:\n  basePath: /blog/\n  body: body\n  meta:\n    - date\n'
     );
-    writeCollectionEntry(root, 'posts', 'hello.yaml', 'title: Hello\ndate: "2025-06-01"\nbody: Hello world\n');
+    writeCollectionEntry(
+      root,
+      'posts',
+      'hello.yaml',
+      'title: Hello\ndate: "2025-06-01"\nbody: Hello world\n'
+    );
     runPrebuild(root);
     expect(entryPageExists(root, 'blog', 'hello.json')).toBe(true);
   });
 
   it('generates valid PageContent structure', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
+    writeCollectionEntry(
+      root,
+      'posts',
+      'test-post.yaml',
+      'title: Test Post\nbody: Some content here\n'
     );
-    writeCollectionEntry(root, 'posts', 'test-post.yaml', 'title: Test Post\nbody: Some content here\n');
     runPrebuild(root);
 
     const page = readEntryPageOutput(root, 'blog', 'test-post.json');
@@ -89,9 +97,7 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('uses title field from entry as heading', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
     writeCollectionEntry(root, 'posts', 'my-post.yaml', 'title: My Great Post\nbody: Content\n');
     runPrebuild(root);
 
@@ -102,9 +108,7 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('falls back to slug when title field is missing', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
     writeCollectionEntry(root, 'posts', 'no-title.yaml', 'body: Just body content\n');
     runPrebuild(root);
 
@@ -113,10 +117,13 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('renders body field as body1 text block', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
+    writeCollectionEntry(
+      root,
+      'posts',
+      'post.yaml',
+      'title: Post\nbody: This is the body content.\n'
     );
-    writeCollectionEntry(root, 'posts', 'post.yaml', 'title: Post\nbody: This is the body content.\n');
     runPrebuild(root);
 
     const page = readEntryPageOutput(root, 'blog', 'post.json');
@@ -127,10 +134,15 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('renders meta fields as subtitle2 text block', () => {
-    writeCollectionConfig(root, 'posts',
+    writeCollectionConfig(
+      root,
+      'posts',
       'entryPage:\n  basePath: /blog/\n  body: body\n  meta:\n    - date\n    - author\n'
     );
-    writeCollectionEntry(root, 'posts', 'post.yaml',
+    writeCollectionEntry(
+      root,
+      'posts',
+      'post.yaml',
       'title: Post\ndate: "2025-06-15"\nauthor: Charles\nbody: Content\n'
     );
     runPrebuild(root);
@@ -145,10 +157,15 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('renders tags in meta line', () => {
-    writeCollectionConfig(root, 'posts',
+    writeCollectionConfig(
+      root,
+      'posts',
       'entryPage:\n  basePath: /blog/\n  body: body\n  tags: tags\n'
     );
-    writeCollectionEntry(root, 'posts', 'tagged.yaml',
+    writeCollectionEntry(
+      root,
+      'posts',
+      'tagged.yaml',
       'title: Tagged Post\nbody: Content\ntags:\n  - javascript\n  - react\n'
     );
     runPrebuild(root);
@@ -162,9 +179,7 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('includes back button with basePath href', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
     writeCollectionEntry(root, 'posts', 'post.yaml', 'title: Post\nbody: Content\n');
     runPrebuild(root);
 
@@ -177,9 +192,7 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('generates pages for multiple entries', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
     writeCollectionEntry(root, 'posts', 'first.yaml', 'title: First\nbody: First post\n');
     writeCollectionEntry(root, 'posts', 'second.yaml', 'title: Second\nbody: Second post\n');
     writeCollectionEntry(root, 'posts', 'third.yaml', 'title: Third\nbody: Third post\n');
@@ -191,9 +204,7 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('handles basePath without trailing slash', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /articles\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /articles\n  body: body\n');
     writeCollectionEntry(root, 'posts', 'post.yaml', 'title: Post\nbody: Content\n');
     runPrebuild(root);
 
@@ -201,9 +212,7 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('handles nested basePath', () => {
-    writeCollectionConfig(root, 'docs',
-      'entryPage:\n  basePath: /docs/api/\n  body: content\n'
-    );
+    writeCollectionConfig(root, 'docs', 'entryPage:\n  basePath: /docs/api/\n  body: content\n');
     writeCollectionEntry(root, 'docs', 'users.yaml', 'title: Users API\ncontent: User endpoints\n');
     runPrebuild(root);
 
@@ -211,10 +220,17 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('uses first indexField as title when indexFields is configured', () => {
-    writeCollectionConfig(root, 'products',
+    writeCollectionConfig(
+      root,
+      'products',
       'indexFields:\n  - name\n  - price\nentryPage:\n  basePath: /shop/\n  body: description\n'
     );
-    writeCollectionEntry(root, 'products', 'widget.yaml', 'name: Super Widget\nprice: 9.99\ndescription: A great widget\n');
+    writeCollectionEntry(
+      root,
+      'products',
+      'widget.yaml',
+      'name: Super Widget\nprice: 9.99\ndescription: A great widget\n'
+    );
     runPrebuild(root);
 
     const page = readEntryPageOutput(root, 'shop', 'widget.json');
@@ -222,9 +238,7 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('still generates collection index and entry JSON alongside entry pages', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
     writeCollectionEntry(root, 'posts', 'post.yaml', 'title: Post\nbody: Content\n');
     runPrebuild(root);
 
@@ -236,9 +250,10 @@ describe('runPrebuild — entry page generation', () => {
     expect(fs.existsSync(path.join(collectionsDir, 'post.json'))).toBe(true);
   });
 
-
   it('rejects path-traversal basePath', () => {
-    writeCollectionConfig(root, 'evil',
+    writeCollectionConfig(
+      root,
+      'evil',
       'entryPage:\n  basePath: "/../../../tmp/pwned/"\n  body: body\n'
     );
     writeCollectionEntry(root, 'evil', 'payload.yaml', 'title: Pwned\nbody: gotcha\n');
@@ -246,11 +261,12 @@ describe('runPrebuild — entry page generation', () => {
   });
 
   it('ignores slug field in YAML that would cause path traversal', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
     // Write a YAML file with a malicious slug field
-    writeCollectionEntry(root, 'posts', 'safe-name.yaml',
+    writeCollectionEntry(
+      root,
+      'posts',
+      'safe-name.yaml',
       'slug: "../../../tmp/evil"\ntitle: Sneaky\nbody: gotcha\n'
     );
     runPrebuild(root);
@@ -261,9 +277,7 @@ describe('runPrebuild — entry page generation', () => {
     expect(fs.existsSync(path.join(root, 'tmp'))).toBe(false);
   });
   it('sets content item label to collectionName-entry-slug', () => {
-    writeCollectionConfig(root, 'posts',
-      'entryPage:\n  basePath: /blog/\n  body: body\n'
-    );
+    writeCollectionConfig(root, 'posts', 'entryPage:\n  basePath: /blog/\n  body: body\n');
     writeCollectionEntry(root, 'posts', 'my-post.yaml', 'title: My Post\nbody: Content\n');
     runPrebuild(root);
 
