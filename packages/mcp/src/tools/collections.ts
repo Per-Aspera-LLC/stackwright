@@ -47,7 +47,13 @@ export function registerCollectionTools(server: McpServer): void {
     'Create a new collection directory with _collection.yaml config and a sample entry. Use --entry-page to enable automatic page generation for each entry.',
     {
       projectRoot: z.string().describe('Absolute path to the root of the Stackwright project'),
-      name: z.string().describe('Collection name (e.g., "posts", "docs", "products")'),
+      name: z
+        .string()
+        .regex(
+          /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/,
+          'Collection name must start with alphanumeric and contain only alphanumeric, hyphens, or underscores'
+        )
+        .describe('Collection name (e.g., "posts", "docs", "products")'),
       entryPage: z
         .boolean()
         .optional()
