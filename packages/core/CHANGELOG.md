@@ -1,5 +1,12 @@
 # @stackwright/core
 
+## 0.6.1-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [87bd24d]
+  - @stackwright/types@1.1.0-alpha.0
+
 ## 0.6.0
 
 ### Minor Changes

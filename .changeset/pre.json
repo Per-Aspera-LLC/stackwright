@@ -15,5 +15,7 @@
     "@stackwright/types": "1.0.0",
     "@stackwright/ui-shadcn": "0.1.0"
   },
-  "changesets": []
+  "changesets": [
+    "declarative-entry-pages"
+  ]
 }

@@ -1,5 +1,12 @@
 # stackwright-example-app
 
+## 0.2.1-alpha.0
+
+### Patch Changes
+
+- @stackwright/core@0.6.1-alpha.0
+- @stackwright/nextjs@0.3.1-alpha.0
+
 ## 0.2.0
 
 ### Patch Changes
