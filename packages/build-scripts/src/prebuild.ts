@@ -308,6 +308,20 @@ function generateEntryPages(
   const generatedPaths: string[] = [];
   const baseDirRelative = entryPage.basePath.replace(/^\//, '').replace(/\/$/, '');
   const outDir = path.join(contentOutDir, baseDirRelative);
+
+  // Security: verify the resolved path stays within contentOutDir
+  const resolvedOutDir = path.resolve(outDir);
+  const resolvedContentOutDir = path.resolve(contentOutDir);
+  if (
+    !resolvedOutDir.startsWith(resolvedContentOutDir + path.sep) &&
+    resolvedOutDir !== resolvedContentOutDir
+  ) {
+    throw new Error(
+      `Security: entryPage.basePath "${entryPage.basePath}" resolves outside ` +
+        `the content output directory. This may be a path traversal attempt.`
+    );
+  }
+
   fs.mkdirSync(outDir, { recursive: true });
 
   const metaFields = entryPage.meta ?? [];
@@ -370,6 +384,16 @@ function generateEntryPages(
     };
 
     const outFile = path.join(outDir, `${slug}.json`);
+
+    // Security: verify entry file path stays within outDir
+    const resolvedOutFile = path.resolve(outFile);
+    if (!resolvedOutFile.startsWith(resolvedOutDir + path.sep)) {
+      console.warn(
+        `  WARNING: Skipping entry "${slug}" — resolved path escapes output directory.`
+      );
+      continue;
+    }
+
     fs.writeFileSync(outFile, JSON.stringify(pageContent, null, 2));
 
     const relativePath = baseDirRelative ? `${baseDirRelative}/${slug}` : slug;
@@ -438,7 +462,7 @@ function processCollections(
         continue;
       }
 
-      const entry = { slug, ...(rawEntry as Record<string, unknown>) };
+      const entry = { ...(rawEntry as Record<string, unknown>), slug };
 
       // Rewrite co-located image paths
       const imageDestDir = path.join(imagesDir, 'collections', collectionName, slug);

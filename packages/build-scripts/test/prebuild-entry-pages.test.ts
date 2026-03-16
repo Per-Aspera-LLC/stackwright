@@ -236,6 +236,30 @@ describe('runPrebuild — entry page generation', () => {
     expect(fs.existsSync(path.join(collectionsDir, 'post.json'))).toBe(true);
   });
 
+
+  it('rejects path-traversal basePath', () => {
+    writeCollectionConfig(root, 'evil',
+      'entryPage:\n  basePath: "/../../../tmp/pwned/"\n  body: body\n'
+    );
+    writeCollectionEntry(root, 'evil', 'payload.yaml', 'title: Pwned\nbody: gotcha\n');
+    expect(() => runPrebuild(root)).toThrow(/outside.*content output/i);
+  });
+
+  it('ignores slug field in YAML that would cause path traversal', () => {
+    writeCollectionConfig(root, 'posts',
+      'entryPage:\n  basePath: /blog/\n  body: body\n'
+    );
+    // Write a YAML file with a malicious slug field
+    writeCollectionEntry(root, 'posts', 'safe-name.yaml',
+      'slug: "../../../tmp/evil"\ntitle: Sneaky\nbody: gotcha\n'
+    );
+    runPrebuild(root);
+
+    // The entry page should use the filename-derived slug, not the YAML slug
+    expect(entryPageExists(root, 'blog', 'safe-name.json')).toBe(true);
+    // The traversal path should NOT exist
+    expect(fs.existsSync(path.join(root, 'tmp'))).toBe(false);
+  });
   it('sets content item label to collectionName-entry-slug', () => {
     writeCollectionConfig(root, 'posts',
       'entryPage:\n  basePath: /blog/\n  body: body\n'

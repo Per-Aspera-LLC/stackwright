@@ -101,6 +101,15 @@ export function addCollection(
     bodyField?: string;
   } = {}
 ): AddCollectionResult {
+  // Validate collection name to prevent path traversal
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(name)) {
+    const err = new Error(
+      `Invalid collection name "${name}". Use only alphanumeric characters, hyphens, and underscores.`
+    );
+    (err as NodeJS.ErrnoException).code = 'INVALID_NAME';
+    throw err;
+  }
+
   const collDir = path.join(contentDir, name);
 
   if (fs.existsSync(collDir)) {
