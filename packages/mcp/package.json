@@ -32,6 +32,7 @@
         "@modelcontextprotocol/sdk": "^1.27.0",
         "@stackwright/cli": "workspace:*",
         "@stackwright/types": "workspace:*",
+        "playwright": "^1.52.0",
         "zod": "^4.3.6"
     },
     "devDependencies": {
