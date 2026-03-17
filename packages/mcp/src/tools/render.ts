@@ -1,5 +1,8 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
+import path from 'path';
+import fs from 'fs';
+import { resolvePagesDir } from '@stackwright/cli';
 import { renderPage, probeServer, closeBrowser } from '../renderer/page-renderer.js';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
@@ -215,6 +218,114 @@ Use this for brand-critical changes where visual regression matters.`,
           ],
           isError: true,
         };
+      }
+    }
+  );
+
+  // --- stackwright_render_yaml ---
+  server.tool(
+    'stackwright_render_yaml',
+    `Render raw YAML content as a page screenshot WITHOUT saving it permanently. Use this to preview content before committing.
+
+Creates a temporary page, waits for the dev server to pick it up, screenshots it, then removes the temp page. Requires a running dev server with watch mode (pnpm dev).
+
+This is the "try before you buy" tool — see exactly how your YAML will look without modifying any real pages.`,
+    {
+      projectRoot: z
+        .string()
+        .refine((p) => path.isAbsolute(p), 'projectRoot must be an absolute path')
+        .describe('Absolute path to the root of the Stackwright project'),
+      yaml: z
+        .string()
+        .max(1_000_000)
+        .describe('Full YAML content for the page (same format as content.yml)'),
+      baseUrl: z
+        .string()
+        .optional()
+        .default(DEFAULT_BASE_URL)
+        .describe('Base URL of the running dev server'),
+      viewport: z
+        .object({
+          width: z.number().min(320).max(3840).default(1280),
+          height: z.number().min(480).max(2160).default(720),
+        })
+        .optional()
+        .describe('Viewport size. Default: 1280x720 (desktop).'),
+      fullPage: z
+        .boolean()
+        .optional()
+        .default(true)
+        .describe('Capture full scrollable page'),
+    },
+    async ({ projectRoot, yaml: yamlContent, baseUrl, viewport, fullPage }) => {
+      // Check server is reachable
+      const reachable = await probeServer(baseUrl);
+      if (!reachable) {
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: `No dev server detected at ${baseUrl}. Start it with \`pnpm dev\` first.`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      // Create a temp page directory with a unique slug
+      const tempSlug = `__preview-${Date.now()}`;
+      const pagesDir = resolvePagesDir(projectRoot);
+      const tempPageDir = path.join(pagesDir, tempSlug);
+      const tempContentFile = path.join(tempPageDir, 'content.yml');
+
+      try {
+        // Write the temp page
+        fs.mkdirSync(tempPageDir, { recursive: true });
+        fs.writeFileSync(tempContentFile, yamlContent, 'utf8');
+
+        // Wait for the dev server's watch mode to pick up the new file
+        // The prebuild watch detects new YAML files and recompiles
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // Render the temp page
+        const result = await renderPage({
+          baseUrl,
+          slug: `/${tempSlug}`,
+          viewport: viewport ?? { width: 1280, height: 720 },
+          fullPage,
+          format: 'png',
+        });
+
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: `Preview rendered (${result.viewport.width}x${result.viewport.height}, ${result.renderTimeMs}ms):`,
+            },
+            {
+              type: 'image' as const,
+              data: result.image,
+              mimeType: result.mimeType,
+            },
+          ],
+        };
+      } catch (err) {
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: `Preview render failed: ${errorMessage(err)}`,
+            },
+          ],
+          isError: true,
+        };
+      } finally {
+        // Always clean up the temp page
+        try {
+          fs.rmSync(tempPageDir, { recursive: true, force: true });
+        } catch {
+          // Best effort cleanup
+        }
       }
     }
   );
