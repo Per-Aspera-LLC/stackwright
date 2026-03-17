@@ -17,6 +17,7 @@
   },
   "changesets": [
     "compose-site-atomic",
-    "declarative-entry-pages"
+    "declarative-entry-pages",
+    "video-media-type"
   ]
 }
