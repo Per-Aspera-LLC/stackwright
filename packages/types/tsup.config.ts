@@ -1,4 +1,4 @@
-import { defineConfig, type Options } from 'tsup'
+import { defineConfig, type Options } from 'tsup';
 
 const config: Options = {
   entry: ['src/types/index.ts'],
@@ -9,9 +9,8 @@ const config: Options = {
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.js' : '.mjs',
-    }
-  }
-}
+    };
+  },
+};
 
-
-export default defineConfig(config)
+export default defineConfig(config);

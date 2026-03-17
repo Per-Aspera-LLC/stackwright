@@ -14,13 +14,13 @@ console.log('Testing fallback theme behavior...');
 const defaultTheme = {
   colors: {
     primary: '#f59e0b',
-    secondary: '#d97706', 
+    secondary: '#d97706',
     accent: '#b45309',
     background: '#ffffff',
     surface: '#f8fafc',
     text: '#1f2937',
-    textSecondary: '#6b7280'
-  }
+    textSecondary: '#6b7280',
+  },
 };
 
 console.log('Default theme fallback:', defaultTheme);

@@ -69,9 +69,7 @@ export async function preview(
   try {
     await fetch(baseUrl, { signal: controller.signal });
   } catch {
-    const err = new Error(
-      `No dev server detected at ${baseUrl}.\nStart it with: pnpm dev`
-    );
+    const err = new Error(`No dev server detected at ${baseUrl}.\nStart it with: pnpm dev`);
     (err as NodeJS.ErrnoException).code = 'NO_DEV_SERVER';
     throw err;
   } finally {
@@ -87,10 +85,7 @@ export async function preview(
     const page = await browser.newPage();
     await page.setViewportSize({ width, height });
 
-    const url = new URL(
-      slug.startsWith('/') ? slug : `/${slug}`,
-      baseUrl
-    ).toString();
+    const url = new URL(slug.startsWith('/') ? slug : `/${slug}`, baseUrl).toString();
 
     const response = await page.goto(url, {
       waitUntil: 'networkidle',
@@ -98,9 +93,7 @@ export async function preview(
     });
 
     if (!response || response.status() >= 400) {
-      const err = new Error(
-        `Page returned HTTP ${response?.status() ?? 'no response'} for ${url}`
-      );
+      const err = new Error(`Page returned HTTP ${response?.status() ?? 'no response'} for ${url}`);
       (err as NodeJS.ErrnoException).code = 'PAGE_ERROR';
       throw err;
     }
@@ -151,9 +144,7 @@ export function registerPreview(program: Command): void {
         const result = await preview(project.root, resolvedSlug, opts);
         outputResult(result, { json }, () => {
           console.log(
-            chalk.green(
-              `✓ Screenshot saved: ${path.relative(process.cwd(), result.outputPath)}`
-            )
+            chalk.green(`✓ Screenshot saved: ${path.relative(process.cwd(), result.outputPath)}`)
           );
           console.log(
             chalk.blue(

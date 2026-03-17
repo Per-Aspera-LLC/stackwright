@@ -65,9 +65,7 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
         .optional()
         .default(DEFAULT_BASE_URL)
         .describe('Base URL of the running dev server (default: http://localhost:3000)'),
-      slug: z
-        .string()
-        .describe('Page slug to render (e.g. "/" for home, "/about", "/pricing")'),
+      slug: z.string().describe('Page slug to render (e.g. "/" for home, "/about", "/pricing")'),
       viewport: z
         .object({
           width: z.number().min(320).max(3840).default(1280),
@@ -156,9 +154,7 @@ Use this for brand-critical changes where visual regression matters.`,
         .optional()
         .default(DEFAULT_BASE_URL)
         .describe('Base URL of the running dev server'),
-      slug: z
-        .string()
-        .describe('Page slug to snapshot'),
+      slug: z.string().describe('Page slug to snapshot'),
       viewport: z
         .object({
           width: z.number().min(320).max(3840).default(1280),
@@ -166,11 +162,7 @@ Use this for brand-critical changes where visual regression matters.`,
         })
         .optional()
         .describe('Viewport size'),
-      fullPage: z
-        .boolean()
-        .optional()
-        .default(true)
-        .describe('Capture full scrollable page'),
+      fullPage: z.boolean().optional().default(true).describe('Capture full scrollable page'),
     },
     async ({ baseUrl, slug, viewport, fullPage }) => {
       const reachable = await probeServer(baseUrl);
@@ -251,11 +243,7 @@ This is the "try before you buy" tool — see exactly how your YAML will look wi
         })
         .optional()
         .describe('Viewport size. Default: 1280x720 (desktop).'),
-      fullPage: z
-        .boolean()
-        .optional()
-        .default(true)
-        .describe('Capture full scrollable page'),
+      fullPage: z.boolean().optional().default(true).describe('Capture full scrollable page'),
     },
     async ({ projectRoot, yaml: yamlContent, baseUrl, viewport, fullPage }) => {
       // Check server is reachable

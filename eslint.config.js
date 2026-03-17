@@ -13,7 +13,12 @@ module.exports = [
 
   // TypeScript files
   {
-    files: ['packages/*/src/**/*.ts', 'packages/*/src/**/*.tsx', 'packages/*/test/**/*.ts', 'packages/*/test/**/*.tsx'],
+    files: [
+      'packages/*/src/**/*.ts',
+      'packages/*/src/**/*.tsx',
+      'packages/*/test/**/*.ts',
+      'packages/*/test/**/*.tsx',
+    ],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
