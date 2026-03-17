@@ -28,6 +28,7 @@ import {
   pageContentSchema,
   KNOWN_CONTENT_TYPE_KEYS,
   collectionConfigSchema,
+  VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
 } from '@stackwright/types';
 import type {
   CollectionConfig,
@@ -49,13 +50,25 @@ const IMAGE_EXTENSIONS = new Set([
   '.ico',
 ]);
 
+const VIDEO_EXTENSIONS = new Set<string>(VIDEO_EXTENSIONS_ARRAY);
+
 const YAML_EXTENSIONS = new Set(['.yml', '.yaml']);
 const COLLECTION_CONFIG_NAMES = new Set(['_collection.yml', '_collection.yaml']);
+
+const LARGE_VIDEO_THRESHOLD_MB = 50;
 
 // -- Helpers ----------------------------------------------------------------
 
 function isImagePath(str: string): boolean {
   return IMAGE_EXTENSIONS.has(path.extname(str).toLowerCase());
+}
+
+function isVideoPath(str: string): boolean {
+  return VIDEO_EXTENSIONS.has(path.extname(str).toLowerCase());
+}
+
+function isColocatablePath(str: string): boolean {
+  return isImagePath(str) || isVideoPath(str);
 }
 
 function isYamlFile(filename: string): boolean {
@@ -71,7 +84,7 @@ function copyIfNewer(src: string, dest: string, rootDir: string): void {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   if (!fs.existsSync(dest) || fs.statSync(src).mtimeMs > fs.statSync(dest).mtimeMs) {
     fs.copyFileSync(src, dest);
-    console.log(`  image: ${path.relative(rootDir, src)} -> ${path.relative(rootDir, dest)}`);
+    console.log(`  asset: ${path.relative(rootDir, src)} -> ${path.relative(rootDir, dest)}`);
   }
 }
 
@@ -101,9 +114,12 @@ function rewritePaths(node: unknown, rewrite: (s: string) => string): unknown {
  */
 function processSiteConfig(config: unknown, rootDir: string, imagesDir: string): unknown {
   return rewritePaths(config, (str) => {
-    const isRelativeDot = str.startsWith('./') && isImagePath(str);
+    const isRelativeDot = str.startsWith('./') && isColocatablePath(str);
     const isBareFile =
-      !str.includes('/') && !str.startsWith('http') && !str.startsWith('data:') && isImagePath(str);
+      !str.includes('/') &&
+      !str.startsWith('http') &&
+      !str.startsWith('data:') &&
+      isColocatablePath(str);
 
     if (!isRelativeDot && !isBareFile) return str;
 
@@ -132,7 +148,7 @@ function processPageContent(
   rootDir: string
 ): unknown {
   return rewritePaths(content, (str) => {
-    if (!str.startsWith('./') || !isImagePath(str)) return str;
+    if (!str.startsWith('./') || !isColocatablePath(str)) return str;
 
     const srcPath = path.resolve(contentDir, str);
     if (!fs.existsSync(srcPath)) {
@@ -143,6 +159,17 @@ function processPageContent(
     const filename = path.basename(str);
     const destPath = path.join(imageDestDir, filename);
     copyIfNewer(srcPath, destPath, rootDir);
+
+    if (isVideoPath(str)) {
+      const fileSizeMB = fs.statSync(srcPath).size / (1024 * 1024);
+      if (fileSizeMB > LARGE_VIDEO_THRESHOLD_MB) {
+        console.warn(
+          `  ⚠️  Large video file: ${path.relative(rootDir, srcPath)} (${fileSizeMB.toFixed(1)} MB). ` +
+            `Consider using adaptive streaming (MPEG-DASH/HLS) or a video CDN for files this size.`
+        );
+      }
+    }
+
     return `${publicPrefix}/${filename}`;
   });
 }
