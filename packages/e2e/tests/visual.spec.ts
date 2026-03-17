@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
 /**
  * Visual regression tests for Stackwright content types.
@@ -13,33 +13,33 @@ import { test, expect } from "@playwright/test";
 
 /** Content type sections on the /showcase page, identified by data-label. */
 const CONTENT_TYPE_SECTIONS = [
-  { label: "main-demo", name: "main" },
-  { label: "carousel-demo", name: "carousel" },
-  { label: "timeline-demo", name: "timeline" },
-  { label: "icon-grid-demo", name: "icon_grid" },
-  { label: "tabbed-content-demo", name: "tabbed_content" },
-  { label: "code-block-yaml-demo", name: "code_block" },
-  { label: "feature-list-demo", name: "feature_list" },
-  { label: "testimonial-grid-demo", name: "testimonial_grid" },
-  { label: "faq-demo", name: "faq" },
-  { label: "pricing-table-demo", name: "pricing_table" },
-  { label: "alert-info-demo", name: "alert" },
-  { label: "contact-form-stub-demo", name: "contact_form_stub" },
+  { label: 'main-demo', name: 'main' },
+  { label: 'carousel-demo', name: 'carousel' },
+  { label: 'timeline-demo', name: 'timeline' },
+  { label: 'icon-grid-demo', name: 'icon_grid' },
+  { label: 'tabbed-content-demo', name: 'tabbed_content' },
+  { label: 'code-block-yaml-demo', name: 'code_block' },
+  { label: 'feature-list-demo', name: 'feature_list' },
+  { label: 'testimonial-grid-demo', name: 'testimonial_grid' },
+  { label: 'faq-demo', name: 'faq' },
+  { label: 'pricing-table-demo', name: 'pricing_table' },
+  { label: 'alert-info-demo', name: 'alert' },
+  { label: 'contact-form-stub-demo', name: 'contact_form_stub' },
 ];
 
-test.describe("Visual regression — desktop (1280x720)", () => {
+test.describe('Visual regression — desktop (1280x720)', () => {
   test.use({ viewport: { width: 1280, height: 720 } });
 
-  test("home page full layout", async ({ page }) => {
-    await page.goto("/", { waitUntil: "networkidle" });
-    await expect(page).toHaveScreenshot("home-desktop.png", {
+  test('home page full layout', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page).toHaveScreenshot('home-desktop.png', {
       fullPage: true,
     });
   });
 
-  test.describe("showcase content types", () => {
+  test.describe('showcase content types', () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/showcase", { waitUntil: "networkidle" });
+      await page.goto('/showcase', { waitUntil: 'networkidle' });
     });
 
     for (const { label, name } of CONTENT_TYPE_SECTIONS) {
@@ -52,19 +52,19 @@ test.describe("Visual regression — desktop (1280x720)", () => {
   });
 });
 
-test.describe("Visual regression — mobile (375x667)", () => {
+test.describe('Visual regression — mobile (375x667)', () => {
   test.use({ viewport: { width: 375, height: 667 } });
 
-  test("home page full layout", async ({ page }) => {
-    await page.goto("/", { waitUntil: "networkidle" });
-    await expect(page).toHaveScreenshot("home-mobile.png", {
+  test('home page full layout', async ({ page }) => {
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await expect(page).toHaveScreenshot('home-mobile.png', {
       fullPage: true,
     });
   });
 
-  test.describe("showcase content types", () => {
+  test.describe('showcase content types', () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto("/showcase", { waitUntil: "networkidle" });
+      await page.goto('/showcase', { waitUntil: 'networkidle' });
     });
 
     for (const { label, name } of CONTENT_TYPE_SECTIONS) {

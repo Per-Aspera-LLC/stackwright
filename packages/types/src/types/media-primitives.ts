@@ -35,10 +35,27 @@ const imageContentPrimitiveSchema = mediaPrimitiveBaseSchema.extend({
   aspect_ratio: z.number().optional(),
 });
 
+/** Video-specific fields shared between the primitive and full media schemas. */
+export const videoFieldsSchema = {
+  poster: z.string().optional(),
+  autoplay: z.boolean().optional(),
+  loop: z.boolean().optional(),
+  muted: z.boolean().optional(),
+  controls: z.boolean().optional(),
+  preload: z.enum(['auto', 'metadata', 'none']).optional(),
+  sources: z.array(z.object({ src: z.string(), type: z.string().optional() })).optional(),
+};
+
+const videoContentPrimitiveSchema = mediaPrimitiveBaseSchema.extend({
+  type: z.literal('video'),
+  ...videoFieldsSchema,
+});
+
 export const mediaItemSchema = z.discriminatedUnion('type', [
   mediaContentPrimitiveSchema,
   iconContentPrimitiveSchema,
   imageContentPrimitiveSchema,
+  videoContentPrimitiveSchema,
 ]);
 
 export type MediaItem = z.infer<typeof mediaItemSchema>;

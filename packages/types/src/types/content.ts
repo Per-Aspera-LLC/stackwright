@@ -1,10 +1,15 @@
 import { z } from 'zod';
 import { baseContentSchema, textBlockSchema, buttonContentSchema } from './base';
-import { iconContentSchema, mediaContentSchema, mediaItemSchema } from './media';
+import {
+  iconContentSchema,
+  mediaContentSchema,
+  videoContentSchema,
+  mediaItemSchema,
+} from './media';
 import { graphicPositionSchema } from './enums';
 import { collectionListContentSchema } from './collection';
 import type { TextBlock } from './base';
-import type { MediaContent } from './media';
+import type { MediaContent, VideoContent } from './media';
 import type { CollectionListContent } from './collection';
 
 export const carouselItemSchema = z.object({
@@ -224,7 +229,8 @@ export type ContentItem =
   | AlertContent
   | ContactFormStubContent
   | GridContent
-  | CollectionListContent;
+  | CollectionListContent
+  | VideoContent;
 
 // ---------------------------------------------------------------------------
 // Zod schemas for recursive types
@@ -280,6 +286,7 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
     contactFormStubContentSchema,
     gridContentSchema,
     collectionListContentSchema,
+    videoContentSchema,
   ])
 );
 
@@ -303,6 +310,7 @@ export const KNOWN_CONTENT_TYPE_KEYS = [
   'contact_form_stub',
   'grid',
   'collection_list',
+  'video',
 ] as const;
 
 /** Union type of all known content type key strings. */

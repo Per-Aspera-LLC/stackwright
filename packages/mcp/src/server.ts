@@ -7,6 +7,8 @@ import { registerProjectTools } from './tools/project.js';
 import { registerGitOpsTools } from './tools/git-ops.js';
 import { registerBoardTools } from './tools/board.js';
 import { registerCollectionTools } from './tools/collections.js';
+import { registerComposeTools } from './tools/compose.js';
+import { registerRenderTools, closeBrowser } from './tools/render.js';
 import { version } from '../package.json';
 
 const server = new McpServer({
@@ -21,6 +23,22 @@ registerProjectTools(server);
 registerGitOpsTools(server);
 registerBoardTools(server);
 registerCollectionTools(server);
+registerComposeTools(server);
+registerRenderTools(server);
+
+// Clean up Playwright browser on exit
+process.on('SIGINT', async () => {
+  const forceExit = setTimeout(() => process.exit(1), 3000);
+  forceExit.unref();
+  await closeBrowser();
+  process.exit(0);
+});
+process.on('SIGTERM', async () => {
+  const forceExit = setTimeout(() => process.exit(1), 3000);
+  forceExit.unref();
+  await closeBrowser();
+  process.exit(0);
+});
 
 async function main() {
   const transport = new StdioServerTransport();
@@ -28,7 +46,8 @@ async function main() {
   console.error('Stackwright MCP server running on stdio');
 }
 
-main().catch((err) => {
+main().catch(async (err) => {
   console.error('Fatal:', err);
+  await closeBrowser();
   process.exit(1);
 });

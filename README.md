@@ -2,14 +2,18 @@
 
 <img width="256" height="256" alt="stackwright" src="https://github.com/user-attachments/assets/181b6fd5-0442-4345-a7d0-88f4858c5721" />
 
-**Build real web applications from human-readable YAML — authored by humans or AI agents**
+**Visual rendering + constrained DSL + AI iteration = non-technical people building enterprise apps that are safe by construction.**
 
-Stackwright is a typed DSL that compiles YAML content files into production-ready Next.js applications. Define pages, themes, and navigation in YAML; get a standard React app you own, can fork, and can extend with custom code at any time.
+Stackwright is a typed DSL that compiles YAML content files into production-ready Next.js applications. Pages, themes, navigation, and content are defined in a schema-constrained YAML grammar — authored by humans or AI agents. The output is a standard React app you own, can fork, and can extend with custom code at any time.
+
+Because the YAML schema defines a bounded set of expressible behaviors, every application built on Stackwright is **verifiably safe by construction**. You don't audit individual apps — you audit the platform. Then every app built on it inherits those guarantees.
 
 ## Why Stackwright?
 
-- **Start without a developer**: Non-technical teammates define pages, content, and themes in YAML — or describe what they want to an AI agent and let it write the YAML for them
-- **AI-native authoring**: The narrow, validated YAML schema is designed for reliable AI generation. An MCP server gives AI agents tools to create pages, edit content, validate changes, and open PRs
+- **Safe by construction**: The constrained YAML grammar can only express pre-approved behaviors. AI-generated content passes through Zod schema validation at build time and runtime — invalid states are rejected before they reach the browser
+- **AI-native authoring**: The narrow, validated schema is designed for reliable AI generation. An MCP server gives AI agents tools to create pages, edit content, validate changes, visually render results, and open PRs — all within a verifiable sandbox
+- **Visual feedback loop**: AI agents can screenshot any page, preview raw YAML before committing, and capture before/after diffs — enabling iterative design that converges on brand-appropriate results
+- **Start without a developer**: Non-technical teammates describe what they want to an AI agent. The agent writes valid YAML, renders it to verify the visual result, and opens a PR for review
 - **Own everything**: The output is a standard Next.js app in a git repo you control. Git is the CMS — version history, branching, PR review, and rollback come free
 - **No lock-in**: Any React developer can open the project and extend it immediately. The escape hatch is a feature, not a compromise
 - **Graduate naturally**: Begin with YAML-driven pages, add custom React components alongside them as you grow — no migration, no rewrite
@@ -104,19 +108,28 @@ Images can be co-located alongside their page YAML files using `./relative` path
 | `alert` | Styled admonition/callout (info, warning, success, danger, note, tip) |
 | `contact_form_stub` | Contact information display with mailto link |
 | `media` | Standalone image or media block |
+| `video` | Video player with multiple source support |
+| `grid` | Responsive multi-column grid layout |
+| `collection_list` | Dynamic list from a data collection |
 
 All content types support optional `color` and `background` overrides, and render responsively from 320px to 1440px.
 
 ## MCP Server
 
-Stackwright includes an MCP (Model Context Protocol) server that gives AI agents direct tools for content authoring:
+Stackwright includes an MCP (Model Context Protocol) server that gives AI agents direct tools for content authoring, visual verification, and git workflow:
 
 ```bash
 # Run the MCP server (for use with Claude Code, Claude Desktop, etc.)
 pnpm stackwright-mcp
 ```
 
-Available tools include creating and editing pages, reading and writing site config, validating YAML against the schema, previewing components, managing git branches, and opening PRs. This enables a workflow where non-developers describe changes in natural language and the AI agent produces validated, reviewable content changes.
+**Content & site tools**: Create and edit pages, read and write site config, validate YAML against the schema, manage collections, compose entire sites atomically.
+
+**Visual rendering tools**: Screenshot any page, preview raw YAML without saving, capture before/after diffs for visual comparison. AI agents can see their own output and iterate toward brand-appropriate designs.
+
+**Git workflow tools**: Stage content changes, open PRs for human review — the full editorial loop from natural language to reviewed, merged content.
+
+This enables a workflow where non-developers describe changes in natural language and the AI agent produces validated, visually verified, reviewable content changes.
 
 ## CLI
 
@@ -139,6 +152,10 @@ stackwright types
 # Show installed package versions
 stackwright info
 
+# Preview a page as a screenshot (requires Playwright)
+stackwright preview /about
+stackwright preview /pricing --width 375 --height 667
+
 # Hot-reload during development (watches YAML and images)
 stackwright prebuild --watch
 ```
@@ -152,13 +169,24 @@ stackwright prebuild --watch
 @stackwright/types         — Zod schemas, TypeScript types, and JSON schemas for validation
 @stackwright/icons         — Lucide icon registry
 @stackwright/build-scripts — Prebuild pipeline (image co-location, path rewriting, watch mode)
-@stackwright/cli           — CLI for scaffolding, page management, validation
-@stackwright/mcp           — MCP server for AI agent integration
+@stackwright/cli           — CLI for scaffolding, page management, validation, preview
+@stackwright/mcp           — MCP server for AI agent integration and visual rendering
 ```
 
 ## IDE Support
 
 `@stackwright/types` generates JSON schemas (`content-schema.json`, `theme-schema.json`, `siteconfig-schema.json`) that provide autocomplete and validation in YAML editors. Regenerate after type changes with `pnpm generate-schemas`.
+
+## The Safety Model
+
+Stackwright's constrained YAML grammar creates a fundamentally different security posture than traditional application development:
+
+- **Bounded expressiveness**: The Zod schema defines exactly what behaviors are possible. There is no escape hatch to arbitrary code execution within the YAML layer.
+- **Build-time validation**: Every content change is validated against the schema before it reaches the browser. Invalid states are rejected, not rendered.
+- **Auditable surface area**: Security review reduces to reviewing the component library — a fixed, bounded codebase — rather than auditing every application built on the platform.
+- **Safe AI generation**: When an AI agent generates YAML, it literally cannot express unsafe behavior. The schema is the security policy.
+
+This model extends naturally to backend components: a `data_table` component that can only query through a connection whitelist, a `form` that can only POST to approved endpoints, an `approval_flow` that can only route to defined roles. **The schema constrains what's expressible; the platform enforces what's safe.**
 
 ## Examples
 

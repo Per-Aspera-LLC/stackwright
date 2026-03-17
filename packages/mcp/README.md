@@ -11,6 +11,7 @@ The MCP server runs as a stdio-based service and provides tools for:
 - **Site Management**: Read, write, and validate site configuration; list available themes
 - **Project Management**: Get project information and scaffold new projects
 - **Git Operations**: Stage content changes and open pull requests for review
+- **Visual Rendering**: Screenshot pages, capture before/after diffs, verify brand consistency
 
 ## Prerequisites
 
@@ -298,6 +299,74 @@ const result = await server.callTool('stackwright_open_pr', {
 //             pages/services/content.yml
 ```
 
+### Visual Rendering Tools
+
+#### `stackwright_check_dev_server`
+
+Check if a Stackwright dev server is running and reachable. Call this before using render tools.
+
+**Parameters**:
+- `baseUrl` (string, optional): Base URL to check (default: http://localhost:3000)
+
+**Returns**: Text confirming server is reachable, or error with instructions to start the dev server
+
+**Example Usage**:
+```typescript
+const result = await server.callTool('stackwright_check_dev_server', {});
+// Returns: ✓ Dev server is running at http://localhost:3000. You can now use stackwright_render_page to see your pages.
+```
+
+#### `stackwright_render_page`
+
+Render a Stackwright page and return a screenshot image. Use this to visually verify how a page looks after writing or editing content. Requires a running dev server.
+
+**Parameters**:
+- `baseUrl` (string, optional): Base URL of the running dev server (default: http://localhost:3000)
+- `slug` (string): Page slug to render (e.g., "/" for home, "/about", "/pricing")
+- `viewport` (object, optional): `{ width: number, height: number }` — viewport size (default: 1280x720). Use 375x667 for mobile.
+- `fullPage` (boolean, optional): Capture full scrollable page or just the viewport (default: true)
+- `format` (string, optional): Image format — "png" or "jpeg" (default: "png")
+
+**Returns**: Text with render metadata plus a PNG/JPEG screenshot image
+
+**Example Usage**:
+```typescript
+const result = await server.callTool('stackwright_render_page', {
+  slug: '/about',
+  viewport: { width: 375, height: 667 }
+});
+// Returns: Rendered "/about" (375x667, 1234ms):
+// [image: screenshot of the rendered page]
+```
+
+#### `stackwright_render_diff`
+
+Capture a "before" screenshot of a page for visual comparison. After capturing, make your YAML changes and call `stackwright_render_page` to see the "after" state.
+
+**Parameters**:
+- `baseUrl` (string, optional): Base URL of the running dev server (default: http://localhost:3000)
+- `slug` (string): Page slug to snapshot
+- `viewport` (object, optional): `{ width: number, height: number }` — viewport size
+- `fullPage` (boolean, optional): Capture full scrollable page (default: true)
+
+**Returns**: Text with snapshot metadata plus a "before" PNG screenshot
+
+**Workflow**:
+1. Call `stackwright_render_diff` to capture the current state
+2. Write your YAML changes (`stackwright_write_page` or `stackwright_compose_site`)
+3. Wait for the dev server to hot-reload
+4. Call `stackwright_render_page` to see the "after" state
+5. Compare the two images to evaluate your changes
+
+**Example Usage**:
+```typescript
+const result = await server.callTool('stackwright_render_diff', {
+  slug: '/pricing'
+});
+// Returns: 📸 "Before" snapshot captured for "/pricing" (1280x720, 987ms).
+// [image: screenshot of the current page state]
+```
+
 ## Integration with MCP Clients
 
 The Stackwright MCP server follows the Model Context Protocol (MCP) specification. Any MCP-compatible client can connect to and use these tools.
@@ -358,6 +427,8 @@ try {
 3. **Check `isError` on every response** — tools signal errors via the `isError` flag rather than throwing, so a successful HTTP-level call can still represent a domain error.
 4. **Use absolute paths** — all `projectRoot` and `targetDir` parameters must be absolute paths.
 5. **Disconnect in a finally block** — always call `client.disconnect()` to avoid leaving the server process orphaned.
+6. **Render after editing** — call `stackwright_render_page` after making content changes to visually verify the result. This catches layout, spacing, and brand consistency issues that schema validation alone cannot detect.
+7. **Check the dev server first** — always call `stackwright_check_dev_server` before any render tool. If the server isn't running, render tools will fail with a clear error.
 
 ## Development
 

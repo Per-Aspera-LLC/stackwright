@@ -16,6 +16,9 @@
     "@stackwright/ui-shadcn": "0.1.0"
   },
   "changesets": [
-    "declarative-entry-pages"
+    "compose-site-atomic",
+    "declarative-entry-pages",
+    "video-media-type",
+    "visual-render-tools"
   ]
 }

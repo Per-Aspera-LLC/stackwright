@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { mediaStyleVariantSchema, typographyVariantSchema } from './enums';
 import { baseContentSchema } from './base';
+import { videoFieldsSchema } from './media-primitives';
 
 const mediaBaseSchema = baseContentSchema.extend({
   src: z.string(),
@@ -25,12 +26,18 @@ export const imageContentSchema = mediaBaseSchema.extend({
   aspect_ratio: z.number().optional(),
 });
 
+export const videoContentSchema = mediaBaseSchema.extend({
+  type: z.literal('video'),
+  ...videoFieldsSchema,
+});
+
 export type MediaContent = z.infer<typeof mediaContentSchema>;
 export type IconContent = z.infer<typeof iconContentSchema>;
 export type ImageContent = z.infer<typeof imageContentSchema>;
+export type VideoContent = z.infer<typeof videoContentSchema>;
 
 // mediaItemSchema and MediaItem are defined in media-primitives.ts (a leaf module
 // with no imports from base.ts) so that base.ts can import them for
 // buttonContentSchema.icon without creating a circular module dependency.
-export { mediaItemSchema } from './media-primitives';
+export { mediaItemSchema, videoFieldsSchema } from './media-primitives';
 export type { MediaItem } from './media-primitives';

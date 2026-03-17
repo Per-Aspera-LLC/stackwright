@@ -1,5 +1,44 @@
 # @stackwright/mcp
 
+## 0.3.0-alpha.3
+
+### Minor Changes
+
+- 74c7efd: Add visual rendering tools to the MCP server — `stackwright_render_page`, `stackwright_render_diff`, `stackwright_render_yaml`, and `stackwright_check_dev_server`. These give AI agents a visual feedback loop: render any page to a screenshot, preview raw YAML before committing, capture before/after comparisons, and verify brand consistency.
+
+  Add `stackwright preview` CLI command for rendering pages to screenshot files. Requires Playwright (optional peer dependency).
+
+  Uses Playwright with browser instance pooling for sub-second re-renders after cold start.
+
+### Patch Changes
+
+- Updated dependencies [74c7efd]
+  - @stackwright/cli@0.7.0-alpha.3
+
+## 0.3.0-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [a5b331f]
+  - @stackwright/types@1.1.0-alpha.1
+  - @stackwright/cli@0.7.0-alpha.2
+
+## 0.3.0-alpha.1
+
+### Minor Changes
+
+- bbe2138: Add `stackwright_compose_site` MCP tool and `stackwright compose` CLI command for atomic whole-site generation with cross-page semantic validation.
+
+  New capabilities:
+  - Validate and write site config + all pages in a single atomic operation
+  - Cross-page semantic checks: nav linkage, orphan pages, button hrefs, collection sources, duplicate titles, theme colors
+  - Errors block all writes; warnings are reported but don't block
+
+### Patch Changes
+
+- Updated dependencies [bbe2138]
+  - @stackwright/cli@0.7.0-alpha.1
+
 ## 0.3.0-alpha.0
 
 ### Minor Changes
