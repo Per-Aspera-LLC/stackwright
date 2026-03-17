@@ -18,6 +18,7 @@ export { stageChanges, openPr } from './commands/git-ops';
 export { getBoard, parseBoard } from './commands/board';
 export { listCollections, addCollection, resolveContentDir } from './commands/collection';
 export { composeSite } from './commands/compose';
+export { preview } from './commands/preview';
 export { validateSiteComposition } from './utils/site-validator';
 export { detectProject, resolvePagesDir } from './utils/project-detector';
 
@@ -55,6 +56,7 @@ export type {
   AddCollectionResult,
 } from './commands/collection';
 export type { ComposeSiteResult, ComposeSiteOptions } from './commands/compose';
+export type { PreviewResult, PreviewOptions } from './commands/preview';
 export type {
   ValidateSiteCompositionResult,
   ValidateSiteCompositionOptions,
