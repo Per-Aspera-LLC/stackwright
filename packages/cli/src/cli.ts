@@ -13,6 +13,7 @@ import { registerGitOps } from './commands/git-ops';
 import { registerBoard } from './commands/board';
 import { registerCollection } from './commands/collection';
 import { registerCompose } from './commands/compose';
+import { registerPreview } from './commands/preview';
 
 const { version } = require('../package.json') as { version: string };
 
@@ -38,6 +39,7 @@ async function main(): Promise<void> {
   registerBoard(program);
   registerCollection(program);
   registerCompose(program);
+  registerPreview(program);
 
   // Pre-parse to extract global options (including --plugin-dir) before full dispatch.
   // parseOptions() does NOT dispatch commands — it only extracts options.
