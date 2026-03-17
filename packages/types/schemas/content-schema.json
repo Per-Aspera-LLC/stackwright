@@ -87,13 +87,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "copyright": {
               "type": "string"
@@ -101,13 +101,13 @@
             "buttons": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/__schema14"
+                "$ref": "#/definitions/__schema21"
               }
             },
             "sociallinks": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/__schema14"
+                "$ref": "#/definitions/__schema21"
               }
             },
             "socialtext": {
@@ -124,7 +124,7 @@
         "content_items": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/__schema17"
+            "$ref": "#/definitions/__schema24"
           }
         },
         "list_icon": {
@@ -270,6 +270,65 @@
             "type"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "src": {
+              "$ref": "#/definitions/__schema1"
+            },
+            "alt": {
+              "$ref": "#/definitions/__schema2"
+            },
+            "height": {
+              "$ref": "#/definitions/__schema3"
+            },
+            "width": {
+              "$ref": "#/definitions/__schema4"
+            },
+            "style": {
+              "$ref": "#/definitions/__schema5"
+            },
+            "label": {
+              "$ref": "#/definitions/__schema7"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema8"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema9"
+            },
+            "type": {
+              "type": "string",
+              "const": "video"
+            },
+            "poster": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "autoplay": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "loop": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "muted": {
+              "$ref": "#/definitions/__schema14"
+            },
+            "controls": {
+              "$ref": "#/definitions/__schema15"
+            },
+            "preload": {
+              "$ref": "#/definitions/__schema16"
+            },
+            "sources": {
+              "$ref": "#/definitions/__schema17"
+            }
+          },
+          "required": [
+            "src",
+            "type"
+          ],
+          "additionalProperties": false
         }
       ]
     },
@@ -344,22 +403,63 @@
       "type": "string"
     },
     "__schema12": {
-      "type": "string"
+      "type": "boolean"
     },
     "__schema13": {
-      "type": "string"
+      "type": "boolean"
     },
     "__schema14": {
+      "type": "boolean"
+    },
+    "__schema15": {
+      "type": "boolean"
+    },
+    "__schema16": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "metadata",
+        "none"
+      ]
+    },
+    "__schema17": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "src": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "src"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "__schema18": {
+      "type": "string"
+    },
+    "__schema19": {
+      "type": "string"
+    },
+    "__schema20": {
+      "type": "string"
+    },
+    "__schema21": {
       "type": "object",
       "properties": {
         "text": {
-          "$ref": "#/definitions/__schema15"
+          "$ref": "#/definitions/__schema22"
         },
         "textSize": {
           "$ref": "#/definitions/__schema10"
         },
         "textColor": {
-          "$ref": "#/definitions/__schema16"
+          "$ref": "#/definitions/__schema23"
         },
         "variant": {
           "type": "string",
@@ -409,22 +509,22 @@
       ],
       "additionalProperties": false
     },
-    "__schema15": {
+    "__schema22": {
       "type": "string"
     },
-    "__schema16": {
+    "__schema23": {
       "type": "string"
     },
-    "__schema17": {
+    "__schema24": {
       "anyOf": [
         {
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
               "type": "string"
@@ -484,25 +584,25 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
               "const": "main"
             },
             "heading": {
-              "$ref": "#/definitions/__schema18"
+              "$ref": "#/definitions/__schema25"
             },
             "textBlocks": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/__schema18"
+                "$ref": "#/definitions/__schema25"
               }
             },
             "media": {
@@ -522,7 +622,7 @@
             "buttons": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/__schema14"
+                "$ref": "#/definitions/__schema21"
               }
             },
             "textToGraphic": {
@@ -541,25 +641,25 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
               "const": "tabbed_content"
             },
             "heading": {
-              "$ref": "#/definitions/__schema18"
+              "$ref": "#/definitions/__schema25"
             },
             "tabs": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/__schema17"
+                "$ref": "#/definitions/__schema24"
               }
             }
           },
@@ -575,28 +675,28 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
-            },
-            "background": {
-              "$ref": "#/definitions/__schema13"
-            },
-            "src": {
               "$ref": "#/definitions/__schema19"
             },
-            "alt": {
+            "background": {
               "$ref": "#/definitions/__schema20"
             },
+            "src": {
+              "$ref": "#/definitions/__schema26"
+            },
+            "alt": {
+              "$ref": "#/definitions/__schema27"
+            },
             "height": {
-              "$ref": "#/definitions/__schema21"
+              "$ref": "#/definitions/__schema28"
             },
             "width": {
-              "$ref": "#/definitions/__schema22"
+              "$ref": "#/definitions/__schema29"
             },
             "style": {
-              "$ref": "#/definitions/__schema23"
+              "$ref": "#/definitions/__schema30"
             },
             "type": {
               "type": "string",
@@ -614,13 +714,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -629,7 +729,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -664,13 +764,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -679,7 +779,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -689,28 +789,28 @@
                 "type": "object",
                 "properties": {
                   "label": {
-                    "$ref": "#/definitions/__schema11"
+                    "$ref": "#/definitions/__schema18"
                   },
                   "color": {
                     "type": "string"
                   },
                   "background": {
-                    "$ref": "#/definitions/__schema13"
-                  },
-                  "src": {
-                    "$ref": "#/definitions/__schema19"
-                  },
-                  "alt": {
                     "$ref": "#/definitions/__schema20"
                   },
+                  "src": {
+                    "$ref": "#/definitions/__schema26"
+                  },
+                  "alt": {
+                    "$ref": "#/definitions/__schema27"
+                  },
                   "height": {
-                    "$ref": "#/definitions/__schema21"
+                    "$ref": "#/definitions/__schema28"
                   },
                   "width": {
-                    "$ref": "#/definitions/__schema22"
+                    "$ref": "#/definitions/__schema29"
                   },
                   "style": {
-                    "$ref": "#/definitions/__schema23"
+                    "$ref": "#/definitions/__schema30"
                   },
                   "type": {
                     "type": "string",
@@ -747,13 +847,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -780,13 +880,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -795,7 +895,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -840,13 +940,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -855,7 +955,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -906,13 +1006,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -921,7 +1021,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -956,13 +1056,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -971,7 +1071,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -1030,13 +1130,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -1072,13 +1172,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -1087,7 +1187,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -1121,13 +1221,13 @@
           "type": "object",
           "properties": {
             "label": {
-              "$ref": "#/definitions/__schema11"
+              "$ref": "#/definitions/__schema18"
             },
             "color": {
-              "$ref": "#/definitions/__schema12"
+              "$ref": "#/definitions/__schema19"
             },
             "background": {
-              "$ref": "#/definitions/__schema13"
+              "$ref": "#/definitions/__schema20"
             },
             "type": {
               "type": "string",
@@ -1136,7 +1236,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -1144,7 +1244,7 @@
               "minItems": 1,
               "type": "array",
               "items": {
-                "$ref": "#/definitions/__schema24"
+                "$ref": "#/definitions/__schema31"
               }
             },
             "gap": {
@@ -1216,7 +1316,7 @@
             "heading": {
               "allOf": [
                 {
-                  "$ref": "#/definitions/__schema18"
+                  "$ref": "#/definitions/__schema25"
                 }
               ]
             },
@@ -1235,20 +1335,80 @@
             "card"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema18"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema19"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema20"
+            },
+            "src": {
+              "$ref": "#/definitions/__schema26"
+            },
+            "alt": {
+              "$ref": "#/definitions/__schema27"
+            },
+            "height": {
+              "$ref": "#/definitions/__schema28"
+            },
+            "width": {
+              "$ref": "#/definitions/__schema29"
+            },
+            "style": {
+              "$ref": "#/definitions/__schema30"
+            },
+            "type": {
+              "type": "string",
+              "const": "video"
+            },
+            "poster": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "autoplay": {
+              "$ref": "#/definitions/__schema12"
+            },
+            "loop": {
+              "$ref": "#/definitions/__schema13"
+            },
+            "muted": {
+              "$ref": "#/definitions/__schema14"
+            },
+            "controls": {
+              "$ref": "#/definitions/__schema15"
+            },
+            "preload": {
+              "$ref": "#/definitions/__schema16"
+            },
+            "sources": {
+              "$ref": "#/definitions/__schema17"
+            }
+          },
+          "required": [
+            "label",
+            "src",
+            "type"
+          ],
+          "additionalProperties": false
         }
       ]
     },
-    "__schema18": {
+    "__schema25": {
       "type": "object",
       "properties": {
         "text": {
-          "$ref": "#/definitions/__schema15"
+          "$ref": "#/definitions/__schema22"
         },
         "textSize": {
           "$ref": "#/definitions/__schema10"
         },
         "textColor": {
-          "$ref": "#/definitions/__schema16"
+          "$ref": "#/definitions/__schema23"
         }
       },
       "required": [
@@ -1257,13 +1417,13 @@
       ],
       "additionalProperties": false
     },
-    "__schema19": {
+    "__schema26": {
       "type": "string"
     },
-    "__schema20": {
+    "__schema27": {
       "type": "string"
     },
-    "__schema21": {
+    "__schema28": {
       "anyOf": [
         {
           "type": "number"
@@ -1273,7 +1433,7 @@
         }
       ]
     },
-    "__schema22": {
+    "__schema29": {
       "anyOf": [
         {
           "type": "number"
@@ -1283,14 +1443,14 @@
         }
       ]
     },
-    "__schema23": {
+    "__schema30": {
       "allOf": [
         {
           "$ref": "#/definitions/__schema6"
         }
       ]
     },
-    "__schema24": {
+    "__schema31": {
       "type": "object",
       "properties": {
         "width": {
@@ -1299,7 +1459,7 @@
         "content_items": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/__schema17"
+            "$ref": "#/definitions/__schema24"
           }
         }
       },
