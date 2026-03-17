@@ -319,3 +319,84 @@ describe('runPrebuild — collection_list entry injection', () => {
     expect(json.content.content_items[1]._entries).toBeInstanceOf(Array);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Video file co-location
+// ---------------------------------------------------------------------------
+
+describe('runPrebuild — video file co-location', () => {
+  let root: string;
+
+  beforeEach(() => {
+    root = makeTmpProject();
+  });
+
+  it('copies a co-located .mp4 file to public/images/', () => {
+    const pageDir = path.join(root, 'pages', 'hero');
+    writePageContent(
+      root,
+      'hero',
+      `content:\n  content_items:\n    - type: video\n      label: "hero-video"\n      src: "./demo.mp4"\n`
+    );
+    fs.writeFileSync(path.join(pageDir, 'demo.mp4'), 'FAKE_MP4_DATA');
+
+    runPrebuild(root);
+
+    const dest = path.join(root, 'public', 'images', 'hero', 'demo.mp4');
+    expect(fs.existsSync(dest)).toBe(true);
+    expect(fs.readFileSync(dest, 'utf8')).toBe('FAKE_MP4_DATA');
+  });
+
+  it('rewrites relative video path to /images/<slug>/filename in output JSON', () => {
+    const pageDir = path.join(root, 'pages', 'about');
+    writePageContent(
+      root,
+      'about',
+      `content:\n  content_items:\n    - type: video\n      label: "about-video"\n      src: "./intro.webm"\n`
+    );
+    fs.writeFileSync(path.join(pageDir, 'intro.webm'), 'FAKE_WEBM');
+
+    runPrebuild(root);
+
+    const raw = fs.readFileSync(
+      path.join(root, 'public', 'stackwright-content', 'about.json'),
+      'utf8'
+    );
+    expect(raw).toContain('/images/about/intro.webm');
+    expect(raw).not.toContain('./intro.webm');
+  });
+
+  it('handles .ogg and .mov extensions as colocatable', () => {
+    const pageDir = path.join(root, 'pages', 'formats');
+    writePageContent(
+      root,
+      'formats',
+      `content:\n  content_items:\n    - type: main\n      label: "format-test"\n      heading:\n        text: "Formats"\n        textSize: "h1"\n      textBlocks: []\n      media:\n        type: "video"\n        label: "ogg-vid"\n        src: "./clip.ogg"\n`
+    );
+    fs.writeFileSync(path.join(pageDir, 'clip.ogg'), 'FAKE_OGG');
+
+    runPrebuild(root);
+
+    const dest = path.join(root, 'public', 'images', 'formats', 'clip.ogg');
+    expect(fs.existsSync(dest)).toBe(true);
+  });
+
+  it('warns for large video files (>50MB) without failing', () => {
+    const pageDir = path.join(root, 'pages', 'big');
+    writePageContent(
+      root,
+      'big',
+      `content:\n  content_items:\n    - type: video\n      label: "big-video"\n      src: "./huge.mp4"\n`
+    );
+
+    // Create a file just over 50MB by writing a sparse-ish buffer
+    const bigBuf = Buffer.alloc(51 * 1024 * 1024, 0);
+    fs.writeFileSync(path.join(pageDir, 'huge.mp4'), bigBuf);
+
+    const warnSpy = vi.spyOn(console, 'warn');
+    expect(() => runPrebuild(root)).not.toThrow();
+    const warnings = warnSpy.mock.calls.map((c) => c.join(' ')).join('\n');
+    expect(warnings).toContain('Large video file');
+    warnSpy.mockRestore();
+  });
+});
