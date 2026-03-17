@@ -4,6 +4,10 @@ import { renderPage, probeServer, closeBrowser } from '../renderer/page-renderer
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
 export function registerRenderTools(server: McpServer): void {
   // --- stackwright_check_dev_server ---
   server.tool(
@@ -99,8 +103,8 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
           baseUrl,
           slug,
           viewport: viewport ?? { width: 1280, height: 720 },
-          fullPage: fullPage ?? true,
-          format: format ?? 'png',
+          fullPage,
+          format,
         });
 
         return {
@@ -121,7 +125,7 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
           content: [
             {
               type: 'text' as const,
-              text: `Render failed for "${slug}": ${(err as Error).message}`,
+              text: `Render failed for "${slug}": ${errorMessage(err)}`,
             },
           ],
           isError: true,
@@ -184,7 +188,7 @@ Use this for brand-critical changes where visual regression matters.`,
           baseUrl,
           slug,
           viewport: viewport ?? { width: 1280, height: 720 },
-          fullPage: fullPage ?? true,
+          fullPage,
           format: 'png',
         });
 
@@ -206,7 +210,7 @@ Use this for brand-critical changes where visual regression matters.`,
           content: [
             {
               type: 'text' as const,
-              text: `Snapshot failed for "${slug}": ${(err as Error).message}`,
+              text: `Snapshot failed for "${slug}": ${errorMessage(err)}`,
             },
           ],
           isError: true,
