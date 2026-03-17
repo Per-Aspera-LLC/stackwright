@@ -60,9 +60,9 @@ describe('renderPage', () => {
     await closeBrowser();
 
     const { renderPage } = await import('../src/renderer/page-renderer');
-    await expect(
-      renderPage({ baseUrl: 'http://localhost:3000', slug: '/broken' })
-    ).rejects.toThrow('HTTP 500');
+    await expect(renderPage({ baseUrl: 'http://localhost:3000', slug: '/broken' })).rejects.toThrow(
+      'HTTP 500'
+    );
   });
 
   it('returns base64 image on success', async () => {

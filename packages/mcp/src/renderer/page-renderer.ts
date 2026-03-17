@@ -56,13 +56,15 @@ async function getBrowser(): Promise<Browser> {
   // calls would both see browserInstance === null, both call chromium.launch(),
   // and the first resolved browser gets orphaned.
   if (!launchPromise) {
-    launchPromise = chromium.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    }).then((browser) => {
-      browserInstance = browser;
-      launchPromise = null;
-      return browser;
-    });
+    launchPromise = chromium
+      .launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      })
+      .then((browser) => {
+        browserInstance = browser;
+        launchPromise = null;
+        return browser;
+      });
   }
 
   return launchPromise;
@@ -111,9 +113,7 @@ export async function renderPage(options: RenderOptions): Promise<RenderResult> 
     });
 
     if (!response || response.status() >= 400) {
-      throw new Error(
-        `Page returned HTTP ${response?.status() ?? 'no response'} for ${url}`
-      );
+      throw new Error(`Page returned HTTP ${response?.status() ?? 'no response'} for ${url}`);
     }
 
     // Wait a beat for any client-side hydration / animations to settle
