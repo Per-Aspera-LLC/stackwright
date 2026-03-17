@@ -25,6 +25,26 @@ The type system that defines what YAML can express — the Stackwright grammar �
 
 ---
 
+## Visual Rendering & AI Design Loop
+
+**Shipped.** The visual rendering infrastructure is now in place — AI agents and the CLI can screenshot pages, preview raw YAML, and capture before/after diffs.
+
+**What's live:**
+- MCP tools: `stackwright_render_page`, `stackwright_render_diff`, `stackwright_render_yaml`, `stackwright_check_dev_server`
+- CLI: `stackwright preview` command
+- E2E tests: full render pipeline verified against the example app
+
+**Next step: branding expert agent.** The visual rendering tools are foundational infrastructure for an AI agent that can:
+1. Chat with a user about their company, values, and aesthetic preferences
+2. Generate theme and content variations
+3. Render each variation and evaluate it visually
+4. Iterate toward a design that captures the right brand "feel"
+5. Ship the result via `stackwright_open_pr`
+
+This agent is the proof point for the platform's thesis: that non-technical people can build professional, brand-appropriate applications through conversation — with the constrained DSL guaranteeing safety and the visual feedback loop guaranteeing quality.
+
+---
+
 ## Framework Direction
 
 Stackwright ships 15 content types (carousel, main, tabbed_content, media, timeline, icon_grid, code_block, feature_list, testimonial_grid, faq, pricing_table, alert, contact_form_stub, grid, collection_list). Dark mode, SEO metadata, cookie persistence, and responsive design are first-class.
@@ -45,7 +65,7 @@ See `.claude/stackwright-pro-vision.md` for the full product vision. Summary of 
 
 **Medium-term: OpenAPI integration.** `@stackwright-pro/openapi` takes an OpenAPI spec and emits a typed `CollectionProvider`, Zod schemas, TypeScript types, and a client module. Turns "here is an API spec" into "here is a working, validated UI" in hours.
 
-**Long-term: full-stack composition compiler.** YAML-defined serverless endpoints, infrastructure-as-code generation, and a complete deployment pipeline. The same compositional approach — declarative, schema-constrained, AI-writable — extended to the backend.
+**Long-term: safe enterprise application platform.** YAML-defined backend components — data tables, forms, approval flows, API integrations — all constrained by Zod schemas, all verifiably safe by construction. Subject matter experts define workflows; the platform enforces safety. The same compositional approach — declarative, schema-constrained, AI-writable, visually verifiable — extended from marketing sites to enterprise applications. The one-sentence pitch: visual rendering + constrained DSL + AI iteration = non-technical people building enterprise apps that are safe by construction.
 
 **Adjacent opportunities:** AI-powered project scaffolding, visual editor backed by the MCP server, data-interactive component library (charts, tables, forms).
 
@@ -53,9 +73,15 @@ See `.claude/stackwright-pro-vision.md` for the full product vision. Summary of 
 
 ## Infrastructure Direction
 
-The MCP server is the primary non-developer interface (see PHILOSOPHY.md: "The GUI Is AI"). It currently provides 16 tools for content authoring, site configuration, git workflow, and project management.
+The MCP server is the primary non-developer interface (see PHILOSOPHY.md: "The GUI Is AI"). It currently provides 20 tools spanning content authoring, site configuration, visual rendering, git workflow, and project management.
 
-**Next infra priorities:** E2E screenshot comparison on merge (#141), AI-driven visual QA as a stretch goal. Both build on the existing Playwright E2E and visual regression infrastructure.
+**Recent milestones:**
+- Visual rendering tools shipped — AI agents can now see their output
+- `stackwright preview` CLI command — screenshot pages from the terminal
+- E2E render pipeline tests — visual tooling verified end-to-end
+- Whole-site composition (`stackwright_compose_site`) with cross-page validation
+
+**Next infra priorities:** Branding expert agent, E2E screenshot comparison on merge (#141), AI-driven visual QA. All build on the visual rendering infrastructure now in place.
 
 ---
 

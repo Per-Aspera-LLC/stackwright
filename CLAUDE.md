@@ -45,6 +45,10 @@ pnpm stackwright -- info
 # View the priority-tiered product board (queries GitHub Issues)
 pnpm stackwright -- board
 
+# Preview a page as a screenshot (requires a running dev server + Playwright)
+pnpm stackwright -- preview /about
+pnpm stackwright -- preview / --width 375 --height 667 --output mobile.png
+
 # Project-aware commands must be run from inside a Stackwright project:
 # cd examples/hellostackwrightnext && pnpm stackwright -- page list
 
@@ -68,7 +72,7 @@ pnpm release            # Build and publish to NPM
 
 ## Architecture
 
-Stackwright is a **pnpm monorepo** implementing a typed DSL for web applications. YAML is the syntax. `@stackwright/types` is the grammar. The framework compiles content files into production-ready Next.js/React applications. See `PHILOSOPHY.md` for the full architectural rationale.
+Stackwright is a **pnpm monorepo** implementing a typed DSL for web applications — a platform where visual rendering + constrained DSL + AI iteration = non-technical people building enterprise apps that are safe by construction. YAML is the syntax. `@stackwright/types` is the grammar. Zod schemas enforce the safety boundary. The framework compiles content files into production-ready Next.js/React applications. See `PHILOSOPHY.md` for the full architectural rationale.
 
 ### Package Dependency Graph
 
@@ -191,6 +195,22 @@ const debugLog = (message: string, data?: any) => {
 ### Troubleshooting
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md#troubleshooting) for common issues and solutions.
+
+### Visual Rendering Pipeline
+
+Stackwright includes visual rendering tools that let AI agents and developers see rendered pages as screenshots. This closes the feedback loop between content authoring and visual verification.
+
+**MCP tools** (in `@stackwright/mcp`):
+- `stackwright_check_dev_server` — verify dev server is running
+- `stackwright_render_page` — screenshot any page (returns base64 PNG/JPEG)
+- `stackwright_render_diff` — capture "before" state for visual comparison
+- `stackwright_render_yaml` — render raw YAML without saving permanently (ephemeral preview)
+
+**CLI command**: `stackwright preview [slug]` renders a page to a screenshot file.
+
+**Architecture**: A singleton Playwright browser instance is pooled and reused across MCP render calls with a 5-minute idle auto-teardown. The CLI command launches a fresh browser per invocation. Both require a running dev server (`pnpm dev`).
+
+**Ephemeral preview flow** (`render_yaml`): Writes a `__preview-<timestamp>` temp page → waits for dev server hot-reload → screenshots → cleans up the temp page in a `finally` block. Zero permanent side effects.
 
 ### Cookie & Color Mode Persistence
 

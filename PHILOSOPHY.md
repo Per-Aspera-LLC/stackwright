@@ -2,6 +2,8 @@
 
 This document captures the product intent and architectural principles behind Stackwright. It is written for agents, contributors, and future maintainers who need to understand not just *what* the framework does, but *why* it is built the way it is — so that new decisions align with the long-term direction rather than inadvertently working against it.
 
+Stackwright's one-sentence thesis: **Visual rendering + constrained DSL + AI iteration = non-technical people building enterprise apps that are safe by construction.**
+
 [CONTRIBUTING.md](./CONTRIBUTING.md) tells you how to work in this repo. [ROADMAP.md](./ROADMAP.md) tells you what to build next. This document tells you what Stackwright is and why it is built the way it is.
 
 ---
@@ -57,6 +59,24 @@ This is the key competitive insight: unconstrained code generation (asking an LL
 
 ---
 
+## Verifiable Safety by Construction
+
+The constrained YAML grammar creates a security model that is fundamentally different from traditional application development. This is the insight that makes Stackwright viable as an enterprise platform, not just a website builder.
+
+**The traditional security model**: A developer writes code → a security team reviews the code → every application is audited individually → the attack surface is unbounded because arbitrary code can do arbitrary things.
+
+**Stackwright's security model**: The platform defines a schema → the schema constrains what behaviors are expressible → applications are validated against the schema at build time and runtime → the attack surface is the schema itself — bounded, enumerable, auditable.
+
+You don't audit every application built on the platform. You audit the platform once. Then every application built on it inherits those safety guarantees. This is not "we scanned it and it looks okay." This is "the set of expressible states has been proven safe."
+
+**Why this matters for AI-generated applications**: When an LLM generates arbitrary code, it might have injection vulnerabilities, call APIs it shouldn't, or leak data through subtle logic errors. A human must review every line. When an LLM generates Stackwright YAML, it literally cannot express unsafe behavior — the schema is the security policy. Zod validates every field. The output is human-readable YAML, not opaque code. The entire application is a data structure that can be verified.
+
+**How this extends to backend components**: The same pattern applies to pro backend YAML components: a `data_table` that can only query through a connection whitelist, a `form` that can only POST to approved endpoints, an `approval_flow` that can only route to defined roles. Each has a Zod schema. Each constrains what's expressible. The schema IS the security policy — for the frontend and the backend.
+
+**Implication for schema design**: Every field added to the schema expands the set of expressible behaviors. This is why the "constrain first" principle exists — it is not just about simplicity, it is about maintaining the safety guarantees that make the enterprise use case viable.
+
+---
+
 ## Git Is the CMS
 
 Content-as-code means the repository is the content management system. This is not a compromise — it is a better model for most organizations once the initial friction is overcome.
@@ -80,6 +100,8 @@ This is a better workflow than a CMS dashboard, not a worse one. It produces rev
 
 Stackwright is designed for a specific user journey, and architectural decisions should support the full arc:
 
+0. **Day 0**: A non-developer chats with a branding agent about their company, values, and the feeling they want to convey. The agent generates a theme, writes content, renders each variation visually, and iterates until the result matches the brand. The output is a complete, deployed site — all within a single conversation.
+
 1. **Day 1**: A non-developer (founder, marketer, designer) uses an AI agent to generate a Stackwright site from a description. They get a running Next.js app with pages, theme, navigation, and content — all in YAML, all in a git repo they own.
 
 2. **Day 30**: The non-developer updates content by describing changes to an AI agent, which writes YAML and opens PRs. No developer involvement required for content.
@@ -87,6 +109,8 @@ Stackwright is designed for a specific user journey, and architectural decisions
 3. **Day 180**: The company hires a developer or the founder learns to code. The developer opens the repo, sees a standard Next.js app, and begins extending it — adding custom React components, API routes, database connections — alongside the YAML-driven pages. No migration required.
 
 4. **Day 365**: The site is a hybrid: some pages are still YAML-driven and maintained by non-developers, some are custom React. The YAML layer handles the 80% (marketing, content, documentation); the custom layer handles the 20% (application features, dynamic data). Both live in the same repo, same codebase, same deployment.
+
+5. **Day 365+**: The company adds pro backend components — data tables, forms, approval flows — all defined in YAML, all constrained by schemas, all verifiably safe. Subject matter experts define workflows; the platform guarantees safety. Enterprise IT signs off on the schema, not on individual apps.
 
 The framework should never require a migration between any of these stages. Stage 3 and 4 should be a natural extension of stage 1 and 2, not a break from it.
 
@@ -103,6 +127,29 @@ This is not a workaround for not having built a GUI. It is a deliberate product 
 - Validation tooling matters more than runtime flexibility. Errors should be caught before render, not during.
 - The MCP server is not a nice-to-have — it is the primary non-developer interface. It should be designed as such.
 - Agent-facing documentation (AGENTS.md, content type reference tables) is first-class infrastructure, not an afterthought. Stale agent docs cause the same class of errors as stale API docs.
+
+---
+
+## The Visual Feedback Loop
+
+AI agents that generate content without seeing the result are flying blind. Stackwright's visual rendering infrastructure closes this loop.
+
+**The render tools** (MCP server): `stackwright_render_page` screenshots any page, `stackwright_render_diff` captures before/after comparisons, `stackwright_render_yaml` renders raw YAML without saving permanently. AI agents can iterate visually — write content, render it, evaluate the result, adjust, and converge.
+
+**The CLI**: `stackwright preview` renders pages to screenshot files for human review.
+
+**Why this matters**: Schema validation catches structural errors — missing required fields, wrong types, invalid values. It cannot catch aesthetic errors — poor visual hierarchy, clashing colors, awkward spacing, brand inconsistency. Visual rendering gives agents and humans a shared feedback channel for the qualities that schema validation alone cannot address.
+
+**The branding agent trajectory**: With visual rendering in place, the next evolution is an AI agent that can:
+1. Have a short conversation about a company's values, audience, and aesthetic preferences
+2. Generate theme and content variations
+3. Render each variation and evaluate it against brand criteria
+4. Iterate toward a design that captures the right "feel"
+5. Open a PR with the converged result
+
+This is the interaction model that makes Stackwright accessible to non-technical users for design-sensitive work — the thing that has historically required a designer and a developer working together over weeks.
+
+**Implication for tooling**: Visual rendering infrastructure is first-class, not optional. The render tools are as important as the validation tools. Any content authoring workflow that produces visual output should include a visual verification step.
 
 ---
 
@@ -132,7 +179,7 @@ Each pro component follows the same contract as a free component: a YAML key, a 
 
 These boundaries are as important as the principles above:
 
-**Not a CMS replacement in the traditional sense.** The core framework does not have a content API, a headless delivery layer, or a media asset management system. It is a static site framework. Dynamic, user-generated, or frequently-updated content is the domain of pro components or developer-written React components — not something to push into the core YAML schema.
+**Not a CMS replacement in the traditional sense.** The core framework does not have a content API, a headless delivery layer, or a media asset management system. The core is a static site framework. Dynamic, user-generated, or frequently-updated content is the domain of pro backend components or developer-written React components. However, the trajectory toward enterprise backend components (data tables, forms, approval flows) is explicit and deliberate — see "Verifiable Safety by Construction" above. The core framework is the foundation; pro components extend the same schema-constrained, verifiably-safe model to dynamic use cases.
 
 **Not a design tool.** Themes provide color, typography, and spacing. Stackwright does not attempt to give users pixel-level layout control. Users who need that level of control should use developer-written React components, not try to push the YAML schema to accommodate it.
 
