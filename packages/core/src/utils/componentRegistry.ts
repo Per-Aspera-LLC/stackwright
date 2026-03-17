@@ -29,6 +29,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   main: MainContentGrid,
   tabbed_content: TabbedContentGrid,
   media: Media,
+  video: Media,
   timeline: Timeline,
   icon_grid: IconGrid,
   code_block: CodeBlock,

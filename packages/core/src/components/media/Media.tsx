@@ -1,7 +1,16 @@
 import React from 'react';
-import { ImageContent, MediaItem } from '@stackwright/types';
+import { ImageContent, MediaItem, VIDEO_EXTENSIONS } from '@stackwright/types';
 import { MediaContainer } from './MediaContainer';
 import { getStackwrightImage, getIconRegistry } from '../../utils/stackwrightComponentRegistry';
+
+type VideoMediaItem = Extract<MediaItem, { type: 'video' }>;
+
+const VIDEO_EXT_SET = new Set<string>(VIDEO_EXTENSIONS);
+
+const isVideoSource = (src: string): boolean => {
+  const ext = src.split('.').pop()?.toLowerCase() ?? '';
+  return VIDEO_EXT_SET.has(`.${ext}`);
+};
 
 // Heuristic fallbacks for YAML that omits the explicit type field.
 // Prefer adding type: "icon" or type: "image" to YAML instead of relying on these.
@@ -57,9 +66,10 @@ const renderImage = (content: MediaItem) => {
 
 const renderIconMedia = (content: MediaItem) => {
   const sizePx = typeof content.height === 'number' ? content.height : 24;
+  const iconColor = content.type === 'icon' ? content.color : undefined;
   return (
     <MediaContainer height={sizePx} width={sizePx} style={content.style}>
-      {renderIcon(content.src, sizePx, (content as any).color)}
+      {renderIcon(content.src, sizePx, iconColor)}
     </MediaContainer>
   );
 };
@@ -78,6 +88,52 @@ const renderImageMedia = (content: MediaItem) => {
   );
 };
 
+const renderVideoMedia = (content: VideoMediaItem) => {
+  return (
+    <MediaContainer height={content.height} width={content.width} style={content.style}>
+      <video
+        src={content.src}
+        poster={content.poster}
+        autoPlay={content.autoplay ?? false}
+        loop={content.loop ?? false}
+        muted={content.muted ?? true}
+        controls={content.controls ?? true}
+        preload={content.preload ?? 'metadata'}
+        playsInline
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: content.style === 'overflow' ? 'cover' : 'contain',
+        }}
+      >
+        {content.sources?.map((s) => (
+          <source key={s.src} src={s.src} type={s.type} />
+        ))}
+      </video>
+    </MediaContainer>
+  );
+};
+
+/** Renders a basic <video> when only base MediaItem fields are available (heuristic path). */
+const renderHeuristicVideo = (content: MediaItem) => {
+  return (
+    <MediaContainer height={content.height} width={content.width} style={content.style}>
+      <video
+        src={content.src}
+        muted
+        controls
+        preload="metadata"
+        playsInline
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: content.style === 'overflow' ? 'cover' : 'contain',
+        }}
+      />
+    </MediaContainer>
+  );
+};
+
 export function Media(content: MediaItem) {
   if (!content.src) {
     return <span>No src set for Media</span>;
@@ -91,9 +147,18 @@ export function Media(content: MediaItem) {
     return renderImageMedia(content);
   }
 
+  if (content.type === 'video') {
+    return renderVideoMedia(content);
+  }
+
   // type === 'media' or legacy YAML without a type field — use heuristics.
   if (isIconSource(content.src)) {
     return renderIconMedia(content);
+  }
+
+  // Check for video sources before falling back to image.
+  if (isVideoSource(content.src)) {
+    return renderHeuristicVideo(content);
   }
 
   // Assume image for paths and URLs.
