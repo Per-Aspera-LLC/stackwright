@@ -28,7 +28,7 @@ export interface RenderResult {
   /** Base64-encoded image data */
   image: string;
   /** MIME type of the image */
-  mimeType: string;
+  mimeType: 'image/png' | 'image/jpeg';
   /** Actual viewport used */
   viewport: { width: number; height: number };
   /** Time taken to render in milliseconds */
@@ -37,6 +37,7 @@ export interface RenderResult {
 
 // Browser instance reuse — avoid cold-starting Chromium on every render
 let browserInstance: Browser | null = null;
+let launchPromise: Promise<Browser> | null = null;
 let browserIdleTimer: ReturnType<typeof setTimeout> | null = null;
 const BROWSER_IDLE_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -51,11 +52,20 @@ async function getBrowser(): Promise<Browser> {
     return browserInstance;
   }
 
-  browserInstance = await chromium.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
+  // Dedup concurrent launches — without this, two simultaneous renderPage()
+  // calls would both see browserInstance === null, both call chromium.launch(),
+  // and the first resolved browser gets orphaned.
+  if (!launchPromise) {
+    launchPromise = chromium.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    }).then((browser) => {
+      browserInstance = browser;
+      launchPromise = null;
+      return browser;
+    });
+  }
 
-  return browserInstance;
+  return launchPromise;
 }
 
 function scheduleBrowserClose(): void {
@@ -114,7 +124,7 @@ export async function renderPage(options: RenderOptions): Promise<RenderResult> 
       fullPage,
       type: format,
     };
-    if (format === 'jpeg' && quality) {
+    if (format === 'jpeg' && quality != null) {
       screenshotOptions.quality = quality;
     }
 
@@ -138,14 +148,15 @@ export async function renderPage(options: RenderOptions): Promise<RenderResult> 
  * Check if a server is reachable at the given URL.
  */
 export async function probeServer(baseUrl: string): Promise<boolean> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(baseUrl, { signal: controller.signal });
-    clearTimeout(timer);
     return res.ok || res.status === 404; // 404 is fine — server is running
   } catch {
     return false;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -157,6 +168,7 @@ export async function closeBrowser(): Promise<void> {
     clearTimeout(browserIdleTimer);
     browserIdleTimer = null;
   }
+  launchPromise = null;
   if (browserInstance) {
     await browserInstance.close().catch(() => {});
     browserInstance = null;
