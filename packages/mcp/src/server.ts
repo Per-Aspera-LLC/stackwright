@@ -8,6 +8,7 @@ import { registerGitOpsTools } from './tools/git-ops.js';
 import { registerBoardTools } from './tools/board.js';
 import { registerCollectionTools } from './tools/collections.js';
 import { registerComposeTools } from './tools/compose.js';
+import { registerRenderTools, closeBrowser } from './tools/render.js';
 import { version } from '../package.json';
 
 const server = new McpServer({
@@ -23,6 +24,17 @@ registerGitOpsTools(server);
 registerBoardTools(server);
 registerCollectionTools(server);
 registerComposeTools(server);
+registerRenderTools(server);
+
+// Clean up Playwright browser on exit
+process.on('SIGINT', async () => {
+  await closeBrowser();
+  process.exit(0);
+});
+process.on('SIGTERM', async () => {
+  await closeBrowser();
+  process.exit(0);
+});
 
 async function main() {
   const transport = new StdioServerTransport();
