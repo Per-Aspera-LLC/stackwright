@@ -19,7 +19,9 @@ export const typographyVariantSchema = z.enum([
 export const buttonVariantSchema = z.enum(['text', 'outlined', 'contained']);
 export const alignmentVariantSchema = z.enum(['left', 'center', 'right']);
 export const mediaStyleVariantSchema = z.enum(['contained', 'overflow']);
-export const mediaVariantSchema = z.enum(['image']);
+// TODO: This enum is currently unused — media types use z.literal() directly
+// in discriminated unions. Consider removing or wiring into schemas.
+export const mediaVariantSchema = z.enum(['image', 'video']);
 
 // Kept for backwards compatibility with code that uses the enum value syntax (GraphicPosition.LEFT)
 export enum GraphicPosition {

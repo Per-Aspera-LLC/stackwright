@@ -617,6 +617,85 @@
             "type"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "src": {
+              "$ref": "#/definitions/__schema4"
+            },
+            "alt": {
+              "$ref": "#/definitions/__schema5"
+            },
+            "height": {
+              "$ref": "#/definitions/__schema6"
+            },
+            "width": {
+              "$ref": "#/definitions/__schema7"
+            },
+            "style": {
+              "$ref": "#/definitions/__schema8"
+            },
+            "label": {
+              "$ref": "#/definitions/__schema9"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema10"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema11"
+            },
+            "type": {
+              "type": "string",
+              "const": "video"
+            },
+            "poster": {
+              "type": "string"
+            },
+            "autoplay": {
+              "type": "boolean"
+            },
+            "loop": {
+              "type": "boolean"
+            },
+            "muted": {
+              "type": "boolean"
+            },
+            "controls": {
+              "type": "boolean"
+            },
+            "preload": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "metadata",
+                "none"
+              ]
+            },
+            "sources": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "src": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "src"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "src",
+            "type"
+          ],
+          "additionalProperties": false
         }
       ]
     },
