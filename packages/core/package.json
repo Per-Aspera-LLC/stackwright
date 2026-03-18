@@ -62,7 +62,7 @@
         "react-dom": "^19",
         "tsup": "^8.5",
         "typescript": "^5.8",
-        "vitest": "^4.0.18"
+        "vitest": "^4.1.0"
     },
     "peerDependencies": {
         "react": "^19",
