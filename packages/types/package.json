@@ -27,7 +27,8 @@
     "scripts": {
         "build": "tsup && pnpm generate-schemas",
         "generate-schemas": "tsx src/generate-schemas.ts",
-        "dev": "tsup --watch"
+        "dev": "tsup --watch",
+        "test": "vitest run"
     },
     "dependencies": {
         "@stackwright/themes": "workspace:*",
