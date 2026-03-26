@@ -2,7 +2,24 @@
 
 Welcome to Stackwright! This is a YAML-driven React application framework that enables rapid development of professional websites and applications through a "content as code" approach. In this guide, you'll find essential knowledge required to be productive in the Stackwright project. For contributor guidelines (branching, commits, testing, changesets), see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-### Key Concepts
+### Quick Start for New Projects
+
+The fastest way to get started with Stackwright is using **launch-stackwright**:
+
+```bash
+npx launch-stackwright my-site
+cd my-site
+pnpm install
+pnpm dev
+```
+
+This automatically sets up:
+- ✅ A fully configured Next.js + Stackwright project
+- ✅ The otter raft (AI agents) ready to build your site
+- ✅ MCP server auto-configuration for Code Puppy
+
+See the [Otter Raft documentation](./otters/README.md) for how to use the AI agents to build complete sites through conversation.
+
 - **Framework Architecture**: To understand the big picture, read:
   - `packages/core/src/index.ts`: Core framework initialization
   - `packages/nextjs/src/components/NextDocument.tsx`: Next.js integration

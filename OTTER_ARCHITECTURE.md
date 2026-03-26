@@ -1,6 +1,8 @@
-# Stackwright Otter Architecture 🦦
+# Stackwright Otter Raft Architecture 🦦
 
 AI agent orchestration system for end-to-end Stackwright site generation.
+
+> **A raft of otters** is the collective noun for a group of otters floating together. Our raft of specialized AI agents coordinates seamlessly to build complete Stackwright sites! 🦦🦦🦦🦦
 
 ## Architecture Overview
 

@@ -1,4 +1,4 @@
-# 🎉 Stackwright Otter Squad — SHIPPED! 🦦
+# 🎉 Stackwright Otter Raft — SHIPPED! 🦦
 
 ## What We Built Today
 
@@ -6,7 +6,9 @@ Four specialized AI agents that work together to build complete Stackwright site
 
 ---
 
-## The Squad (Created Today)
+## The Raft (Created Today)
+
+> **A raft of otters** is the collective noun for a group of otters floating together. Our raft of AI agents works together to build your Stackwright sites! 🦦🦦🦦🦦
 
 ### 🦦🏗️ Foreman Otter
 **File**: `otters/stackwright-foreman-otter.json`  
@@ -352,4 +354,4 @@ A: YES! Add it to the project, then tell Theme Otter: "Use ./logo.png in the app
 **Status**: ✅ SHIPPED AND READY TO USE  
 **Next**: Build your first site with Foreman Otter!  
 
-🦦🦦🦦🦦 **The Otter Squad is ready.** 🦦🦦🦦🦦
+🦦🦦🦦🦦 **The Otter Raft is ready.** 🦦🦦🦦🦦

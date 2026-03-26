@@ -1,8 +1,10 @@
-# Stackwright Otter Agents 🦦
+# Stackwright Otter Raft 🦦
 
-This directory contains AI agent configurations for the Stackwright Otter Squad — specialized agents that orchestrate end-to-end Stackwright site generation.
+This directory contains AI agent configurations for the Stackwright Otter Raft — specialized agents that orchestrate end-to-end Stackwright site generation.
 
-## The Squad
+> **A raft of otters** is the collective noun for a group of otters floating together. These agents work as a coordinated raft to build your site! 🦦🦦🦦🦦
+
+## The Raft
 
 ### 🦦🏗️ Foreman Otter (`stackwright-foreman-otter.json`)
 **Role**: Coordinator  
@@ -23,6 +25,15 @@ This directory contains AI agent configurations for the Stackwright Otter Squad 
 **Role**: Content architect  
 **What it does**: Builds pages/*.yml using brand voice + theme colors  
 **Invoked by**: Foreman Otter (Phase 3)
+
+## Files in This Directory
+
+- `stackwright-foreman-otter.json` — Foreman Otter agent config
+- `stackwright-brand-otter.json` — Brand Otter agent config
+- `stackwright-theme-otter.json` — Theme Otter agent config
+- `stackwright-page-otter.json` — Page Otter agent config
+- `.code-puppy.json` — **MCP server auto-configuration** (starts Stackwright MCP server automatically)
+- `README.md` — This file
 
 ## Installation
 
@@ -45,13 +56,32 @@ See [OTTER_ARCHITECTURE.md](../OTTER_ARCHITECTURE.md) for detailed architecture 
 
 ## Prerequisites
 
-1. **MCP Server**: The Foreman Otter uses MCP tools for scaffolding and validation:
-   ```bash
-   # Start the MCP server (from stackwright repo)
-   pnpm stackwright-mcp
-   ```
+### MCP Server (Auto-configured)
 
-2. **Stackwright CLI**: Required for agent operation (part of this monorepo)
+The agents in this directory come with a `.code-puppy.json` configuration file that automatically starts the Stackwright MCP server when agents are invoked.
+
+**No manual setup required!** Code Puppy will:
+1. Auto-detect the `.code-puppy.json` config
+2. Start the Stackwright MCP server on-demand
+3. Make MCP tools available to all otters
+
+### Manual MCP Server Start (Optional)
+
+If you need to start the MCP server manually for debugging:
+```bash
+# From stackwright repo root
+pnpm stackwright-mcp
+```
+
+### Build Requirements
+
+The MCP server must be built before first use:
+```bash
+# From stackwright repo root
+pnpm build:mcp
+```
+
+This is automatically handled by `pnpm build` at the repo root.
 
 ## Usage
 
