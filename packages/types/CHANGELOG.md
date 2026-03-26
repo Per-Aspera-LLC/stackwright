@@ -1,5 +1,11 @@
 # @stackwright/types
 
+## 1.1.0-alpha.3
+
+### Minor Changes
+
+- e8dcbc0: Add text_block content type - a simpler alternative to main for heading + text + buttons without media-related fields. Perfect for text-heavy sections, announcements, and callouts within grid layouts.
+
 ## 1.1.0-alpha.2
 
 ### Minor Changes
