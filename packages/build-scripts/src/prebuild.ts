@@ -706,7 +706,7 @@ async function executePlugins(
 
 // -- Main -------------------------------------------------------------------
 
-export async function runPrebuild(options?: string | PrebuildOptions): void {
+export async function runPrebuild(options?: string | PrebuildOptions): Promise<void> {
   // Backward compatibility: support old API with string parameter
   const projectRoot =
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
@@ -760,7 +760,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): void {
     const generatedDir = path.join(projectRoot, 'src', 'generated');
     const pluginContext: PrebuildPluginContext = {
       projectRoot,
-      siteConfig: processedConfig,
+      siteConfig: processedConfig as Record<string, unknown>,
       contentOutDir,
       imagesDir,
       generatedDir,
@@ -847,7 +847,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): void {
     const generatedDir = path.join(projectRoot, 'src', 'generated');
     const pluginContext: PrebuildPluginContext = {
       projectRoot,
-      siteConfig: processedConfig,
+      siteConfig: processedConfig as Record<string, unknown>,
       contentOutDir,
       imagesDir,
       generatedDir,
@@ -866,11 +866,14 @@ if (require.main === module) {
     const { runWatch } = require('./watch');
     runWatch();
   } else {
-    try {
-      runPrebuild();
-    } catch (err) {
-      console.error(`ERROR: ${(err as Error).message}`);
-      process.exit(1);
-    }
+    (async () => {
+      try {
+        await runPrebuild();
+      } catch (err) {
+        console.error(`ERROR: ${(err as Error).message}`);
+        process.exit(1);
+      }
+    })();
   }
 }
+

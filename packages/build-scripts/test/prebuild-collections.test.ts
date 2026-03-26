@@ -65,25 +65,25 @@ describe('runPrebuild -- collections', () => {
     root = makeTmpProject();
   });
 
-  it('does not crash when content/ directory does not exist', () => {
-    expect(() => runPrebuild(root)).not.toThrow();
+  it('does not crash when content/ directory does not exist', async () => {
+    await expect(runPrebuild(root)).resolves.not.toThrow();
   });
 
-  it('does not crash when content/ exists but is empty', () => {
+  it('does not crash when content/ exists but is empty', async () => {
     fs.mkdirSync(path.join(root, 'content'), { recursive: true });
-    expect(() => runPrebuild(root)).not.toThrow();
+    await expect(runPrebuild(root)).resolves.not.toThrow();
   });
 
-  it('creates collection output directory structure', () => {
+  it('creates collection output directory structure', async () => {
     writeCollectionEntry(root, 'posts', 'hello.yaml', 'title: Hello\n');
-    runPrebuild(root);
+    await runPrebuild(root);
     expect(collectionOutputExists(root, 'posts', '_index.json')).toBe(true);
   });
 
-  it('writes _index.json manifest with correct slugs', () => {
+  it('writes _index.json manifest with correct slugs', async () => {
     writeCollectionEntry(root, 'posts', 'first.yaml', 'title: First Post\n');
     writeCollectionEntry(root, 'posts', 'second.yml', 'title: Second Post\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     expect(index).toHaveLength(2);
@@ -91,9 +91,9 @@ describe('runPrebuild -- collections', () => {
     expect(slugs).toEqual(['first', 'second']);
   });
 
-  it('writes individual entry JSON files', () => {
+  it('writes individual entry JSON files', async () => {
     writeCollectionEntry(root, 'posts', 'my-post.yaml', 'title: My Post\nauthor: Charles\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const entry = readCollectionOutput(root, 'posts', 'my-post.json');
     expect(entry.slug).toBe('my-post');
@@ -101,27 +101,27 @@ describe('runPrebuild -- collections', () => {
     expect(entry.author).toBe('Charles');
   });
 
-  it('adds slug field derived from filename', () => {
+  it('adds slug field derived from filename', async () => {
     writeCollectionEntry(root, 'docs', 'getting-started.yaml', 'title: Getting Started\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const entry = readCollectionOutput(root, 'docs', 'getting-started.json');
     expect(entry.slug).toBe('getting-started');
   });
 
-  it('respects _collection.yaml sort field', () => {
+  it('respects _collection.yaml sort field', async () => {
     writeCollectionConfig(root, 'posts', 'sort: -date\n');
     writeCollectionEntry(root, 'posts', 'old.yaml', 'title: Old\ndate: "2025-01-01"\n');
     writeCollectionEntry(root, 'posts', 'new.yaml', 'title: New\ndate: "2026-06-01"\n');
     writeCollectionEntry(root, 'posts', 'mid.yaml', 'title: Mid\ndate: "2025-06-01"\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     const dates = index.map((e: any) => e.date);
     expect(dates).toEqual(['2026-06-01', '2025-06-01', '2025-01-01']);
   });
 
-  it('respects _collection.yaml indexFields', () => {
+  it('respects _collection.yaml indexFields', async () => {
     writeCollectionConfig(root, 'posts', 'indexFields:\n  - title\n  - date\n');
     writeCollectionEntry(
       root,
@@ -129,7 +129,7 @@ describe('runPrebuild -- collections', () => {
       'full.yaml',
       'title: Full Post\ndate: "2026-01-01"\nauthor: Charles\nbody: "Long content here"\n'
     );
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     expect(index[0]).toHaveProperty('slug');
@@ -139,14 +139,14 @@ describe('runPrebuild -- collections', () => {
     expect(index[0]).not.toHaveProperty('body');
   });
 
-  it('defaults to all scalar fields when no indexFields specified', () => {
+  it('defaults to all scalar fields when no indexFields specified', async () => {
     writeCollectionEntry(
       root,
       'posts',
       'entry.yaml',
       'title: Entry\ncount: 42\nactive: true\ntags:\n  - a\n  - b\nmeta:\n  nested: value\n'
     );
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     expect(index[0]).toHaveProperty('title', 'Entry');
@@ -156,10 +156,10 @@ describe('runPrebuild -- collections', () => {
     expect(index[0]).not.toHaveProperty('meta'); // objects excluded
   });
 
-  it('skips _collection.yaml as an entry', () => {
+  it('skips _collection.yaml as an entry', async () => {
     writeCollectionConfig(root, 'posts', 'sort: title\n');
     writeCollectionEntry(root, 'posts', 'real-entry.yaml', 'title: Real Entry\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     expect(index).toHaveLength(1);
@@ -167,34 +167,34 @@ describe('runPrebuild -- collections', () => {
     expect(collectionOutputExists(root, 'posts', '_collection.json')).toBe(false);
   });
 
-  it('skips _collection.yml as an entry', () => {
+  it('skips _collection.yml as an entry', async () => {
     const dir = path.join(root, 'content', 'posts');
     fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(path.join(dir, '_collection.yml'), 'sort: title\n');
     writeCollectionEntry(root, 'posts', 'entry.yaml', 'title: Entry\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     expect(index).toHaveLength(1);
   });
 
-  it('handles empty collection directory gracefully', () => {
+  it('handles empty collection directory gracefully', async () => {
     fs.mkdirSync(path.join(root, 'content', 'empty'), { recursive: true });
-    expect(() => runPrebuild(root)).not.toThrow();
+    await expect(runPrebuild(root)).resolves.not.toThrow();
   });
 
-  it('skips entries that are not YAML objects', () => {
+  it('skips entries that are not YAML objects', async () => {
     // A YAML file containing just a string or array
     writeCollectionEntry(root, 'posts', 'bad.yaml', '"just a string"\n');
     writeCollectionEntry(root, 'posts', 'good.yaml', 'title: Good\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     expect(index).toHaveLength(1);
     expect(index[0].slug).toBe('good');
   });
 
-  it('rewrites ./relative image paths in entries', () => {
+  it('rewrites ./relative image paths in entries', async () => {
     writeCollectionEntry(
       root,
       'posts',
@@ -205,7 +205,7 @@ describe('runPrebuild -- collections', () => {
     const entryDir = path.join(root, 'content', 'posts');
     fs.writeFileSync(path.join(entryDir, 'hero.png'), 'FAKE_PNG');
 
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const entry = readCollectionOutput(root, 'posts', 'with-image.json');
     expect(entry.cover).toBe('/images/collections/posts/with-image/hero.png');
@@ -225,22 +225,22 @@ describe('runPrebuild -- collections', () => {
     expect(fs.readFileSync(imageDest, 'utf8')).toBe('FAKE_PNG');
   });
 
-  it('sorts alphabetically by slug when no sort config', () => {
+  it('sorts alphabetically by slug when no sort config', async () => {
     writeCollectionEntry(root, 'posts', 'charlie.yaml', 'title: Charlie\n');
     writeCollectionEntry(root, 'posts', 'alpha.yaml', 'title: Alpha\n');
     writeCollectionEntry(root, 'posts', 'bravo.yaml', 'title: Bravo\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const index = readCollectionOutput(root, 'posts', '_index.json');
     const slugs = index.map((e: any) => e.slug);
     expect(slugs).toEqual(['alpha', 'bravo', 'charlie']);
   });
 
-  it('supports multiple collections in one project', () => {
+  it('supports multiple collections in one project', async () => {
     writeCollectionEntry(root, 'posts', 'post1.yaml', 'title: Post 1\n');
     writeCollectionEntry(root, 'docs', 'doc1.yaml', 'title: Doc 1\n');
     writeCollectionEntry(root, 'changelog', 'v1.yaml', 'version: "1.0"\n');
-    runPrebuild(root);
+    await runPrebuild(root);
 
     expect(collectionOutputExists(root, 'posts', '_index.json')).toBe(true);
     expect(collectionOutputExists(root, 'docs', '_index.json')).toBe(true);
