@@ -3,6 +3,7 @@ import { Carousel } from '../components/narrative/Carousel/Carousel';
 import {
   MainContentGrid,
   TabbedContentGrid,
+  TextBlockGrid,
   CodeBlock,
   IconGrid,
   FeatureList,
@@ -28,6 +29,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   carousel: Carousel,
   main: MainContentGrid,
   tabbed_content: TabbedContentGrid,
+  text_block: TextBlockGrid,
   media: Media,
   video: Media,
   timeline: Timeline,

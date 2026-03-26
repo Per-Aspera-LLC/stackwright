@@ -141,6 +141,13 @@ export const contactFormStubContentSchema = baseContentSchema.extend({
   button_text: z.string().optional(),
 });
 
+export const textBlockContentSchema = baseContentSchema.extend({
+  type: z.literal('text_block'),
+  heading: textBlockSchema.optional(),
+  textBlocks: z.array(textBlockSchema),
+  buttons: z.array(buttonContentSchema).optional(),
+});
+
 // ---------------------------------------------------------------------------
 // Inferred types for non-recursive content schemas
 // ---------------------------------------------------------------------------
@@ -163,6 +170,7 @@ export type PricingTableContent = z.infer<typeof pricingTableContentSchema>;
 export type AlertVariant = z.infer<typeof alertVariantSchema>;
 export type AlertContent = z.infer<typeof alertContentSchema>;
 export type ContactFormStubContent = z.infer<typeof contactFormStubContentSchema>;
+export type TextBlockContent = z.infer<typeof textBlockContentSchema>;
 
 // ---------------------------------------------------------------------------
 // Recursive types: TabbedContent, GridContent, ContentItem
@@ -228,6 +236,7 @@ export type ContentItem =
   | PricingTableContent
   | AlertContent
   | ContactFormStubContent
+  | TextBlockContent
   | GridContent
   | CollectionListContent
   | VideoContent;
@@ -284,6 +293,7 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
     pricingTableContentSchema,
     alertContentSchema,
     contactFormStubContentSchema,
+    textBlockContentSchema,
     gridContentSchema,
     collectionListContentSchema,
     videoContentSchema,
@@ -308,6 +318,7 @@ export const KNOWN_CONTENT_TYPE_KEYS = [
   'pricing_table',
   'alert',
   'contact_form_stub',
+  'text_block',
   'grid',
   'collection_list',
   'video',

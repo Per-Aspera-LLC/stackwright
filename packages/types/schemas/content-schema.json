@@ -1231,6 +1231,49 @@
             },
             "type": {
               "type": "string",
+              "const": "text_block"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema25"
+                }
+              ]
+            },
+            "textBlocks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/__schema25"
+              }
+            },
+            "buttons": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/__schema21"
+              }
+            }
+          },
+          "required": [
+            "label",
+            "type",
+            "textBlocks"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema18"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema19"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema20"
+            },
+            "type": {
+              "type": "string",
               "const": "grid"
             },
             "heading": {
