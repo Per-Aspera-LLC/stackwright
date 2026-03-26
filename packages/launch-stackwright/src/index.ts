@@ -3,7 +3,7 @@ import { Command } from 'commander';
 import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
-import prompts from 'prompts';
+
 import { scaffold, ScaffoldOptions } from '@stackwright/cli';
 
 const { version } = require('../package.json') as { version: string };
@@ -94,15 +94,13 @@ async function launch(targetDir: string, options: LaunchOptions): Promise<void> 
     }
 
     // Print next steps
-    console.log(chalk.cyan.bold('\n🎉 All set! Here\'s what to do next:\n'));
+    console.log(chalk.cyan.bold("\n🎉 All set! Here's what to do next:\n"));
     console.log(chalk.white(`  1. cd ${path.relative(process.cwd(), targetDir) || '.'}`));
     console.log(chalk.white(`  2. pnpm install`));
     console.log(chalk.white(`  3. pnpm dev`));
 
     if (!options.skipOtters) {
-      console.log(
-        chalk.cyan.bold('\n🦦 Want the otter raft to build your site for you?\n')
-      );
+      console.log(chalk.cyan.bold('\n🦦 Want the otter raft to build your site for you?\n'));
       console.log(chalk.white(`  code-puppy invoke stackwright-foreman-otter`));
       console.log(chalk.dim(`  Then say: "Build me a [type] website for [name]"\n`));
     }
