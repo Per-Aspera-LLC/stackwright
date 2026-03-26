@@ -15,6 +15,7 @@
         "build:build-scripts": "pnpm --filter @stackwright/build-scripts build",
         "build:collections": "pnpm --filter @stackwright/collections build",
         "build:mcp": "pnpm --filter @stackwright/mcp build",
+    "build:launch-stackwright": "pnpm --filter launch-stackwright build",
         "dev:hellostackwright": "pnpm --filter stackwright-example-app dev",
         "build:hellostackwright": "pnpm --filter stackwright-example-app build",
         "changeset": "changeset",

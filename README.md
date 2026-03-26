@@ -17,20 +17,6 @@ Because the YAML schema defines a bounded set of expressible behaviors, every ap
 - **Own everything**: The output is a standard Next.js app in a git repo you control. Git is the CMS — version history, branching, PR review, and rollback come free
 - **No lock-in**: Any React developer can open the project and extend it immediately. The escape hatch is a feature, not a compromise
 - **Graduate naturally**: Begin with YAML-driven pages, add custom React components alongside them as you grow — no migration, no rewrite
-
-## Quick Start
-
-```bash
-# Scaffold a new project
-npx stackwright scaffold my-site
-
-cd my-site
-pnpm install
-pnpm dev
-```
-
-Or clone the example to see a full working site:
-
 ```bash
 git clone https://github.com/Per-Aspera-LLC/stackwright.git
 cd stackwright
@@ -114,6 +100,19 @@ Images can be co-located alongside their page YAML files using `./relative` path
 
 All content types support optional `color` and `background` overrides, and render responsively from 320px to 1440px.
 
+## The Otter Raft 🦦
+
+Stackwright includes **The Otter Raft** — a group of specialized AI agents that work together to build complete sites through conversation:
+
+- 🦦🏗️ **Foreman Otter** — Coordinates the entire build pipeline
+- 🦦🎨 **Brand Otter** — Discovers your brand through conversation
+- 🦦🌈 **Theme Otter** — Designs your visual theme (colors, fonts, spacing)
+- 🦦📄 **Page Otter** — Builds content pages in your brand voice
+
+When you use `launch-stackwright`, the raft is automatically configured and ready to use with Code Puppy.
+
+See [otters/README.md](./otters/README.md) for full documentation.
+
 ## MCP Server
 
 Stackwright includes an MCP (Model Context Protocol) server that gives AI agents direct tools for content authoring, visual verification, and git workflow:
@@ -170,6 +169,7 @@ stackwright prebuild --watch
 @stackwright/icons         — Lucide icon registry
 @stackwright/build-scripts — Prebuild pipeline (image co-location, path rewriting, watch mode)
 @stackwright/cli           — CLI for scaffolding, page management, validation, preview
+launch-stackwright         — One-command project launcher with otter raft included 🦦
 @stackwright/mcp           — MCP server for AI agent integration and visual rendering
 ```
 
