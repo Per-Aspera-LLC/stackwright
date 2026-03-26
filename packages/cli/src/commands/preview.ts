@@ -49,7 +49,6 @@ export async function preview(
   const format = (opts.format === 'jpeg' ? 'jpeg' : 'png') as 'png' | 'jpeg';
 
   // Dynamic import — playwright is an optional peer dependency
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let chromium: any;
   try {
     const moduleName = 'playwright';
