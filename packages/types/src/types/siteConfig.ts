@@ -42,24 +42,24 @@ export const siteMetaSchema = z.object({
 
 /**
  * Integration config schema for Pro package integrations.
- * 
+ *
  * Supports third-party API integrations that generate typed code at build time:
  * - `openapi`: OpenAPI 3.x specifications → Zod schemas + TypeScript types + API clients
  * - `graphql`: GraphQL schemas → typed queries + mutations
  * - `rest`: REST APIs → collection providers + typed endpoints
- * 
+ *
  * Each integration requires:
  * - `type`: Integration type (determines which plugin processes this config)
  * - `name`: Unique identifier (used for generated code paths, e.g., src/generated/{name}/)
- * 
+ *
  * Additional fields are plugin-specific and passed through via `.passthrough()`.
  * See individual plugin docs for their configuration options.
- * 
+ *
  * ⚠️ **Security Note:**
  * - Integration names are validated to prevent path traversal attacks
  * - API tokens should use environment variable references (e.g., `$API_TOKEN`)
  * - Never commit plaintext secrets to YAML files
- * 
+ *
  * @example
  * ```yaml
  * integrations:
@@ -71,27 +71,29 @@ export const siteMetaSchema = z.object({
  *       token: $API_TOKEN  # Environment variable reference
  * ```
  */
-export const integrationConfigSchema = z.object({
-  /** Integration type - determines which plugin processes this config */
-  type: z.enum(['openapi', 'graphql', 'rest']),
-  /**
-   * Unique name for this integration (used for generated code paths).
-   * Must be lowercase alphanumeric with hyphens (kebab-case).
-   * No leading/trailing hyphens or path traversal sequences allowed.
-   */
-  name: z
-    .string()
-    .min(1, 'Integration name is required')
-    .max(50, 'Integration name must be ≤50 characters')
-    .regex(
-      /^[a-z0-9][a-z0-9-]*[a-z0-9]$/,
-      'Integration name must be lowercase alphanumeric with hyphens (kebab-case), no leading/trailing hyphens'
-    )
-    .refine(
-      (name) => !name.includes('..') && !name.startsWith('/') && !name.includes('\\'),
-      'Integration name cannot contain path traversal sequences'
-    ),
-}).passthrough();
+export const integrationConfigSchema = z
+  .object({
+    /** Integration type - determines which plugin processes this config */
+    type: z.enum(['openapi', 'graphql', 'rest']),
+    /**
+     * Unique name for this integration (used for generated code paths).
+     * Must be lowercase alphanumeric with hyphens (kebab-case).
+     * No leading/trailing hyphens or path traversal sequences allowed.
+     */
+    name: z
+      .string()
+      .min(1, 'Integration name is required')
+      .max(50, 'Integration name must be ≤50 characters')
+      .regex(
+        /^[a-z0-9][a-z0-9-]*[a-z0-9]$/,
+        'Integration name must be lowercase alphanumeric with hyphens (kebab-case), no leading/trailing hyphens'
+      )
+      .refine(
+        (name) => !name.includes('..') && !name.startsWith('/') && !name.includes('\\'),
+        'Integration name cannot contain path traversal sequences'
+      ),
+  })
+  .passthrough();
 
 export const siteConfigSchema = z.object({
   title: z.string(),
