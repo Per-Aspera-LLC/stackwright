@@ -118,9 +118,9 @@ export function runWatch(projectRoot = process.cwd()): void {
 
   function scheduleRebuild(reason: string) {
     if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
+    debounceTimer = setTimeout(async () => {
       try {
-        runPrebuild(projectRoot);
+        await runPrebuild(projectRoot);
         notifyContentChange();
         console.log(`Rebuilt (${reason})\n`);
       } catch (err) {

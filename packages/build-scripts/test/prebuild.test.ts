@@ -82,7 +82,7 @@ describe('runPrebuild — basic output', () => {
   it('exits with error when stackwright.yml is missing', async () => {
     const emptyRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sw-no-config-'));
     fs.mkdirSync(path.join(emptyRoot, 'pages'), { recursive: true });
-      await expect(runPrebuild(emptyRoot)).rejects.toThrow();
+    await expect(runPrebuild(emptyRoot)).rejects.toThrow();
   });
 });
 
@@ -199,13 +199,13 @@ describe('runPrebuild — schema validation', () => {
   it('exits when stackwright.yml is missing required fields', async () => {
     // Write a site config that omits required fields (title, appBar)
     fs.writeFileSync(path.join(root, 'stackwright.yml'), `navigation: []\n`);
-      await expect(runPrebuild(root)).rejects.toThrow();
+    await expect(runPrebuild(root)).rejects.toThrow();
   });
 
   it('exits when a page content file has an invalid structure', async () => {
     // content_items is required inside content; omitting it should fail
     writePageContent(root, 'bad-page', `content:\n  heading: "oops"\n`);
-    expect(runPrebuild(root.toThrow();
+    await expect(runPrebuild(root)).rejects.toThrow();
   });
 
   it('accepts a valid site config and valid page without throwing', async () => {

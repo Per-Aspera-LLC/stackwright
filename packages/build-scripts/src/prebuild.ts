@@ -840,7 +840,6 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     }
   }
 
-
   // Run afterBuild plugin hooks
   if (plugins.length > 0) {
     console.log('\nRunning afterBuild plugins...');
@@ -876,4 +875,3 @@ if (require.main === module) {
     })();
   }
 }
-

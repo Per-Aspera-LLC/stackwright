@@ -3,7 +3,7 @@ import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
 import { resolvePagesDir } from '@stackwright/cli';
-import { renderPage, probeServer, closeBrowser } from '../renderer/page-renderer.js';
+import { renderPage, probeServer } from '../renderer/page-renderer.js';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 

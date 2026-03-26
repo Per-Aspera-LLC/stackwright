@@ -257,7 +257,7 @@ describe('runPrebuild — entry page generation', () => {
       'entryPage:\n  basePath: "/../../../tmp/pwned/"\n  body: body\n'
     );
     writeCollectionEntry(root, 'evil', 'payload.yaml', 'title: Pwned\nbody: gotcha\n');
-      await expect(runPrebuild(root)).rejects.toThrow(/outside.*content output/i);
+    await expect(runPrebuild(root)).rejects.toThrow(/outside.*content output/i);
   });
 
   it('ignores slug field in YAML that would cause path traversal', async () => {
