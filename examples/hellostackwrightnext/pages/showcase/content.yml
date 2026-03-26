@@ -84,6 +84,32 @@ content:
       textSize: body1
       variant: contained
       href: '#'
+  - type: text_block
+    label: text-block-demo
+    heading:
+      text: text_block
+      textSize: h2
+    background: '#e8f4f8'
+    textBlocks:
+    - text: Pure text and buttons — no media, no layout complexity
+      textSize: h5
+    - text: When you don't need an image or graphic positioning, text_block is cleaner than main. Perfect for announcements, callouts, or text-heavy sections that need emphasis.
+      textSize: body1
+    - text: Use multiple textBlocks with different sizes to create visual hierarchy. Add buttons for calls-to-action. Set a background to make the section stand out.
+      textSize: body2
+    buttons:
+    - text: Primary Action
+      textSize: body1
+      variant: contained
+      href: '#'
+      variantSize: large
+      alignment: left
+    - text: Learn More
+      textSize: body1
+      variant: outlined
+      href: '#'
+      variantSize: large
+      alignment: left
   - type: carousel
     label: carousel-demo
     heading: carousel

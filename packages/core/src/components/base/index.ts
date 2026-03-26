@@ -1,6 +1,7 @@
 // Clean named exports - no "default as" needed
 
 export { TextGrid } from './TextGrid';
+export { TextBlockGrid } from './TextBlockGrid';
 export { MainContentGrid } from './MainContentGrid';
 export { TabbedContentGrid } from './TabbedContentGrid';
 export { CodeBlock } from './CodeBlock';
