@@ -5,12 +5,7 @@ import { resolveColor } from '../../utils/colorUtils';
 import { TextGrid } from './TextGrid';
 import { ThemedButton } from './ThemedButton';
 
-export function TextBlockGrid({
-  heading,
-  textBlocks,
-  buttons,
-  background,
-}: TextBlockContent) {
+export function TextBlockGrid({ heading, textBlocks, buttons, background }: TextBlockContent) {
   const theme = useSafeTheme();
 
   const headingColor = resolveColor(

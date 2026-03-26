@@ -61,10 +61,7 @@ describe('TextBlockGrid', () => {
 
   it('renders without optional heading', () => {
     render(
-      <TextBlockGrid
-        label="content"
-        textBlocks={[{ text: 'Just some text without a heading.' }]}
-      />
+      <TextBlockGrid label="content" textBlocks={[{ text: 'Just some text without a heading.' }]} />
     );
 
     expect(screen.getByText('Just some text without a heading.')).toBeInTheDocument();
