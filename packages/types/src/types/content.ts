@@ -149,6 +149,64 @@ export const textBlockContentSchema = baseContentSchema.extend({
 });
 
 // ---------------------------------------------------------------------------
+// Map content type
+// ---------------------------------------------------------------------------
+
+export const mapMarkerSchema = z.object({
+  lat: z.number(),
+  lng: z.number(),
+  label: z.string(),
+  popup: z.string().optional(),
+  icon: z.string().optional(),
+  altitude: z.number().optional(),
+  color: z.string().optional(),
+});
+
+export const mapLayerTypeSchema = z.enum(['polyline', 'polygon', 'geojson']);
+
+export const mapLayerSchema = z.object({
+  type: mapLayerTypeSchema,
+  data: z.any(),
+  style: z
+    .object({
+      color: z.string().optional(),
+      width: z.number().optional(),
+      opacity: z.number().optional(),
+      fillColor: z.string().optional(),
+      fillOpacity: z.number().optional(),
+    })
+    .optional(),
+  label: z.string().optional(),
+});
+
+export const mapConfigSchema = z.object({
+  center: z.object({
+    lat: z.number(),
+    lng: z.number(),
+  }),
+  zoom: z.number().min(0).max(20),
+  markers: z.array(mapMarkerSchema).optional(),
+  layers: z.array(mapLayerSchema).optional(),
+  view: z.enum(['map', 'globe']).optional(),
+  terrain: z.boolean().optional(),
+});
+
+export const mapContentSchema = baseContentSchema.extend({
+  type: z.literal('map'),
+  center: z.object({
+    lat: z.number(),
+    lng: z.number(),
+  }),
+  zoom: z.number().min(0).max(20),
+  markers: z.array(mapMarkerSchema).optional(),
+  layers: z.array(mapLayerSchema).optional(),
+  view: z.enum(['map', 'globe']).optional(),
+  terrain: z.boolean().optional(),
+  height: z.union([z.string(), z.number()]).optional(),
+  width: z.union([z.string(), z.number()]).optional(),
+});
+
+// ---------------------------------------------------------------------------
 // Inferred types for non-recursive content schemas
 // ---------------------------------------------------------------------------
 
@@ -171,6 +229,11 @@ export type AlertVariant = z.infer<typeof alertVariantSchema>;
 export type AlertContent = z.infer<typeof alertContentSchema>;
 export type ContactFormStubContent = z.infer<typeof contactFormStubContentSchema>;
 export type TextBlockContent = z.infer<typeof textBlockContentSchema>;
+export type MapMarker = z.infer<typeof mapMarkerSchema>;
+export type MapLayerType = z.infer<typeof mapLayerTypeSchema>;
+export type MapLayer = z.infer<typeof mapLayerSchema>;
+export type MapConfig = z.infer<typeof mapConfigSchema>;
+export type MapContent = z.infer<typeof mapContentSchema>;
 
 // ---------------------------------------------------------------------------
 // Recursive types: TabbedContent, GridContent, ContentItem
@@ -239,7 +302,8 @@ export type ContentItem =
   | TextBlockContent
   | GridContent
   | CollectionListContent
-  | VideoContent;
+  | VideoContent
+  | MapContent;
 
 // ---------------------------------------------------------------------------
 // Zod schemas for recursive types
@@ -297,6 +361,7 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
     gridContentSchema,
     collectionListContentSchema,
     videoContentSchema,
+    mapContentSchema,
   ])
 );
 
@@ -322,6 +387,7 @@ export const KNOWN_CONTENT_TYPE_KEYS = [
   'grid',
   'collection_list',
   'video',
+  'map',
 ] as const;
 
 /** Union type of all known content type key strings. */

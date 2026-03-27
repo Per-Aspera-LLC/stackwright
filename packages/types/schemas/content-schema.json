@@ -1438,6 +1438,163 @@
             "type"
           ],
           "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema18"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema19"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema20"
+            },
+            "type": {
+              "type": "string",
+              "const": "map"
+            },
+            "center": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type": "number"
+                },
+                "lng": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "lat",
+                "lng"
+              ],
+              "additionalProperties": false
+            },
+            "zoom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 20
+            },
+            "markers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "lat": {
+                    "type": "number"
+                  },
+                  "lng": {
+                    "type": "number"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "popup": {
+                    "type": "string"
+                  },
+                  "icon": {
+                    "type": "string"
+                  },
+                  "altitude": {
+                    "type": "number"
+                  },
+                  "color": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "lat",
+                  "lng",
+                  "label"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "layers": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "polyline",
+                      "polygon",
+                      "geojson"
+                    ]
+                  },
+                  "data": {},
+                  "style": {
+                    "type": "object",
+                    "properties": {
+                      "color": {
+                        "type": "string"
+                      },
+                      "width": {
+                        "type": "number"
+                      },
+                      "opacity": {
+                        "type": "number"
+                      },
+                      "fillColor": {
+                        "type": "string"
+                      },
+                      "fillOpacity": {
+                        "type": "number"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "label": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "data"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "view": {
+              "type": "string",
+              "enum": [
+                "map",
+                "globe"
+              ]
+            },
+            "terrain": {
+              "type": "boolean"
+            },
+            "height": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            },
+            "width": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                }
+              ]
+            }
+          },
+          "required": [
+            "label",
+            "type",
+            "center",
+            "zoom"
+          ],
+          "additionalProperties": false
         }
       ]
     },
