@@ -1,0 +1,123 @@
+meta:
+  title: "Interactive Maps - Stackwright"
+  description: "Explore interactive map capabilities powered by MapLibre GL"
+
+content:
+  content_items:
+    # Hero section
+    - type: text_block
+      label: "hero"
+      heading:
+        text: "Interactive Maps with MapLibre 🗺️"
+        textSize: h1
+      textBlocks:
+        - text: "Stackwright's map system uses the adapter pattern to deliver powerful geospatial visualization. This showcase demonstrates the free tier powered by MapLibre GL."
+          textSize: body1
+      
+    # Example 1: Basic map with single marker
+    - type: text_block
+      label: "example-1-intro"
+      heading:
+        text: "Example 1: Basic Map with Marker"
+        textSize: h2
+      textBlocks:
+        - text: "A simple map centered on San Francisco with a single clickable marker. Click the pin to see a popup."
+          textSize: body1
+          
+    - type: map
+      label: "sf-basic"
+      center:
+        lat: 37.7749
+        lng: -122.4194
+      zoom: 12
+      height: "500px"
+      markers:
+        - lat: 37.7749
+          lng: -122.4194
+          label: "San Francisco"
+          popup: "The Golden Gate City"
+          
+    # Example 2: Multi-marker map
+    - type: text_block
+      label: "example-2-intro"
+      heading:
+        text: "Example 2: Multi-Marker Map"
+        textSize: h2
+      textBlocks:
+        - text: "A map showing multiple tech company headquarters across the United States."
+          textSize: body1
+          
+    - type: map
+      label: "tech-hubs"
+      center:
+        lat: 39.8283
+        lng: -98.5795
+      zoom: 4
+      height: "600px"
+      markers:
+        - lat: 37.7749
+          lng: -122.4194
+          label: "San Francisco, CA"
+          popup: "Tech epicenter - SF Bay Area"
+        - lat: 37.3861
+          lng: -122.0839
+          label: "Mountain View, CA"
+          popup: "Google HQ - Googleplex"
+        - lat: 47.6062
+          lng: -122.3321
+          label: "Seattle, WA"
+          popup: "Amazon and Microsoft HQ"
+        - lat: 30.2672
+          lng: -97.7431
+          label: "Austin, TX"
+          popup: "Tesla HQ - Gigafactory Texas"
+        - lat: 40.7128
+          lng: -74.0060
+          label: "New York, NY"
+          popup: "Wall Street - Financial tech hub"
+          
+    # Example 3: Polyline route
+    - type: text_block
+      label: "example-3-intro"
+      heading:
+        text: "Example 3: Polyline Route"
+        textSize: h2
+      textBlocks:
+        - text: "A map showing a delivery route from San Francisco to Los Angeles via multiple stops."
+          textSize: body1
+          
+    - type: map
+      label: "delivery-route"
+      center:
+        lat: 36.7783
+        lng: -119.4179
+      zoom: 6
+      height: "600px"
+      markers:
+        - lat: 37.7749
+          lng: -122.4194
+          label: "San Francisco (Start)"
+          popup: "Departure: 8:00 AM"
+        - lat: 36.7783
+          lng: -119.4179
+          label: "Fresno (Stop 1)"
+          popup: "Arrival: 12:00 PM"
+        - lat: 35.3733
+          lng: -119.0187
+          label: "Bakersfield (Stop 2)"
+          popup: "Arrival: 2:30 PM"
+        - lat: 34.0522
+          lng: -118.2437
+          label: "Los Angeles (End)"
+          popup: "Arrival: 5:00 PM"
+      layers:
+        - type: polyline
+          data:
+            - [-122.4194, 37.7749]
+            - [-119.4179, 36.7783]
+            - [-119.0187, 35.3733]
+            - [-118.2437, 34.0522]
+          style:
+            color: "#FF5733"
+            width: 4
+            opacity: 0.8
