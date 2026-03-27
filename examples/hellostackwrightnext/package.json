@@ -15,6 +15,7 @@
         "@stackwright/collections": "workspace:*",
         "@stackwright/core": "workspace:*",
         "@stackwright/icons": "workspace:*",
+        "@stackwright/maplibre": "workspace:*",
         "@stackwright/nextjs": "workspace:*",
         "@stackwright/ui-shadcn": "workspace:*",
         "js-yaml": "^4.1.1",
