@@ -1,0 +1,52 @@
+{
+  "name": "@stackwright/maplibre",
+  "version": "0.0.0",
+  "description": "MapLibre GL adapter for Stackwright maps (free tier, no API keys required)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Per-Aspera-LLC/stackwright"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./dist/styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "tsup && cp src/styles.css dist/styles.css",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
+  "dependencies": {
+    "maplibre-gl": "^4.7.1",
+    "react-map-gl": "^7.1.7"
+  },
+  "devDependencies": {
+    "@stackwright/core": "workspace:*",
+    "@testing-library/jest-dom": "^6.6",
+    "@testing-library/react": "^16.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "jsdom": "^28.1.0",
+    "react": "^19",
+    "react-dom": "^19",
+    "tsup": "^8",
+    "typescript": "^5",
+    "vitest": "^4"
+  },
+  "peerDependencies": {
+    "@stackwright/core": "workspace:*",
+    "react": "^18 || ^19",
+    "react-dom": "^18 || ^19"
+  }
+}
