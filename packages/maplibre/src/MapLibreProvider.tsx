@@ -127,9 +127,7 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
             style={{ maxWidth: '300px' }}
           >
             <div style={{ padding: '4px 0' }}>
-              <strong style={{ display: 'block', marginBottom: '4px' }}>
-                {popupInfo.label}
-              </strong>
+              <strong style={{ display: 'block', marginBottom: '4px' }}>{popupInfo.label}</strong>
               {popupInfo.popup && (
                 <div style={{ fontSize: '14px', color: '#666' }}>{popupInfo.popup}</div>
               )}

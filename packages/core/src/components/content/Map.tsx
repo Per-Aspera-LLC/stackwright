@@ -68,12 +68,7 @@ export function Map(props: StackwrightMapProps & { config: MapConfig }): React.R
 
   return (
     <div className={className} style={wrapperStyle} {...rest}>
-      <MapProvider
-        config={config}
-        height="100%"
-        width="100%"
-        style={{ borderRadius: '8px' }}
-      />
+      <MapProvider config={config} height="100%" width="100%" style={{ borderRadius: '8px' }} />
     </div>
   );
 }
