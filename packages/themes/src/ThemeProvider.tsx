@@ -141,8 +141,19 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     setColorModeState(mode);
     if (mode === 'system') {
       deleteCookie(COLOR_MODE_COOKIE);
+      // Resolve system preference and sync the DOM attribute so CSS
+      // variable selectors update without a page reload.
+      if (typeof document !== 'undefined') {
+        const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light';
+        document.documentElement.setAttribute('data-sw-color-mode', systemMode);
+      }
     } else {
       writeCookie(COLOR_MODE_COOKIE, mode);
+      if (typeof document !== 'undefined') {
+        document.documentElement.setAttribute('data-sw-color-mode', mode);
+      }
     }
   }, []);
 
