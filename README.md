@@ -97,6 +97,8 @@ Images can be co-located alongside their page YAML files using `./relative` path
 | `video` | Video player with multiple source support |
 | `grid` | Responsive multi-column grid layout |
 | `collection_list` | Dynamic list from a data collection |
+| `text_block` | Text content with heading, paragraphs, and buttons |
+| `map` | MapLibre GL interactive map with markers and layers |
 
 All content types support optional `color` and `background` overrides, and render responsively from 320px to 1440px.
 
@@ -157,6 +159,20 @@ stackwright preview /pricing --width 375 --height 667
 
 # Hot-reload during development (watches YAML and images)
 stackwright prebuild --watch
+
+# Manage site configuration
+stackwright site get
+stackwright site validate
+
+# View the product board (priority-tiered from GitHub Issues)
+stackwright board
+
+# Compose an entire site atomically
+stackwright compose
+
+# Git workflow (for AI agent integration)
+stackwright git stage
+stackwright git open-pr
 ```
 
 ## Package Structure
@@ -169,8 +185,11 @@ stackwright prebuild --watch
 @stackwright/icons         — Lucide icon registry
 @stackwright/build-scripts — Prebuild pipeline (image co-location, path rewriting, watch mode)
 @stackwright/cli           — CLI for scaffolding, page management, validation, preview
-launch-stackwright         — One-command project launcher with otter raft included 🦦
 @stackwright/mcp           — MCP server for AI agent integration and visual rendering
+@stackwright/ui-shadcn     — Radix + Tailwind headless UI primitives (Tabs, Accordion)
+@stackwright/collections   — Data collection providers (file-based, extensible)
+@stackwright/maplibre      — MapLibre GL interactive map component
+launch-stackwright         — One-command project launcher with otter raft included 🦦
 ```
 
 ## IDE Support
