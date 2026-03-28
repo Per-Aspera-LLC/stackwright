@@ -83,11 +83,13 @@ export default defineConfig({
       testIgnore: ['**/*.visual.spec.ts', '**/*.bench.ts'],
     },
   ],
-  webServer: {
-    command: `pnpm --filter stackwright-example-app exec stackwright-prebuild && pnpm --filter stackwright-example-app exec next build && pnpm --filter stackwright-example-app exec next start`,
-    cwd: path.resolve(__dirname, '../..'),
-    port: 3000,
-    timeout: 180_000,
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: process.env.PERF_NO_SERVER
+    ? undefined
+    : {
+        command: `pnpm --filter stackwright-example-app exec stackwright-prebuild && pnpm --filter stackwright-example-app exec next build && pnpm --filter stackwright-example-app exec next start`,
+        cwd: path.resolve(__dirname, '../..'),
+        port: 3000,
+        timeout: 180_000,
+        reuseExistingServer: !process.env.CI,
+      },
 });
