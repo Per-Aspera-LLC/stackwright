@@ -52,7 +52,7 @@ footer:
           variantSize: "small"
           textColor: "secondary"
           href: "https://bsky.app/profile/stackwright.bsky.social"
-    socialText: "Come be Sociable!"
+    socialText: "Connect With Us"
 
 customTheme:
     id: per-aspera-sapientia-custom

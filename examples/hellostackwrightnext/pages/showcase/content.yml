@@ -39,7 +39,6 @@ content:
     heading:
       text: grid — three equal columns
       textSize: h2
-    background: '#f8f9fa'
     columns:
     - content_items:
       - type: alert
@@ -89,7 +88,6 @@ content:
     heading:
       text: text_block
       textSize: h2
-    background: '#e8f4f8'
     textBlocks:
     - text: Pure text and buttons — no media, no layout complexity
       textSize: h5
@@ -115,7 +113,6 @@ content:
     heading: carousel
     autoPlay: true
     autoPlaySpeed: 5000
-    background: '#f8f9fa'
     items:
     - title: Define Pages in YAML
       text: No JSX required. Write structured content files and Stackwright compiles them into React components.
@@ -177,7 +174,6 @@ content:
     heading:
       text: icon_grid
       textSize: h2
-    background: '#f8f9fa'
     icons:
     - type: icon
       label: React
@@ -341,7 +337,6 @@ content:
       text: testimonial_grid
       textSize: h2
     columns: 3
-    background: '#f8f9fa'
     items:
     - quote: We went from idea to deployed marketing site in a single sprint. The YAML schema is strict enough that our content
         team cannot break the build.
@@ -384,7 +379,6 @@ content:
     heading:
       text: pricing_table
       textSize: h2
-    background: '#f8f9fa'
     plans:
     - name: Starter
       price: Free

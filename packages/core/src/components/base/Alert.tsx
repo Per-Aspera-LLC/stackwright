@@ -1,6 +1,7 @@
 import React from 'react';
 import { AlertContent, AlertVariant } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { resolveBackground } from '../../utils/resolveBackground';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
 const variantConfig: Record<AlertVariant, { color: string; bgColor: string; iconName: string }> = {
@@ -23,7 +24,7 @@ export function Alert({ variant, title, body, background }: AlertContent) {
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: background || 'transparent',
+        background: resolveBackground(background, theme),
       }}
     >
       <div

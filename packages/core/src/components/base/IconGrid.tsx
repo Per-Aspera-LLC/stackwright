@@ -3,6 +3,7 @@ import React from 'react';
 import { IconGridContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
+import { resolveBackground } from '../../utils/resolveBackground';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
 function renderIcon(src: string, sizePx: number, color: string) {
@@ -25,7 +26,7 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
     <div
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: background || 'transparent',
+        background: resolveBackground(background, theme),
         margin: theme.spacing.xl,
       }}
     >
