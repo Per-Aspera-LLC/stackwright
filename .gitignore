@@ -3,3 +3,8 @@ node_modules
 packages/**/dist
 www/
 ISSUE-*-PLAN.md
+
+# Coverage reports
+coverage/
+*/coverage/
+**/.nyc_output/

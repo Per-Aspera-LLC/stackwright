@@ -4,9 +4,15 @@
   "private": true,
   "scripts": {
     "test": "playwright test",
+    "test:ci": "playwright test --reporter=html,github",
+    "test:update-snapshots": "playwright test --update-snapshots",
+    "test:performance": "playwright test tests/performance/",
+    "test:bench": "playwright test tests/performance/ --reporter=list",
     "sync-screenshots": "bash scripts/sync-screenshots.sh"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0"
+    "@axe-core/playwright": "^4.11.1",
+    "@playwright/test": "^1.52.0",
+    "lighthouse": "^13.0.3"
   }
 }

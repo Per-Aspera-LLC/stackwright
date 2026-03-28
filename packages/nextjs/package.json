@@ -23,9 +23,10 @@
     "scripts": {
         "build": "tsup ",
         "dev": "tsup --watch",
-        "test": "vitest",
+        "test": "vitest run",
         "test:run": "vitest run",
-        "prepublishOnly": "npm run build"
+        "prepublishOnly": "npm run build",
+        "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
         "@stackwright/core": "workspace:*",

@@ -195,3 +195,389 @@ Each package uses **tsup** to produce dual-format output (ESM `.mjs` + CJS `.js`
 - **Build fails after dependency updates**: Run `pnpm install` from root.
 - **Clear build cache**: Delete `packages/*/dist` directories.
 - **Components not rendering / blank page**: Verify `registerNextJSComponents()` is called before first render in `_app.tsx` or `layout.tsx`.
+
+---
+
+## Testing Philosophy
+
+Stackwright follows an **integration-first** testing approach:
+
+### What We Test
+
+✅ **Test these:**
+- Content pipeline: YAML → prebuild → JSON → React rendering
+- Schema validation: Zod schemas catch errors early
+- Component registration and runtime behavior
+- Build scripts: image co-location, path rewriting
+- Visual regressions: screenshot-based testing for UI changes
+- Security: path traversal, XSS resilience at schema level
+
+❌ **Don't test these:**
+- Third-party library internals (React, Next.js, Zod)
+- Obvious single-line functions with no logic
+- Pure TypeScript types (TypeScript compiler handles this)
+- Trivial property pass-through (`<Component {...props} />`)
+
+### Integration Over Unit
+
+Prefer **integration tests** that exercise multiple layers over isolated unit tests:
+- Test `runPrebuild()` with real temp directories, not mocked `fs`
+- Test `DynamicPage` with real YAML content, not mocked props
+- Test visual rendering in browser, not JSDOM snapshots
+
+Unit tests are valuable when:
+- Testing pure utility functions (e.g., `slugify`, `parseYamlFrontmatter`)
+- Testing error handling paths that are hard to trigger in integration tests
+- Testing complex logic isolated from I/O
+
+### Test Structure
+
+```typescript
+describe('Feature Name — what it does', () => {
+  // Setup
+  beforeEach(() => {
+    // Create temp dirs, reset state, etc.
+  });
+
+  it('does X when Y', () => {
+    // Arrange
+    const input = createTestInput();
+    
+    // Act
+    const result = functionUnderTest(input);
+    
+    // Assert
+    expect(result).toBe(expected);
+  });
+
+  it('throws clear error when invalid input', () => {
+    expect(() => functionUnderTest(badInput)).toThrow(/helpful message/);
+  });
+});
+```
+
+## Running Tests
+
+### Unit Tests (Vitest)
+
+```bash
+# Run all unit tests
+pnpm test
+
+# Run specific package tests
+pnpm test:core
+pnpm --filter @stackwright/cli test
+
+# Watch mode (auto-rerun on changes)
+pnpm --filter @stackwright/core exec vitest
+
+# Run with coverage
+pnpm test:coverage
+
+# Open coverage report in browser
+pnpm test:coverage:ui
+```
+
+### E2E Tests (Playwright)
+
+```bash
+# Run all E2E tests (includes visual regression)
+pnpm test:e2e
+
+# Update visual regression baselines
+pnpm test:e2e --update-snapshots
+
+# Run in headed mode (see the browser)
+pnpm --filter @stackwright/e2e exec playwright test --headed
+
+# Open Playwright UI for debugging
+pnpm --filter @stackwright/e2e exec playwright test --ui
+```
+
+### Coverage Reports
+
+```bash
+# Generate merged coverage report for all packages
+pnpm test:coverage
+
+# View HTML report
+open coverage/merged/index.html
+```
+
+Coverage reports show:
+- Overall coverage across all packages
+- Per-package breakdown
+- Line, statement, function, and branch coverage
+- Uncovered lines highlighted in HTML report
+
+## Coverage Targets
+
+We aim for **strategic coverage**, not blind 100%:
+
+| Package | Target | Rationale |
+|---------|--------|-----------|
+| `@stackwright/core` | 80% | Core framework — critical path |
+| `@stackwright/types` | 90% | Schemas are the contract — must be bulletproof |
+| `@stackwright/build-scripts` | 75% | Prebuild is complex — good coverage prevents regressions |
+| `@stackwright/cli` | 70% | CLI commands have many paths |
+| `@stackwright/mcp` | 75% | MCP tools expose AI attack surface |
+| `@stackwright/collections` | 75% | Data providers must handle edge cases |
+| `@stackwright/nextjs` | 70% | Adapter layer — less logic, more glue |
+| `@stackwright/themes` | 60% | Mostly CSS/JSX pass-through |
+
+**Strategic gaps** (intentionally low/no coverage):
+- Generated code (JSON schemas, type definitions)
+- Build config files (`tsup.config.ts`, `vitest.config.ts`)
+- Example applications (not library code)
+- Documentation files
+
+## Writing Good Tests
+
+### DO:
+
+```typescript
+✅ Test behavior, not implementation
+it('filters blog posts by tag', () => {
+  const posts = getPosts({ tag: 'typescript' });
+  expect(posts.every(p => p.tags.includes('typescript'))).toBe(true);
+});
+
+✅ Use descriptive test names
+it('throws TypeError when siteConfig.title is missing') // Good
+it('test error') // Bad
+
+✅ Test error messages are helpful
+expect(() => parse(badYaml)).toThrow(/line 5:.*unexpected token/i);
+
+✅ Use realistic test data
+const testSiteConfig = {
+  title: 'My Test Site',
+  navigation: [{ label: 'Home', href: '/' }],
+  appBar: { titleText: 'My Site' },
+};
+```
+
+### DON'T:
+
+```typescript
+❌ Don't test private internals
+expect(component.state.internalCounter).toBe(5); // Breaks on refactor
+
+❌ Don't snapshot everything
+expect(renderedHTML).toMatchSnapshot(); // Brittle, hard to review
+
+❌ Don't mock everything
+vi.mock('fs'); // Use real temp dirs instead
+
+❌ Don't test TypeScript types in runtime tests
+expect(typeof value).toBe('string'); // TypeScript already checked this
+```
+
+## Visual Regression Testing
+
+Visual tests use Playwright's `toHaveScreenshot()` to catch unintended UI changes:
+
+```bash
+# Run visual tests
+pnpm test:e2e
+
+# Update baselines after intentional UI change
+pnpm test:e2e --update-snapshots
+git add packages/e2e/tests/__screenshots__
+git commit -m "Update visual regression baselines"
+```
+
+**When to update baselines:**
+- After intentional CSS/layout changes
+- After adding new content types
+- After updating component styling
+
+**CI behavior:**
+- ✅ Pass: Screenshots match baselines (±1% threshold)
+- ❌ Fail: Visual diff detected → downloads artifacts with diff images
+- PR comment shows status and guides you to fix/update
+
+See `packages/e2e/README.md` for detailed visual testing guide.
+
+## Schema Fuzzing
+
+The `schema-fuzzing.test.ts` file stress-tests Zod schemas with randomized inputs:
+
+```bash
+pnpm --filter @stackwright/types test schema-fuzzing
+```
+
+This catches:
+- Edge cases (empty strings, very long strings, unicode)
+- Validation bypass attempts
+- Performance regressions (1000+ validations must run in <5s)
+- Security issues (path traversal, injection attempts)
+
+Run fuzzing tests after modifying schemas in `packages/types/`.
+
+## Debugging Failed Tests
+
+### Vitest Tests
+
+```bash
+# Run single test file
+pnpm --filter @stackwright/core test prebuild.test.ts
+
+# Run single test by name pattern
+pnpm --filter @stackwright/core test -t "copies images"
+
+# Use --reporter=verbose for full output
+pnpm --filter @stackwright/core test --reporter=verbose
+```
+
+### Playwright Tests
+
+```bash
+# Run in headed mode to see browser
+pnpm --filter @stackwright/e2e exec playwright test --headed
+
+# Open Playwright UI for step-by-step debugging
+pnpm --filter @stackwright/e2e exec playwright test --ui
+
+# Generate trace files for failed tests
+pnpm --filter @stackwright/e2e exec playwright test --trace on
+```
+
+### CI Failures
+
+1. **Check the logs:** GitHub Actions → failed workflow → expand failed step
+2. **Download artifacts:** Coverage reports, visual diffs, Playwright traces
+3. **Reproduce locally:** Run the exact command that failed in CI
+4. **Check for flakes:** Re-run the workflow — if it passes, it's a flake (file an issue)
+
+
+---
+
+## Accessibility Testing
+
+Stackwright follows **WCAG 2.1 Level AA** standards for accessibility.
+
+### Running Accessibility Tests
+
+```bash
+# Run all accessibility tests
+pnpm --filter @stackwright/e2e exec playwright test tests/a11y/
+
+# WCAG compliance tests (axe-core)
+pnpm --filter @stackwright/e2e exec playwright test a11y/wcag-compliance.spec.ts
+
+# Keyboard navigation tests
+pnpm --filter @stackwright/e2e exec playwright test a11y/keyboard-navigation.spec.ts
+```
+
+### What We Test
+
+✅ **WCAG 2.1 AA Requirements**:
+- Color contrast (4.5:1 for normal text, 3:1 for large text)
+- Semantic HTML (`<nav>`, `<main>`, `<button>`, `<a>`)
+- ARIA roles and labels
+- Form labels and error messages
+- Image alt text
+- Heading hierarchy (h1 → h2 → h3)
+- Link text (no "click here")
+
+✅ **Keyboard Accessibility**:
+- All interactive elements keyboard-accessible (Tab)
+- Visible focus indicators
+- No keyboard traps
+- Logical tab order
+- Skip links work
+- Modals dismiss with Escape
+- Dropdowns navigate with Arrow keys
+
+### When to Run A11y Tests
+
+**Always run before**:
+- Adding new content types
+- Changing component styling
+- Modifying theme colors
+- Adding interactive features (buttons, forms, modals)
+
+**Tests fail if**:
+- axe-core finds WCAG violations
+- Keyboard navigation is broken
+- Focus indicators are missing
+- Tab order is illogical
+
+### Fixing Violations
+
+Common issues and fixes:
+
+| Issue | Fix |
+|-------|-----|
+| Missing alt text | Add `alt` prop to all images |
+| Low contrast | Use theme colors (already WCAG-compliant) |
+| Missing form labels | Wrap inputs in `<label>` or use `aria-label` |
+| Non-semantic HTML | Use `<button>` instead of `<div onClick>` |
+| Keyboard trap | Ensure Tab moves focus out of component |
+
+See `packages/e2e/TESTING_INFRASTRUCTURE.md` for detailed accessibility guide.
+
+---
+
+## Cross-Browser Testing
+
+E2E tests run on multiple browsers and viewports in CI.
+
+### Test Matrix
+
+| Browser | Viewports | OS |
+|---------|-----------|-----|
+| Chromium | Desktop (1280×720), Mobile (375×667) | Ubuntu |
+| Firefox | Desktop (1280×720), Mobile (375×667) | Ubuntu |
+| WebKit (Safari) | Desktop (1280×720), Mobile (375×667) | Ubuntu |
+
+**Total**: 6 test runs per PR (3 browsers × 2 viewports)
+
+### Running Cross-Browser Tests Locally
+
+```bash
+# Run on specific browser
+pnpm --filter @stackwright/e2e exec playwright test --project=chromium
+pnpm --filter @stackwright/e2e exec playwright test --project=firefox
+pnpm --filter @stackwright/e2e exec playwright test --project=webkit
+
+# Run on all browsers
+pnpm test:e2e
+
+# Run specific test on all browsers
+pnpm --filter @stackwright/e2e exec playwright test smoke.spec.ts
+```
+
+### Browser-Specific Issues
+
+**WebKit (Safari)**:
+- Some CSS features have limited support
+- Use `@supports` queries for fallbacks
+- Test on actual Safari when possible
+
+**Firefox**:
+- Font rendering may differ slightly from Chromium
+- Baseline screenshots are taken on Chromium (±1% threshold allows for minor diffs)
+
+**Mobile viewports**:
+- Touch targets must be ≥44×44px (WCAG 2.1)
+- Test with `--device="iPhone 12"` for realistic mobile testing
+
+---
+
+## Test Infrastructure Reference
+
+For comprehensive testing documentation, see:
+
+📖 **[packages/e2e/TESTING_INFRASTRUCTURE.md](packages/e2e/TESTING_INFRASTRUCTURE.md)**
+
+This 400+ line guide covers:
+- All test suites (unit, E2E, visual, a11y, performance, fuzzing)
+- How to run each type of test
+- Performance budgets and how they're enforced
+- Accessibility standards (WCAG 2.1 AA) explained
+- Comprehensive troubleshooting guide
+- Best practices for writing good tests
+- CI/CD integration details
+

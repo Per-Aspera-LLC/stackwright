@@ -1,0 +1,57 @@
+{
+  "build": {
+    "prebuild": {
+      "max": 10000,
+      "warn": 8000,
+      "description": "stackwright-prebuild execution time (ms)"
+    },
+    "nextBuild": {
+      "max": 60000,
+      "warn": 45000,
+      "description": "next build execution time (ms)"
+    }
+  },
+  "bundle": {
+    "firstLoadJS": {
+      "max": 300000,
+      "warn": 250000,
+      "description": "First-load JS bundle size (bytes, gzipped). Current: ~271KB, Target: <250KB"
+    },
+    "allPagesJS": {
+      "max": 850000,
+      "warn": 750000,
+      "description": "Total JS across all pages (bytes, gzipped). Current: ~773KB, Target: <750KB"
+    }
+  },
+  "runtime": {
+    "fcp": {
+      "max": 1500,
+      "warn": 1200,
+      "description": "First Contentful Paint (ms)"
+    },
+    "lcp": {
+      "max": 2500,
+      "warn": 2000,
+      "description": "Largest Contentful Paint (ms)"
+    },
+    "tti": {
+      "max": 3000,
+      "warn": 2500,
+      "description": "Time to Interactive (ms)"
+    },
+    "hydration": {
+      "max": 500,
+      "warn": 300,
+      "description": "React hydration time (ms)"
+    },
+    "themeSwitch": {
+      "max": 100,
+      "warn": 50,
+      "description": "Dark/light mode switch time (ms)"
+    }
+  },
+  "thresholds": {
+    "regression": 0.20,
+    "improvement": 0.10
+  }
+}

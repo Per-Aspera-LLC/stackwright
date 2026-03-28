@@ -1,0 +1,156 @@
+name: Performance Benchmarks
+
+on:
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      run-all:
+        description: 'Run all performance tests (including slow ones)'
+        required: false
+        default: 'false'
+
+jobs:
+  performance:
+    name: Performance Benchmarks
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: 📚 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔨 Build packages
+        run: pnpm build
+
+      - name: 🔧 Build example app
+        run: |
+          pnpm --filter stackwright-example-app exec stackwright-prebuild
+          pnpm --filter stackwright-example-app exec next build
+
+      - name: 🚀 Start example app
+        run: |
+          pnpm --filter stackwright-example-app exec next start &
+          sleep 10
+          curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000
+
+      - name: ⚡ Run build time benchmarks
+        id: build-time
+        run: |
+          pnpm --filter @stackwright/e2e exec playwright test tests/performance/build-time.bench.ts --reporter=list
+        continue-on-error: true
+
+      - name: 📦 Run bundle size benchmarks
+        id: bundle-size
+        run: |
+          pnpm --filter @stackwright/e2e exec playwright test tests/performance/bundle-size.bench.ts --reporter=list
+        continue-on-error: true
+
+      - name: 🌐 Run runtime vitals benchmarks
+        id: runtime-vitals
+        run: |
+          pnpm --filter @stackwright/e2e exec playwright test tests/performance/runtime-vitals.bench.ts --reporter=list
+        continue-on-error: true
+
+      - name: 📊 Generate performance report
+        if: always()
+        run: |
+          echo "## ⚡ Performance Benchmark Results" > performance-report.md
+          echo "" >> performance-report.md
+          
+          if [ "${{ steps.build-time.outcome }}" == "success" ]; then
+            echo "### ✅ Build Time Benchmarks: PASSED" >> performance-report.md
+          else
+            echo "### ❌ Build Time Benchmarks: FAILED" >> performance-report.md
+          fi
+          echo "" >> performance-report.md
+          
+          if [ "${{ steps.bundle-size.outcome }}" == "success" ]; then
+            echo "### ✅ Bundle Size Benchmarks: PASSED" >> performance-report.md
+          else
+            echo "### ❌ Bundle Size Benchmarks: FAILED" >> performance-report.md
+          fi
+          echo "" >> performance-report.md
+          
+          if [ "${{ steps.runtime-vitals.outcome }}" == "success" ]; then
+            echo "### ✅ Runtime Vitals Benchmarks: PASSED" >> performance-report.md
+          else
+            echo "### ❌ Runtime Vitals Benchmarks: FAILED" >> performance-report.md
+          fi
+          echo "" >> performance-report.md
+          
+          echo "📝 **Note:** Detailed results are available in the job logs." >> performance-report.md
+          echo "" >> performance-report.md
+          echo "🎯 **Performance Budgets:**" >> performance-report.md
+          echo "- Build time: <70s total" >> performance-report.md
+          echo "- First-load JS: <100KB gzipped" >> performance-report.md
+          echo "- FCP: <1.5s, LCP: <2.5s, TTI: <3s" >> performance-report.md
+
+      - name: 💬 Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('performance-report.md', 'utf8');
+            
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Performance Benchmark Results')
+            );
+            
+            const commentBody = `${report}\n\n---\n*Updated: ${new Date().toISOString()}*`;
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody
+              });
+            }
+
+      - name: 📤 Upload performance results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: |
+            performance-report.md
+            packages/e2e/test-results/
+          retention-days: 30
+
+      - name: ❌ Fail if performance budgets exceeded
+        if: steps.build-time.outcome == 'failure' || steps.bundle-size.outcome == 'failure' || steps.runtime-vitals.outcome == 'failure'
+        run: |
+          echo "❌ One or more performance benchmarks exceeded their budgets!"
+          echo "Review the logs and performance-report.md for details."
+          exit 1
