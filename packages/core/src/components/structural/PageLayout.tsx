@@ -17,8 +17,7 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
 
   const config = siteConfig || defaultSiteConfig;
 
-  const hasBackgroundImage = siteConfig?.customTheme?.backgroundImage?.url;
-  const backgroundColor = hasBackgroundImage ? 'transparent' : theme.colors.background;
+  const backgroundColor = theme.colors.background;
 
   return (
     <div
