@@ -202,7 +202,13 @@ async function collectFiles(dir: string, base: string = ''): Promise<string[]> {
 function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false): object {
   const VERSIONS = {
     tailwindcss: '^4.1.11',
-    stackwright: 'latest',
+    // Stackwright packages — pinned to current stable for reproducibility
+    swCore: '^0.7.0',
+    swNextjs: '^0.3.1',
+    swIcons: '^0.3.0',
+    swBuildScripts: '^0.4.0',
+    swUiShadcn: '^0.1.0',
+    // Third-party
     jsYaml: '^4.1.1',
     next: '^16.1.6',
     react: '^19.2.4',
@@ -215,8 +221,6 @@ function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false
     eslintConfigNext: '^16.1.6',
     typescript: '^5.9.3',
   };
-
-  const sw = useWorkspaceDeps ? 'workspace:*' : VERSIONS.stackwright;
 
   return {
     name: projectName,
@@ -232,17 +236,17 @@ function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false
       'type-check': 'tsc --noEmit',
     },
     dependencies: {
-      '@stackwright/ui-shadcn': sw,
-      '@stackwright/core': sw,
-      '@stackwright/icons': sw,
-      '@stackwright/nextjs': sw,
+      '@stackwright/ui-shadcn': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swUiShadcn,
+      '@stackwright/core': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swCore,
+      '@stackwright/icons': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swIcons,
+      '@stackwright/nextjs': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swNextjs,
       'js-yaml': VERSIONS.jsYaml,
       next: VERSIONS.next,
       react: VERSIONS.react,
       'react-dom': VERSIONS.reactDom,
     },
     devDependencies: {
-      '@stackwright/build-scripts': sw,
+      '@stackwright/build-scripts': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swBuildScripts,
       '@types/js-yaml': VERSIONS.typesJsYaml,
       '@types/node': VERSIONS.typesNode,
       '@types/react': VERSIONS.typesReact,
@@ -255,7 +259,7 @@ function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false
       node: '>=20.0.0',
       pnpm: '>=10.0.0',
     },
-    packageManager: 'pnpm@10',
+    packageManager: 'pnpm@10.30.3',
   };
 }
 
