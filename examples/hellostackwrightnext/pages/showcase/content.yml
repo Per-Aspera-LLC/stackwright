@@ -39,7 +39,6 @@ content:
     heading:
       text: grid — three equal columns
       textSize: h2
-    background: '#f8f9fa'
     columns:
     - content_items:
       - type: alert
@@ -89,7 +88,6 @@ content:
     heading:
       text: text_block
       textSize: h2
-    background: '#fff8e1'
     textBlocks:
     - text: Pure text and buttons — no media, no layout complexity
       textSize: h5
@@ -157,7 +155,6 @@ content:
     heading:
       text: timeline
       textSize: h2
-    background: '#e8f4f8'
     items:
     - year: Q1 2024
       event: Project kicked off — first YAML-to-React prototype built in a weekend hackathon.
@@ -177,7 +174,6 @@ content:
     heading:
       text: icon_grid
       textSize: h2
-    background: '#fff8e1'
     icons:
     - type: icon
       label: React
@@ -297,7 +293,6 @@ content:
     heading:
       text: feature_list
       textSize: h2
-    background: '#e8f4f8'
     columns: 3
     items:
     - icon:
@@ -342,7 +337,6 @@ content:
       text: testimonial_grid
       textSize: h2
     columns: 3
-    background: '#fff8e1'
     items:
     - quote: We went from idea to deployed marketing site in a single sprint. The YAML schema is strict enough that our content
         team cannot break the build.
@@ -385,7 +379,6 @@ content:
     heading:
       text: pricing_table
       textSize: h2
-    background: '#e8f4f8'
     plans:
     - name: Starter
       price: Free
@@ -450,7 +443,6 @@ content:
     body: Use the MCP server to let AI agents create and validate content for your Stackwright site.
   - type: contact_form_stub
     label: contact-form-stub-demo
-    background: '#f8f9fa'
     heading:
       text: contact_form_stub
       textSize: h2
