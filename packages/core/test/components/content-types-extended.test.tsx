@@ -3,6 +3,7 @@ import { render, screen, act } from '@testing-library/react';
 import React from 'react';
 import { IconGrid } from '../../src/components/base/IconGrid';
 import { TextGrid } from '../../src/components/base/TextGrid';
+import { TextBlockGrid } from '../../src/components/base/TextBlockGrid';
 import { Timeline } from '../../src/components/narrative/Timeline';
 import { UnknownContentType } from '../../src/components/base/UnknownContentType';
 import { TabbedContentGrid } from '../../src/components/base/TabbedContentGrid';
@@ -326,5 +327,96 @@ describe('TabbedContentGrid', () => {
     );
     // Falls back to "Tab 1" when no label
     expect(screen.getByRole('tab')).toHaveTextContent('Tab 1');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// TextBlockGrid
+// ---------------------------------------------------------------------------
+
+describe('TextBlockGrid', () => {
+  it('renders heading and text blocks', () => {
+    render(
+      <TextBlockGrid
+        label="text-section"
+        heading={{ text: 'About Us', textSize: 'h2' }}
+        textBlocks={[
+          { text: 'We are a company.', textSize: 'body1' },
+          { text: 'Founded in 2024.', textSize: 'body2' },
+        ]}
+      />
+    );
+    expect(screen.getByText('About Us')).toBeInTheDocument();
+    expect(screen.getByText('We are a company.')).toBeInTheDocument();
+    expect(screen.getByText('Founded in 2024.')).toBeInTheDocument();
+  });
+
+  it('renders without heading', () => {
+    render(
+      <TextBlockGrid
+        label="text-section"
+        textBlocks={[{ text: 'Just some text.', textSize: 'body1' }]}
+      />
+    );
+    expect(screen.getByText('Just some text.')).toBeInTheDocument();
+    expect(screen.queryByRole('heading')).not.toBeInTheDocument();
+  });
+
+  it('renders buttons when provided', () => {
+    render(
+      <TextBlockGrid
+        label="text-section"
+        heading={{ text: 'Call to Action', textSize: 'h3' }}
+        textBlocks={[{ text: 'Join us today!', textSize: 'body1' }]}
+        buttons={[
+          {
+            text: 'Sign Up',
+            textSize: 'button',
+            variant: 'contained',
+            href: '/signup',
+          },
+          {
+            text: 'Learn More',
+            textSize: 'button',
+            variant: 'outlined',
+            href: '/about',
+          },
+        ]}
+      />
+    );
+    expect(screen.getByText('Call to Action')).toBeInTheDocument();
+    expect(screen.getByText('Join us today!')).toBeInTheDocument();
+    expect(screen.getByText('Sign Up')).toBeInTheDocument();
+    expect(screen.getByText('Learn More')).toBeInTheDocument();
+  });
+
+  it('renders multiple text blocks in order', () => {
+    render(
+      <TextBlockGrid
+        label="text-section"
+        textBlocks={[
+          { text: 'First paragraph', textSize: 'body1' },
+          { text: 'Second paragraph', textSize: 'body1' },
+          { text: 'Third paragraph', textSize: 'body1' },
+        ]}
+      />
+    );
+    const paragraphs = screen.getAllByText(/paragraph/);
+    expect(paragraphs).toHaveLength(3);
+    expect(paragraphs[0]).toHaveTextContent('First paragraph');
+    expect(paragraphs[1]).toHaveTextContent('Second paragraph');
+    expect(paragraphs[2]).toHaveTextContent('Third paragraph');
+  });
+
+  it('applies background color when provided', () => {
+    const { container } = render(
+      <TextBlockGrid
+        label="text-section"
+        textBlocks={[{ text: 'Styled text', textSize: 'body1' }]}
+        background="#f0f0f0"
+      />
+    );
+    const section = container.querySelector('section');
+    expect(section).toHaveStyle({ background: '#f0f0f0' });
   });
 });

@@ -1,0 +1,111 @@
+name: Coverage Report
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Run tests with coverage
+        run: pnpm test:coverage
+        continue-on-error: true
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+            packages/*/coverage/
+          retention-days: 30
+
+      - name: Display coverage summary
+        if: always()
+        run: |
+          if [ -f coverage/merged/coverage-summary.json ]; then
+            echo "📊 Coverage Report Generated!"
+            echo "View the HTML report in the uploaded artifacts."
+            cat coverage/merged/coverage-summary.json | head -50
+          else
+            echo "⚠️ No merged coverage report found"
+          fi
+
+      - name: Comment PR with coverage
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = 'coverage/merged/coverage-summary.json';
+            
+            if (!fs.existsSync(path)) {
+              console.log('No coverage summary found');
+              return;
+            }
+            
+            const coverage = JSON.parse(fs.readFileSync(path, 'utf8'));
+            const { totals, byPackage } = coverage;
+            
+            const formatPct = (pct) => pct.toFixed(2) + '%';
+            const getEmoji = (pct) => pct >= 80 ? '✅' : pct >= 60 ? '⚠️' : '❌';
+            
+            let comment = '## 🧪 Coverage Report\\n\\n';
+            comment += '### Overall Coverage\\n\\n';
+            comment += `| Metric | Coverage |\\n`;
+            comment += `|--------|----------|\\n`;
+            comment += `| Lines | ${getEmoji(totals.lines.pct)} ${formatPct(totals.lines.pct)} |\\n`;
+            comment += `| Statements | ${getEmoji(totals.statements.pct)} ${formatPct(totals.statements.pct)} |\\n`;
+            comment += `| Functions | ${getEmoji(totals.functions.pct)} ${formatPct(totals.functions.pct)} |\\n`;
+            comment += `| Branches | ${getEmoji(totals.branches.pct)} ${formatPct(totals.branches.pct)} |\\n`;
+            
+            comment += '\\n### Coverage by Package\\n\\n';
+            comment += `| Package | Lines | Statements | Functions | Branches |\\n`;
+            comment += `|---------|-------|-----------|-----------|----------|\\n`;
+            
+            Object.entries(byPackage)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .forEach(([pkg, data]) => {
+                comment += `| @stackwright/${pkg} | ${formatPct(data.lines.pct)} | ${formatPct(data.statements.pct)} | ${formatPct(data.functions.pct)} | ${formatPct(data.branches.pct)} |\\n`;
+              });
+            
+            comment += '\\n---\\n';
+            comment += '📊 Full HTML report available in workflow artifacts\\n';
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });

@@ -3,6 +3,7 @@ import { Carousel } from '../components/narrative/Carousel/Carousel';
 import {
   MainContentGrid,
   TabbedContentGrid,
+  TextBlockGrid,
   CodeBlock,
   IconGrid,
   FeatureList,
@@ -16,6 +17,7 @@ import {
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
+import { Map } from '../components/content/Map';
 import {
   getStackwrightImage,
   getStackwrightLink,
@@ -28,6 +30,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   carousel: Carousel,
   main: MainContentGrid,
   tabbed_content: TabbedContentGrid,
+  text_block: TextBlockGrid,
   media: Media,
   video: Media,
   timeline: Timeline,
@@ -41,6 +44,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   contact_form_stub: ContactFormStub,
   grid: LayoutGrid,
   collection_list: CollectionList,
+  map: Map,
   // Stackwright platform components (resolved dynamically via factory)
   'stackwright-image': () => getStackwrightImage(),
   'stackwright-link': () => getStackwrightLink(),

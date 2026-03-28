@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/types",
-    "version": "1.1.0-alpha.1",
+    "version": "1.1.0-alpha.4",
     "description": "TypeScript types and JSON schemas for Stackwright",
     "license": "MIT",
     "repository": {
@@ -27,7 +27,9 @@
     "scripts": {
         "build": "tsup && pnpm generate-schemas",
         "generate-schemas": "tsx src/generate-schemas.ts",
-        "dev": "tsup --watch"
+        "dev": "tsup --watch",
+        "test": "vitest run",
+        "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
         "@stackwright/themes": "workspace:*",
@@ -35,6 +37,7 @@
         "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@faker-js/faker": "^10.4.0",
         "@types/fs-extra": "11.0.4",
         "@types/js-yaml": "^4.0.5",
         "@types/react": "^19.2.14",

@@ -1,0 +1,50 @@
+/**
+ * MapLibre GL CSS
+ * 
+ * This imports the required MapLibre GL styles and adds responsive overrides.
+ * 
+ * Usage in Next.js _app.tsx:
+ * ```typescript
+ * import '@stackwright/maplibre/dist/styles.css';
+ * ```
+ */
+
+@import 'maplibre-gl/dist/maplibre-gl.css';
+
+/**
+ * Responsive overrides for mobile devices
+ */
+.maplibregl-map {
+  font-family: inherit;
+}
+
+.maplibregl-ctrl-group {
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * Ensure popups are readable on small screens
+ */
+.maplibregl-popup-content {
+  min-width: 200px;
+  max-width: 90vw;
+  padding: 12px 16px;
+}
+
+@media (max-width: 768px) {
+  .maplibregl-popup-content {
+    font-size: 14px;
+  }
+  
+  .maplibregl-ctrl-group button {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/**
+ * Improve marker visibility
+ */
+.maplibregl-marker {
+  cursor: pointer;
+}

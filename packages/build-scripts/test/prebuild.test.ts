@@ -47,14 +47,14 @@ describe('runPrebuild — basic output', () => {
     root = makeTmpProject();
   });
 
-  it('creates public/stackwright-content/_site.json from stackwright.yml', () => {
-    runPrebuild(root);
+  it('creates public/stackwright-content/_site.json from stackwright.yml', async () => {
+    await runPrebuild(root);
     const siteJson = path.join(root, 'public', 'stackwright-content', '_site.json');
     expect(fs.existsSync(siteJson)).toBe(true);
   });
 
-  it('_site.json is valid JSON', () => {
-    runPrebuild(root);
+  it('_site.json is valid JSON', async () => {
+    await runPrebuild(root);
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', '_site.json'),
       'utf8'
@@ -62,16 +62,16 @@ describe('runPrebuild — basic output', () => {
     expect(() => JSON.parse(raw)).not.toThrow();
   });
 
-  it('creates a slug JSON file for each page', () => {
+  it('creates a slug JSON file for each page', async () => {
     writePageContent(root, 'about', `content:\n  content_items: []\n`);
-    runPrebuild(root);
+    await runPrebuild(root);
     const aboutJson = path.join(root, 'public', 'stackwright-content', 'about.json');
     expect(fs.existsSync(aboutJson)).toBe(true);
   });
 
-  it('produces valid JSON for each page', () => {
+  it('produces valid JSON for each page', async () => {
     writePageContent(root, 'contact', `content:\n  content_items: []\n`);
-    runPrebuild(root);
+    await runPrebuild(root);
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'contact.json'),
       'utf8'
@@ -79,10 +79,10 @@ describe('runPrebuild — basic output', () => {
     expect(() => JSON.parse(raw)).not.toThrow();
   });
 
-  it('exits with error when stackwright.yml is missing', () => {
+  it('exits with error when stackwright.yml is missing', async () => {
     const emptyRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sw-no-config-'));
     fs.mkdirSync(path.join(emptyRoot, 'pages'), { recursive: true });
-    expect(() => runPrebuild(emptyRoot)).toThrow();
+    await expect(runPrebuild(emptyRoot)).rejects.toThrow();
   });
 });
 
@@ -97,7 +97,7 @@ describe('runPrebuild — image collision prevention', () => {
     root = makeTmpProject();
   });
 
-  it('writes images from different pages to different destination paths (no collision)', () => {
+  it('writes images from different pages to different destination paths (no collision)', async () => {
     // Two pages each with a hero.png — they must not overwrite each other.
     const pageADir = path.join(root, 'pages', 'page-a');
     const pageBDir = path.join(root, 'pages', 'page-b');
@@ -110,7 +110,7 @@ describe('runPrebuild — image collision prevention', () => {
     fs.writeFileSync(path.join(pageADir, 'hero.png'), 'IMAGE_A');
     fs.writeFileSync(path.join(pageBDir, 'hero.png'), 'IMAGE_B');
 
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const destA = path.join(root, 'public', 'images', 'page-a', 'hero.png');
     const destB = path.join(root, 'public', 'images', 'page-b', 'hero.png');
@@ -125,7 +125,7 @@ describe('runPrebuild — image collision prevention', () => {
     expect(contentB).toBe('IMAGE_B');
   });
 
-  it('rewrites relative image paths to /images/<slug>/filename in output JSON', () => {
+  it('rewrites relative image paths to /images/<slug>/filename in output JSON', async () => {
     const pageDir = path.join(root, 'pages', 'blog');
     writePageContent(
       root,
@@ -134,7 +134,7 @@ describe('runPrebuild — image collision prevention', () => {
     );
     fs.writeFileSync(path.join(pageDir, 'thumb.png'), 'THUMB_DATA');
 
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'blog.json'),
@@ -160,23 +160,23 @@ describe('runPrebuild — missing images', () => {
     root = makeTmpProject();
   });
 
-  it('does not throw when a referenced image file is missing', () => {
+  it('does not throw when a referenced image file is missing', async () => {
     writePageContent(
       root,
       'missing-img',
       `content:\n  content_items:\n    - type: main\n      label: "missing-hero"\n      heading:\n        text: "Missing"\n        textSize: "h1"\n      textBlocks: []\n      media:\n        label: "missing-img"\n        src: "./does-not-exist.png"\n        type: "image"\n`
     );
     // Should warn but not crash
-    expect(() => runPrebuild(root)).not.toThrow();
+    await expect(runPrebuild(root)).resolves.not.toThrow();
   });
 
-  it('leaves the original path unchanged when image is missing', () => {
+  it('leaves the original path unchanged when image is missing', async () => {
     writePageContent(
       root,
       'missing-img',
       `content:\n  content_items:\n    - type: main\n      label: "missing-hero"\n      heading:\n        text: "Missing"\n        textSize: "h1"\n      textBlocks: []\n      media:\n        label: "missing-img"\n        src: "./does-not-exist.png"\n        type: "image"\n`
     );
-    runPrebuild(root);
+    await runPrebuild(root);
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'missing-img.json'),
       'utf8'
@@ -196,21 +196,21 @@ describe('runPrebuild — schema validation', () => {
     root = makeTmpProject();
   });
 
-  it('exits when stackwright.yml is missing required fields', () => {
+  it('exits when stackwright.yml is missing required fields', async () => {
     // Write a site config that omits required fields (title, appBar)
     fs.writeFileSync(path.join(root, 'stackwright.yml'), `navigation: []\n`);
-    expect(() => runPrebuild(root)).toThrow();
+    await expect(runPrebuild(root)).rejects.toThrow();
   });
 
-  it('exits when a page content file has an invalid structure', () => {
+  it('exits when a page content file has an invalid structure', async () => {
     // content_items is required inside content; omitting it should fail
     writePageContent(root, 'bad-page', `content:\n  heading: "oops"\n`);
-    expect(() => runPrebuild(root)).toThrow();
+    await expect(runPrebuild(root)).rejects.toThrow();
   });
 
-  it('accepts a valid site config and valid page without throwing', () => {
+  it('accepts a valid site config and valid page without throwing', async () => {
     writePageContent(root, 'valid', `content:\n  content_items: []\n`);
-    expect(() => runPrebuild(root)).not.toThrow();
+    await expect(runPrebuild(root)).resolves.not.toThrow();
   });
 });
 
@@ -244,13 +244,13 @@ describe('runPrebuild — collection_list entry injection', () => {
     );
   });
 
-  it('injects _entries into collection_list content items', () => {
+  it('injects _entries into collection_list content items', async () => {
     writePageContent(
       root,
       'blog',
       `content:\n  content_items:\n    - type: collection_list\n      label: "posts-list"\n      source: posts\n      card:\n        title: title\n`
     );
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'blog.json'),
@@ -263,13 +263,13 @@ describe('runPrebuild — collection_list entry injection', () => {
     expect(clItem._entries.length).toBe(2);
   });
 
-  it('_entries contain expected fields from collection index', () => {
+  it('_entries contain expected fields from collection index', async () => {
     writePageContent(
       root,
       'blog',
       `content:\n  content_items:\n    - type: collection_list\n      label: "posts-list"\n      source: posts\n      card:\n        title: title\n`
     );
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'blog.json'),
@@ -282,14 +282,14 @@ describe('runPrebuild — collection_list entry injection', () => {
     expect(entries.every((e: any) => 'title' in e)).toBe(true);
   });
 
-  it('does not crash when collection_list references unknown collection', () => {
+  it('does not crash when collection_list references unknown collection', async () => {
     writePageContent(
       root,
       'bad-ref',
       `content:\n  content_items:\n    - type: collection_list\n      label: "missing"\n      source: nonexistent\n      card:\n        title: title\n`
     );
     // Should warn but not throw
-    expect(() => runPrebuild(root)).not.toThrow();
+    await expect(runPrebuild(root)).resolves.not.toThrow();
 
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'bad-ref.json'),
@@ -301,13 +301,13 @@ describe('runPrebuild — collection_list entry injection', () => {
     expect(cl._entries).toBeUndefined();
   });
 
-  it('preserves non-collection_list content items unchanged', () => {
+  it('preserves non-collection_list content items unchanged', async () => {
     writePageContent(
       root,
       'mixed',
       `content:\n  content_items:\n    - type: main\n      label: hero\n      heading:\n        text: Hello\n        textSize: h1\n      textBlocks: []\n    - type: collection_list\n      label: posts\n      source: posts\n      card:\n        title: title\n`
     );
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'mixed.json'),
@@ -331,7 +331,7 @@ describe('runPrebuild — video file co-location', () => {
     root = makeTmpProject();
   });
 
-  it('copies a co-located .mp4 file to public/images/', () => {
+  it('copies a co-located .mp4 file to public/images/', async () => {
     const pageDir = path.join(root, 'pages', 'hero');
     writePageContent(
       root,
@@ -340,14 +340,14 @@ describe('runPrebuild — video file co-location', () => {
     );
     fs.writeFileSync(path.join(pageDir, 'demo.mp4'), 'FAKE_MP4_DATA');
 
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const dest = path.join(root, 'public', 'images', 'hero', 'demo.mp4');
     expect(fs.existsSync(dest)).toBe(true);
     expect(fs.readFileSync(dest, 'utf8')).toBe('FAKE_MP4_DATA');
   });
 
-  it('rewrites relative video path to /images/<slug>/filename in output JSON', () => {
+  it('rewrites relative video path to /images/<slug>/filename in output JSON', async () => {
     const pageDir = path.join(root, 'pages', 'about');
     writePageContent(
       root,
@@ -356,7 +356,7 @@ describe('runPrebuild — video file co-location', () => {
     );
     fs.writeFileSync(path.join(pageDir, 'intro.webm'), 'FAKE_WEBM');
 
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const raw = fs.readFileSync(
       path.join(root, 'public', 'stackwright-content', 'about.json'),
@@ -366,7 +366,7 @@ describe('runPrebuild — video file co-location', () => {
     expect(raw).not.toContain('./intro.webm');
   });
 
-  it('handles .ogg and .mov extensions as colocatable', () => {
+  it('handles .ogg and .mov extensions as colocatable', async () => {
     const pageDir = path.join(root, 'pages', 'formats');
     writePageContent(
       root,
@@ -375,13 +375,13 @@ describe('runPrebuild — video file co-location', () => {
     );
     fs.writeFileSync(path.join(pageDir, 'clip.ogg'), 'FAKE_OGG');
 
-    runPrebuild(root);
+    await runPrebuild(root);
 
     const dest = path.join(root, 'public', 'images', 'formats', 'clip.ogg');
     expect(fs.existsSync(dest)).toBe(true);
   });
 
-  it('warns for large video files (>50MB) without failing', () => {
+  it('warns for large video files (>50MB) without failing', async () => {
     const pageDir = path.join(root, 'pages', 'big');
     writePageContent(
       root,
@@ -394,7 +394,7 @@ describe('runPrebuild — video file co-location', () => {
     fs.writeFileSync(path.join(pageDir, 'huge.mp4'), bigBuf);
 
     const warnSpy = vi.spyOn(console, 'warn');
-    expect(() => runPrebuild(root)).not.toThrow();
+    await expect(runPrebuild(root)).resolves.not.toThrow();
     const warnings = warnSpy.mock.calls.map((c) => c.join(' ')).join('\n');
     expect(warnings).toContain('Large video file');
     warnSpy.mockRestore();

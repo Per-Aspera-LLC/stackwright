@@ -399,6 +399,33 @@
         "xl"
       ],
       "additionalProperties": false
+    },
+    "integrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "openapi",
+              "graphql",
+              "rest"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50,
+            "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+          }
+        },
+        "required": [
+          "type",
+          "name"
+        ],
+        "additionalProperties": {}
+      }
     }
   },
   "required": [

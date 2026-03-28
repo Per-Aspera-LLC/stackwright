@@ -6,3 +6,4 @@
  */
 export { runPrebuild } from './prebuild';
 export { runWatch } from './watch';
+export type { PrebuildOptions, PrebuildPlugin, PrebuildPluginContext } from '@stackwright/types';

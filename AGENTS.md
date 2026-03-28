@@ -2,7 +2,24 @@
 
 Welcome to Stackwright! This is a YAML-driven React application framework that enables rapid development of professional websites and applications through a "content as code" approach. In this guide, you'll find essential knowledge required to be productive in the Stackwright project. For contributor guidelines (branching, commits, testing, changesets), see [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-### Key Concepts
+### Quick Start for New Projects
+
+The fastest way to get started with Stackwright is using **launch-stackwright**:
+
+```bash
+npx launch-stackwright my-site
+cd my-site
+pnpm install
+pnpm dev
+```
+
+This automatically sets up:
+- ✅ A fully configured Next.js + Stackwright project
+- ✅ The otter raft (AI agents) ready to build your site
+- ✅ MCP server auto-configuration for Code Puppy
+
+See the [Otter Raft documentation](./otters/README.md) for how to use the AI agents to build complete sites through conversation.
+
 - **Framework Architecture**: To understand the big picture, read:
   - `packages/core/src/index.ts`: Core framework initialization
   - `packages/nextjs/src/components/NextDocument.tsx`: Next.js integration
@@ -58,7 +75,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 |---|---|---|
 | `carousel` | `label` (string), `heading` (string), `items` (CarouselItem[]) | `color` (string), `background` (string), `autoPlaySpeed` (number), `infinite` (boolean), `autoPlay` (boolean) |
 | `main` | `label` (string), `heading` (TextBlock), `textBlocks` (TextBlock[]) | `color` (string), `background` (string), `media` (MediaItem), `graphic_position` (`left` | `right`), `buttons` (ButtonContent[]), `textToGraphic` (number) |
-| `tabbed_content` | `label` (string), `heading` (TextBlock), `tabs` (object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object[]) | `color` (string), `background` (string) |
+| `tabbed_content` | `label` (string), `heading` (TextBlock), `tabs` (object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object[]) | `color` (string), `background` (string) |
 | `media` | `label` (string), `src` (string) | `color` (string), `background` (string), `alt` (string), `height` (number | string), `width` (number | string), `style` (`contained` | `overflow`) |
 | `timeline` | `label` (string), `items` (TimelineItem[]) | `color` (string), `background` (string), `heading` (TextBlock) |
 | `icon_grid` | `label` (string), `icons` (IconContent[]) | `color` (string), `background` (string), `heading` (TextBlock) |
@@ -69,9 +86,11 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `pricing_table` | `label` (string), `plans` (object[]) | `color` (string), `background` (string), `heading` (TextBlock) |
 | `alert` | `label` (string), `variant` (`info` | `warning` | `success` | `danger` | `note` | `tip`), `body` (string) | `color` (string), `background` (string), `title` (string) |
 | `contact_form_stub` | `label` (string), `email` (string) | `color` (string), `background` (string), `heading` (TextBlock), `description` (string), `email_subject` (string), `phone` (string), `address` (string), `button_text` (string) |
+| `text_block` | `label` (string), `textBlocks` (TextBlock[]) | `color` (string), `background` (string), `heading` (TextBlock), `buttons` (ButtonContent[]) |
 | `grid` | `label` (string), `columns` (GridColumn[]) | `color` (string), `background` (string), `heading` (TextBlock), `gap` (string), `stackBelow` (number) |
 | `collection_list` | `label` (string), `source` (string), `layout` (default), `card` (object) | `columns` (number), `limit` (number), `hrefPrefix` (string), `heading` (TextBlock), `background` (string), `color` (string) |
 | `video` | `label` (string), `src` (string) | `color` (string), `background` (string), `alt` (string), `height` (number | string), `width` (number | string), `style` (`contained` | `overflow`), `poster` (string), `autoplay` (boolean), `loop` (boolean), `muted` (boolean), `controls` (boolean), `preload` (`auto` | `metadata` | `none`), `sources` (object[]) |
+| `map` | `label` (string), `center` (object), `zoom` (number) | `color` (string), `background` (string), `markers` (object[]), `layers` (object[]), `view` (`map` | `globe`), `terrain` (boolean), `height` (string | number), `width` (string | number) |
 
 **Sub-type reference:**
 
@@ -84,7 +103,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `IconContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("icon"), `size`? (number | TypographyVariant) |
 | `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? (string) |
 | `TimelineItem` | `year` (string), `event` (string) |
-| `GridColumn` | `width`? (number), `content_items` (object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object[]) |
+| `GridColumn` | `width`? (number), `content_items` (object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object[]) |
 
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
 <!-- stackwright:content-type-table:end -->

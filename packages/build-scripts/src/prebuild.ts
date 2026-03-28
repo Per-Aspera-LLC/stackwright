@@ -35,6 +35,9 @@ import type {
   EntryPageConfig,
   PageContent,
   TypographyVariant,
+  PrebuildOptions,
+  PrebuildPlugin,
+  PrebuildPluginContext,
 } from '@stackwright/types';
 
 // -- Config -----------------------------------------------------------------
@@ -666,9 +669,49 @@ function injectCollectionEntries(
   return result;
 }
 
+// -- Plugin Execution -------------------------------------------------------
+
+/**
+ * Execute a plugin hook with error handling
+ */
+async function executePluginHook(
+  plugin: PrebuildPlugin,
+  hook: 'beforeBuild' | 'afterBuild',
+  context: PrebuildPluginContext
+): Promise<void> {
+  const hookFn = plugin[hook];
+  if (!hookFn) return;
+
+  try {
+    console.log(`  Running ${plugin.name} (${hook})...`);
+    await Promise.resolve(hookFn(context));
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Plugin "${plugin.name}" failed during ${hook}: ${message}`);
+  }
+}
+
+/**
+ * Execute all plugins for a given hook
+ */
+async function executePlugins(
+  plugins: PrebuildPlugin[],
+  hook: 'beforeBuild' | 'afterBuild',
+  context: PrebuildPluginContext
+): Promise<void> {
+  for (const plugin of plugins) {
+    await executePluginHook(plugin, hook, context);
+  }
+}
+
 // -- Main -------------------------------------------------------------------
 
-export function runPrebuild(projectRoot = process.cwd()): void {
+export async function runPrebuild(options?: string | PrebuildOptions): Promise<void> {
+  // Backward compatibility: support old API with string parameter
+  const projectRoot =
+    typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
+  const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+
   const pagesDir = path.join(projectRoot, 'pages');
   const publicDir = path.join(projectRoot, 'public');
   const imagesDir = path.join(publicDir, 'images');
@@ -710,6 +753,20 @@ export function runPrebuild(projectRoot = process.cwd()): void {
     JSON.stringify(processedConfig, null, 2)
   );
   console.log('  OK _site.json');
+
+  // Run beforeBuild plugin hooks
+  if (plugins.length > 0) {
+    console.log('\nRunning beforeBuild plugins...');
+    const generatedDir = path.join(projectRoot, 'src', 'generated');
+    const pluginContext: PrebuildPluginContext = {
+      projectRoot,
+      siteConfig: processedConfig as Record<string, unknown>,
+      contentOutDir,
+      imagesDir,
+      generatedDir,
+    };
+    await executePlugins(plugins, 'beforeBuild', pluginContext);
+  }
 
   // 2. Process collections (before pages, so collection_list can be expanded)
   const contentDir = path.join(projectRoot, 'content');
@@ -783,6 +840,19 @@ export function runPrebuild(projectRoot = process.cwd()): void {
     }
   }
 
+  // Run afterBuild plugin hooks
+  if (plugins.length > 0) {
+    console.log('\nRunning afterBuild plugins...');
+    const generatedDir = path.join(projectRoot, 'src', 'generated');
+    const pluginContext: PrebuildPluginContext = {
+      projectRoot,
+      siteConfig: processedConfig as Record<string, unknown>,
+      contentOutDir,
+      imagesDir,
+      generatedDir,
+    };
+    await executePlugins(plugins, 'afterBuild', pluginContext);
+  }
   console.log('\nStackwright prebuild complete.\n');
 }
 
@@ -795,11 +865,13 @@ if (require.main === module) {
     const { runWatch } = require('./watch');
     runWatch();
   } else {
-    try {
-      runPrebuild();
-    } catch (err) {
-      console.error(`ERROR: ${(err as Error).message}`);
-      process.exit(1);
-    }
+    (async () => {
+      try {
+        await runPrebuild();
+      } catch (err) {
+        console.error(`ERROR: ${(err as Error).message}`);
+        process.exit(1);
+      }
+    })();
   }
 }

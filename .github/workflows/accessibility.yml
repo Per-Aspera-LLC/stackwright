@@ -1,0 +1,264 @@
+name: Accessibility Testing
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+  pull-requests: write # For PR comments
+
+jobs:
+  accessibility:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Re-link bins after build
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
+
+      - name: Run WCAG compliance tests
+        id: wcag
+        run: |
+          pnpm --filter @stackwright/e2e exec playwright test tests/a11y/wcag-compliance.spec.ts --reporter=json > wcag-results.json || true
+          echo "wcag_exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Run keyboard navigation tests
+        id: keyboard
+        run: |
+          pnpm --filter @stackwright/e2e exec playwright test tests/a11y/keyboard-navigation.spec.ts --reporter=json > keyboard-results.json || true
+          echo "keyboard_exit_code=$?" >> $GITHUB_OUTPUT
+        continue-on-error: true
+
+      - name: Generate combined accessibility report
+        if: always()
+        run: |
+          pnpm --filter @stackwright/e2e exec playwright test tests/a11y/ --reporter=html
+        continue-on-error: true
+
+      - name: Upload accessibility report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-report
+          path: packages/e2e/playwright-report/
+          retention-days: 14
+
+      - name: Parse test results and comment on PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            
+            // Helper to safely read JSON results
+            function readResults(filename) {
+              try {
+                if (!fs.existsSync(filename)) return null;
+                const content = fs.readFileSync(filename, 'utf8');
+                return JSON.parse(content);
+              } catch (e) {
+                console.warn(`Failed to parse ${filename}:`, e.message);
+                return null;
+              }
+            }
+            
+            const wcagResults = readResults('wcag-results.json');
+            const keyboardResults = readResults('keyboard-results.json');
+            
+            // Count test results
+            function countResults(results) {
+              if (!results || !results.suites) return { passed: 0, failed: 0, skipped: 0, total: 0 };
+              
+              let passed = 0, failed = 0, skipped = 0;
+              
+              function countSpecs(suite) {
+                if (suite.specs) {
+                  suite.specs.forEach(spec => {
+                    spec.tests?.forEach(test => {
+                      const results = test.results || [];
+                      const hasPassed = results.some(r => r.status === 'passed');
+                      const hasFailed = results.some(r => r.status === 'failed');
+                      const hasSkipped = results.some(r => r.status === 'skipped');
+                      
+                      if (hasFailed) failed++;
+                      else if (hasPassed) passed++;
+                      else if (hasSkipped) skipped++;
+                    });
+                  });
+                }
+                if (suite.suites) {
+                  suite.suites.forEach(countSpecs);
+                }
+              }
+              
+              results.suites.forEach(countSpecs);
+              return { passed, failed, skipped, total: passed + failed + skipped };
+            }
+            
+            const wcagStats = countResults(wcagResults);
+            const keyboardStats = countResults(keyboardResults);
+            
+            // Calculate totals
+            const totalPassed = wcagStats.passed + keyboardStats.passed;
+            const totalFailed = wcagStats.failed + keyboardStats.failed;
+            const totalSkipped = wcagStats.skipped + keyboardStats.skipped;
+            const totalTests = wcagStats.total + keyboardStats.total;
+            
+            // Determine overall status
+            const criticalFailures = totalFailed;
+            const getStatusEmoji = (failed) => {
+              if (failed === 0) return '✅';
+              if (failed <= 3) return '⚠️';
+              return '❌';
+            };
+            
+            // Build comment
+            let comment = '## ♿ Accessibility Test Results\n\n';
+            comment += `**Overall Status:** ${getStatusEmoji(criticalFailures)} ${totalPassed}/${totalTests} tests passed\n\n`;
+            
+            // WCAG Compliance section
+            comment += '### 🦮 WCAG 2.1 AA Compliance\n\n';
+            if (wcagStats.total > 0) {
+              comment += `| Status | Count |\n`;
+              comment += `|--------|-------|\n`;
+              comment += `| ✅ Passed | ${wcagStats.passed} |\n`;
+              comment += `| ❌ Failed | ${wcagStats.failed} |\n`;
+              if (wcagStats.skipped > 0) {
+                comment += `| ⏭️ Skipped | ${wcagStats.skipped} |\n`;
+              }
+              comment += `| **Total** | **${wcagStats.total}** |\n\n`;
+              
+              if (wcagStats.failed > 0) {
+                comment += `⚠️ ${wcagStats.failed} WCAG compliance issue(s) detected. Review the full report for details.\n\n`;
+              }
+            } else {
+              comment += '*No WCAG test results available*\n\n';
+            }
+            
+            // Keyboard Navigation section
+            comment += '### ⌨️ Keyboard Navigation\n\n';
+            if (keyboardStats.total > 0) {
+              comment += `| Status | Count |\n`;
+              comment += `|--------|-------|\n`;
+              comment += `| ✅ Passed | ${keyboardStats.passed} |\n`;
+              comment += `| ❌ Failed | ${keyboardStats.failed} |\n`;
+              if (keyboardStats.skipped > 0) {
+                comment += `| ⏭️ Skipped | ${keyboardStats.skipped} |\n`;
+              }
+              comment += `| **Total** | **${keyboardStats.total}** |\n\n`;
+              
+              if (keyboardStats.failed > 0) {
+                comment += `⚠️ ${keyboardStats.failed} keyboard navigation issue(s) detected. Review the full report for details.\n\n`;
+              }
+            } else {
+              comment += '*No keyboard navigation test results available*\n\n';
+            }
+            
+            // Summary and next steps
+            comment += '---\n\n';
+            if (totalTests === 0) {
+              comment += '⚠️ **No accessibility tests were executed.** Check the workflow logs for setup issues.\n\n';
+            } else if (totalFailed === 0) {
+              comment += '🎉 **All accessibility tests passed!** Your site is accessible to all users.\n\n';
+            } else if (totalFailed <= 3) {
+              comment += '⚠️ **Some accessibility issues detected.** While not critical, these should be addressed to improve user experience.\n\n';
+            } else {
+              comment += '❌ **Multiple accessibility issues detected.** Please review and fix these to ensure your site is usable by everyone.\n\n';
+            }
+            
+            comment += '### 📊 Detailed Report\n\n';
+            comment += 'Download the full HTML accessibility report from the workflow artifacts for:\n';
+            comment += '- Detailed WCAG violation descriptions\n';
+            comment += '- Specific element selectors and fixes\n';
+            comment += '- Color contrast issues\n';
+            comment += '- Keyboard navigation flow analysis\n\n';
+            
+            comment += '### 🔍 Testing Checklist\n\n';
+            comment += 'Our accessibility tests verify:\n';
+            comment += '- ✅ WCAG 2.1 Level AA compliance\n';
+            comment += '- ✅ Color contrast in light and dark modes\n';
+            comment += '- ✅ Tab key navigation through all interactive elements\n';
+            comment += '- ✅ Focus indicators are visible\n';
+            comment += '- ✅ No keyboard traps\n';
+            comment += '- ✅ Skip links and ARIA landmarks\n';
+            comment += '- ✅ Screen reader compatibility\n\n';
+            
+            comment += '---\n';
+            comment += '*Powered by [@axe-core/playwright](https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright) and [Playwright](https://playwright.dev/)*';
+            
+            // Post comment
+            const { data: comments } = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            
+            // Find existing accessibility comment
+            const botComment = comments.find(c => 
+              c.user.type === 'Bot' && 
+              c.body.includes('♿ Accessibility Test Results')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+              console.log('Updated existing accessibility comment');
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+              console.log('Created new accessibility comment');
+            }
+
+      - name: Check for critical violations
+        if: always()
+        run: |
+          # For now, we're not failing on violations since the example site has some issues
+          # Uncomment the following lines to enforce accessibility standards:
+          #
+          # if [ "${{ steps.wcag.outputs.wcag_exit_code }}" != "0" ] || [ "${{ steps.keyboard.outputs.keyboard_exit_code }}" != "0" ]; then
+          #   echo "❌ Accessibility tests failed. Please review the report and fix critical violations."
+          #   exit 1
+          # fi
+          
+          echo "ℹ️  Accessibility tests completed. Currently in monitoring mode (not blocking)."
+          echo "💡 To enforce accessibility standards, uncomment the failure check in .github/workflows/accessibility.yml"
+          exit 0

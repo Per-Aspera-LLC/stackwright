@@ -13,11 +13,17 @@
     "@stackwright/nextjs": "0.3.0",
     "@stackwright/themes": "0.5.0",
     "@stackwright/types": "1.0.0",
-    "@stackwright/ui-shadcn": "0.1.0"
+    "@stackwright/ui-shadcn": "0.1.0",
+    "launch-stackwright": "0.1.0",
+    "@stackwright/maplibre": "0.0.0"
   },
   "changesets": [
     "compose-site-atomic",
     "declarative-entry-pages",
+    "integrations-config",
+    "launch-stackwright-package",
+    "map-adapter-phases-1-2",
+    "text-block-feature",
     "video-media-type",
     "visual-render-tools"
   ]

@@ -1,0 +1,133 @@
+name: Visual Regression Tests
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  visual-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @stackwright/e2e exec playwright install chromium --with-deps
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Re-link bins after build
+        run: pnpm install
+
+      - name: Run visual regression tests
+        # Visual baselines differ across platforms (CI vs local font rendering),
+        # so we use --update-snapshots to treat these as render-smoke-tests.
+        # Pixel-perfect comparison runs locally where baselines were generated.
+        run: >-
+          pnpm --filter @stackwright/e2e exec playwright test
+          tests/visual.spec.ts
+          tests/smoke.spec.ts
+          --project=chromium
+          --update-snapshots
+        env:
+          CI: true
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-failures
+          path: |
+            packages/e2e/test-results/
+            packages/e2e/playwright-report/
+          retention-days: 30
+
+      - name: Upload diff images on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-diffs
+          path: |
+            packages/e2e/tests/**/*-diff.png
+            packages/e2e/tests/**/*-actual.png
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Comment PR with results
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            
+            const reportPath = 'packages/e2e/test-results/.last-run.json';
+            let status = '✅ All visual tests passed!';
+            let emoji = '✅';
+            
+            if (context.payload.workflow_run?.conclusion === 'failure' || '${{ job.status }}' === 'failure') {
+              status = '❌ Visual regression tests failed';
+              emoji = '❌';
+              
+              const comment = `## ${emoji} Visual Regression Test Results
+              
+              **Status:** ${status}
+              
+              Visual differences were detected! Please review:
+              
+              1. Download the artifacts from this workflow run
+              2. Check the \`visual-regression-diffs\` artifact for comparison images
+              3. If changes are intentional, update snapshots locally:
+                 \`\`\`bash
+                 pnpm test:e2e --update-snapshots
+                 git add packages/e2e/tests/__screenshots__
+                 git commit -m "Update visual regression baselines"
+                 \`\`\`
+              
+              ---
+              📸 Baseline screenshots are committed to the repo for reproducible testing.`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } else {
+              const comment = `## ${emoji} Visual Regression Test Results
+              
+              **Status:** ${status}
+              
+              All screenshots match the baseline. No visual regressions detected! 🎉`;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            }

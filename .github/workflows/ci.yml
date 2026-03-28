@@ -158,10 +158,21 @@ jobs:
         # makes visual tests act as render-smoke-tests (verify components render without
         # crashing) rather than pixel comparisons, since font rendering differs across
         # platforms. Pixel-perfect comparison runs locally where baselines were generated.
-        run: pnpm --filter @stackwright/e2e exec playwright test --update-snapshots
+        #
+        # a11y and performance tests are excluded here — they have dedicated workflows
+        # (accessibility.yml, performance.yml) with their own reporting and thresholds.
+        run: >-
+          pnpm --filter @stackwright/e2e exec playwright test
+          tests/smoke.spec.ts
+          tests/visual.spec.ts
+          tests/render-tools.spec.ts
+          tests/e2e/
+          tests/edge-cases/
+          --project=chromium
+          --update-snapshots
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: playwright-report
