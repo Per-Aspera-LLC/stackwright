@@ -1,6 +1,7 @@
 import React from 'react';
 import { CodeBlockContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { resolveBackground } from '../../utils/resolveBackground';
 import { highlightCode, getTokenColor, HighlightToken } from '../../utils/prismHighlighter';
 
 /**
@@ -32,7 +33,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
       style={{
         margin: `0 ${theme.spacing.xl}`,
         padding: `${theme.spacing.md} 0`,
-        background: background || 'transparent',
+        background: resolveBackground(background, theme),
       }}
     >
       <div

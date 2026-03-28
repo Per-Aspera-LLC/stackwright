@@ -2,6 +2,7 @@ import React from 'react';
 import { FaqContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
+import { resolveBackground } from '../../utils/resolveBackground';
 
 export function Faq({ heading, items, background }: FaqContent) {
   const theme = useSafeTheme();
@@ -15,7 +16,7 @@ export function Faq({ heading, items, background }: FaqContent) {
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: background || 'transparent',
+        background: resolveBackground(background, theme),
       }}
     >
       {heading?.text && (

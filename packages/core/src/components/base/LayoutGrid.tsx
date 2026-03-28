@@ -3,6 +3,7 @@ import { GridContent, ContentItem } from '@stackwright/types';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
+import { resolveBackground } from '../../utils/resolveBackground';
 
 const DEFAULT_STACK_BELOW = 768;
 
@@ -42,7 +43,7 @@ export function LayoutGrid({ heading, columns, gap, stackBelow, background }: Gr
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: background || 'transparent',
+        background: resolveBackground(background, theme),
       }}
     >
       {heading?.text && (

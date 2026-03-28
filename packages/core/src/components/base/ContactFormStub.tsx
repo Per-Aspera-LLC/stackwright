@@ -2,6 +2,7 @@ import React from 'react';
 import { ContactFormStubContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
+import { resolveBackground } from '../../utils/resolveBackground';
 
 export function ContactFormStub({
   heading,
@@ -28,7 +29,7 @@ export function ContactFormStub({
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: background || 'transparent',
+        background: resolveBackground(background, theme),
       }}
     >
       <div
