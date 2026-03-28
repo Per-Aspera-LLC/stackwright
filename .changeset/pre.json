@@ -20,6 +20,7 @@
   "changesets": [
     "compose-site-atomic",
     "declarative-entry-pages",
+    "fix-perf-benchmark-port-conflict",
     "integrations-config",
     "launch-stackwright-package",
     "map-adapter-phases-1-2",
