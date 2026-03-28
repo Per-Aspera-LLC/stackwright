@@ -44,25 +44,18 @@ jobs:
       - name: 🔗 Re-link bins after build
         run: pnpm install
 
-      - name: 🔧 Build example app
-        run: |
-          pnpm --filter stackwright-example-app exec stackwright-prebuild
-          pnpm --filter stackwright-example-app exec next build
-
-      - name: 🚀 Start example app
-        run: |
-          pnpm --filter stackwright-example-app exec next start &
-          sleep 10
-          curl --retry 10 --retry-delay 1 --retry-connrefused http://localhost:3000
-
       - name: ⚡ Run build time benchmarks
         id: build-time
+        env:
+          PERF_NO_SERVER: '1'
         run: |
           pnpm --filter @stackwright/e2e exec playwright test tests/performance/build-time.bench.ts --reporter=list
         continue-on-error: true
 
       - name: 📦 Run bundle size benchmarks
         id: bundle-size
+        env:
+          PERF_NO_SERVER: '1'
         run: |
           pnpm --filter @stackwright/e2e exec playwright test tests/performance/bundle-size.bench.ts --reporter=list
         continue-on-error: true
