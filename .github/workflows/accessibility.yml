@@ -63,7 +63,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload accessibility report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: accessibility-report
@@ -185,7 +185,9 @@ jobs:
             
             // Summary and next steps
             comment += '---\n\n';
-            if (totalFailed === 0) {
+            if (totalTests === 0) {
+              comment += '⚠️ **No accessibility tests were executed.** Check the workflow logs for setup issues.\n\n';
+            } else if (totalFailed === 0) {
               comment += '🎉 **All accessibility tests passed!** Your site is accessible to all users.\n\n';
             } else if (totalFailed <= 3) {
               comment += '⚠️ **Some accessibility issues detected.** While not critical, these should be addressed to improve user experience.\n\n';

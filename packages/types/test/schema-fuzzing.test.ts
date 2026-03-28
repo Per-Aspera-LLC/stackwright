@@ -24,14 +24,7 @@ function generateValidMainBlock(): ContentItem {
     label: faker.lorem.slug(faker.number.int({ min: 1, max: 5 })),
     heading: {
       text: faker.lorem.sentence(),
-      textSize: faker.helpers.arrayElement([
-        'h1',
-        'h2',
-        'h3',
-        'h4',
-        'body1',
-        'subtitle1',
-      ] as const),
+      textSize: faker.helpers.arrayElement(['h1', 'h2', 'h3', 'h4', 'body1', 'subtitle1'] as const),
     },
     textBlocks: Array.from({ length: faker.number.int({ min: 0, max: 3 }) }, () => ({
       text: faker.lorem.paragraph(),

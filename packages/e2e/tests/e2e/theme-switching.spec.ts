@@ -433,7 +433,12 @@ test.describe('Theme Accessibility', () => {
     }
     
     const themeButton = page.locator(
-      'button[aria-label*="theme" i], button[title*="theme" i]'
+      'button[aria-label*="theme" i], ' +
+      'button[aria-label*="dark" i], ' +
+      'button[aria-label*="light" i], ' +
+      'button[title*="theme" i], ' +
+      'button[title*="dark" i], ' +
+      'button[title*="light" i]'
     ).first();
     
     // Get button label

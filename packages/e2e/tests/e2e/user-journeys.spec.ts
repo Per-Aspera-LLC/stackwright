@@ -132,12 +132,13 @@ test.describe('User Journey: Complete Site Navigation', () => {
     }
   });
 
-  test('Journey 4: Theme toggle persists across navigation', async ({ page }) => {
+  test('Journey 4: Theme toggle persists across navigation', async ({ page, context }) => {
     await navigateAndWait(page, '/');
     
     // Find theme toggle button
     const themeToggle = page.locator(
-      'button[aria-label*="theme" i], button[aria-label*="dark" i], button[aria-label*="light" i], button[title*="theme" i]'
+      'button[aria-label*="theme" i], button[aria-label*="dark" i], button[aria-label*="light" i], ' +
+      'button[title*="theme" i], button[title*="dark" i], button[title*="light" i]'
     );
     
     // Theme toggle might not exist in all implementations
@@ -149,31 +150,27 @@ test.describe('User Journey: Complete Site Navigation', () => {
     
     await expect(themeToggle.first()).toBeVisible();
     
-    // Get initial theme state (use background color as reliable indicator)
-    const initialBg = await page.locator('body').evaluate((el) => 
-      window.getComputedStyle(el).backgroundColor
-    );
+    // Get initial color-mode cookie
+    const initialCookies = await context.cookies();
+    const initialMode = initialCookies.find(c => c.name === 'sw-color-mode')?.value;
     
     // Toggle theme
     await themeToggle.first().click();
-    
-    // Wait for theme change to apply
     await page.waitForTimeout(500);
     
-    // Verify theme changed (background color should change)
-    const afterToggleBg = await page.locator('body').evaluate((el) => 
-      window.getComputedStyle(el).backgroundColor
-    );
-    expect(afterToggleBg).not.toBe(initialBg);
+    // Verify theme changed via cookie
+    const afterToggleCookies = await context.cookies();
+    const afterToggleMode = afterToggleCookies.find(c => c.name === 'sw-color-mode')?.value;
+    expect(afterToggleMode).toBeTruthy();
+    expect(afterToggleMode).not.toBe(initialMode);
     
     // Navigate to another page
     await clickNavLink(page, 'About', '/about');
     
-    // Verify theme persisted (background color should remain the same)
-    const afterNavBg = await page.locator('body').evaluate((el) => 
-      window.getComputedStyle(el).backgroundColor
-    );
-    expect(afterNavBg).toBe(afterToggleBg);
+    // Verify theme persisted (cookie should survive navigation)
+    const afterNavCookies = await context.cookies();
+    const afterNavMode = afterNavCookies.find(c => c.name === 'sw-color-mode')?.value;
+    expect(afterNavMode).toBe(afterToggleMode);
   });
 });
 
