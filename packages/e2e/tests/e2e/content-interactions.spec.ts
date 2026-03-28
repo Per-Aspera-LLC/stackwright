@@ -420,12 +420,14 @@ test.describe('Icon Grid Interactions', () => {
     if (await iconGridHeading.count() > 0) {
       await scrollIntoView(iconGridHeading.first());
       
-      // Icons should have associated text labels
-      const icons = page.locator('svg').first();
+      // Scope to the icon grid section (parent of the heading)
+      const iconGridSection = iconGridHeading.first().locator('..');
       
-      // Look for nearby text (icon grids usually have labels below icons)
-      const container = icons.locator('..');
-      const labelText = await container.innerText();
+      // Each icon item is a flex-column div: icon-wrapper div > SVG, then a <span> label.
+      // Navigate: SVG → wrapper (parent) → item (grandparent) which contains the label.
+      const firstIcon = iconGridSection.locator('svg').first();
+      const itemContainer = firstIcon.locator('..').locator('..');
+      const labelText = await itemContainer.innerText();
       
       // Should have some label text
       expect(labelText.trim().length).toBeGreaterThan(0);
