@@ -3,7 +3,6 @@ content:
     title: "Stackwright — YAML is the syntax. The schema is the safety net. AI writes the code."
     description: "From API spec to working Next.js app in hours. Stackwright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
   
-
   content_items:
     # 1. Hero Section
     - type: main
@@ -61,7 +60,7 @@ content:
           description: "Dark mode, custom palettes, typography, spacing — all in YAML. One file controls the entire visual identity."
         - icon:
             type: icon
-            src: Code
+            src: Code2
             height: 48
           heading: "Standard React Output"
           description: "The output is a Next.js app in a git repo you own. No lock-in, no runtime magic. Fork it, extend it, deploy it."
