@@ -14,6 +14,7 @@ export { StackwrightIcon } from './icons/brand/StackwrightIcon';
 // Convenient presets
 export { defaultStackwrightIcons, registerDefaultIcons } from './presets/defaultIcons';
 export { lucideIconPreset, registerLucideIcons } from './presets/lucideIcons';
+export { lucideAllIconsPreset, registerAllLucideIcons } from './presets/lucideAllIcons';
 
 // Organized exports
 export * from './icons/brand';
