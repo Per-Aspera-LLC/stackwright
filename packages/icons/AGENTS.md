@@ -17,106 +17,122 @@ Dynamic `require()` works in Node.js (SSR) but is `undefined` in the client ESM 
 
 ---
 
-## Adding Icons
+## Tiered Registration Options
 
-### Add a single icon to an existing app
+The package exposes four registration functions, from most to least inclusive:
 
-In the app's `_app.tsx` (or `layout.tsx`), after `registerDefaultIcons()`:
+| Function | What it registers | Use case |
+|---|---|---|
+| `registerDefaultIcons()` | Full Lucide set (~1,500+ icons) + brand/social icons | **Recommended default.** Call this in `_app.tsx` or `layout.tsx`. |
+| `registerAllLucideIcons()` | Full Lucide set only (no brand/social) | When you want all Lucide icons but will register brand icons separately. |
+| `registerLucideIcons()` | Curated ~40-icon subset | Lightweight option for bundle-conscious apps. |
+| `registerStackwrightIcon('Name', Component)` | A single custom icon | Adding individual icons on top of any preset. |
 
-```ts
-import { registerStackwrightIcon } from '@stackwright/icons';
-import { Heart } from 'lucide-react';
-
-registerStackwrightIcon('Heart', Heart);
-```
-
-The string key becomes the `src` value in YAML:
-```yaml
-icons:
-  - label: "My Feature"
-    src: "Heart"
-```
-
-### Add an icon to the default preset
-
-Edit `src/presets/lucideIcons.ts`. Add a **static import** from `lucide-react` and add the name to `lucideIconPreset`:
+### Example: Default setup (recommended)
 
 ```ts
-import { Heart } from 'lucide-react';
+// pages/_app.tsx or app/layout.tsx
+import { registerDefaultIcons } from '@stackwright/icons';
 
-export const lucideIconPreset: Record<string, React.ComponentType<any>> = {
-    // ... existing icons ...
-    Heart,
-};
+registerDefaultIcons();
 ```
 
-The icon will be available in any YAML `icon_grid` as `src: "Heart"` after the next build.
+This makes **every Lucide icon** available in YAML by its PascalCase name — no manual registration needed. Browse the full catalogue at **https://lucide.dev/icons**.
 
-**Do not use dynamic `require()`.** Static imports only — this is enforced by the hydration constraint described above.
+### Example: Lightweight curated preset
 
-### Legacy MUI icon name aliases
+```ts
+import { registerLucideIcons } from '@stackwright/icons';
 
-`lucideIcons.ts` includes aliases that map old MUI icon names to their Lucide equivalents (e.g., `Speed` → `Zap`, `VerifiedUser` → `ShieldCheck`). This ensures existing YAML content continues to work without changes.
+registerLucideIcons();
+```
 
-### Add a fully custom SVG icon
-
-Create a component in `src/icons/<category>/MyIcon.tsx` following the pattern of `BlueSkyIcon.tsx`, then add it to `defaultIcons.ts`.
+This registers only ~40 hand-picked icons. If a YAML author uses an icon not in this set, it won't resolve. See `src/presets/lucideIcons.ts` for the exact list.
 
 ---
 
 ## Currently Registered Defaults
 
-`registerDefaultIcons()` registers the Lucide preset plus brand/social icons. These names are valid `src` values in YAML without any additional setup:
+`registerDefaultIcons()` registers the **entire Lucide icon library** (~1,500+ icons) plus brand/social icons. Any PascalCase Lucide icon name is a valid `src` value in YAML without any additional setup.
 
-**Brand & Social:**
+**Browse all available icons:** https://lucide.dev/icons
+
+Use the PascalCase name from the Lucide site as your YAML `src` value. For example:
+
+```yaml
+icons:
+  - label: "Favourites"
+    src: "Heart"
+  - label: "Photos"
+    src: "Camera"
+  - label: "Settings"
+    src: "Settings"
+```
+
+**Brand & Social (custom SVGs):**
 | YAML `src` value | Icon |
 |---|---|
 | `bluesky` | BlueSky logo (custom SVG) |
 | `stackwright` | Stackwright logo (custom SVG) |
 
-**Lucide Icons (direct names):**
-| YAML `src` value | Icon |
-|---|---|
-| `Zap` | Lightning bolt |
-| `ShieldCheck` | Shield with checkmark |
-| `FileText` | Document |
-| `Palette` | Color palette |
-| `Code` | Code brackets |
-| `Star` | Star |
-| `CheckCircle` | Circle checkmark |
-| `Rocket` | Rocket |
-| `Lock` | Padlock |
-| `Globe` | Globe |
-| `Wrench` | Wrench |
-| `Sparkles` | Sparkles |
-| `LayoutDashboard` | Dashboard grid |
-| `Braces` | Curly braces |
-| `Database` | Database |
-| `Cloud` | Cloud |
-| `Shield` | Shield |
-| `Users` | People group |
-| `TrendingUp` | Upward trend |
-| `Info` | Info circle |
-| `AlertTriangle` | Warning triangle |
-| `Sun` / `Moon` | Color mode toggle |
-| `BookOpen` | Book |
-| `Calendar` | Calendar |
-| `Tag` | Tag/label |
-| `ArrowRight` / `ChevronRight` | Navigation arrows |
-| `ExternalLink` | External link |
-| `GitBranch` | Version control |
-| `Package` | Package |
-| `Puzzle` | Plugin/extension |
-| `Layers` | Stacked layers |
-| `DoorOpen` | Open door |
-| `Bot` | AI/robot |
-| `Paintbrush` | Theming |
-| `FlaskConical` | Testing |
-| `FileCheck` | Validation |
-| `Gem` | Quality |
-
 **Legacy MUI aliases** (still work in YAML):
-`Speed`→Zap, `VerifiedUser`→ShieldCheck, `CloudDone`→CloudCheck, `Description`→FileText, `Language`→Globe, `Build`→Wrench, `AutoAwesome`→Sparkles, `Dashboard`→LayoutDashboard, `Api`→Braces, `Storage`→Database, `Security`→Shield, `People`→Users
+
+| MUI name | Resolves to |
+|---|---|
+| `Speed` | `Zap` |
+| `VerifiedUser` | `ShieldCheck` |
+| `CloudDone` | `CloudCheck` |
+| `Description` | `FileText` |
+| `Language` | `Globe` |
+| `Build` | `Wrench` |
+| `AutoAwesome` | `Sparkles` |
+| `Dashboard` | `LayoutDashboard` |
+| `Api` | `Braces` |
+| `Storage` | `Database` |
+| `Security` | `Shield` |
+| `People` | `Users` |
+
+**Lucide renamed-icon aliases** (also preserved):
+
+| Old name | Canonical name |
+|---|---|
+| `CheckCircle` | `CircleCheck` |
+| `AlertTriangle` | `TriangleAlert` |
+
+---
+
+## Adding Icons
+
+### Lucide icons — nothing to do
+
+All ~1,500+ Lucide icons are registered by default. Just use the PascalCase name in YAML. No code changes needed.
+
+### Add a fully custom SVG icon
+
+Create a component in `src/icons/<category>/MyIcon.tsx` following the pattern of `BlueSkyIcon.tsx`, then add it to `defaultIcons.ts`:
+
+```ts
+// src/icons/brand/MyBrandIcon.tsx
+import React from 'react';
+import type { IconProps } from '../../registry/iconRegistry';
+
+export const MyBrandIcon: React.FC<IconProps> = ({ size = 24, color, ...props }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} {...props}>
+    {/* SVG paths */}
+  </svg>
+);
+```
+
+Then register it in your app:
+
+```ts
+import { registerStackwrightIcon } from '@stackwright/icons';
+import { MyBrandIcon } from './icons/brand/MyBrandIcon';
+
+registerStackwrightIcon('mybrand', MyBrandIcon);
+```
+
+**Do not use dynamic `require()`.** Static imports only — this is enforced by the hydration constraint described above.
 
 ---
 
@@ -126,18 +142,20 @@ Create a component in `src/icons/<category>/MyIcon.tsx` following the pattern of
 src/
   registry/iconRegistry.ts     — global registry Map, register/get helpers
   presets/
-    lucideIcons.ts             — Lucide icon imports + lucideIconPreset map (primary)
-    defaultIcons.ts            — combines brand/social icons + lucideIconPreset
+    lucideAllIcons.ts          — full Lucide barrel import (~1,500+ icons)
+    lucideIcons.ts             — curated ~40 Lucide icons (lightweight alternative)
+    defaultIcons.ts            — combines brand/social icons + lucideAllIconsPreset
     muiIcons.ts                — legacy file (kept for reference, not used by default)
   icons/
     brand/StackwrightIcon.tsx  — Stackwright logo SVG
     social/BlueSkyIcon.tsx     — BlueSky logo SVG
+  hooks/useStackwrightIcon.ts  — hook for icon lookup in components
   index.ts                     — public exports
 ```
 
 ## Dependencies
 
-- **lucide-react** — Icon library (tree-shakeable static imports)
+- **lucide-react** — Icon library (full barrel import via `icons` namespace object)
 - **React** ^19 (peer)
 
 No MUI icons. No `@mui/icons-material`.
