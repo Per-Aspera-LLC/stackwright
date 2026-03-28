@@ -1,0 +1,225 @@
+content:
+  meta:
+    title: "Content Types | Stackwright"
+    description: "18 content types for building pages. Each is a YAML block with required and optional fields."
+  content_items:
+    - type: main
+      label: hero
+      heading:
+        text: "Content Types"
+        textSize: h1
+      textBlocks:
+        - text: "18 content types for building pages. Each is a YAML block with required and optional fields."
+          textSize: h3
+      background: background
+
+    - type: text_block
+      label: layout-types
+      heading:
+        text: "Layout Components"
+        textSize: h2
+      textBlocks:
+        - text: "Build page structure with these flexible layout types."
+          textSize: body1
+      background: surface
+
+    - type: alert
+      label: main-alert
+      variant: info
+      title: "main"
+      body: "Hero sections, text blocks with images and buttons. The workhorse. Supports graphic_position (left/right), media, and CTA buttons."
+      background: surface
+
+    - type: alert
+      label: grid-alert
+      variant: info
+      title: "grid"
+      body: "Multi-column layout. Nest any content types inside columns. Define column widths and gap spacing. Stacks below a breakpoint."
+      background: surface
+
+    - type: alert
+      label: tabbed-alert
+      variant: info
+      title: "tabbed_content"
+      body: "Wraps other content types in tabs. Each tab can contain any content_item. Good for organizing dense content."
+      background: surface
+
+    - type: text_block
+      label: feature-types
+      heading:
+        text: "Feature Showcases"
+        textSize: h2
+      textBlocks:
+        - text: "Showcase benefits, capabilities, and social proof."
+          textSize: body1
+      background: background
+
+    - type: alert
+      label: feature-list-alert
+      variant: info
+      title: "feature_list"
+      body: "Multi-column feature cards with icons. Good for benefits, capabilities, service offerings. Supports 1-4 columns with icon + title + description."
+      background: background
+
+    - type: alert
+      label: icon-grid-alert
+      variant: info
+      title: "icon_grid"
+      body: "Grid of icons with labels. Feature lists, tech stacks, tool showcases. Just icons and optional heading — clean and focused."
+      background: background
+
+    - type: alert
+      label: testimonial-alert
+      variant: info
+      title: "testimonial_grid"
+      body: "Grid of quote cards. Customer testimonials, reviews, user feedback. Supports author name, role, and optional avatar."
+      background: background
+
+    - type: alert
+      label: carousel-alert
+      variant: info
+      title: "carousel"
+      body: "Image/text slideshow with autoplay. Each item has title, text, and media. Configure autoPlaySpeed and infinite looping."
+      background: background
+
+    - type: text_block
+      label: specialized-types
+      heading:
+        text: "Specialized Content"
+        textSize: h2
+      textBlocks:
+        - text: "Purpose-built types for common patterns."
+          textSize: body1
+      background: surface
+
+    - type: alert
+      label: pricing-alert
+      variant: info
+      title: "pricing_table"
+      body: "Pricing plan comparison cards. Define plans with name, price, interval, features list, and CTA. Mark one as highlighted."
+      background: surface
+
+    - type: alert
+      label: timeline-alert
+      variant: info
+      title: "timeline"
+      body: "Vertical timeline with year and event fields. Good for company history, product roadmap, milestone tracking."
+      background: surface
+
+    - type: alert
+      label: faq-alert
+      variant: info
+      title: "faq"
+      body: "Expandable accordion for Q&A. Each item has question and answer. Radix Accordion under the hood."
+      background: surface
+
+    - type: alert
+      label: code-block-alert
+      variant: info
+      title: "code_block"
+      body: "Syntax-highlighted code with language label. Supports YAML, TypeScript, JavaScript, Bash, and more. Optional line numbers."
+      background: surface
+
+    - type: alert
+      label: alert-alert
+      variant: info
+      title: "alert"
+      body: "Callout box with variants: info, warning, success, danger, note, tip. Optional title field. Good for highlighting key concepts."
+      background: surface
+
+    - type: alert
+      label: contact-alert
+      variant: info
+      title: "contact_form_stub"
+      body: "Contact info with mailto link. Shows email, optional phone and address. Button text is configurable. Not a real form — just contact info."
+      background: surface
+
+    - type: text_block
+      label: media-types
+      heading:
+        text: "Media & Dynamic Content"
+        textSize: h2
+      textBlocks:
+        - text: "Images, video, maps, and data-driven lists."
+          textSize: body1
+      background: background
+
+    - type: alert
+      label: media-alert
+      variant: info
+      title: "media"
+      body: "Standalone image. Supports width, height, alt text, and style (contained or overflow). Use ./relative paths for co-located images."
+      background: background
+
+    - type: alert
+      label: video-alert
+      variant: info
+      title: "video"
+      body: "Video player with multiple sources. Supports autoplay, loop, muted, controls, and poster image. Works with local or remote video files."
+      background: background
+
+    - type: alert
+      label: map-alert
+      variant: info
+      title: "map"
+      body: "MapLibre GL interactive map. Define center coordinates, zoom level, markers, and layers. Supports map or globe view with optional terrain."
+      background: background
+
+    - type: alert
+      label: collection-alert
+      variant: info
+      title: "collection_list"
+      body: "Dynamic list from a data collection. Renders cards from YAML data files. Configure columns, limit, and href prefix for linking."
+      background: background
+
+    - type: text_block
+      label: example-heading
+      heading:
+        text: "Example: Main Content Type"
+        textSize: h2
+      textBlocks:
+        - text: "The most common content type. Hero sections, text + image blocks, CTAs."
+          textSize: body1
+      background: surface
+
+    - type: code_block
+      label: main-example
+      language: yaml
+      lineNumbers: true
+      code: |
+        - type: main
+          label: my-section
+          heading:
+            text: "Section Title"
+            textSize: h2
+          textBlocks:
+            - text: "Your content here. Combine text, media, and buttons."
+              textSize: body1
+          buttons:
+            - text: "Call to Action"
+              variant: contained
+              href: /target
+              bgColor: accent
+          media:
+            type: image
+            src: ./hero.png
+            label: "Hero image"
+          graphic_position: right
+          background: surface
+      background: surface
+
+    - type: main
+      label: cta
+      heading:
+        text: "Need help composing pages?"
+        textSize: h2
+      textBlocks:
+        - text: "The Otter Raft agents can build content for you. Brand discovery, theme generation, and page composition — all through conversation."
+          textSize: body1
+      buttons:
+        - text: "Learn About the Otter Raft"
+          textSize: button
+          variant: contained
+          href: /otter-raft
+          bgColor: accent
+      background: background

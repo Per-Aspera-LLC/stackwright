@@ -1,0 +1,155 @@
+content:
+  meta:
+    title: "Stackwright — YAML is the syntax. The schema is the safety net. AI writes the code."
+    description: "From API spec to working Next.js app in hours. Stackwright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
+  
+  content_items:
+    # 1. Hero Section
+    - type: main
+      label: hero
+      heading:
+        text: "YAML is the syntax. The schema is the safety net. AI writes the code."
+        textSize: h1
+      textBlocks:
+        - text: "From API spec to working Next.js app in hours. Stackwright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
+          textSize: body1
+      buttons:
+        - text: "Get Started"
+          textSize: button
+          variant: contained
+          href: /getting-started
+          bgColor: primary
+        - text: "View on GitHub"
+          textSize: button
+          variant: outlined
+          href: https://github.com/Per-Aspera-LLC/stackwright
+      background: background
+      color: text
+
+    # 2. Features Grid — "Why Stackwright"
+    - type: feature_list
+      label: features
+      heading:
+        text: "Why Stackwright"
+        textSize: h2
+      columns: 3
+      items:
+        - icon:
+            type: icon
+            src: Sparkles
+            height: 48
+          heading: "AI-Native Authoring"
+          description: "Specialized AI agents write schema-validated YAML. The Otter Raft handles brand, theme, and pages through conversation."
+        - icon:
+            type: icon
+            src: ShieldCheck
+            height: 48
+          heading: "Safe by Construction"
+          description: "Zod schemas enforce correctness at build time and runtime. Invalid states are rejected before reaching the browser."
+        - icon:
+            type: icon
+            src: Zap
+            height: 48
+          heading: "Hours, Not Days"
+          description: "Go from API spec to working demo in a hackathon sprint. npx launch-stackwright and you're building."
+        - icon:
+            type: icon
+            src: Palette
+            height: 48
+          heading: "Theme System"
+          description: "Dark mode, custom palettes, typography, spacing — all in YAML. One file controls the entire visual identity."
+        - icon:
+            type: icon
+            src: Code2
+            height: 48
+          heading: "Standard React Output"
+          description: "The output is a Next.js app in a git repo you own. No lock-in, no runtime magic. Fork it, extend it, deploy it."
+        - icon:
+            type: icon
+            src: Plug
+            height: 48
+          heading: "MCP Integration"
+          description: "20+ tools via Model Context Protocol. AI agents create pages, validate schemas, render previews, and open PRs."
+      background: surface
+
+    # 3. Quick Install
+    - type: main
+      label: quick-install-heading
+      heading:
+        text: "Get Started in 60 Seconds"
+        textSize: h2
+      textBlocks:
+        - text: "Install Stackwright and launch your first site. The Otter Raft is ready to build."
+          textSize: body1
+      background: background
+      color: text
+
+    - type: code_block
+      label: install-code
+      code: |
+        npx launch-stackwright my-site
+        cd my-site
+        pnpm install
+        pnpm dev
+      language: bash
+      lineNumbers: false
+      background: surface
+
+    - type: text_block
+      label: install-subtext
+      textBlocks:
+        - text: "That's it. Your site is running at localhost:3000 with the Otter Raft ready to build."
+          textSize: body1
+      background: background
+      color: textSecondary
+
+    # 4. How It Works — "Pages Are YAML"
+    - type: main
+      label: pages-yaml-heading
+      heading:
+        text: "Pages Are YAML"
+        textSize: h2
+      textBlocks:
+        - text: "Write structured content, not code. The schema validates every field before rendering."
+          textSize: body1
+      background: background
+      color: text
+
+    - type: code_block
+      label: yaml-example
+      code: |
+        content:
+          content_items:
+            - type: main
+              label: hero
+              heading:
+                text: "Hello World"
+                textSize: h1
+              textBlocks:
+                - text: "My first Stackwright page."
+                  textSize: body1
+              buttons:
+                - text: "Learn More"
+                  variant: contained
+                  href: /about
+      language: yaml
+      lineNumbers: true
+      background: surface
+
+    # 5. Final CTA
+    - type: main
+      label: final-cta
+      heading:
+        text: "Ready to Build?"
+        textSize: h2
+      textBlocks:
+        - text: "Stackwright turns structured YAML into production-ready Next.js apps. Start with the CLI, bring your team, and ship something real."
+          textSize: body1
+      buttons:
+        - text: "Get Started"
+          textSize: button
+          variant: contained
+          href: /getting-started
+          bgColor: primary
+      background: surface
+      color: text
