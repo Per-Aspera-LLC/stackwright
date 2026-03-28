@@ -1,0 +1,28 @@
+{
+    "yaml.schemas": {
+        "node_modules/@stackwright/types/schemas/content-schema.json": [
+            "**/pages/*/content.yaml",
+            "**/pages/*/content.yml",
+            "**/pages/content.yaml",
+            "**/pages/content.yml"
+        ],
+        "node_modules/@stackwright/types/schemas/theme-schema.json": [
+            "**/themes/*.yaml",
+            "**/themes/*.yml"
+        ],
+        "node_modules/@stackwright/types/schemas/site-config-schema.json": [
+            "**/stackwright.yaml",
+            "**/stackwright.yml",
+            "**/site-config.yaml",
+            "**/site-config.yml"
+        ]
+    },
+    "yaml.validate": true,
+    "yaml.completion": true,
+    "yaml.hover": true,
+    "yaml.format.enable": true,
+    "files.associations": {
+        "**/pages/*/content.yaml": "yaml",
+        "**/pages/content.yaml": "yaml"
+    }
+}

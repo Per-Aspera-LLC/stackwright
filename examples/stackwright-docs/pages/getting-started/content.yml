@@ -1,0 +1,170 @@
+content:
+  meta:
+    title: "Getting Started | Stackwright"
+    description: "From zero to running Stackwright site in 5 minutes. No prior experience required. Install, run, and ship your first page."
+
+  content_items:
+    # Hero
+    - type: main
+      label: hero-section
+      heading:
+        text: "Getting Started"
+        textSize: h1
+      textBlocks:
+        - text: "From zero to running Stackwright site in 5 minutes. No prior experience required."
+          textSize: body1
+      background: background
+
+    # Step 1: Install
+    - type: main
+      label: step-install
+      heading:
+        text: "① Install"
+        textSize: h2
+      textBlocks:
+        - text: "One command scaffolds a complete project with the Otter Raft configured."
+          textSize: body1
+      background: surface
+
+    - type: code_block
+      label: install-command
+      language: bash
+      code: "npx launch-stackwright my-site"
+      lineNumbers: false
+      background: surface
+
+    # Step 2: Start the Dev Server
+    - type: main
+      label: step-run
+      heading:
+        text: "② Start the Dev Server"
+        textSize: h2
+      textBlocks:
+        - text: "Install dependencies and start developing. Hot reload watches your YAML files."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: dev-commands
+      language: bash
+      code: |
+        cd my-site
+        pnpm install
+        pnpm dev
+      lineNumbers: false
+      background: background
+
+    # Step 3: Edit Your First Page
+    - type: main
+      label: step-edit
+      heading:
+        text: "③ Edit Your First Page"
+        textSize: h2
+      textBlocks:
+        - text: "Open pages/content.yml and change the heading. The dev server reloads automatically."
+          textSize: body1
+      background: surface
+
+    - type: code_block
+      label: first-page-yaml
+      language: yaml
+      code: |
+        content:
+          content_items:
+            - type: main
+              label: hero
+              heading:
+                text: "My Custom Heading"
+                textSize: h1
+              textBlocks:
+                - text: "This is my first Stackwright page."
+                  textSize: body1
+      lineNumbers: true
+      background: surface
+
+    # Step 4: Add a Page
+    - type: main
+      label: step-add-page
+      heading:
+        text: "④ Add a Page"
+        textSize: h2
+      textBlocks:
+        - text: "Use the CLI to create a new page. It generates the directory and YAML file."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: add-page-command
+      language: bash
+      code: 'pnpm stackwright page add about --heading "About Us"'
+      lineNumbers: false
+      background: background
+
+    # Step 5: Customize the Theme
+    - type: main
+      label: step-theme
+      heading:
+        text: "⑤ Customize the Theme"
+        textSize: h2
+      textBlocks:
+        - text: "Edit stackwright.yml to change colors, typography, and navigation across every page."
+          textSize: body1
+      background: surface
+
+    - type: code_block
+      label: theme-yaml
+      language: yaml
+      code: |
+        customTheme:
+          colors:
+            primary: "#your-brand-color"
+            background: "#your-bg-color"
+            accent: "#your-accent-color"
+      lineNumbers: true
+      background: surface
+
+    # What's Next
+    - type: feature_list
+      label: whats-next
+      heading:
+        text: "What's Next"
+        textSize: h2
+      items:
+        - icon:
+            type: icon
+            src: Package
+            height: 48
+            label: content-types-icon
+          heading: "📦 Content Types"
+          description: "18 content types from hero sections to interactive maps. See them all."
+        - icon:
+            type: icon
+            src: Terminal
+            height: 48
+            label: cli-icon
+          heading: "⌨️ CLI Reference"
+          description: "Scaffold, validate, preview, and deploy from the terminal."
+        - icon:
+            type: icon
+            src: Bot
+            height: 48
+            label: otter-raft-icon
+          heading: "🤖 Otter Raft"
+          description: "Let AI agents build your site through conversation."
+        - icon:
+            type: icon
+            src: Plug
+            height: 48
+            label: mcp-icon
+          heading: "🔌 MCP Server"
+          description: "Integrate with AI tools via Model Context Protocol."
+      columns: 2
+      background: background
+
+    # Hackathon Tip
+    - type: alert
+      label: hackathon-tip
+      variant: tip
+      title: "Hackathon Teams"
+      body: "Running Stackwright at a hackathon? You can go from API spec to working demo in hours. The Otter Raft agents handle brand, theme, and content — just describe what you need."
+      background: surface

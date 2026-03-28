@@ -1,0 +1,71 @@
+title: "Stackwright"
+meta:
+  description: "YAML is the syntax. The schema is the safety net. AI writes the code. From API spec to working Next.js app in hours — safe by construction."
+
+appBar:
+  titleText: "Stackwright"
+  backgroundColor: "primary"
+  textColor: "secondary"
+  colorModeToggle: false
+
+navigation:
+  - label: "🦦 Home"
+    href: "/"
+  - label: "🚀 Getting Started"
+    href: "/getting-started"
+  - label: "📦 Content Types"
+    href: "/content-types"
+  - label: "⌨️ CLI"
+    href: "/cli"
+  - label: "🤖 Otter Raft"
+    href: "/otter-raft"
+
+footer:
+  backgroundColor: "primary"
+  textColor: "secondary"
+  copyright: "Built with Stackwright 🦦"
+  links:
+    - label: "GitHub"
+      href: "https://github.com/Per-Aspera-LLC/stackwright"
+    - label: "Example App"
+      href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/hellostackwrightnext"
+
+customTheme:
+  id: "stackwright-docs"
+  name: "Stackwright Docs"
+  description: "Dark-mode-first documentation theme with warm amber accents and monospace headings"
+  colors:
+    primary: "#E67E22"
+    secondary: "#4FC3F7"
+    accent: "#D4AF37"
+    background: "#0B1F3A"
+    surface: "#1A2C46"
+    text: "#FFFFFF"
+    textSecondary: "#B0BEC5"
+  darkColors:
+    primary: "#D35400"
+    secondary: "#0288D1"
+    accent: "#B8860B"
+    background: "#FDFDFD"
+    surface: "#F5F5F5"
+    text: "#1A1A2E"
+    textSecondary: "#666666"
+  typography:
+    fontFamily:
+      primary: "JetBrains Mono"
+      secondary: "Inter"
+    scale:
+      xs: "0.75rem"
+      sm: "0.875rem"
+      base: "1rem"
+      lg: "1.125rem"
+      xl: "1.25rem"
+      2xl: "1.5rem"
+      3xl: "1.875rem"
+  spacing:
+    xs: "0.5rem"
+    sm: "0.75rem"
+    md: "1rem"
+    lg: "1.5rem"
+    xl: "2rem"
+    2xl: "3rem"

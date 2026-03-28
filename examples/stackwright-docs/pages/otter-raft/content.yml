@@ -1,0 +1,126 @@
+content:
+  meta:
+    title: "The Otter Raft | Stackwright"
+    description: "Four AI agents that build Stackwright sites through conversation. Brand → Theme → Pages — each otter handles one step."
+  content_items:
+    - type: main
+      label: hero
+      heading:
+        text: "The Otter Raft 🦦"
+        textSize: h1
+      textBlocks:
+        - text: "Four AI agents that build Stackwright sites through conversation."
+          textSize: h3
+        - text: "Brand → Theme → Pages — each otter handles one step. The Foreman coordinates the pipeline. The output is validated YAML files."
+          textSize: body1
+      background: background
+
+    - type: feature_list
+      label: otters
+      heading:
+        text: "Meet the Otters"
+        textSize: h2
+      items:
+        - icon:
+            type: icon
+            src: Hammer
+            height: 48
+            label: foreman-icon
+          heading: "🦦🏗️ Foreman Otter"
+          description: "Coordinates the build pipeline. Tell the Foreman what you want and it delegates to the right otter. Orchestrates Brand → Theme → Page workflow."
+        - icon:
+            type: icon
+            src: Palette
+            height: 48
+            label: brand-icon
+          heading: "🦦🎨 Brand Otter"
+          description: "Discovers your brand through conversation. Asks about voice, tone, color preferences, and emotional targets. Produces a brand brief that guides visual decisions."
+        - icon:
+            type: icon
+            src: Sparkles
+            height: 48
+            label: theme-icon
+          heading: "🦦🌈 Theme Otter"
+          description: "Translates brand briefs into Stackwright themes. Colors, typography, spacing, dark mode. Writes stackwright.yml with customTheme configuration."
+        - icon:
+            type: icon
+            src: FileText
+            height: 48
+            label: page-icon
+          heading: "🦦📄 Page Otter"
+          description: "Builds pages in your brand voice. Writes schema-valid YAML using the content type system. Verifies pages visually with render screenshots."
+      columns: 2
+      background: surface
+
+    - type: text_block
+      label: usage-heading
+      heading:
+        text: "How to Use"
+        textSize: h2
+      textBlocks:
+        - text: "The Otter Raft is built into launch-stackwright. The agent configs are in .stackwright/otters/ after scaffolding."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: install-command
+      language: bash
+      lineNumbers: false
+      code: |
+        npx launch-stackwright my-site
+        cd my-site
+        # The Otter Raft configs are in .stackwright/otters/
+        # Use with Code Puppy or any MCP-compatible AI client
+      background: background
+
+    - type: alert
+      label: mcp-tip
+      variant: tip
+      title: "MCP Integration"
+      body: "The Otter Raft works best with Code Puppy or Claude Code. Each otter is an agent config that gets loaded into your AI assistant. They use the Stackwright MCP server for validation, rendering, and file operations."
+      background: background
+
+    - type: text_block
+      label: workflow-heading
+      heading:
+        text: "Typical Workflow"
+        textSize: h2
+      textBlocks:
+        - text: "The Foreman Otter orchestrates the pipeline. Here's how a site build happens:"
+          textSize: body1
+      background: surface
+
+    - type: timeline
+      label: workflow-timeline
+      items:
+        - year: "Step 1"
+          event: "Tell the Foreman what you want. 'I need a site for my consulting business.' The Foreman calls Brand Otter."
+        - year: "Step 2"
+          event: "Brand Otter asks questions. Voice? Tone? Primary CTA? Emotional target? Writes BRAND_BRIEF.md."
+        - year: "Step 3"
+          event: "Theme Otter reads the brand brief. Picks colors, typography, spacing. Writes stackwright.yml."
+        - year: "Step 4"
+          event: "Page Otter reads the brand brief and theme. Writes page YAML files in your brand voice. Validates and renders."
+        - year: "Step 5"
+          event: "Foreman hands off to you. Review the rendered pages. Iterate if needed. Deploy when ready."
+      background: surface
+
+    - type: main
+      label: cta
+      heading:
+        text: "Ready to build?"
+        textSize: h2
+      textBlocks:
+        - text: "Install Stackwright and the Otter Raft will guide you through brand discovery, theme generation, and page composition."
+          textSize: body1
+      buttons:
+        - text: "Get Started"
+          textSize: button
+          variant: contained
+          href: /getting-started
+          bgColor: accent
+        - text: "View Content Types"
+          textSize: button
+          variant: outlined
+          href: /content-types
+      background: background
