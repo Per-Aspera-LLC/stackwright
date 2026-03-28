@@ -5,6 +5,7 @@ import { ThemedButton } from './ThemedButton';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { Media } from '../media/Media';
 import { resolveColor } from '../../utils/colorUtils';
+import { resolveBackground } from '../../utils/resolveBackground';
 
 export function MainContentGrid(content: MainContent) {
   const theme = useSafeTheme();
@@ -72,7 +73,7 @@ export function MainContentGrid(content: MainContent) {
     <div
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: content?.background || 'transparent',
+        background: resolveBackground(content?.background, theme),
         margin: theme.spacing.xl,
       }}
     >

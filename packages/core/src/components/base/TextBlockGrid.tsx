@@ -2,6 +2,7 @@ import React from 'react';
 import { TextBlockContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
+import { resolveBackground } from '../../utils/resolveBackground';
 import { TextGrid } from './TextGrid';
 import { ThemedButton } from './ThemedButton';
 
@@ -17,7 +18,7 @@ export function TextBlockGrid({ heading, textBlocks, buttons, background }: Text
     <section
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: background || 'transparent',
+        background: resolveBackground(background, theme),
         margin: theme.spacing.xl,
       }}
     >
