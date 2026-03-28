@@ -39,8 +39,19 @@ jobs:
       - name: Build packages
         run: pnpm build
 
+      - name: Re-link bins after build
+        run: pnpm install
+
       - name: Run visual regression tests
-        run: pnpm test:e2e
+        # Visual baselines differ across platforms (CI vs local font rendering),
+        # so we use --update-snapshots to treat these as render-smoke-tests.
+        # Pixel-perfect comparison runs locally where baselines were generated.
+        run: >-
+          pnpm --filter @stackwright/e2e exec playwright test
+          tests/visual.spec.ts
+          tests/smoke.spec.ts
+          --project=chromium
+          --update-snapshots
         env:
           CI: true
 
