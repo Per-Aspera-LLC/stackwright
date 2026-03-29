@@ -19,6 +19,8 @@ navigation:
     href: "/cli"
   - label: "🤖 Otter Raft"
     href: "/otter-raft"
+  - label: "🧪 Showcase"
+    href: "/showcase"
 
 # Search configuration (Cmd+K to open)
 search:
