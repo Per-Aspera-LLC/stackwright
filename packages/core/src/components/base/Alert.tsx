@@ -14,6 +14,8 @@ const variantConfig: Record<AlertVariant, { color: string; iconName: string }> =
   tip: { color: '#8b5cf6', iconName: 'CheckCircle' },
 };
 
+
+
 export function Alert({ variant, title, body, background }: AlertContent) {
   const theme = useSafeTheme();
   const config = variantConfig[variant];
