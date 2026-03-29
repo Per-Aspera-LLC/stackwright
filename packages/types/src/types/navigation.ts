@@ -17,10 +17,21 @@ export const menuThemeSchema = z.object({
   }),
 });
 
-export const navigationItemSchema = z.object({
-  label: z.string(),
-  href: z.string(),
-});
+// Define the type first to enable recursive schema
+export type NavigationItem = {
+  label: string;
+  href: string;
+  children?: NavigationItem[];
+};
+
+// Lazy schema for recursive navigation items
+export const navigationItemSchema: z.ZodType<NavigationItem> = z.lazy(() =>
+  z.object({
+    label: z.string(),
+    href: z.string(),
+    children: z.array(navigationItemSchema).optional(),
+  })
+);
 
 export const menuContentSchema: z.ZodType<MenuContent> = z.lazy(() =>
   buttonContentSchema.extend({
@@ -43,5 +54,4 @@ export type MenuContent = z.infer<typeof buttonContentSchema> & {
   menu_items?: MenuContent[];
 };
 export type MenuTheme = z.infer<typeof menuThemeSchema>;
-export type NavigationItem = z.infer<typeof navigationItemSchema>;
 export type AppBarContent = z.infer<typeof appBarContentSchema>;

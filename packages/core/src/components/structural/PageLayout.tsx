@@ -3,6 +3,7 @@ import TopAppBar from './TopAppBar';
 import { PageContent } from '@stackwright/types';
 import { SiteConfig } from '@stackwright/types';
 import BottomAppBar from './BottomAppBar';
+import NavSidebar from './NavSidebar';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { defaultSiteConfig } from '../../config/siteDefaults';
@@ -18,6 +19,7 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
   const config = siteConfig || defaultSiteConfig;
 
   const backgroundColor = theme.colors.background;
+  const hasSidebar = !!config.sidebar;
 
   return (
     <div
@@ -38,14 +40,32 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
         colorModeToggle={config.appBar.colorModeToggle}
       />
 
-      <main
+      <div
         style={{
-          flexGrow: 1,
-          backgroundColor: backgroundColor,
+          display: 'flex',
+          flex: 1,
         }}
       >
-        {renderContent(pageContent)}
-      </main>
+        {hasSidebar && (
+          <NavSidebar
+            navigationItems={config.sidebar!.navigation}
+            collapsed={config.sidebar!.collapsed}
+            width={config.sidebar!.width}
+            mobileBreakpoint={config.sidebar!.mobileBreakpoint}
+            backgroundColor={config.sidebar!.backgroundColor}
+            textColor={config.sidebar!.textColor}
+          />
+        )}
+
+        <main
+          style={{
+            flex: 1,
+            backgroundColor: backgroundColor,
+          }}
+        >
+          {renderContent(pageContent)}
+        </main>
+      </div>
 
       <BottomAppBar footer={config.footer} />
     </div>
