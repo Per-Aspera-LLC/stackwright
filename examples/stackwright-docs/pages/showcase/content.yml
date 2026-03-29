@@ -76,7 +76,7 @@ content:
         textSize: h2
       icons:
         - type: icon
-          src: Code
+          src: Code2
           label: "TypeScript"
           size: 48
         - type: icon
@@ -360,31 +360,3 @@ content:
                 - text: "This is a text block in the right column. Grid layout stacks on mobile."
                   textSize: body1
       background: surface
-
-    # 15. NavSidebar (dogfooding demo!)
-    - type: text_block
-      label: nav-sidebar-demo
-      heading:
-        text: "NavSidebar - Persistent Navigation"
-        textSize: h2
-      textBlocks:
-        - text: "The NavSidebar component provides persistent navigation for content-heavy sites. On desktop, it displays as a fixed sidebar with collapsible sections. On mobile, it becomes a slide-out drawer accessed via a floating action button."
-          textSize: body1
-        - text: "**Key Features:**"
-          textSize: body1
-        - text: "• Desktop: Fixed sidebar with collapse toggle"
-          textSize: body2
-        - text: "• Mobile: Slide-in drawer with backdrop overlay"
-          textSize: body2
-        - text: "• Nested navigation with expand/collapse"
-          textSize: body2
-        - text: "• Active link highlighting"
-          textSize: body2
-        - text: "• Full keyboard navigation (Tab, Enter, Escape, Arrows)"
-          textSize: body2
-        - text: "• WCAG 2.1 AA compliant"
-          textSize: body2
-        - text: "**Try it:** Look to the left on desktop, or tap the menu button on mobile. The sidebar you're using right now is the NavSidebar component!"
-          textSize: body1
-      color: primary
-      background: background
