@@ -1,4 +1,5 @@
 import { test, expect, type Page, type Locator } from '@playwright/test';
+import { PAGES, SHOWCASE_PAGE } from '../fixtures';
 
 /**
  * Stackwright Keyboard Navigation Tests ⌨️
@@ -9,14 +10,6 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
  *
  * "If you can't use it with a keyboard, it's not accessible." - Ancient web wisdom
  */
-
-const PAGES = [
-  { path: '/', name: 'Home' },
-  { path: '/about', name: 'About' },
-  { path: '/getting-started', name: 'Getting Started' },
-  { path: '/showcase', name: 'Showcase' },
-  { path: '/blog', name: 'Blog' },
-];
 
 /**
  * Get the currently focused element.
@@ -499,7 +492,7 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
   test('Tab panels switch with arrow keys', async ({ page }) => {
     // Navigate to a page likely to have tabs
-    await page.goto('/showcase', { waitUntil: 'networkidle' });
+    await page.goto(SHOWCASE_PAGE, { waitUntil: 'networkidle' });
 
     // Look for tab elements
     const tabs = await page.locator('[role="tab"]').all();
@@ -604,7 +597,7 @@ test.describe('Site-wide Keyboard Navigation', () => {
 // Extra special tests for common interactive components
 test.describe('Common Component Keyboard Support', () => {
   test('Carousel can be navigated with arrow keys', async ({ page }) => {
-    await page.goto('/showcase', { waitUntil: 'networkidle' });
+    await page.goto(SHOWCASE_PAGE, { waitUntil: 'networkidle' });
 
     // Look for carousel controls
     const carousel = page.locator('[role="region"][aria-label*="carousel" i]').first();

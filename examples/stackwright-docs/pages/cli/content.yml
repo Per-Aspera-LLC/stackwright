@@ -1,0 +1,240 @@
+content:
+  meta:
+    title: "CLI Reference | Stackwright"
+    description: "All Stackwright CLI commands — scaffolding, page management, validation, rendering, and builds."
+  content_items:
+    # Hero
+    - type: main
+      label: hero
+      heading:
+        text: "CLI Reference"
+        textSize: h1
+      textBlocks:
+        - text: "Manage pages, validate schemas, preview renders, and build — all from the terminal."
+          textSize: body1
+      background: background
+
+    # Install
+    - type: main
+      label: install-section
+      heading:
+        text: "Installation"
+        textSize: h2
+      textBlocks:
+        - text: "Stackwright CLI comes bundled with @stackwright/cli. If you scaffolded with launch-stackwright, it's already installed."
+          textSize: body1
+      background: surface
+
+    - type: code_block
+      label: install-code
+      language: bash
+      lineNumbers: false
+      code: |
+        # Already installed via launch-stackwright
+        npx launch-stackwright my-site
+
+        # Or add to an existing project
+        pnpm add @stackwright/cli
+      background: surface
+
+    # Page Commands
+    - type: main
+      label: page-commands
+      heading:
+        text: "Page Commands"
+        textSize: h2
+      textBlocks:
+        - text: "Create, list, and manage pages in your Stackwright site."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: page-add-code
+      language: bash
+      lineNumbers: false
+      code: |
+        # Add a new page
+        pnpm stackwright page add about --heading "About Us"
+
+        # List all pages
+        pnpm stackwright page list
+
+        # Remove a page
+        pnpm stackwright page remove about
+      background: background
+
+    # Validate Commands
+    - type: main
+      label: validate-section
+      heading:
+        text: "Validation"
+        textSize: h2
+      textBlocks:
+        - text: "Validate page YAML against Zod schemas before building. Catches errors early."
+          textSize: body1
+      background: surface
+
+    - type: code_block
+      label: validate-code
+      language: bash
+      lineNumbers: false
+      code: |
+        # Validate all pages
+        pnpm stackwright validate
+
+        # Validate a specific page
+        pnpm stackwright validate pages/about/content.yml
+      background: surface
+
+    # Theme Commands
+    - type: main
+      label: theme-section
+      heading:
+        text: "Theme Management"
+        textSize: h2
+      textBlocks:
+        - text: "Preview and switch between themes. Custom themes are defined in stackwright.yml."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: theme-code
+      language: bash
+      lineNumbers: false
+      code: |
+        # List available themes
+        pnpm stackwright theme list
+
+        # Preview a theme
+        pnpm stackwright theme preview my-theme
+      background: background
+
+    # Render Commands
+    - type: main
+      label: render-section
+      heading:
+        text: "Rendering & Preview"
+        textSize: h2
+      textBlocks:
+        - text: "Render pages to screenshots for visual verification. Used by the Otter Raft for iterative design."
+          textSize: body1
+      background: surface
+
+    - type: code_block
+      label: render-code
+      language: bash
+      lineNumbers: false
+      code: |
+        # Render a specific page
+        pnpm stackwright render /about --width 1280 --height 720
+
+        # Render all pages
+        pnpm stackwright render --all
+      background: surface
+
+    # Build Commands
+    - type: main
+      label: build-section
+      heading:
+        text: "Build & Deploy"
+        textSize: h2
+      textBlocks:
+        - text: "The prebuild step processes YAML into JSON. Then Next.js handles the rest."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: build-code
+      language: bash
+      lineNumbers: false
+      code: |
+        # Development (prebuild + hot reload)
+        pnpm dev
+
+        # Production build
+        pnpm build
+
+        # Start production server
+        pnpm start
+      background: background
+
+    # MCP Integration
+    - type: alert
+      label: mcp-note
+      variant: tip
+      title: "MCP Server"
+      body: "The Stackwright MCP server exposes CLI commands as tools. AI agents call validate, render, and page-add through the protocol — no terminal needed."
+      background: surface
+
+    # Quick Reference
+    - type: feature_list
+      label: command-reference
+      heading:
+        text: "Quick Reference"
+        textSize: h2
+      columns: 2
+      items:
+        - icon:
+            type: icon
+            src: FilePlus
+            height: 48
+            label: page-add-icon
+          heading: "page add <name>"
+          description: "Create a new page with directory and content.yml"
+        - icon:
+            type: icon
+            src: FileText
+            height: 48
+            label: page-list-icon
+          heading: "page list"
+          description: "List all pages in the current project"
+        - icon:
+            type: icon
+            src: CheckCircle
+            height: 48
+            label: validate-icon
+          heading: "validate [file]"
+          description: "Validate page YAML against Zod schemas"
+        - icon:
+            type: icon
+            src: Camera
+            height: 48
+            label: render-icon
+          heading: "render <path>"
+          description: "Screenshot a page for visual verification"
+        - icon:
+            type: icon
+            src: Palette
+            height: 48
+            label: theme-list-icon
+          heading: "theme list"
+          description: "List available built-in and custom themes"
+        - icon:
+            type: icon
+            src: Hammer
+            height: 48
+            label: build-icon
+          heading: "build"
+          description: "Prebuild YAML → JSON, then Next.js production build"
+      background: background
+
+    # CTA
+    - type: main
+      label: cta
+      heading:
+        text: "Ready to Build?"
+        textSize: h2
+      textBlocks:
+        - text: "Start with the Getting Started guide or let the Otter Raft handle it."
+          textSize: body1
+      buttons:
+        - text: "Getting Started"
+          textSize: button
+          variant: contained
+          href: /getting-started
+          bgColor: primary
+        - text: "Otter Raft"
+          textSize: button
+          variant: outlined
+          href: /otter-raft
+      background: surface

@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { PAGES, SHOWCASE_PAGE } from '../fixtures';
 
 /**
  * Stackwright WCAG Accessibility Tests 🦮
@@ -13,16 +14,6 @@ import AxeBuilder from '@axe-core/playwright';
  *
  * "Accessibility is not a feature, it's a requirement." - Someone smart, probably
  */
-
-const PAGES = [
-  { path: '/', name: 'Home' },
-  { path: '/about', name: 'About' },
-  { path: '/getting-started', name: 'Getting Started' },
-  { path: '/showcase', name: 'Showcase' },
-  { path: '/privacy-policy', name: 'Privacy Policy' },
-  { path: '/terms-of-service', name: 'Terms of Service' },
-  { path: '/blog', name: 'Blog' },
-];
 
 /**
  * Toggle between light and dark mode by clicking the theme toggle button.
@@ -243,7 +234,7 @@ test.describe('Site-wide A11y', () => {
   });
 
   test('images have alt text', async ({ page }) => {
-    await page.goto('/showcase', { waitUntil: 'networkidle' }); // Showcase likely has images
+    await page.goto(SHOWCASE_PAGE, { waitUntil: 'networkidle' }); // Showcase likely has images
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a'])
@@ -257,7 +248,7 @@ test.describe('Site-wide A11y', () => {
   });
 
   test('forms have proper labels', async ({ page }) => {
-    await page.goto('/privacy-policy', { waitUntil: 'networkidle' });
+    await page.goto(PAGES[0].path, { waitUntil: 'networkidle' });
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a'])
@@ -307,7 +298,7 @@ test.describe('A11y Best Practices', () => {
   });
 
   test('heading hierarchy is logical', async ({ page }) => {
-    await page.goto('/about', { waitUntil: 'networkidle' });
+    await page.goto(PAGES[1].path, { waitUntil: 'networkidle' });
 
     const headings = await page.locator('h1, h2, h3, h4, h5, h6').all();
     const levels = await Promise.all(

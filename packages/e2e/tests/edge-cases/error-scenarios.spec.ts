@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { PAGES, SHOWCASE_PAGE } from '../fixtures';
 
 /**
  * Phase 4: Error Scenarios & Edge Cases 🔥
@@ -91,7 +92,7 @@ test.describe('404 and Error Pages', () => {
 test.describe('Missing/Broken Media Handling', () => {
   test('Page still renders with missing image sources', async ({ page }) => {
     // Navigate to a page
-    await page.goto('/showcase', { waitUntil: 'networkidle' });
+    await page.goto(SHOWCASE_PAGE, { waitUntil: 'networkidle' });
 
     // Inject a broken image into the page
     await page.evaluate(() => {
@@ -339,7 +340,7 @@ test.describe('Boundary Conditions', () => {
   test('Empty content arrays don\'t crash', async ({ page }) => {
     // This would need a test page with empty content_items
     // For now, just verify showcase doesn't have empty content breaking things
-    await page.goto('/showcase', { waitUntil: 'networkidle' });
+    await page.goto(SHOWCASE_PAGE, { waitUntil: 'networkidle' });
 
     const bodyText = await page.locator('body').innerText();
     expect(bodyText.length).toBeGreaterThan(0);
@@ -407,7 +408,7 @@ test.describe('Boundary Conditions', () => {
 
 test.describe('Rapid State Changes', () => {
   test('Rapid page navigation doesn\'t crash', async ({ page }) => {
-    const pages = ['/', '/about', '/showcase', '/getting-started'];
+    const pages = PAGES.slice(0, 4).map(p => p.path);
 
     for (let i = 0; i < 3; i++) {
       for (const pagePath of pages) {

@@ -1,4 +1,5 @@
 import { test, expect, type Page, type ConsoleMessage } from '@playwright/test';
+import { PAGES } from './fixtures';
 
 /**
  * Stackwright E2E smoke tests.
@@ -7,16 +8,6 @@ import { test, expect, type Page, type ConsoleMessage } from '@playwright/test';
  * The webServer config in playwright.config.ts builds and starts the example app
  * before any tests run.
  */
-
-const PAGES = [
-  { path: '/', name: 'Home' },
-  { path: '/about', name: 'About' },
-  { path: '/getting-started', name: 'Getting Started' },
-  { path: '/showcase', name: 'Showcase' },
-  { path: '/privacy-policy', name: 'Privacy Policy' },
-  { path: '/terms-of-service', name: 'Terms of Service' },
-  { path: '/blog', name: 'Blog' },
-];
 
 /** Collect console errors during a page visit. */
 function collectConsoleErrors(page: Page): ConsoleMessage[] {
