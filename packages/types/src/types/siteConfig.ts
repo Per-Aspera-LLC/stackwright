@@ -95,6 +95,15 @@ export const integrationConfigSchema = z
   })
   .passthrough();
 
+export const sidebarConfigSchema = z.object({
+  navigation: z.array(navigationItemSchema),
+  collapsed: z.boolean().optional().default(false),
+  width: z.number().optional().default(240),
+  mobileBreakpoint: z.number().optional().default(768),
+  backgroundColor: z.string().optional(),
+  textColor: z.string().optional(),
+});
+
 export const siteConfigSchema = z.object({
   title: z.string(),
   meta: siteMetaSchema.optional(),
@@ -106,6 +115,8 @@ export const siteConfigSchema = z.object({
   breakpoints: breakpointsConfigSchema.optional(),
   /** Optional array of Pro package integrations (OpenAPI, GraphQL, REST). See integrationConfigSchema for details. */
   integrations: z.array(integrationConfigSchema).optional(),
+  /** Optional sidebar navigation configuration. When present, a sidebar will be rendered on all pages. */
+  sidebar: sidebarConfigSchema.optional(),
 });
 
 export type SiteMeta = z.infer<typeof siteMetaSchema>;
@@ -113,4 +124,5 @@ export type AppBarConfig = z.infer<typeof appBarConfigSchema>;
 export type BreakpointsConfig = z.infer<typeof breakpointsConfigSchema>;
 export type FooterConfig = z.infer<typeof footerConfigSchema>;
 export type IntegrationConfig = z.infer<typeof integrationConfigSchema>;
+export type SidebarConfig = z.infer<typeof sidebarConfigSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;

@@ -18,6 +18,7 @@ import {
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
 import { Map } from '../components/content/Map';
+import NavSidebar from '../components/structural/NavSidebar';
 import {
   getStackwrightImage,
   getStackwrightLink,
@@ -45,6 +46,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   grid: LayoutGrid,
   collection_list: CollectionList,
   map: Map,
+  'nav-sidebar': NavSidebar,
   // Stackwright platform components (resolved dynamically via factory)
   'stackwright-image': () => getStackwrightImage(),
   'stackwright-link': () => getStackwrightLink(),
