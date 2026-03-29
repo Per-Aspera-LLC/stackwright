@@ -1,8 +1,6 @@
 content:
   meta:
     title: "The Otter Raft | Stackwright"
-    description: "Four AI agents that build Stackwright sites through conversation. Brand → Theme → Pages — each otter handles one step."
-  content_items:
     description: "Four AI agents that build Stackwright sites through conversation. Watch them build their own documentation site!"
 
   content_items:
@@ -17,10 +15,6 @@ content:
       textBlocks:
         - text: "Four AI agents that build Stackwright sites through conversation."
           textSize: h3
-        - text: "Brand → Theme → Pages — each otter handles one step. The Foreman coordinates the pipeline. The output is validated YAML files."
-          textSize: body1
-      background: background
-
         - text: "Brand → Theme → Pages — each otter handles one step. The Foreman coordinates the pipeline."
           textSize: body1
       background: background
@@ -70,7 +64,6 @@ content:
             height: 48
             label: brand-icon
           heading: "🦦🎨 Brand Otter"
-          description: "Discovers your brand through conversation. Asks about voice, tone, color preferences, and emotional targets. Produces a brand brief that guides visual decisions."
           description: "Discovers your brand through conversation. Asks about voice, tone, color preferences, and emotional targets. Produces a brand brief."
         - icon:
             type: icon
@@ -78,7 +71,6 @@ content:
             height: 48
             label: theme-icon
           heading: "🦦🌈 Theme Otter"
-          description: "Translates brand briefs into Stackwright themes. Colors, typography, spacing, dark mode. Writes stackwright.yml with customTheme configuration."
           description: "Translates brand briefs into Stackwright themes. Colors, typography, spacing, dark mode. Writes stackwright.yml configuration."
         - icon:
             type: icon
@@ -86,38 +78,6 @@ content:
             height: 48
             label: page-icon
           heading: "🦦📄 Page Otter"
-          description: "Builds pages in your brand voice. Writes schema-valid YAML using the content type system. Verifies pages visually with render screenshots."
-      columns: 2
-      background: surface
-
-    - type: text_block
-      label: usage-heading
-      heading:
-        text: "How to Use"
-        textSize: h2
-      textBlocks:
-        - text: "The Otter Raft is built into launch-stackwright. The agent configs are in .stackwright/otters/ after scaffolding."
-          textSize: body1
-      background: background
-
-    - type: code_block
-      label: install-command
-      language: bash
-      lineNumbers: false
-      code: |
-        npx launch-stackwright my-site
-        cd my-site
-        # The Otter Raft configs are in .stackwright/otters/
-        # Use with Code Puppy or any MCP-compatible AI client
-      background: background
-
-    - type: alert
-      label: mcp-tip
-      variant: tip
-      title: "MCP Integration"
-      body: "The Otter Raft works best with Code Puppy or Claude Code. Each otter is an agent config that gets loaded into your AI assistant. They use the Stackwright MCP server for validation, rendering, and file operations."
-      background: background
-
           description: "Builds pages in your brand voice. Writes schema-valid YAML. Verifies pages visually with render screenshots."
       columns: 2
       background: surface
@@ -220,7 +180,6 @@ content:
       textBlocks:
         - text: "The Foreman Otter orchestrates the pipeline. Here's how a site build happens:"
           textSize: body1
-      background: surface
       background: background
 
     - type: timeline
@@ -233,7 +192,6 @@ content:
         - year: "Step 3"
           event: "Theme Otter reads the brand brief. Picks colors, typography, spacing. Writes stackwright.yml."
         - year: "Step 4"
-          event: "Page Otter reads the brand brief and theme. Writes page YAML files in your brand voice. Validates and renders."
           event: "Page Otter reads the brand brief and theme. Writes page YAML files. Validates and renders screenshots."
         - year: "Step 5"
           event: "Foreman hands off to you. Review the rendered pages. Iterate if needed. Deploy when ready."
