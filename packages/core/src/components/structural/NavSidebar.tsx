@@ -1,4 +1,5 @@
 import React, { useId, useState, useEffect, useRef } from 'react';
+import type { Theme } from '@stackwright/themes';
 import { NavigationItem } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor, getBetterTextColor } from '../../utils/colorUtils';
@@ -43,7 +44,7 @@ interface NavItemProps {
   collapsed: boolean;
   textColor: string;
   activeColor: string;
-  theme: any;
+  theme: Theme;
   depth?: number;
 }
 

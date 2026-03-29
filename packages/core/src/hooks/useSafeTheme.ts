@@ -1,7 +1,11 @@
+import type { Theme } from '@stackwright/themes';
 import { useTheme } from '@stackwright/themes';
 
-// Default theme fallback
-const defaultTheme = {
+// Default theme fallback - complete Theme type
+const defaultTheme: Theme = {
+  id: 'default',
+  name: 'Default Theme',
+  description: 'Fallback theme when ThemeProvider is not available',
   colors: {
     primary: '#f59e0b',
     secondary: '#d97706',
