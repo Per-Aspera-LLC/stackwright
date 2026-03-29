@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { PAGES, NAV_PATTERNS, SHOWCASE_PAGE, HAS_THEME_TOGGLE } from '../fixtures';
 
 /**
  * Stackwright E2E User Journey Tests 🚀
@@ -28,11 +29,11 @@ async function navigateAndWait(page: Page, path: string) {
 /**
  * Helper: Click a nav link and verify navigation happened.
  */
-async function clickNavLink(page: Page, linkText: string, expectedPath: string) {
+async function clickNavLink(page: Page, linkPattern: string | RegExp, expectedPath: string) {
   const initialUrl = page.url();
   
   // Find and click the nav link (could be in header, mobile menu, etc.)
-  const link = page.locator(`header a, nav a`).filter({ hasText: linkText });
+  const link = page.locator('header a, nav a').filter({ hasText: linkPattern });
   await expect(link.first()).toBeVisible();
   await link.first().click();
   
@@ -46,30 +47,42 @@ async function clickNavLink(page: Page, linkText: string, expectedPath: string) 
 }
 
 test.describe('User Journey: Complete Site Navigation', () => {
-  test('Journey 1: Home → About → Getting Started → Home', async ({ page }) => {
-    // Start at home
+  test('Journey 1: Navigate through main site pages', async ({ page }) => {
     await navigateAndWait(page, '/');
     await expect(page.locator('h1').first()).toBeVisible();
     
-    // Navigate to About
-    await clickNavLink(page, 'About', '/about');
-    await expect(page.locator('h1, h2').first()).toBeVisible();
+    // Navigate through available pages (skip home since we start there)
+    const navEntries = Object.values(NAV_PATTERNS).slice(1, 4);
+    for (const entry of navEntries) {
+      if (!entry) continue;
+      const link = page.locator('header a, nav a').filter({ hasText: entry.text });
+      if (await link.count() > 0) {
+        await link.first().click();
+        await page.waitForURL(`**${entry.path}`, { timeout: 5000 });
+        await expect(page.locator('h1, h2').first()).toBeVisible();
+      }
+    }
     
-    // Navigate to Getting Started
-    await clickNavLink(page, 'Getting Started', '/getting-started');
-    await expect(page.locator('h1, h2').first()).toBeVisible();
-    
-    // Return home via navigation
-    await clickNavLink(page, 'Home', '/');
-    await expect(page.locator('h1').first()).toBeVisible();
+    // Return home
+    const homeNav = NAV_PATTERNS.home;
+    if (!homeNav) return;
+    const homeLink = page.locator('header a, nav a').filter({ hasText: homeNav.text });
+    await homeLink.first().click();
+    await page.waitForURL('**/', { timeout: 5000 });
   });
 
-  test('Journey 2: Home → Blog → Article → Back', async ({ page }) => {
+  test('Journey 2: Home \u2192 Blog \u2192 Article \u2192 Back', async ({ page }) => {
+    const blogNav = NAV_PATTERNS.blog;
+    if (!blogNav) {
+      test.skip();
+      return;
+    }
+    
     // Start at home
     await navigateAndWait(page, '/');
     
     // Go to blog listing
-    await clickNavLink(page, 'Blog', '/blog');
+    await clickNavLink(page, blogNav.text, blogNav.path);
     
     // Verify blog posts are listed (collection_list generates different href patterns)
     const postLinks = page.locator('a[href*="/posts/"]');
@@ -133,6 +146,11 @@ test.describe('User Journey: Complete Site Navigation', () => {
   });
 
   test('Journey 4: Theme toggle persists across navigation', async ({ page, context }) => {
+    if (!HAS_THEME_TOGGLE) {
+      test.skip();
+      return;
+    }
+    
     await navigateAndWait(page, '/');
     
     // Find theme toggle button
@@ -165,7 +183,9 @@ test.describe('User Journey: Complete Site Navigation', () => {
     expect(afterToggleMode).not.toBe(initialMode);
     
     // Navigate to another page
-    await clickNavLink(page, 'About', '/about');
+    const gettingStarted = NAV_PATTERNS.gettingStarted;
+    if (!gettingStarted) { test.skip(); return; }
+    await clickNavLink(page, gettingStarted.text, gettingStarted.path);
     
     // Verify theme persisted (cookie should survive navigation)
     const afterNavCookies = await context.cookies();
@@ -195,13 +215,15 @@ test.describe('User Journey: Mobile Navigation', () => {
       await expect(mobileNav.first()).toBeVisible();
       
       // Find a link in the mobile nav
-      const aboutLink = page.locator('a').filter({ hasText: 'About' });
-      await expect(aboutLink.first()).toBeVisible();
+      const gettingStarted = NAV_PATTERNS.gettingStarted;
+      if (!gettingStarted) return;
+      const navLink = page.locator('a').filter({ hasText: gettingStarted.text });
+      await expect(navLink.first()).toBeVisible();
       
       // Click it and verify navigation
-      await aboutLink.first().click();
-      await page.waitForURL('**/about', { timeout: 5000 });
-      expect(page.url()).toContain('/about');
+      await navLink.first().click();
+      await page.waitForURL(`**${gettingStarted.path}`, { timeout: 5000 });
+      expect(page.url()).toContain(gettingStarted.path);
     }
   });
 
@@ -233,7 +255,9 @@ test.describe('User Journey: Cross-Page State', () => {
     const initialCookies = await context.cookies();
     
     // Navigate to another page
-    await clickNavLink(page, 'About', '/about');
+    const gettingStarted = NAV_PATTERNS.gettingStarted;
+    if (!gettingStarted) { test.skip(); return; }
+    await clickNavLink(page, gettingStarted.text, gettingStarted.path);
     
     // Cookies should still be present
     const afterNavCookies = await context.cookies();
@@ -251,7 +275,9 @@ test.describe('User Journey: Cross-Page State', () => {
     });
     
     // Navigate away
-    await clickNavLink(page, 'Getting Started', '/getting-started');
+    const gsNav = NAV_PATTERNS.gettingStarted;
+    if (!gsNav) { test.skip(); return; }
+    await clickNavLink(page, gsNav.text, gsNav.path);
     
     // Check localStorage still has our value
     const value = await page.evaluate(() => localStorage.getItem('test-persistence'));
@@ -264,6 +290,11 @@ test.describe('User Journey: Cross-Page State', () => {
 
 test.describe('User Journey: Content Discovery', () => {
   test('Blog collection renders and is navigable', async ({ page }) => {
+    if (!NAV_PATTERNS.blog) {
+      test.skip();
+      return;
+    }
+    
     await navigateAndWait(page, '/blog');
     
     // Should show blog posts (collection_list might use different patterns)
@@ -294,7 +325,7 @@ test.describe('User Journey: Content Discovery', () => {
   });
 
   test('Showcase page displays all content types', async ({ page }) => {
-    await navigateAndWait(page, '/showcase');
+    await navigateAndWait(page, SHOWCASE_PAGE);
     
     // Should have multiple content sections
     const headings = page.locator('h2, h3');

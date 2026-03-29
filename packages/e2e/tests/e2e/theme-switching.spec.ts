@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { PAGES, HAS_THEME_TOGGLE } from '../fixtures';
 
 /**
  * Stackwright E2E Theme Switching & Persistence Tests 🌓
@@ -13,12 +14,7 @@ import { test, expect, type Page } from '@playwright/test';
  * NOTE: Many tests will skip if theme toggle button isn't implemented yet.
  */
 
-const PAGES_TO_TEST = [
-  '/',
-  '/about',
-  '/getting-started',
-  '/showcase',
-];
+const PAGES_TO_TEST = PAGES.slice(0, 4).map(p => p.path);
 
 /**
  * Helper: Get the current color mode from the page.
