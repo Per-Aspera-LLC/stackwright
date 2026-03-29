@@ -853,6 +853,15 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     };
     await executePlugins(plugins, 'afterBuild', pluginContext);
   }
+  // 4. Build search index from all processed pages
+  const searchIndexPath = path.join(contentOutDir, 'search-index.json');
+  try {
+    const { buildSearchIndex } = require('./build-searchIndex');
+    const entries = buildSearchIndex(contentOutDir, searchIndexPath);
+    console.log('\n  [OK] Search index: ' + entries.length + ' pages indexed');
+  } catch (err) {
+    console.warn('\n  [WARN] Search index generation skipped: ' + (err as Error).message);
+  }
   console.log('\nStackwright prebuild complete.\n');
 }
 
