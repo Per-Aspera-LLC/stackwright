@@ -1,7 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import NavSidebar, { NavSidebarProps } from '../../src/components/structural/NavSidebar';
+import NavSidebar from '../../src/components/structural/NavSidebar';
 import { NavigationItem } from '@stackwright/types';
 import { SiteConfigProvider } from '../../src/hooks/useSiteConfig';
 import DefaultPageLayout from '../../src/components/structural/DefaultPageLayout';
@@ -118,7 +118,7 @@ describe('NavSidebar', () => {
     });
 
     it('respects controlled collapsed prop', () => {
-      const { rerender } = render(<NavSidebar navigationItems={mockNavItems} collapsed={false} />);
+      render(<NavSidebar navigationItems={mockNavItems} collapsed={false} />);
 
       expect(screen.getByLabelText('Collapse sidebar')).toBeInTheDocument();
 
@@ -333,7 +333,7 @@ describe('NavSidebar', () => {
 
   describe('Responsive Behavior', () => {
     it('switches to mobile mode below breakpoint', async () => {
-      const { rerender } = render(
+      render(
         <NavSidebar navigationItems={mockNavItems} mobileBreakpoint={768} />
       );
 
