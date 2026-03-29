@@ -1,12 +1,12 @@
 import { registerStackwrightIcons } from '../registry/iconRegistry';
 import { BlueSkyIcon } from '../icons/social/BlueSkyIcon';
 import { StackwrightIcon } from '../icons/brand/StackwrightIcon';
-import { lucideIconPreset } from './lucideIcons';
+import { lucideAllIconsPreset } from './lucideAllIcons';
 
-export const defaultStackwrightIcons = {
+export const defaultStackwrightIcons: Record<string, React.ComponentType<any>> = {
   bluesky: BlueSkyIcon,
   stackwright: StackwrightIcon,
-  ...lucideIconPreset,
+  ...lucideAllIconsPreset,
 };
 
 export function registerDefaultIcons() {

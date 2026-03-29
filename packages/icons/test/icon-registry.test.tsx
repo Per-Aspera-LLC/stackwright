@@ -9,6 +9,7 @@ import {
 import { useStackwrightIcon } from '../src/hooks/useStackwrightIcon';
 import { registerDefaultIcons, defaultStackwrightIcons } from '../src/presets/defaultIcons';
 import { lucideIconPreset, registerLucideIcons } from '../src/presets/lucideIcons';
+import { lucideAllIconsPreset, registerAllLucideIcons } from '../src/presets/lucideAllIcons';
 import { BlueSkyIcon } from '../src/icons/social/BlueSkyIcon';
 import { StackwrightIcon } from '../src/icons/brand/StackwrightIcon';
 
@@ -210,8 +211,8 @@ describe('defaultStackwrightIcons', () => {
     expect(defaultStackwrightIcons.stackwright).toBe(StackwrightIcon);
   });
 
-  it('includes all lucide icons', () => {
-    for (const name of Object.keys(lucideIconPreset)) {
+  it('includes all lucide icons from the full set', () => {
+    for (const name of Object.keys(lucideAllIconsPreset)) {
       expect(defaultStackwrightIcons).toHaveProperty(name);
     }
   });
@@ -223,7 +224,70 @@ describe('defaultStackwrightIcons', () => {
     expect(registered.length).toBe(Object.keys(defaultStackwrightIcons).length);
     expect(stackwrightIconRegistry.isRegistered('bluesky')).toBe(true);
     expect(stackwrightIconRegistry.isRegistered('stackwright')).toBe(true);
+    // Legacy MUI alias
     expect(stackwrightIconRegistry.isRegistered('Speed')).toBe(true);
+    // Full Lucide set — these icons were NOT in the curated preset
+    expect(stackwrightIconRegistry.isRegistered('Heart')).toBe(true);
+    expect(stackwrightIconRegistry.isRegistered('Camera')).toBe(true);
+    expect(stackwrightIconRegistry.isRegistered('Truck')).toBe(true);
+    // Should have significantly more than the curated preset
+    expect(registered.length).toBeGreaterThan(500);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Full Lucide icon preset (all icons)
+// ---------------------------------------------------------------------------
+
+describe('lucideAllIconsPreset', () => {
+  beforeEach(() => {
+    stackwrightIconRegistry.clear();
+  });
+
+  it('contains significantly more icons than the curated preset', () => {
+    const allCount = Object.keys(lucideAllIconsPreset).length;
+    const curatedCount = Object.keys(lucideIconPreset).length;
+    expect(allCount).toBeGreaterThan(curatedCount * 10);
+  });
+
+  it('contains expected common Lucide icons not in curated preset', () => {
+    expect(lucideAllIconsPreset).toHaveProperty('Heart');
+    expect(lucideAllIconsPreset).toHaveProperty('Camera');
+    expect(lucideAllIconsPreset).toHaveProperty('Truck');
+    expect(lucideAllIconsPreset).toHaveProperty('Wifi');
+    expect(lucideAllIconsPreset).toHaveProperty('Phone');
+    expect(lucideAllIconsPreset).toHaveProperty('Mail');
+  });
+
+  it('preserves legacy MUI aliases', () => {
+    expect(lucideAllIconsPreset).toHaveProperty('Speed');
+    expect(lucideAllIconsPreset).toHaveProperty('VerifiedUser');
+    expect(lucideAllIconsPreset).toHaveProperty('Dashboard');
+    expect(lucideAllIconsPreset).toHaveProperty('Api');
+  });
+
+  it('preserves Lucide renamed-icon aliases', () => {
+    expect(lucideAllIconsPreset).toHaveProperty('CheckCircle');
+    expect(lucideAllIconsPreset).toHaveProperty('AlertTriangle');
+  });
+
+  it('all preset values are valid React components', () => {
+    for (const [name, component] of Object.entries(lucideAllIconsPreset)) {
+      const isRenderable = typeof component === 'function' || typeof component === 'object';
+      expect(isRenderable, `${name} should be a React component`).toBe(true);
+    }
+  });
+
+  it('registerAllLucideIcons registers all preset icons into the registry', () => {
+    registerAllLucideIcons();
+
+    const registered = stackwrightIconRegistry.getRegisteredIcons();
+    expect(registered.length).toBe(Object.keys(lucideAllIconsPreset).length);
+
+    // Spot-check several icons
+    expect(stackwrightIconRegistry.isRegistered('Heart')).toBe(true);
+    expect(stackwrightIconRegistry.isRegistered('Zap')).toBe(true);
+    expect(stackwrightIconRegistry.isRegistered('Speed')).toBe(true); // MUI alias
   });
 });
 
