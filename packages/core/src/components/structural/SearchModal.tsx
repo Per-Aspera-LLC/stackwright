@@ -6,16 +6,16 @@
  * during prebuild.
  */
 
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Fuse from 'fuse.js';
 
 // Lazy import for Next.js router (only available in Next.js context)
-let useRouter: (() => { push: (path: string) => void }) | null = null;
+// Note: We store the function, not the hook result, to avoid conditional hook calls
+let getRouter: (() => { push: (path: string) => void }) | null = null;
 if (typeof window !== 'undefined') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   try {
     const nextRouter = require('next/router');
-    useRouter = () => nextRouter.useRouter();
+    getRouter = () => nextRouter.useRouter();
   } catch {
     // next/router not available, will use window.location
   }
@@ -45,8 +45,8 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
   const [fuse, setFuse] = useState<Fuse<SearchEntry> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Get router instance (may be null if not in Next.js context)
-  const router = useRouter ? useRouter() : null;
+  // Get router instance - always call hook at top level (may be null if not in Next.js context)
+  const router = getRouter ? getRouter() : null;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -174,11 +174,6 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
   }, [selectedIndex]);
 
   if (!isOpen) return null;
-
-  const isMac = useMemo(
-    () => typeof navigator !== 'undefined' && /Mac/.test(navigator.userAgent),
-    []
-  );
 
   return (
     <div
