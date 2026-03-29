@@ -117,8 +117,8 @@ describe('NavSidebar', () => {
       expect(screen.getByLabelText('Expand sidebar')).toBeInTheDocument();
     });
 
-    it('respects controlled collapsed prop', () => {
-      render(<NavSidebar navigationItems={mockNavItems} collapsed={false} />);
+    it('respects controlled collapsed prop', async () => {
+      const { rerender } = render(<NavSidebar navigationItems={mockNavItems} collapsed={false} />);
 
       expect(screen.getByLabelText('Collapse sidebar')).toBeInTheDocument();
 
