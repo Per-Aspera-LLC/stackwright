@@ -36,10 +36,7 @@ interface SearchModalProps {
   shortcut?: string;
 }
 
-export function SearchModal({
-  placeholder = 'Search...',
-  shortcut = 'k'
-}: SearchModalProps) {
+export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: SearchModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -55,13 +52,16 @@ export function SearchModal({
   const resultsRef = useRef<HTMLDivElement>(null);
 
   // Navigate to a path using Next.js router if available, otherwise window.location
-  const navigateTo = useCallback((path: string) => {
-    if (router) {
-      router.push(path);
-    } else {
-      window.location.href = path;
-    }
-  }, [router]);
+  const navigateTo = useCallback(
+    (path: string) => {
+      if (router) {
+        router.push(path);
+      } else {
+        window.location.href = path;
+      }
+    },
+    [router]
+  );
 
   // Debounce search query (300ms)
   useEffect(() => {
@@ -73,9 +73,9 @@ export function SearchModal({
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
-    
+
     fetch('/stackwright-content/search-index.json', { signal: controller.signal })
-      .then(res => {
+      .then((res) => {
         if (!res.ok) throw new Error('Search index not found');
         return res.json();
       })
@@ -93,7 +93,7 @@ export function SearchModal({
         });
         setFuse(fuseInstance);
       })
-      .catch(err => {
+      .catch((err) => {
         if (err.name !== 'AbortError') {
           console.warn('Search index not available:', err);
         }
@@ -143,24 +143,27 @@ export function SearchModal({
     }
 
     const searchResults = fuse.search(debouncedQuery).slice(0, 8);
-    setResults(searchResults.map(r => r.item));
+    setResults(searchResults.map((r) => r.item));
     setSelectedIndex(0);
   }, [debouncedQuery, fuse]);
 
   // Keyboard navigation
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setSelectedIndex(i => Math.min(i + 1, results.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setSelectedIndex(i => Math.max(i - 1, 0));
-    } else if (e.key === 'Enter' && results[selectedIndex]) {
-      e.preventDefault();
-      navigateTo(results[selectedIndex].path);
-      setIsOpen(false);
-    }
-  }, [results, selectedIndex, navigateTo]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedIndex((i) => Math.min(i + 1, results.length - 1));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedIndex((i) => Math.max(i - 1, 0));
+      } else if (e.key === 'Enter' && results[selectedIndex]) {
+        e.preventDefault();
+        navigateTo(results[selectedIndex].path);
+        setIsOpen(false);
+      }
+    },
+    [results, selectedIndex, navigateTo]
+  );
 
   // Scroll selected into view
   useEffect(() => {
@@ -172,9 +175,10 @@ export function SearchModal({
 
   if (!isOpen) return null;
 
-  const isMac = useMemo(() => 
-    typeof navigator !== 'undefined' && /Mac/.test(navigator.userAgent)
-  , []);
+  const isMac = useMemo(
+    () => typeof navigator !== 'undefined' && /Mac/.test(navigator.userAgent),
+    []
+  );
 
   return (
     <div
@@ -200,15 +204,17 @@ export function SearchModal({
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           overflow: 'hidden',
         }}
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          padding: '12px 16px',
-          borderBottom: '1px solid var(--sw-border, #e5e7eb)',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            padding: '12px 16px',
+            borderBottom: '1px solid var(--sw-border, #e5e7eb)',
+          }}
+        >
           <svg
             width={20}
             height={20}
@@ -228,7 +234,7 @@ export function SearchModal({
             placeholder={placeholder}
             value={query}
             aria-label="Search documentation"
-            onChange={e => setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             style={{
               flex: 1,
@@ -240,14 +246,16 @@ export function SearchModal({
             }}
           />
 
-          <kbd style={{
-            padding: '4px 8px',
-            fontSize: 12,
-            fontFamily: 'monospace',
-            backgroundColor: 'var(--sw-surface, #f3f4f6)',
-            borderRadius: 4,
-            color: 'var(--sw-text-secondary, #6b7280)',
-          }}>
+          <kbd
+            style={{
+              padding: '4px 8px',
+              fontSize: 12,
+              fontFamily: 'monospace',
+              backgroundColor: 'var(--sw-surface, #f3f4f6)',
+              borderRadius: 4,
+              color: 'var(--sw-text-secondary, #6b7280)',
+            }}
+          >
             esc
           </kbd>
         </div>
@@ -257,7 +265,9 @@ export function SearchModal({
           ref={resultsRef}
           role="listbox"
           aria-label="Search results"
-          aria-activedescendant={results[selectedIndex] ? `search-result-${selectedIndex}` : undefined}
+          aria-activedescendant={
+            results[selectedIndex] ? `search-result-${selectedIndex}` : undefined
+          }
           style={{
             maxHeight: 400,
             overflowY: 'auto',
@@ -265,31 +275,37 @@ export function SearchModal({
           }}
         >
           {loading && (
-            <div style={{
-              padding: 24,
-              textAlign: 'center',
-              color: 'var(--sw-text-secondary, #6b7280)',
-            }}>
+            <div
+              style={{
+                padding: 24,
+                textAlign: 'center',
+                color: 'var(--sw-text-secondary, #6b7280)',
+              }}
+            >
               Loading search index...
             </div>
           )}
 
           {!loading && query && results.length === 0 && (
-            <div style={{
-              padding: 24,
-              textAlign: 'center',
-              color: 'var(--sw-text-secondary, #6b7280)',
-            }}>
+            <div
+              style={{
+                padding: 24,
+                textAlign: 'center',
+                color: 'var(--sw-text-secondary, #6b7280)',
+              }}
+            >
               No results found for "{query}"
             </div>
           )}
 
           {!loading && !query && (
-            <div style={{
-              padding: 24,
-              textAlign: 'center',
-              color: 'var(--sw-text-secondary, #6b7280)',
-            }}>
+            <div
+              style={{
+                padding: 24,
+                textAlign: 'center',
+                color: 'var(--sw-text-secondary, #6b7280)',
+              }}
+            >
               Type to search...
             </div>
           )}
@@ -307,9 +323,8 @@ export function SearchModal({
                 padding: '12px 16px',
                 borderRadius: 8,
                 textDecoration: 'none',
-                backgroundColor: index === selectedIndex
-                  ? 'var(--sw-surface, #f3f4f6)'
-                  : 'transparent',
+                backgroundColor:
+                  index === selectedIndex ? 'var(--sw-surface, #f3f4f6)' : 'transparent',
                 color: 'var(--sw-text, #111827)',
                 cursor: 'pointer',
               }}
@@ -320,31 +335,37 @@ export function SearchModal({
                 setIsOpen(false);
               }}
             >
-              <div style={{
-                fontWeight: 500,
-                marginBottom: 4,
-              }}>
+              <div
+                style={{
+                  fontWeight: 500,
+                  marginBottom: 4,
+                }}
+              >
                 {result.title}
               </div>
 
               {result.description && (
-                <div style={{
-                  fontSize: 13,
-                  color: 'var(--sw-text-secondary, #6b7280)',
-                  marginBottom: 4,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: 'var(--sw-text-secondary, #6b7280)',
+                    marginBottom: 4,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
                   {result.description}
                 </div>
               )}
 
-              <div style={{
-                fontSize: 12,
-                color: 'var(--sw-text-tertiary, #9ca3af)',
-                fontFamily: 'monospace',
-              }}>
+              <div
+                style={{
+                  fontSize: 12,
+                  color: 'var(--sw-text-tertiary, #9ca3af)',
+                  fontFamily: 'monospace',
+                }}
+              >
                 {result.path}
               </div>
             </a>
@@ -352,39 +373,53 @@ export function SearchModal({
         </div>
 
         {/* Footer */}
-        <div style={{
-          padding: '8px 16px',
-          borderTop: '1px solid var(--sw-border, #e5e7eb)',
-          display: 'flex',
-          gap: 16,
-          fontSize: 12,
-          color: 'var(--sw-text-tertiary, #9ca3af)',
-        }}>
+        <div
+          style={{
+            padding: '8px 16px',
+            borderTop: '1px solid var(--sw-border, #e5e7eb)',
+            display: 'flex',
+            gap: 16,
+            fontSize: 12,
+            color: 'var(--sw-text-tertiary, #9ca3af)',
+          }}
+        >
           <span>
-            <kbd style={{
-              padding: '2px 6px',
-              backgroundColor: 'var(--sw-surface, #f3f4f6)',
-              borderRadius: 4,
-              marginRight: 4,
-            }}>↑↓</kbd>
+            <kbd
+              style={{
+                padding: '2px 6px',
+                backgroundColor: 'var(--sw-surface, #f3f4f6)',
+                borderRadius: 4,
+                marginRight: 4,
+              }}
+            >
+              ↑↓
+            </kbd>
             navigate
           </span>
           <span>
-            <kbd style={{
-              padding: '2px 6px',
-              backgroundColor: 'var(--sw-surface, #f3f4f6)',
-              borderRadius: 4,
-              marginRight: 4,
-            }}>↵</kbd>
+            <kbd
+              style={{
+                padding: '2px 6px',
+                backgroundColor: 'var(--sw-surface, #f3f4f6)',
+                borderRadius: 4,
+                marginRight: 4,
+              }}
+            >
+              ↵
+            </kbd>
             select
           </span>
           <span>
-            <kbd style={{
-              padding: '2px 6px',
-              backgroundColor: 'var(--sw-surface, #f3f4f6)',
-              borderRadius: 4,
-              marginRight: 4,
-            }}>esc</kbd>
+            <kbd
+              style={{
+                padding: '2px 6px',
+                backgroundColor: 'var(--sw-surface, #f3f4f6)',
+                borderRadius: 4,
+                marginRight: 4,
+              }}
+            >
+              esc
+            </kbd>
             close
           </span>
         </div>

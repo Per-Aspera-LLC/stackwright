@@ -19,12 +19,7 @@ export interface SearchEntry {
 }
 
 // Files to skip when building search index
-const SKIP_FILES = new Set([
-  '_site.json',
-  '_root.json',
-  'search-index.json',
-  '_index.json',
-]);
+const SKIP_FILES = new Set(['_site.json', '_root.json', 'search-index.json', '_index.json']);
 
 /**
  * Extract all text from a content item recursively
@@ -157,7 +152,10 @@ export function buildSearchIndex(pagesDir: string, outputPath: string): SearchEn
           // Determine page type from structure
           let pageType: SearchEntry['type'] = 'page';
           const contentItems = pageContent?.content_items || [];
-          if (Array.isArray(contentItems) && contentItems.some((item: Record<string, unknown>) => item.type === 'main')) {
+          if (
+            Array.isArray(contentItems) &&
+            contentItems.some((item: Record<string, unknown>) => item.type === 'main')
+          ) {
             pageType = 'landing';
           }
           if (basePath.includes('docs') || basePath.includes('content-types')) {
@@ -176,7 +174,8 @@ export function buildSearchIndex(pagesDir: string, outputPath: string): SearchEn
           // Build entry
           const entry: SearchEntry = {
             path: pagePath,
-            title: meta.title || meta.pageTitle || slug.replace(/-/g, ' ').replace(/^\//, '') || '/',
+            title:
+              meta.title || meta.pageTitle || slug.replace(/-/g, ' ').replace(/^\//, '') || '/',
             description: meta.description,
             headings: extractHeadings(contentItems),
             content: extractText(pageContent).slice(0, 50), // Limit content length

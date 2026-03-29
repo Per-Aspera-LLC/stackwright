@@ -71,10 +71,7 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
       <BottomAppBar footer={config.footer} />
 
       {/* Search Modal - Cmd+K to open */}
-      <SearchModal
-        placeholder={config.search?.placeholder}
-        shortcut={config.search?.shortcut}
-      />
+      <SearchModal placeholder={config.search?.placeholder} shortcut={config.search?.shortcut} />
     </div>
   );
 }
