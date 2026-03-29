@@ -144,7 +144,7 @@ export async function fetchTemplate(
   targetDir: string,
   options: FetchTemplateOptions = {}
 ): Promise<{ source: 'github' | 'bundled' }> {
-  const { ref = DEFAULT_REF, offline = false } = options;
+  const { ref = DEFAULT_REF, offline = true } = options;
 
   if (!offline) {
     try {

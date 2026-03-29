@@ -238,12 +238,11 @@ jobs:
           done < <(find _template-repo -type f -not -path '*/.git/*' -not -name 'README.md' -print0)
 
           if [ -n "$DIFFS" ]; then
-            echo "Template repo is out of sync with bundled templates:"
+            echo "::warning::Template repo is out of sync with bundled templates (informational — not blocking)"
             echo -e "$DIFFS"
             echo ""
             echo "The sync-template-repo workflow will update the template repo automatically when this PR merges to dev."
             echo "If you need to sync manually, copy packages/cli/templates/scaffold-template/ to the template repo."
-            exit 1
+          else
+            echo "Template repo is in sync with bundled templates."
           fi
-
-          echo "Template repo is in sync with bundled templates."

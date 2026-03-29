@@ -12,7 +12,7 @@ export interface ScaffoldOptions {
   title?: string;
   theme?: string;
   json?: boolean;
-  offline?: boolean;
+  online?: boolean; // was: offline?: boolean;
   force?: boolean;
   noInteractive?: boolean;
   monorepo?: boolean;
@@ -89,7 +89,7 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     siteTitle: title!,
     themeId: theme!,
     targetDir,
-    offline: opts.offline,
+    offline: !opts.online, // was: offline: opts.offline
     monorepo: opts.monorepo,
     standalone: opts.standalone,
     pages: opts.pages,
@@ -119,7 +119,7 @@ export function registerScaffold(program: Command): void {
     .option('--name <name>', 'Project name (used in package.json)')
     .option('--title <title>', 'Site title shown in the app bar and browser tab')
     .option('--theme <themeId>', 'Theme ID — skips interactive theme selection')
-    .option('--offline', 'Use bundled templates (skip GitHub template fetch)')
+    .option('--online', 'Fetch templates from GitHub instead of using bundled templates')
     .option('--force', 'Scaffold even if the target directory is not empty')
     .option('--no-interactive', 'Skip all interactive prompts, use defaults for missing values')
     .option('--monorepo', 'Use workspace:* dependencies (for development inside a pnpm monorepo)')
