@@ -333,9 +333,7 @@ describe('NavSidebar', () => {
 
   describe('Responsive Behavior', () => {
     it('switches to mobile mode below breakpoint', async () => {
-      render(
-        <NavSidebar navigationItems={mockNavItems} mobileBreakpoint={768} />
-      );
+      render(<NavSidebar navigationItems={mockNavItems} mobileBreakpoint={768} />);
 
       // Start at desktop
       window.innerWidth = 1024;

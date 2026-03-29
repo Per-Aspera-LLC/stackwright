@@ -9,18 +9,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Fuse from 'fuse.js';
 
-// Lazy import for Next.js router (only available in Next.js context)
-// Note: We store the function, not the hook result, to avoid conditional hook calls
-let getRouter: (() => { push: (path: string) => void }) | null = null;
-if (typeof window !== 'undefined') {
-  try {
-    const nextRouter = require('next/router');
-    getRouter = () => nextRouter.useRouter();
-  } catch {
-    // next/router not available, will use window.location
-  }
-}
-
 // Type for search index entries - matches build-searchIndex.ts
 interface SearchEntry {
   path: string;
@@ -45,23 +33,13 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
   const [fuse, setFuse] = useState<Fuse<SearchEntry> | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Get router instance - always call hook at top level (may be null if not in Next.js context)
-  const router = getRouter ? getRouter() : null;
-
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Navigate to a path using Next.js router if available, otherwise window.location
-  const navigateTo = useCallback(
-    (path: string) => {
-      if (router) {
-        router.push(path);
-      } else {
-        window.location.href = path;
-      }
-    },
-    [router]
-  );
+  // Navigate to a path using window.location (works in all environments)
+  const navigateTo = useCallback((path: string) => {
+    window.location.href = path;
+  }, []);
 
   // Debounce search query (300ms)
   useEffect(() => {
