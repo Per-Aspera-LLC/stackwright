@@ -1,21 +1,26 @@
 import React from 'react';
 import { AlertContent, AlertVariant } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { hexToRgba } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
-const variantConfig: Record<AlertVariant, { color: string; bgColor: string; iconName: string }> = {
-  info: { color: '#2563eb', bgColor: '#eff6ff', iconName: 'Info' },
-  warning: { color: '#d97706', bgColor: '#fffbeb', iconName: 'AlertTriangle' },
-  success: { color: '#16a34a', bgColor: '#f0fdf4', iconName: 'CheckCircle' },
-  danger: { color: '#dc2626', bgColor: '#fef2f2', iconName: 'CircleAlert' },
-  note: { color: '#6b7280', bgColor: '#f9fafb', iconName: 'Info' },
-  tip: { color: '#7c3aed', bgColor: '#f5f3ff', iconName: 'CheckCircle' },
+const variantConfig: Record<AlertVariant, { color: string; iconName: string }> = {
+  info: { color: '#3b82f6', iconName: 'Info' },
+  warning: { color: '#f59e0b', iconName: 'AlertTriangle' },
+  success: { color: '#22c55e', iconName: 'CheckCircle' },
+  danger: { color: '#ef4444', iconName: 'CircleAlert' },
+  note: { color: '', iconName: 'Info' },
+  tip: { color: '#8b5cf6', iconName: 'CheckCircle' },
 };
+
+
 
 export function Alert({ variant, title, body, background }: AlertContent) {
   const theme = useSafeTheme();
   const config = variantConfig[variant];
+  const accentColor = config.color || theme.colors.textSecondary;
+  const alertBgColor = hexToRgba(accentColor, 0.1);
 
   const iconRegistry = getIconRegistry();
   const IconComponent = iconRegistry?.get(config.iconName);
@@ -36,8 +41,8 @@ export function Alert({ variant, title, body, background }: AlertContent) {
           alignItems: 'flex-start',
           gap: theme.spacing.sm,
           padding: `${theme.spacing.md} ${theme.spacing.md}`,
-          backgroundColor: config.bgColor,
-          borderLeft: `4px solid ${config.color}`,
+          backgroundColor: alertBgColor,
+          borderLeft: `4px solid ${accentColor}`,
           borderRadius: '8px',
         }}
       >
@@ -46,11 +51,11 @@ export function Alert({ variant, title, body, background }: AlertContent) {
           style={{
             flexShrink: 0,
             marginTop: '2px',
-            color: config.color,
+            color: accentColor,
           }}
         >
           {IconComponent ? (
-            <IconComponent size={20} color={config.color} />
+            <IconComponent size={20} color={accentColor} />
           ) : (
             <span style={{ fontSize: '1.25rem', lineHeight: 1 }}>
               {variant === 'success'
@@ -68,7 +73,7 @@ export function Alert({ variant, title, body, background }: AlertContent) {
             <div
               style={{
                 fontWeight: 600,
-                color: config.color,
+                color: accentColor,
                 marginBottom: body ? '4px' : 0,
               }}
             >

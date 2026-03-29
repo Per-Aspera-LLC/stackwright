@@ -6,6 +6,7 @@ import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
 import { Media } from '../media/Media';
 import { useBreakpoints } from '../../hooks/useBreakpoints';
+import { getThemeShadow } from '../../utils/shadowUtils';
 import { useThemeOptional } from '@stackwright/themes';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
@@ -139,7 +140,7 @@ export default function TopAppBar({
         backgroundColor: headerBgColor,
         color: headerTextColor,
         width: '100%',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        boxShadow: getThemeShadow(theme, 'md'),
       }}
     >
       <nav
