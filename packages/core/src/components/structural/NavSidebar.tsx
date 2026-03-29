@@ -6,6 +6,24 @@ import { getThemeShadow } from '../../utils/shadowUtils';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
 // ---------------------------------------------------------------------------
+// Security: URL Validation
+// ---------------------------------------------------------------------------
+
+/**
+ * Validates that a URL is safe to navigate to.
+ * Blocks javascript:, data:, and vbscript: protocols to prevent XSS attacks.
+ */
+function isSafeUrl(href: string | undefined): boolean {
+  if (!href) return true;
+  const trimmed = href.trim().toLowerCase();
+  return (
+    !trimmed.startsWith('javascript:') &&
+    !trimmed.startsWith('data:') &&
+    !trimmed.startsWith('vbscript:')
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Types & Interfaces
 // ---------------------------------------------------------------------------
 
@@ -67,7 +85,7 @@ function NavItem({ item, isActive, collapsed, textColor, activeColor, theme, dep
       e.preventDefault();
       if (hasChildren) {
         setIsExpanded(!isExpanded);
-      } else if (item.href) {
+      } else if (item.href && isSafeUrl(item.href)) {
         window.location.href = item.href;
       }
     }
@@ -89,7 +107,7 @@ function NavItem({ item, isActive, collapsed, textColor, activeColor, theme, dep
         }}
       />
       <a
-        href={hasChildren ? undefined : item.href}
+        href={hasChildren || !isSafeUrl(item.href) ? undefined : item.href}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
         className={hoverClass}
@@ -363,16 +381,16 @@ export default function NavSidebar({
         role="navigation"
         aria-label="Main navigation"
         style={{
-          position: 'sticky',
+          position: 'fixed',
           top: 0,
           left: 0,
-          height: '100vh',
+          bottom: 0,
           width: isMobile ? 280 : effectiveWidth,
           backgroundColor: bgColor,
           boxShadow: getThemeShadow(theme, 'md'),
           transition: 'width 0.3s ease, transform 0.3s ease',
           transform: isMobile ? (mobileOpen ? 'translateX(0)' : 'translateX(-100%)') : 'translateX(0)',
-          zIndex: isMobile ? 1200 : 100,
+          zIndex: isMobile ? 1200 : 1200,
           display: 'flex',
           flexDirection: 'column',
           overflowX: 'hidden',
