@@ -6,8 +6,20 @@
  * during prebuild.
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import Fuse from 'fuse.js';
+
+// Lazy import for Next.js router (only available in Next.js context)
+let useRouter: (() => { push: (path: string) => void }) | null = null;
+if (typeof window !== 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  try {
+    const nextRouter = require('next/router');
+    useRouter = () => nextRouter.useRouter();
+  } catch {
+    // next/router not available, will use window.location
+  }
+}
 
 // Type for search index entries - matches build-searchIndex.ts
 interface SearchEntry {
@@ -30,17 +42,39 @@ export function SearchModal({
 }: SearchModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [results, setResults] = useState<SearchEntry[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [fuse, setFuse] = useState<Fuse<SearchEntry> | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Get router instance (may be null if not in Next.js context)
+  const router = useRouter ? useRouter() : null;
+
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Load search index
+  // Navigate to a path using Next.js router if available, otherwise window.location
+  const navigateTo = useCallback((path: string) => {
+    if (router) {
+      router.push(path);
+    } else {
+      window.location.href = path;
+    }
+  }, [router]);
+
+  // Debounce search query (300ms)
   useEffect(() => {
-    fetch('/stackwright-content/search-index.json')
+    const timer = setTimeout(() => setDebouncedQuery(query), 300);
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Load search index with AbortController for cleanup
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    
+    fetch('/stackwright-content/search-index.json', { signal: controller.signal })
       .then(res => {
         if (!res.ok) throw new Error('Search index not found');
         return res.json();
@@ -58,12 +92,17 @@ export function SearchModal({
           minMatchCharLength: 2,
         });
         setFuse(fuseInstance);
-        setLoading(false);
       })
       .catch(err => {
-        console.warn('Search index not available:', err);
+        if (err.name !== 'AbortError') {
+          console.warn('Search index not available:', err);
+        }
+      })
+      .finally(() => {
         setLoading(false);
       });
+
+    return () => controller.abort();
   }, []);
 
   // Keyboard shortcuts
@@ -95,18 +134,18 @@ export function SearchModal({
     }
   }, [isOpen]);
 
-  // Search when query changes
+  // Search when debounced query changes
   useEffect(() => {
-    if (!fuse || !query.trim()) {
+    if (!fuse || !debouncedQuery.trim()) {
       setResults([]);
       setSelectedIndex(0);
       return;
     }
 
-    const searchResults = fuse.search(query).slice(0, 8);
+    const searchResults = fuse.search(debouncedQuery).slice(0, 8);
     setResults(searchResults.map(r => r.item));
     setSelectedIndex(0);
-  }, [query, fuse]);
+  }, [debouncedQuery, fuse]);
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -117,9 +156,11 @@ export function SearchModal({
       e.preventDefault();
       setSelectedIndex(i => Math.max(i - 1, 0));
     } else if (e.key === 'Enter' && results[selectedIndex]) {
-      window.location.href = results[selectedIndex].path;
+      e.preventDefault();
+      navigateTo(results[selectedIndex].path);
+      setIsOpen(false);
     }
-  }, [results, selectedIndex]);
+  }, [results, selectedIndex, navigateTo]);
 
   // Scroll selected into view
   useEffect(() => {
@@ -131,8 +172,9 @@ export function SearchModal({
 
   if (!isOpen) return null;
 
-  const isMac = typeof navigator !== 'undefined' && /Mac/.test(navigator.userAgent);
-  const shortcutLabel = isMac ? '⌘' : 'Ctrl+';
+  const isMac = useMemo(() => 
+    typeof navigator !== 'undefined' && /Mac/.test(navigator.userAgent)
+  , []);
 
   return (
     <div
@@ -185,6 +227,7 @@ export function SearchModal({
             type="text"
             placeholder={placeholder}
             value={query}
+            aria-label="Search documentation"
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             style={{
@@ -209,9 +252,12 @@ export function SearchModal({
           </kbd>
         </div>
 
-        {/* Results */}
+        {/* Results - Accessible listbox */}
         <div
           ref={resultsRef}
+          role="listbox"
+          aria-label="Search results"
+          aria-activedescendant={results[selectedIndex] ? `search-result-${selectedIndex}` : undefined}
           style={{
             maxHeight: 400,
             overflowY: 'auto',
@@ -251,7 +297,11 @@ export function SearchModal({
           {results.map((result, index) => (
             <a
               key={result.path}
+              id={`search-result-${index}`}
               href={result.path}
+              role="option"
+              aria-selected={index === selectedIndex}
+              tabIndex={-1}
               style={{
                 display: 'block',
                 padding: '12px 16px',
@@ -264,7 +314,11 @@ export function SearchModal({
                 cursor: 'pointer',
               }}
               onMouseEnter={() => setSelectedIndex(index)}
-              onClick={() => setIsOpen(false)}
+              onClick={(e) => {
+                e.preventDefault();
+                navigateTo(result.path);
+                setIsOpen(false);
+              }}
             >
               <div style={{
                 fontWeight: 500,
