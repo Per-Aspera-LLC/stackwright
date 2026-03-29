@@ -61,14 +61,24 @@ function navLog(...args: any[]) {
 // Navigation Item Component
 // ---------------------------------------------------------------------------
 
-function NavItem({ item, isActive, collapsed, textColor, activeColor, theme, depth = 0 }: NavItemProps) {
+function NavItem({
+  item,
+  isActive,
+  collapsed,
+  textColor,
+  activeColor,
+  theme,
+  depth = 0,
+}: NavItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const hasChildren = 'children' in item && Array.isArray(item.children) && item.children.length > 0;
-  const children: NavigationItem[] = (hasChildren && item.children) ? item.children as NavigationItem[] : [];
+  const hasChildren =
+    'children' in item && Array.isArray(item.children) && item.children.length > 0;
+  const children: NavigationItem[] =
+    hasChildren && item.children ? (item.children as NavigationItem[]) : [];
   const uniqueId = useId();
   const hoverClass = `nav-item-hover-${uniqueId.replace(/:/g, '')}`;
   const registry = getIconRegistry();
-  
+
   // Try to get icons from registry
   const ChevronRightIcon = registry?.get('ChevronRight');
   const ChevronDownIcon = registry?.get('ChevronDown');
@@ -273,7 +283,7 @@ export default function NavSidebar({
       setIsMobile(mobile);
       navLog('Mobile check:', mobile, 'width:', window.innerWidth);
     };
-    
+
     if (typeof window !== 'undefined') {
       checkMobile();
       window.addEventListener('resize', checkMobile);
@@ -284,14 +294,14 @@ export default function NavSidebar({
   // Handle click outside on mobile
   useEffect(() => {
     if (!isMobile || !mobileOpen) return;
-    
+
     const handleClickOutside = (e: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(e.target as Node)) {
         setMobileOpen(false);
         navLog('Closed mobile drawer (click outside)');
       }
     };
-    
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isMobile, mobileOpen]);
@@ -299,14 +309,14 @@ export default function NavSidebar({
   // Handle escape key
   useEffect(() => {
     if (!isMobile || !mobileOpen) return;
-    
+
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setMobileOpen(false);
         navLog('Closed mobile drawer (escape key)');
       }
     };
-    
+
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isMobile, mobileOpen]);
@@ -390,7 +400,11 @@ export default function NavSidebar({
           backgroundColor: bgColor,
           boxShadow: getThemeShadow(theme, 'md'),
           transition: 'width 0.3s ease, transform 0.3s ease',
-          transform: isMobile ? (mobileOpen ? 'translateX(0)' : 'translateX(-100%)') : 'translateX(0)',
+          transform: isMobile
+            ? mobileOpen
+              ? 'translateX(0)'
+              : 'translateX(-100%)'
+            : 'translateX(0)',
           zIndex: isMobile ? 1200 : 1200,
           display: 'flex',
           flexDirection: 'column',
@@ -450,7 +464,11 @@ export default function NavSidebar({
             left: 16,
             zIndex: 1150,
             background: theme.colors.primary,
-            color: getBetterTextColor(theme.colors.text, theme.colors.textSecondary, theme.colors.primary),
+            color: getBetterTextColor(
+              theme.colors.text,
+              theme.colors.textSecondary,
+              theme.colors.primary
+            ),
             border: 'none',
             borderRadius: '50%',
             width: 56,
