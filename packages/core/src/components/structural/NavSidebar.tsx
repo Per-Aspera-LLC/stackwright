@@ -363,10 +363,10 @@ export default function NavSidebar({
         role="navigation"
         aria-label="Main navigation"
         style={{
-          position: isMobile ? 'fixed' : 'sticky',
+          position: 'sticky',
           top: 0,
           left: 0,
-          height: isMobile ? '100vh' : 'calc(100vh - 64px)', // Account for app bar
+          height: '100vh',
           width: isMobile ? 280 : effectiveWidth,
           backgroundColor: bgColor,
           boxShadow: getThemeShadow(theme, 'md'),
@@ -429,7 +429,7 @@ export default function NavSidebar({
             position: 'fixed',
             bottom: 16,
             left: 16,
-            zIndex: 1000,
+            zIndex: 1150,
             background: theme.colors.primary,
             color: getBetterTextColor(theme.colors.text, theme.colors.textSecondary, theme.colors.primary),
             border: 'none',
