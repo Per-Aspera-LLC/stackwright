@@ -151,7 +151,7 @@ export const Carousel = (carouselContent: CarouselContent) => {
     [scrollAndButtonsEnabled, prev, manualNext]
   );
 
-  const background = carouselContent.background || safeTheme.colors.primary;
+  const background = carouselContent.background || safeTheme.colors.surface;
 
   return (
     <div

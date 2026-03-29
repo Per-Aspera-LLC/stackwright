@@ -3,6 +3,7 @@ import { TestimonialGridContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
+import { getThemeShadow } from '../../utils/shadowUtils';
 import { Media } from '../media/Media';
 
 export function TestimonialGrid({
@@ -52,7 +53,7 @@ export function TestimonialGrid({
               backgroundColor: theme.colors.surface,
               borderRadius: '8px',
               padding: theme.spacing.lg,
-              boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+              boxShadow: getThemeShadow(theme, 'md'),
               display: 'flex',
               flexDirection: 'column',
             }}
@@ -70,7 +71,7 @@ export function TestimonialGrid({
             </p>
             <div
               style={{
-                borderTop: `1px solid ${theme.colors.secondary || '#e5e7eb'}`,
+                borderTop: `1px solid ${theme.colors.secondary}`,
                 marginTop: theme.spacing.md,
                 paddingTop: theme.spacing.md,
                 display: 'flex',

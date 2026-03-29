@@ -3,6 +3,7 @@ import { PricingTableContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
+import { getThemeShadow } from '../../utils/shadowUtils';
 
 export function PricingTable({ heading, plans, background }: PricingTableContent) {
   const theme = useSafeTheme();
@@ -44,7 +45,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
           const isHighlighted = plan.highlighted === true;
           const borderColor = isHighlighted
             ? theme.colors.primary
-            : theme.colors.secondary || '#e5e7eb';
+            : theme.colors.secondary;
 
           return (
             <div
@@ -60,8 +61,8 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
                 flexDirection: 'column',
                 position: 'relative',
                 boxShadow: isHighlighted
-                  ? '0 4px 12px rgba(0,0,0,0.15)'
-                  : '0 1px 3px rgba(0,0,0,0.08)',
+                  ? getThemeShadow(theme, 'lg')
+                  : getThemeShadow(theme, 'sm'),
               }}
             >
               {isHighlighted && (

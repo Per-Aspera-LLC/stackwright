@@ -1,6 +1,7 @@
 import React from 'react';
 import { TimelineContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { getThemeShadow } from '../../utils/shadowUtils';
 
 export function Timeline(content: TimelineContent) {
   const theme = useSafeTheme();
@@ -35,7 +36,7 @@ export function Timeline(content: TimelineContent) {
             top: 0,
             bottom: 0,
             width: '2px',
-            backgroundColor: theme.colors.secondary || '#d1d5db',
+            backgroundColor: theme.colors.secondary,
           }}
         />
 
@@ -56,10 +57,10 @@ export function Timeline(content: TimelineContent) {
                 left: theme.spacing.lg,
                 width: '16px',
                 height: '16px',
-                backgroundColor: theme.colors.primary || '#d97706',
+                backgroundColor: theme.colors.primary,
                 borderRadius: '50%',
                 border: `4px solid ${theme.colors.surface}`,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+                boxShadow: getThemeShadow(theme, 'md'),
               }}
             />
 
@@ -70,12 +71,12 @@ export function Timeline(content: TimelineContent) {
                   backgroundColor: theme.colors.surface,
                   padding: theme.spacing.lg,
                   borderRadius: '8px',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.12)',
+                  boxShadow: getThemeShadow(theme, 'md'),
                 }}
               >
                 <h4
                   style={{
-                    color: theme.colors.primary || '#d97706',
+                    color: theme.colors.primary,
                     fontWeight: 'bold',
                     marginBottom: theme.spacing.xs,
                     marginTop: 0,
@@ -83,7 +84,7 @@ export function Timeline(content: TimelineContent) {
                 >
                   {item.year}
                 </h4>
-                <p style={{ color: theme.colors.text || '#374151', margin: 0 }}>{item.event}</p>
+                <p style={{ color: theme.colors.text, margin: 0 }}>{item.event}</p>
               </div>
             </div>
           </div>
