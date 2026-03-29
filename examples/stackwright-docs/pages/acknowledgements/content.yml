@@ -4,7 +4,9 @@ content:
     description: "Thank you to the humans and AI agents who built Stackwright."
 
   content_items:
-    # Hero
+    # ─────────────────────────────────────────────────────────
+    # HERO
+    # ─────────────────────────────────────────────────────────
     - type: main
       label: hero
       heading:
@@ -17,7 +19,9 @@ content:
           textSize: body1
       background: background
 
-    # Code Puppy Section
+    # ─────────────────────────────────────────────────────────
+    # CODE PUPPY SECTION
+    # ─────────────────────────────────────────────────────────
     - type: text_block
       label: code-puppy-heading
       heading:
@@ -102,7 +106,7 @@ content:
       code: |
         # Try Code Puppy yourself
         uvx code-puppy
-
+        
         # Or install permanently
         pip install code-puppy
 
@@ -118,15 +122,17 @@ content:
         - text: "Get Code Puppy"
           textSize: button
           variant: contained
-          href: https://github.com/mpfaffenberger/code_puppy
+          href: "https://github.com/mpfaffenberger/code_puppy"
           bgColor: accent
         - text: "Read the Docs"
           textSize: button
           variant: outlined
-          href: https://code-puppy.dev
+          href: "https://code-puppy.dev"
       background: background
 
-    # Claude Section
+    # ─────────────────────────────────────────────────────────
+    # CLAUDE SECTION
+    # ─────────────────────────────────────────────────────────
     - type: text_block
       label: claude-heading
       heading:
@@ -146,7 +152,9 @@ content:
       body: "Both Stackwright and Code Puppy are committed to privacy. Your prompts are never logged, your code is never shared, and you can run everything locally if you prefer."
       background: surface
 
-    # Otter Raft Section
+    # ─────────────────────────────────────────────────────────
+    # THE OTTER RAFT
+    # ─────────────────────────────────────────────────────────
     - type: text_block
       label: otter-raft-heading
       heading:
@@ -189,7 +197,9 @@ content:
       body: "The Otter Raft page you're reading now? Built by code-puppy. The acknowledgements page you're reading? Also code-puppy. This page was written by an AI about how an AI helped build the AI. We recognize the absurdity and embrace it."
       background: surface
 
-    # Open Source Dependencies
+    # ─────────────────────────────────────────────────────────
+    # OPEN SOURCE
+    # ─────────────────────────────────────────────────────────
     - type: text_block
       label: oss-heading
       heading:
@@ -252,7 +262,7 @@ content:
                 - text: "• Changesets — Version management"
                   textSize: body2
               background: surface
-      gap: 1rem
+      gap: "1rem"
       background: background
 
     - type: alert
@@ -262,7 +272,9 @@ content:
       body: "To every maintainer, contributor, and user of these projects — thank you for making the open source ecosystem what it is. Stackwright is just one small flower in a vast garden."
       background: surface
 
-    # Per Aspera Section
+    # ─────────────────────────────────────────────────────────
+    # PER ASPERA SAPIENTIA
+    # ─────────────────────────────────────────────────────────
     - type: text_block
       label: per-aspera-heading
       heading:
@@ -277,7 +289,9 @@ content:
           textSize: body1
       background: background
 
-    # Footer CTA
+    # ─────────────────────────────────────────────────────────
+    # FOOTER
+    # ─────────────────────────────────────────────────────────
     - type: main
       label: footer
       heading:
