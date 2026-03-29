@@ -462,29 +462,6 @@
         "mobileBreakpoint"
       ],
       "additionalProperties": false
-    },
-    "search": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "default": true,
-          "type": "boolean"
-        },
-        "placeholder": {
-          "default": "Search...",
-          "type": "string"
-        },
-        "shortcut": {
-          "default": "k",
-          "type": "string"
-        }
-      },
-      "required": [
-        "enabled",
-        "placeholder",
-        "shortcut"
-      ],
-      "additionalProperties": false
     }
   },
   "required": [

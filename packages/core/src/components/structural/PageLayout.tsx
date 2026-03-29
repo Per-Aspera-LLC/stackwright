@@ -4,7 +4,6 @@ import { PageContent } from '@stackwright/types';
 import { SiteConfig } from '@stackwright/types';
 import BottomAppBar from './BottomAppBar';
 import NavSidebar from './NavSidebar';
-import { SearchModal } from './SearchModal';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { defaultSiteConfig } from '../../config/siteDefaults';
