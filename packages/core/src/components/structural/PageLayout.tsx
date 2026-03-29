@@ -4,6 +4,7 @@ import { PageContent } from '@stackwright/types';
 import { SiteConfig } from '@stackwright/types';
 import BottomAppBar from './BottomAppBar';
 import NavSidebar from './NavSidebar';
+import { SearchModal } from './SearchModal';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { defaultSiteConfig } from '../../config/siteDefaults';
@@ -70,7 +71,10 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
       <BottomAppBar footer={config.footer} />
 
       {/* Search Modal - Cmd+K to open */}
-      <SearchModal placeholder={config.search?.placeholder} shortcut={config.search?.shortcut} />
+      <SearchModal
+        placeholder={config.search?.placeholder}
+        shortcut={config.search?.shortcut}
+      />
     </div>
   );
 }
