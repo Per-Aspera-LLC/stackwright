@@ -22,6 +22,11 @@ navigation:
   - label: "🧪 Showcase"
     href: "/showcase"
 
+# Search configuration (Cmd+K to open)
+search:
+  enabled: true
+  placeholder: "Search docs... ⌘K"
+
 # Sidebar navigation (persistent left sidebar)
 sidebar:
   navigation:
