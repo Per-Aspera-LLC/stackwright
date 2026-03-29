@@ -3,7 +3,7 @@
 /**
  * Convert hex color to RGB values
  */
-function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   return result
     ? {
@@ -15,9 +15,9 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 }
 
 /**
- * Calculate relative luminance of a color
+ * Calculate relative luminance of a color (sRGB linearization per WCAG 2.x)
  */
-function getLuminance(r: number, g: number, b: number): number {
+export function getLuminance(r: number, g: number, b: number): number {
   const [rs, gs, bs] = [r, g, b].map((c) => {
     c = c / 255;
     return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
@@ -85,6 +85,16 @@ export function getHoverColor(color: string, factor: number = 0.15): string {
   const newB = adjust(rgb.b);
 
   return `#${newR.toString(16).padStart(2, '0')}${newG.toString(16).padStart(2, '0')}${newB.toString(16).padStart(2, '0')}`;
+}
+
+/**
+ * Convert hex color to rgba string with the given alpha.
+ */
+export function hexToRgba(hex: string, alpha: number): string {
+  const rgb = hexToRgb(hex);
+  if (!rgb) return hex;
+  const a = Math.max(0, Math.min(1, alpha));
+  return `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`;
 }
 
 /**

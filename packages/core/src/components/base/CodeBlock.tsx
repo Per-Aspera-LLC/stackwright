@@ -38,7 +38,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
     >
       <div
         style={{
-          backgroundColor: '#f4f4f5',
+          backgroundColor: theme.colors.surface,
           borderRadius: '4px',
           overflow: 'auto',
           border: `1px solid ${theme.colors.textSecondary}22`,

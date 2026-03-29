@@ -3,6 +3,7 @@ import { FaqContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
+import { getThemeShadow } from '../../utils/shadowUtils';
 
 export function Faq({ heading, items, background }: FaqContent) {
   const theme = useSafeTheme();
@@ -46,7 +47,7 @@ export function Faq({ heading, items, background }: FaqContent) {
               backgroundColor: theme.colors.surface,
               borderRadius: '8px',
               overflow: 'hidden',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+              boxShadow: getThemeShadow(theme, 'sm'),
             }}
           >
             <summary

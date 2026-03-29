@@ -1,0 +1,362 @@
+content:
+  meta:
+    title: "Component Showcase | Stackwright"
+    description: "Every Stackwright content type rendered on the dark-mode-first docs theme."
+  content_items:
+    # 1. Main (hero-style, graphic right)
+    - type: main
+      label: main-demo
+      heading:
+        text: "Component Showcase"
+        textSize: h1
+      textBlocks:
+        - text: "Every content type in the Stackwright schema, rendered on the docs theme. Used for visual regression and accessibility testing."
+          textSize: body1
+      buttons:
+        - text: "View Source"
+          textSize: button
+          variant: outlined
+          href: https://github.com/Per-Aspera-LLC/stackwright
+      background: background
+      color: text
+
+    # 2. Carousel
+    - type: carousel
+      label: carousel-demo
+      heading: "Carousel Demo"
+      autoPlay: true
+      autoPlaySpeed: 5000
+      infinite: true
+      items:
+        - title: "Slide One"
+          text: "YAML is the syntax. The schema is the safety net."
+          media:
+            type: icon
+            src: FileCode
+            height: 120
+            label: slide-1-icon
+        - title: "Slide Two"
+          text: "AI agents write validated content through conversation."
+          media:
+            type: icon
+            src: Bot
+            height: 120
+            label: slide-2-icon
+        - title: "Slide Three"
+          text: "The output is a Next.js app you own. No lock-in."
+          media:
+            type: icon
+            src: Rocket
+            height: 120
+            label: slide-3-icon
+      background: surface
+
+    # 3. Timeline
+    - type: timeline
+      label: timeline-demo
+      heading:
+        text: "Timeline Demo"
+        textSize: h2
+      items:
+        - year: "Q1 2025"
+          event: "Project inception — core schema and YAML pipeline"
+        - year: "Q2 2025"
+          event: "Theme system, dark mode, and 13 content types"
+        - year: "Q3 2025"
+          event: "Otter Raft AI agents and MCP integration"
+        - year: "Q4 2025"
+          event: "launch-stackwright CLI and public release"
+      background: background
+
+    # 4. Icon Grid
+    - type: icon_grid
+      label: icon-grid-demo
+      heading:
+        text: "Icon Grid Demo"
+        textSize: h2
+      icons:
+        - type: icon
+          src: Code2
+          label: "TypeScript"
+          size: 48
+        - type: icon
+          src: Palette
+          label: "Themes"
+          size: 48
+        - type: icon
+          src: Shield
+          label: "Zod Validation"
+          size: 48
+        - type: icon
+          src: Zap
+          label: "Fast Builds"
+          size: 48
+        - type: icon
+          src: Globe
+          label: "Next.js"
+          size: 48
+        - type: icon
+          src: Plug
+          label: "MCP Server"
+          size: 48
+      background: surface
+
+    # 5. Tabbed Content
+    - type: tabbed_content
+      label: tabbed-content-demo
+      heading:
+        text: "Tabbed Content Demo"
+        textSize: h2
+      tabs:
+        - type: text_block
+          label: "Overview"
+          textBlocks:
+            - text: "Stackwright uses YAML as the authoring format. Content is validated by Zod schemas and rendered as React components."
+              textSize: body1
+        - type: text_block
+          label: "Architecture"
+          textBlocks:
+            - text: "YAML → Prebuild Pipeline → JSON → React Components → Next.js Pages. The pipeline runs at build time and during dev."
+              textSize: body1
+        - type: text_block
+          label: "Deployment"
+          textBlocks:
+            - text: "Deploy to Vercel, Netlify, or any Node.js host. The output is a standard Next.js app with no special runtime requirements."
+              textSize: body1
+      background: background
+
+    # 6. Code Block
+    - type: code_block
+      label: code-block-yaml-demo
+      language: yaml
+      lineNumbers: true
+      code: |
+        content:
+          content_items:
+            - type: main
+              label: hero
+              heading:
+                text: "Hello World"
+                textSize: h1
+              textBlocks:
+                - text: "My first Stackwright page."
+                  textSize: body1
+      background: surface
+
+    # 7. Feature List
+    - type: feature_list
+      label: feature-list-demo
+      heading:
+        text: "Feature List Demo"
+        textSize: h2
+      columns: 3
+      items:
+        - icon:
+            type: icon
+            src: Sparkles
+            height: 48
+            label: feat-ai-icon
+          heading: "AI-Native"
+          description: "Agents write schema-validated YAML through conversation."
+        - icon:
+            type: icon
+            src: ShieldCheck
+            height: 48
+            label: feat-safe-icon
+          heading: "Safe by Construction"
+          description: "Zod schemas enforce correctness at build time."
+        - icon:
+            type: icon
+            src: Zap
+            height: 48
+            label: feat-fast-icon
+          heading: "Fast"
+          description: "API spec to working demo in hours."
+      background: background
+
+    # 8. Testimonial Grid
+    - type: testimonial_grid
+      label: testimonial-grid-demo
+      heading:
+        text: "Testimonial Grid Demo"
+        textSize: h2
+      columns: 3
+      items:
+        - quote: "Stackwright turned our hackathon into a shipping machine."
+          name: "Demo Author A"
+          role: "Developer"
+        - quote: "The Otter Raft built our entire site through conversation."
+          name: "Demo Author B"
+          role: "Product Manager"
+        - quote: "Dark mode that actually works. Every component respects the theme."
+          name: "Demo Author C"
+          role: "Designer"
+      background: surface
+
+    # 9. FAQ
+    - type: faq
+      label: faq-demo
+      heading:
+        text: "FAQ Demo"
+        textSize: h2
+      items:
+        - question: "What is Stackwright?"
+          answer: "A YAML-driven React application framework that enables rapid development of professional websites."
+        - question: "Do I need to know React?"
+          answer: "No. You write YAML, the framework handles rendering. But you can extend with custom React components."
+        - question: "How does dark mode work?"
+          answer: "Define darkColors in your theme YAML. ThemeProvider resolves the correct palette based on user preference."
+        - question: "Can AI agents build my site?"
+          answer: "Yes. The Otter Raft includes Brand, Theme, and Page agents that build sites through conversation."
+      background: background
+
+    # 10. Pricing Table
+    - type: pricing_table
+      label: pricing-table-demo
+      heading:
+        text: "Pricing Table Demo"
+        textSize: h2
+      plans:
+        - name: "Open Source"
+          price: "$0"
+          description: "Free forever"
+          features:
+            - "All 18 content types"
+            - "Dark mode support"
+            - "CLI tools"
+          cta_text: "Get Started"
+          cta_href: "/getting-started"
+        - name: "Pro"
+          price: "$49/mo"
+          description: "For teams"
+          highlighted: true
+          badge_text: "Popular"
+          features:
+            - "Everything in Open Source"
+            - "Priority support"
+            - "Custom components"
+            - "Team collaboration"
+          cta_text: "Coming Soon"
+          cta_href: "#"
+        - name: "Enterprise"
+          price: "Custom"
+          description: "For organizations"
+          features:
+            - "Everything in Pro"
+            - "Dedicated onboarding"
+            - "SLA guarantees"
+            - "Custom integrations"
+          cta_text: "Contact Us"
+          cta_href: "#"
+      background: surface
+
+    # 11. Alerts (all variants)
+    - type: alert
+      label: alert-info-demo
+      variant: info
+      title: "Info Alert"
+      body: "This is an informational alert. Used for general guidance and tips."
+      background: background
+
+    - type: alert
+      label: alert-warning-demo
+      variant: warning
+      title: "Warning Alert"
+      body: "This is a warning alert. Used for potential issues."
+      background: background
+
+    - type: alert
+      label: alert-success-demo
+      variant: success
+      title: "Success Alert"
+      body: "This is a success alert. Used for confirmations."
+      background: background
+
+    - type: alert
+      label: alert-danger-demo
+      variant: danger
+      title: "Danger Alert"
+      body: "This is a danger alert. Used for critical errors."
+      background: background
+
+    - type: alert
+      label: alert-note-demo
+      variant: note
+      title: "Note Alert"
+      body: "This is a note. Used for supplementary information."
+      background: background
+
+    - type: alert
+      label: alert-tip-demo
+      variant: tip
+      title: "Tip Alert"
+      body: "This is a tip. Used for best practices and recommendations."
+      background: background
+
+    # 12. Contact Form Stub
+    - type: contact_form_stub
+      label: contact-form-stub-demo
+      heading:
+        text: "Contact Form Demo"
+        textSize: h2
+      description: "Get in touch with the Stackwright team."
+      email: "hello@stackwright.dev"
+      email_subject: "Stackwright Inquiry"
+      phone: "+1 (555) 123-4567"
+      address: "123 Framework Lane, Open Source City"
+      button_text: "Send Email"
+      background: surface
+
+    # 13. Text Block (with buttons)
+    - type: text_block
+      label: text-block-demo
+      heading:
+        text: "Text Block Demo"
+        textSize: h2
+      textBlocks:
+        - text: "Text blocks support headings, multiple text paragraphs, and action buttons."
+          textSize: body1
+        - text: "Use them for content sections that don't need media."
+          textSize: body2
+      buttons:
+        - text: "Primary Action"
+          textSize: button
+          variant: contained
+          href: "#"
+          bgColor: primary
+        - text: "Secondary Action"
+          textSize: button
+          variant: outlined
+          href: "#"
+      background: background
+
+    # 14. Grid (2-column)
+    - type: grid
+      label: grid-demo
+      heading:
+        text: "Grid Demo"
+        textSize: h2
+      gap: "2rem"
+      stackBelow: 768
+      columns:
+        - width: 6
+          content_items:
+            - type: text_block
+              label: grid-left
+              heading:
+                text: "Left Column"
+                textSize: h3
+              textBlocks:
+                - text: "Grid columns can contain any content type. This is a text block in the left column."
+                  textSize: body1
+        - width: 6
+          content_items:
+            - type: text_block
+              label: grid-right
+              heading:
+                text: "Right Column"
+                textSize: h3
+              textBlocks:
+                - text: "This is a text block in the right column. Grid layout stacks on mobile."
+                  textSize: body1
+      background: surface

@@ -1,4 +1,5 @@
 import { test, expect, type Page, type Locator } from '@playwright/test';
+import { SHOWCASE_PAGE } from '../fixtures';
 
 /**
  * Stackwright E2E Content Interaction Tests 🎮
@@ -10,8 +11,6 @@ import { test, expect, type Page, type Locator } from '@playwright/test';
  * Real users don't just look at your site. They poke it, prod it, and
  * expect stuff to work. Let's make sure it does. 🚀
  */
-
-const SHOWCASE_PAGE = '/showcase'; // Where all content types are demonstrated
 
 /**
  * Helper: Wait for animations/transitions to complete.

@@ -17,7 +17,27 @@
 import { defineConfig } from '@playwright/test';
 import path from 'path';
 
-const exampleAppDir = path.resolve(__dirname, '../../examples/hellostackwrightnext');
+/**
+ * Which example site to test against.
+ * Set TEST_SITE=hellostackwrightnext to test the original example.
+ */
+const TEST_SITE = process.env.TEST_SITE || 'stackwright-docs';
+
+const SITE_CONFIG: Record<string, { filter: string; port: number }> = {
+  'stackwright-docs': {
+    filter: 'stackwright-docs',
+    port: 3000,
+  },
+  'hellostackwrightnext': {
+    filter: 'stackwright-example-app',
+    port: 3000,
+  },
+};
+
+const site = SITE_CONFIG[TEST_SITE];
+if (!site) {
+  throw new Error(`Unknown TEST_SITE="${TEST_SITE}". Valid: ${Object.keys(SITE_CONFIG).join(', ')}`);
+}
 
 export default defineConfig({
   testDir: './tests',
@@ -29,9 +49,9 @@ export default defineConfig({
       maxDiffPixelRatio: 0.01,
     },
   },
-  snapshotPathTemplate: '{testDir}/__screenshots__/{testFilePath}/{arg}{ext}',
+  snapshotPathTemplate: `{testDir}/__screenshots__/${TEST_SITE}/{testFilePath}/{arg}{ext}`,
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: `http://localhost:${site.port}`,
   },
   projects: [
     // Desktop browsers
@@ -86,9 +106,9 @@ export default defineConfig({
   webServer: process.env.PERF_NO_SERVER
     ? undefined
     : {
-        command: `pnpm --filter stackwright-example-app exec stackwright-prebuild && pnpm --filter stackwright-example-app exec next build && pnpm --filter stackwright-example-app exec next start`,
+        command: `pnpm --filter ${site.filter} exec stackwright-prebuild && pnpm --filter ${site.filter} exec next build && pnpm --filter ${site.filter} exec next start`,
         cwd: path.resolve(__dirname, '../..'),
-        port: 3000,
+        port: site.port,
         timeout: 180_000,
         reuseExistingServer: !process.env.CI,
       },
