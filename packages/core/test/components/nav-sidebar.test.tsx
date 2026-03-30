@@ -412,7 +412,7 @@ describe('NavSidebar', () => {
       const TestDefaultLayout = () => {
         return (
           <SiteConfigProvider value={mockSiteConfig}>
-            <DefaultPageLayout content_items={[]} />
+            <DefaultPageLayout {...{ content: { content_items: [] } }} />
           </SiteConfigProvider>
         );
       };
@@ -438,7 +438,7 @@ describe('NavSidebar', () => {
       const TestDefaultLayout = () => {
         return (
           <SiteConfigProvider value={mockSiteConfig}>
-            <DefaultPageLayout content_items={[]} />
+            <DefaultPageLayout {...{ content: { content_items: [] } }} />
           </SiteConfigProvider>
         );
       };
