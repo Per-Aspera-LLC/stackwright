@@ -9,7 +9,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     const dir = path.join(process.cwd(), "public", "stackwright-content");
     const slugs = fs
         .readdirSync(dir)
-        .filter(f => f.endsWith(".json") && f !== "_site.json" && f !== "_root.json")
+        .filter(f => f.endsWith(".json") && f !== "_site.json" && f !== "_root.json" && f !== "search-index.json" && f !== "_font-links.json")
         .map(f => f.replace(/\.json$/, ""));
     return {
         paths: slugs.map(slug => ({ params: { slug } })),
@@ -26,7 +26,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     // Validate slug against known content files to prevent path traversal
     const knownSlugs = fs
         .readdirSync(dir)
-        .filter(f => f.endsWith(".json") && f !== "_site.json" && f !== "_root.json")
+        .filter(f => f.endsWith(".json") && f !== "_site.json" && f !== "_root.json" && f !== "search-index.json" && f !== "_font-links.json")
         .map(f => f.replace(/\.json$/, ""));
     const slug = knownSlugs.includes(rawSlug) ? rawSlug : null;
 
