@@ -4,7 +4,6 @@ content:
     description: "Thank you to the humans and AI agents who built Stackwright."
 
   content_items:
-    # Hero
     # ─────────────────────────────────────────────────────────
     # HERO
     # ─────────────────────────────────────────────────────────
@@ -20,7 +19,7 @@ content:
           textSize: body1
       background: background
 
-    # Code Puppy Section
+
     # ─────────────────────────────────────────────────────────
     # CODE PUPPY SECTION
     # ─────────────────────────────────────────────────────────
@@ -134,25 +133,6 @@ content:
           href: https://code-puppy.dev
       background: background
 
-    # Claude Section
-          href: "https://code-puppy.dev"
-      background: background
-
-    # ─────────────────────────────────────────────────────────
-    # CLAUDE SECTION
-    # ─────────────────────────────────────────────────────────
-    - type: text_block
-      label: claude-heading
-      heading:
-        text: "Claude (Anthropic) 🤖"
-        textSize: h2
-      textBlocks:
-        - text: "Code Puppy is powered by Claude. The reasoning, generation, and architectural decisions that make Stackwright work — all catalyzed by Anthropic's model."
-          textSize: body1
-        - text: "We chose Claude for its ability to understand complex codebases, maintain context across long conversations, and produce production-ready code — not rough drafts."
-          textSize: body1
-      background: background
-
     - type: alert
       label: anthropic-note
       variant: info
@@ -160,7 +140,7 @@ content:
       body: "Both Stackwright and Code Puppy are committed to privacy. Your prompts are never logged, your code is never shared, and you can run everything locally if you prefer."
       background: surface
 
-    # Otter Raft Section
+
     # ─────────────────────────────────────────────────────────
     # THE OTTER RAFT
     # ─────────────────────────────────────────────────────────
@@ -206,7 +186,6 @@ content:
       body: "The Otter Raft page you're reading now? Built by code-puppy. The acknowledgements page you're reading? Also code-puppy. This page was written by an AI about how an AI helped build the AI. We recognize the absurdity and embrace it."
       background: surface
 
-    # Open Source Dependencies
     # ─────────────────────────────────────────────────────────
     # OPEN SOURCE
     # ─────────────────────────────────────────────────────────
@@ -283,7 +262,7 @@ content:
       body: "To every maintainer, contributor, and user of these projects — thank you for making the open source ecosystem what it is. Stackwright is just one small flower in a vast garden."
       background: surface
 
-    # Per Aspera Section
+
     # ─────────────────────────────────────────────────────────
     # PER ASPERA SAPIENTIA
     # ─────────────────────────────────────────────────────────
@@ -301,9 +280,8 @@ content:
           textSize: body1
       background: background
 
-    # Footer CTA
     # ─────────────────────────────────────────────────────────
-    # FOOTER
+    # FOOTER CTA
     # ─────────────────────────────────────────────────────────
     - type: main
       label: footer
