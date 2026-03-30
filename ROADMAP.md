@@ -47,7 +47,7 @@ This agent is the proof point for the platform's thesis: that non-technical peop
 
 ## Framework Direction
 
-Stackwright ships 15 content types (carousel, main, tabbed_content, media, timeline, icon_grid, code_block, feature_list, testimonial_grid, faq, pricing_table, alert, contact_form_stub, grid, collection_list). Dark mode, SEO metadata, cookie persistence, and responsive design are first-class.
+Stackwright ships 18 content types (carousel, main, tabbed_content, media, video, timeline, icon_grid, code_block, feature_list, testimonial_grid, faq, pricing_table, alert, contact_form_stub, grid, collection_list, text_block, map). Dark mode, SEO metadata, cookie persistence, and responsive design are first-class.
 
 **Next framework priorities** are tracked as GitHub Issues. Themes from PHILOSOPHY.md that shape prioritization:
 

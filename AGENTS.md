@@ -150,3 +150,51 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md#troubleshooting) for common issues and d
   - [Zod Documentation](https://zod.dev/)
 - **Monorepo Management**
   - [PNPM Workspaces](https://pnpm.io/workspaces)
+### Page-Level Sidebar Override (`navSidebar`)
+
+Pages can override the site-wide sidebar defined in `stackwright.yml` using the `navSidebar` field in their `content.yml`.
+
+**Resolution order (highest wins):**
+1. Page-level `navSidebar` in `content.yml` (explicit override)
+2. Site-level `sidebar` in `stackwright.yml` (default from Theme Otter)
+3. No sidebar
+
+**Use cases:**
+- Dashboard pages: `navSidebar: null` to maximize content width
+- Documentation chapters: different sidebar with section-specific navigation
+- Landing pages: inherit site sidebar from theme
+
+**YAML examples:**
+
+```yaml
+# Hide sidebar on this page (full-width content)
+content:
+  navSidebar: null
+  content_items:
+    - type: main
+      label: "dashboard"
+      heading:
+        text: "Live Dashboard"
+        textSize: "h1"
+
+# Override sidebar navigation for this page
+content:
+  navSidebar:
+    navigation:
+      - label: "Chapter 1"
+        href: "/docs/chapter-1"
+      - label: "Chapter 2"
+        href: "/docs/chapter-2"
+    collapsed: false
+  content_items:
+    - type: text_block
+      label: "chapter-2-content"
+      textBlocks:
+        - text: "Chapter 2 content here..."
+          textSize: "body1"
+```
+
+**Otter responsibilities:**
+- **Theme Otter** sets the site-wide sidebar defaults in `stackwright.yml`
+- **Page Otter** can add `navSidebar` overrides in any page's `content.yml`
+- If Theme Otter chose a sidebar theme, Page Otter inherits it by default (no need to repeat)
