@@ -130,7 +130,7 @@ jobs:
 
       - name: Fail if AGENTS.md is out of sync with schemas
         run: |
-          git diff --exit-code AGENTS.md examples/hellostackwrightnext/AGENTS.md || \
+          git diff --exit-code AGENTS.md || \
           (echo "AGENTS.md is out of sync. Run 'pnpm stackwright -- generate-agent-docs' and commit the result." && exit 1)
 
   e2e:
