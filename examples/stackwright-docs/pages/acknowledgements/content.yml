@@ -1,0 +1,299 @@
+content:
+  meta:
+    title: "Acknowledgements | Stackwright"
+    description: "Thank you to the humans and AI agents who built Stackwright."
+
+  content_items:
+    # Hero
+    - type: main
+      label: hero
+      heading:
+        text: "Acknowledgements 🙏"
+        textSize: h1
+      textBlocks:
+        - text: "Stackwright is built by humans, powered by AI, and shaped by open source."
+          textSize: h3
+        - text: "This page thanks the contributors — silicon and carbon alike — who made it possible."
+          textSize: body1
+      background: background
+
+    # Code Puppy Section
+    - type: text_block
+      label: code-puppy-heading
+      heading:
+        text: "Code Puppy 🐶"
+        textSize: h2
+      textBlocks:
+        - text: "The AI coding agent that built Stackwright. Every package, every component, every test — code-puppy wrote the code that writes your code."
+          textSize: body1
+      background: background
+
+    - type: alert
+      label: code-puppy-origin
+      variant: note
+      title: "A Sassy Little Puppy"
+      body: "Code Puppy was created by Marcus Paffenberger in response to AI coding tools removing access to models and raising prices. It's privacy-first, sarcastic, and thoroughly unimpressed with enterprise software. It coded Stackwright out of spite for expensive IDEs."
+      background: surface
+
+    - type: feature_list
+      label: code-puppy-achievements
+      heading:
+        text: "What Code Puppy Built"
+        textSize: h3
+      items:
+        - icon:
+            type: icon
+            src: Package
+            height: 40
+            label: packages-icon
+          heading: "10 Packages"
+          description: "@stackwright/core, types, nextjs, themes, build-scripts, cli, mcp, icons, ui-shadcn, and build-scripts. Every package from scratch."
+        - icon:
+            type: icon
+            src: Layers
+            height: 40
+            label: components-icon
+          heading: "15 Content Types"
+          description: "Main, carousel, timeline, feature list, testimonial grid, FAQ, pricing table, video, map, and more. Each with full theme integration."
+        - icon:
+            type: icon
+            src: Moon
+            height: 40
+            label: darkmode-icon
+          heading: "Dark Mode"
+          description: "Cookie-based preference persistence, ColorModeScript, system preference detection, no flash-of-wrong-theme."
+        - icon:
+            type: icon
+            src: Smartphone
+            height: 40
+            label: responsive-icon
+          heading: "Responsive Design"
+          description: "Mobile-first components that work on every screen size. NavSidebar, BottomAppBar, FAB button, hamburger menus."
+        - icon:
+            type: icon
+            src: Bot
+            height: 40
+            label: mcp-icon
+          heading: "MCP Server"
+          description: "Model Context Protocol server for AI agents. Enables the Otter Raft and external AI tool integration."
+        - icon:
+            type: icon
+            src: FlaskConical
+            height: 40
+            label: tests-icon
+          heading: "Tests & Docs"
+          description: "Vitest unit tests, QA reviews, the documentation you're reading now, and agent coordination examples."
+      columns: 2
+      background: surface
+
+    - type: text_block
+      label: code-puppy-quote
+      textBlocks:
+        - text: "\"Who needs an expensive IDE when you have 1024 angry puppies?\""
+          textSize: subtitle1
+        - text: "— Code Puppy's README"
+          textSize: caption
+      background: background
+
+    - type: code_block
+      label: code-puppy-install
+      language: bash
+      lineNumbers: false
+      code: |
+        # Try Code Puppy yourself
+        uvx code-puppy
+
+        # Or install permanently
+        pip install code-puppy
+
+    - type: main
+      label: code-puppy-cta
+      heading:
+        text: "Build your next project with Code Puppy"
+        textSize: h4
+      textBlocks:
+        - text: "Ready to build something amazing? Code Puppy is waiting."
+          textSize: body1
+      buttons:
+        - text: "Get Code Puppy"
+          textSize: button
+          variant: contained
+          href: https://github.com/mpfaffenberger/code_puppy
+          bgColor: accent
+        - text: "Read the Docs"
+          textSize: button
+          variant: outlined
+          href: https://code-puppy.dev
+      background: background
+
+    # Claude Section
+    - type: text_block
+      label: claude-heading
+      heading:
+        text: "Claude (Anthropic) 🤖"
+        textSize: h2
+      textBlocks:
+        - text: "Code Puppy is powered by Claude. The reasoning, generation, and architectural decisions that make Stackwright work — all catalyzed by Anthropic's model."
+          textSize: body1
+        - text: "We chose Claude for its ability to understand complex codebases, maintain context across long conversations, and produce production-ready code — not rough drafts."
+          textSize: body1
+      background: background
+
+    - type: alert
+      label: anthropic-note
+      variant: info
+      title: "Privacy Matters"
+      body: "Both Stackwright and Code Puppy are committed to privacy. Your prompts are never logged, your code is never shared, and you can run everything locally if you prefer."
+      background: surface
+
+    # Otter Raft Section
+    - type: text_block
+      label: otter-raft-heading
+      heading:
+        text: "The Otter Raft 🦦"
+        textSize: h2
+      textBlocks:
+        - text: "The Otter Raft is a demonstration of code-puppy's agent system. Four specialized agents — Foreman, Brand, Theme, and Page — each built as a simple JSON configuration."
+          textSize: body1
+        - text: "Creating the Otter Raft was as simple as giving code-puppy instructions about what each otter should do, and a reference to the Stackwright repo. The agents figured out the rest."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: otter-config-example
+      language: json
+      lineNumbers: true
+      code: |
+        // Example: How easy it is to create an otter
+        {
+          "name": "brand-otter",
+          "display_name": "Brand Otter 🦦🎨",
+          "description": "Discovers your brand through conversation",
+          "system_prompt": [
+            "You are Brand Otter, a brand strategist.",
+            "Ask questions about voice, tone, and colors.",
+            "Produce a BRAND_BRIEF.md file."
+          ],
+          "tools": [
+            "list_files",
+            "read_file", 
+            "create_file",
+            "agent_share_your_reasoning"
+          ]
+        }
+
+    - type: alert
+      label: otter-meta
+      variant: tip
+      title: "Meta, But True"
+      body: "The Otter Raft page you're reading now? Built by code-puppy. The acknowledgements page you're reading? Also code-puppy. This page was written by an AI about how an AI helped build the AI. We recognize the absurdity and embrace it."
+      background: surface
+
+    # Open Source Dependencies
+    - type: text_block
+      label: oss-heading
+      heading:
+        text: "Open Source Dependencies"
+        textSize: h2
+      textBlocks:
+        - text: "Stackwright stands on the shoulders of giants:"
+          textSize: body1
+      background: background
+
+    - type: grid
+      label: oss-grid
+      columns:
+        - width: 33
+          content_items:
+            - type: text_block
+              label: frameworks
+              heading:
+                text: "Frameworks"
+                textSize: h4
+              textBlocks:
+                - text: "• React — UI components"
+                  textSize: body2
+                - text: "• Next.js — Full-stack React"
+                  textSize: body2
+                - text: "• Zod — Schema validation"
+                  textSize: body2
+                - text: "• TypeScript — Type safety"
+                  textSize: body2
+              background: surface
+        - width: 34
+          content_items:
+            - type: text_block
+              label: ui-libs
+              heading:
+                text: "UI Libraries"
+                textSize: h4
+              textBlocks:
+                - text: "• Radix UI — Headless primitives"
+                  textSize: body2
+                - text: "• Lucide — Icon library"
+                  textSize: body2
+                - text: "• Tailwind CSS — Utility styles (ui-shadcn)"
+                  textSize: body2
+              background: surface
+        - width: 33
+          content_items:
+            - type: text_block
+              label: tooling
+              heading:
+                text: "Tooling"
+                textSize: h4
+              textBlocks:
+                - text: "• pnpm — Monorepo package manager"
+                  textSize: body2
+                - text: "• tsup — Build tool"
+                  textSize: body2
+                - text: "• Vitest — Testing"
+                  textSize: body2
+                - text: "• Changesets — Version management"
+                  textSize: body2
+              background: surface
+      gap: 1rem
+      background: background
+
+    - type: alert
+      label: gratitude
+      variant: success
+      title: "Thank You"
+      body: "To every maintainer, contributor, and user of these projects — thank you for making the open source ecosystem what it is. Stackwright is just one small flower in a vast garden."
+      background: surface
+
+    # Per Aspera Section
+    - type: text_block
+      label: per-aspera-heading
+      heading:
+        text: "Per Aspera Sapientia"
+        textSize: h2
+      textBlocks:
+        - text: "\"Through hardships to wisdom.\" — The motto of Per Aspera LLC."
+          textSize: body1
+        - text: "Stackwright was built because the founder got tired of enterprise software that was expensive, opaque, and disrespectful of users. We built something that respects your time, your privacy, and your intelligence."
+          textSize: body1
+        - text: "The AI coding tools existed. We just made them work together. The hard part wasn't the code — it was the vision of what could be."
+          textSize: body1
+      background: background
+
+    # Footer CTA
+    - type: main
+      label: footer
+      heading:
+        text: "Thank you for reading"
+        textSize: h3
+      textBlocks:
+        - text: "Built with ❤️ by Per Aspera LLC. Powered by code-puppy. Made possible by open source."
+          textSize: body1
+      buttons:
+        - text: "Back to Home"
+          textSize: button
+          variant: contained
+          href: /
+          bgColor: accent
+        - text: "Get Started"
+          textSize: button
+          variant: outlined
+          href: /getting-started
+      background: background

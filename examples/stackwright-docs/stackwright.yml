@@ -13,12 +13,16 @@ navigation:
     href: "/"
   - label: "🚀 Getting Started"
     href: "/getting-started"
+  - label: "🏗️ Architecture"
+    href: "/architecture"
   - label: "📦 Content Types"
     href: "/content-types"
   - label: "⌨️ CLI"
     href: "/cli"
   - label: "🤖 Otter Raft"
     href: "/otter-raft"
+  - label: "🙏 Acknowledgements"
+    href: "/acknowledgements"
   - label: "🧪 Showcase"
     href: "/showcase"
 
@@ -33,6 +37,10 @@ footer:
       href: "/privacy-policy"
     - label: "Terms of Service"
       href: "/terms-of-service"
+    - label: "Architecture"
+      href: "/architecture"
+    - label: "Acknowledgements"
+      href: "/acknowledgements"
 
 customTheme:
   id: "stackwright-docs"
