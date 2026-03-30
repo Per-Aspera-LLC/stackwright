@@ -76,7 +76,7 @@ content:
         textSize: h2
       icons:
         - type: icon
-          src: Code2
+          src: Code
           label: "TypeScript"
           size: 48
         - type: icon
