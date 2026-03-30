@@ -15,15 +15,22 @@
     "@stackwright/types": "1.0.0",
     "@stackwright/ui-shadcn": "0.1.0",
     "launch-stackwright": "0.1.0",
-    "@stackwright/maplibre": "0.0.0"
+    "@stackwright/maplibre": "0.0.0",
+    "stackwright-docs": "0.1.0"
   },
   "changesets": [
+    "bright-otters-glow",
     "compose-site-atomic",
     "declarative-entry-pages",
+    "fix-dark-mode-bugs",
     "fix-perf-benchmark-port-conflict",
     "integrations-config",
     "launch-stackwright-package",
     "map-adapter-phases-1-2",
+    "remove-hello-example",
+    "resolve-background-utility",
+    "scaffold-bundled-default",
+    "scaffold-pin-versions",
     "text-block-feature",
     "video-media-type",
     "visual-render-tools"

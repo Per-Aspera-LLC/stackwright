@@ -29,8 +29,10 @@ footer:
   links:
     - label: "GitHub"
       href: "https://github.com/Per-Aspera-LLC/stackwright"
-    - label: "Example App"
-      href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/hellostackwrightnext"
+    - label: "Privacy Policy"
+      href: "/privacy-policy"
+    - label: "Terms of Service"
+      href: "/terms-of-service"
 
 customTheme:
   id: "stackwright-docs"

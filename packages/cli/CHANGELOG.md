@@ -1,5 +1,21 @@
 # @stackwright/cli
 
+## 0.7.0-alpha.7
+
+### Patch Changes
+
+- 06e97c0: fix: scaffold uses bundled templates by default and includes \_document.tsx for dark mode support
+  - Flip template fetch to bundled-by-default (eliminates network dependency and 10-second timeout risk)
+  - Add `--online` flag (replaces `--offline`) for explicit GitHub template fetch
+  - Add `_document.tsx` to scaffold template for ColorModeScript / dark mode persistence
+  - Make `check-template-sync` CI job non-blocking (informational warning instead of hard failure)
+
+- 6cda0f0: fix: scaffold now pins @stackwright/\* deps to stable caret ranges instead of 'latest'
+- Updated dependencies [6cda0f0]
+  - @stackwright/themes@0.5.1-alpha.0
+  - @stackwright/types@1.1.0-alpha.5
+  - @stackwright/build-scripts@0.4.0-alpha.5
+
 ## 0.7.0-alpha.6
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @stackwright/maplibre
 
+## 1.0.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [6cda0f0]
+- Updated dependencies [6cda0f0]
+  - @stackwright/core@0.7.0-alpha.5
+
 ## 1.0.0-alpha.0
 
 ### Minor Changes

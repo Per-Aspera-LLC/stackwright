@@ -1,5 +1,22 @@
 # @stackwright/core
 
+## 0.7.0-alpha.5
+
+### Minor Changes
+
+- 6cda0f0: feat: add resolveBackground utility for dark-mode-aware section backgrounds
+
+  All content components now resolve background values through resolveBackground().
+  Theme color keys (e.g., 'surface', 'primary') are mapped to the current theme.colors,
+  which is dark-mode-aware. Literal hex values pass through unchanged (backward compatible).
+
+### Patch Changes
+
+- 6cda0f0: fix: dark mode toggle now updates in real-time (#252) and background images no longer override dark background color (#251)
+- Updated dependencies [6cda0f0]
+  - @stackwright/themes@0.5.1-alpha.0
+  - @stackwright/types@1.1.0-alpha.5
+
 ## 0.7.0-alpha.4
 
 ### Minor Changes

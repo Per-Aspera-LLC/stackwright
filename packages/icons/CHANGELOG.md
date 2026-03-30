@@ -1,5 +1,11 @@
 # @stackwright/icons
 
+## 0.4.0-alpha.0
+
+### Minor Changes
+
+- 06e97c0: Register the full Lucide icon set (~1,500+ icons) by default. `registerDefaultIcons()` now includes every Lucide icon — YAML authors can use any icon by PascalCase name without code changes. Added `registerAllLucideIcons()` and `lucideAllIconsPreset` exports. The curated ~40-icon preset remains available via `registerLucideIcons()` for bundle-conscious apps.
+
 ## 0.3.0
 
 ### Patch Changes

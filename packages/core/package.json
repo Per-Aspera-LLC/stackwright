@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/core",
-    "version": "0.7.0-alpha.4",
+    "version": "0.7.0-alpha.5",
     "description": "Core framework for building applications from YAML configuration",
     "license": "MIT",
     "repository": {
