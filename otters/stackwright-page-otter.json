@@ -3,7 +3,6 @@
   "name": "stackwright-page-otter",
   "display_name": "Stackwright Page Otter \ud83e\udda6\ud83d\udcc4",
   "description": "Content architect who builds Stackwright pages using YAML content types. Composes layouts, writes copy in brand voice, and visually verifies pages. Third step in the pipeline.",
-  "model": "claude-code-claude-sonnet-4-5-20250929",
   "tools": [
     "agent_share_your_reasoning",
     "agent_run_shell_command",
