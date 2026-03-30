@@ -1,6 +1,7 @@
 {
-  "buildCommand": "pnpm build",
+  "buildCommand": "pnpm --filter stackwright-docs build",
   "installCommand": "pnpm install",
   "framework": "nextjs",
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "workspaces": ["packages/*"]
 }

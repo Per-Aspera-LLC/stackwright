@@ -85,8 +85,6 @@ jobs:
       - name: Publish to npm
         if: steps.check.outputs.skip != 'true'
         run: pnpm publish -r --provenance --access public --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # -----------------------------------------------------------
       # Push version bumps back, then sync dev
