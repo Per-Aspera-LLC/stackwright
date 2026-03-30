@@ -44,18 +44,18 @@ A minimal page:
 ```yaml
 content:
   content_items:
-    - main:
-        label: "hero"
-        heading:
-          text: "Hello World"
-          textSize: "h1"
-        textBlocks:
-          - text: "My first Stackwright page."
-            textSize: "body1"
-        buttons:
-          - text: "Learn More"
-            variant: "contained"
-            href: "/about"
+    - type: main
+      label: "hero"
+      heading:
+        text: "Hello World"
+        textSize: "h1"
+      textBlocks:
+        - text: "My first Stackwright page."
+          textSize: "body1"
+      buttons:
+        - text: "Learn More"
+          variant: "contained"
+          href: "/about"
 ```
 
 Site-wide config — navigation, footer, and theme — lives in `stackwright.yml`:
@@ -73,9 +73,35 @@ customTheme:
     secondary: "#1a9fd4"
     background: "#fdfdfd"
     text: "#393837"
+  typography:
+    fontFamily:
+      primary: "Inter"
+      secondary: "system-ui"
+    scale:
+      xs: "0.75rem"
+      sm: "0.875rem"
+      base: "1rem"
+      lg: "1.125rem"
+      xl: "1.25rem"
+      2xl: "1.5rem"
+      3xl: "1.875rem"
 ```
 
 Images can be co-located alongside their page YAML files using `./relative` paths (e.g., `src: ./hero.png`). The prebuild pipeline copies them to `public/images/` and rewrites paths automatically.
+
+### Font Auto-Loading
+
+Fonts defined in your theme are automatically loaded from Google Fonts — no manual `<link>` tags needed.
+
+```yaml
+customTheme:
+  typography:
+    fontFamily:
+      primary: "JetBrains Mono"
+      secondary: "Inter"
+```
+
+The prebuild step reads these values and generates the appropriate `<link>` tags in your `<head>`. Common system fonts (serif, sans-serif, monospace) are automatically excluded from loading. `StackwrightDocument` handles the injection — just define fonts in your theme YAML.
 
 ## Content Types
 
@@ -100,7 +126,37 @@ Images can be co-located alongside their page YAML files using `./relative` path
 | `text_block` | Text content with heading, paragraphs, and buttons |
 | `map` | MapLibre GL interactive map with markers and layers |
 
-All content types support optional `color` and `background` overrides, and render responsively from 320px to 1440px.
+
+> **Note:** All content items use an explicit `type` field for discrimination (e.g., `type: main`). This replaced the older nested-key pattern (`main: {...}`) for clearer TypeScript discriminated unions and better validation error messages.
+
+## Dark Mode
+
+Stackwright has first-class dark mode support with zero flash on page load:
+
+- Define `darkColors` in your theme alongside `colors` for automatic dark/light switching
+- `ThemeProvider` exposes `setColorMode('dark' | 'light' | 'system')` via context
+- User preference is persisted in a cookie — return visitors see their saved theme
+- `StackwrightDocument` includes a blocking `<ColorModeScript>` that prevents flash-of-wrong-theme
+
+```yaml
+customTheme:
+  colors:
+    primary: "#fdc13c"
+    # ... light mode
+  darkColors:
+    primary: "#fbbf24"
+    # ... dark mode
+```
+
+## Cookie & Consent Utilities
+
+`@stackwright/core` provides SSR-safe cookie utilities:
+
+- `getCookie(name)`, `setCookie(name, value, options)`, `removeCookie(name)` — no dependencies
+- `getConsentState()`, `setConsentState()`, `hasConsent(category)` — IAB TCF-style consent management (categories: necessary, functional, analytics, marketing)
+
+These are useful for analytics integrations, GDPR compliance banners, and user preference storage.
+
 
 ## The Otter Raft 🦦
 
@@ -160,9 +216,14 @@ stackwright preview /pricing --width 375 --height 667
 # Hot-reload during development (watches YAML and images)
 stackwright prebuild --watch
 
+# Manage collections
+stackwright collection list
+stackwright collection add
+
 # Manage site configuration
 stackwright site get
 stackwright site validate
+stackwright site write
 
 # View the product board (priority-tiered from GitHub Issues)
 stackwright board
@@ -223,14 +284,65 @@ import { SearchModal } from '@stackwright/core';
 
 ## The Safety Model
 
-Stackwright's constrained YAML grammar creates a fundamentally different security posture than traditional application development:
+Stackwright's constrained YAML grammar creates a fundamentally different security posture than traditional application development. The safety guarantees come from two interlocking layers:
 
-- **Bounded expressiveness**: The Zod schema defines exactly what behaviors are possible. There is no escape hatch to arbitrary code execution within the YAML layer.
-- **Build-time validation**: Every content change is validated against the schema before it reaches the browser. Invalid states are rejected, not rendered.
-- **Auditable surface area**: Security review reduces to reviewing the component library — a fixed, bounded codebase — rather than auditing every application built on the platform.
-- **Safe AI generation**: When an AI agent generates YAML, it literally cannot express unsafe behavior. The schema is the security policy.
+### Layer 1: Build-time Enforcement
 
-This model extends naturally to backend components: a `data_table` component that can only query through a connection whitelist, a `form` that can only POST to approved endpoints, an `approval_flow` that can only route to defined roles. **The schema constrains what's expressible; the platform enforces what's safe.**
+Every YAML content file passes through Zod schema validation at build time via `stackwright-prebuild`. The validator runs before Next.js even starts — invalid content fails the build, not the browser.
+
+```ts
+// What validation catches:
+siteConfigSchema.safeParse(rawConfig);   // stackwright.yml
+pageContentSchema.safeParse(rawContent);  // content.yml files
+```
+
+The schemas are strict: required fields are required, types are enforced, and unknown `type` values are caught with a warning (prevents silent failures from typos like `feture_list`).
+
+### Layer 2: Typed Generated Output
+
+The validated YAML is compiled into typed JSON that powers React components with full TypeScript discriminated unions:
+
+```ts
+// ContentItem is a discriminated union on `type`
+type ContentItem =
+  | CarouselContent | MainContent | TabbedContent | GridContent
+  | FeatureListContent | FaqContent | AlertContent | ...;
+
+// Components narrow on type — exhaustive matching guaranteed
+function renderContent(item: ContentItem) {
+  switch (item.type) {
+    case 'alert': return <Alert {...item} />;        // item.alert fields typed
+    case 'faq':   return <Faq {...item} />;         // item.faq fields typed
+    // TypeScript errors if a case is missing — no silent fallthrough
+  }
+}
+```
+
+For `@stackwright-pro/openapi`:
+
+| Protection | What It Prevents |
+|------------|-----------------|
+| **Endpoint Locking** | Generated client only has methods for spec-defined endpoints (e.g., `getEquipment()`, not `fetch(url)`) |
+| **SHA-256 Allowlist** | Only pre-approved specs can generate code |
+| **SSRF Download Protection** | Spec downloads blocked to private IPs, localhost, cloud metadata |
+| **Runtime SSRF Blocking** | Generated client validates baseUrl at instantiation |
+| **Zod Runtime Validation** | API responses validated before reaching UI |
+
+### What This Protects Against
+
+| Threat | Protection |
+|--------|------------|
+| Content injection | YAML is parsed as data, not code |
+| XSS via content | Text is never interpolated as HTML |
+| SSRF attacks | Generated clients only call spec-defined endpoints |
+| Malformed API data | Zod validates responses at runtime |
+| Schema drift | Generated TypeScript types stay in sync with Zod schemas |
+
+### What This Doesn't Cover
+
+Stackwright constrains the YAML layer and generated clients. Custom React components (written outside the YAML layer) are standard Next.js — they're your code, and security responsibility is yours. The framework makes it easy to stay inside the safe path; it doesn't prevent you from stepping outside it.
+
+**Bottom line**: You audit the Zod schemas once. Every app built on the platform inherits those guarantees. This is "verifiable safe" — not "we scanned it and it looks okay."
 
 ## Examples
 
