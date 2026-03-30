@@ -13,16 +13,12 @@ navigation:
     href: "/"
   - label: "🚀 Getting Started"
     href: "/getting-started"
-  - label: "🏗️ Architecture"
-    href: "/architecture"
   - label: "📦 Content Types"
     href: "/content-types"
   - label: "⌨️ CLI"
     href: "/cli"
   - label: "🤖 Otter Raft"
     href: "/otter-raft"
-  - label: "🙏 Acknowledgements"
-    href: "/acknowledgements"
   - label: "🧪 Showcase"
     href: "/showcase"
 
@@ -63,14 +59,8 @@ footer:
   links:
     - label: "GitHub"
       href: "https://github.com/Per-Aspera-LLC/stackwright"
-    - label: "Privacy Policy"
-      href: "/privacy-policy"
-    - label: "Terms of Service"
-      href: "/terms-of-service"
-    - label: "Architecture"
-      href: "/architecture"
-    - label: "Acknowledgements"
-      href: "/acknowledgements"
+    - label: "Example App"
+      href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/hellostackwrightnext"
 
 customTheme:
   id: "stackwright-docs"

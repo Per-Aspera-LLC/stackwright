@@ -61,7 +61,7 @@ content:
           description: "Dark mode, custom palettes, typography, spacing — all in YAML. One file controls the entire visual identity."
         - icon:
             type: icon
-            src: Code
+            src: Code2
             height: 48
           heading: "Standard React Output"
           description: "The output is a Next.js app in a git repo you own. No lock-in, no runtime magic. Fork it, extend it, deploy it."

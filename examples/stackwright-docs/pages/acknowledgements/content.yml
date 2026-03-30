@@ -19,7 +19,6 @@ content:
           textSize: body1
       background: background
 
-
     # ─────────────────────────────────────────────────────────
     # CODE PUPPY SECTION
     # ─────────────────────────────────────────────────────────
@@ -107,7 +106,6 @@ content:
       code: |
         # Try Code Puppy yourself
         uvx code-puppy
-
         
         # Or install permanently
         pip install code-puppy
@@ -124,13 +122,27 @@ content:
         - text: "Get Code Puppy"
           textSize: button
           variant: contained
-          href: https://github.com/mpfaffenberger/code_puppy
           href: "https://github.com/mpfaffenberger/code_puppy"
           bgColor: accent
         - text: "Read the Docs"
           textSize: button
           variant: outlined
-          href: https://code-puppy.dev
+          href: "https://code-puppy.dev"
+      background: background
+
+    # ─────────────────────────────────────────────────────────
+    # CLAUDE SECTION
+    # ─────────────────────────────────────────────────────────
+    - type: text_block
+      label: claude-heading
+      heading:
+        text: "Claude (Anthropic) 🤖"
+        textSize: h2
+      textBlocks:
+        - text: "Code Puppy is powered by Claude. The reasoning, generation, and architectural decisions that make Stackwright work — all catalyzed by Anthropic's model."
+          textSize: body1
+        - text: "We chose Claude for its ability to understand complex codebases, maintain context across long conversations, and produce production-ready code — not rough drafts."
+          textSize: body1
       background: background
 
     - type: alert
@@ -139,7 +151,6 @@ content:
       title: "Privacy Matters"
       body: "Both Stackwright and Code Puppy are committed to privacy. Your prompts are never logged, your code is never shared, and you can run everything locally if you prefer."
       background: surface
-
 
     # ─────────────────────────────────────────────────────────
     # THE OTTER RAFT
@@ -251,7 +262,6 @@ content:
                 - text: "• Changesets — Version management"
                   textSize: body2
               background: surface
-      gap: 1rem
       gap: "1rem"
       background: background
 
@@ -261,7 +271,6 @@ content:
       title: "Thank You"
       body: "To every maintainer, contributor, and user of these projects — thank you for making the open source ecosystem what it is. Stackwright is just one small flower in a vast garden."
       background: surface
-
 
     # ─────────────────────────────────────────────────────────
     # PER ASPERA SAPIENTIA
@@ -281,7 +290,7 @@ content:
       background: background
 
     # ─────────────────────────────────────────────────────────
-    # FOOTER CTA
+    # FOOTER
     # ─────────────────────────────────────────────────────────
     - type: main
       label: footer
