@@ -59,9 +59,13 @@ This is the key competitive insight: unconstrained code generation (asking an LL
 
 ---
 
-## Verifiable Safety by Construction
+## Safe by Construction
 
-The constrained YAML grammar creates a security model that is fundamentally different from traditional application development. This is the insight that makes Stackwright viable as an enterprise platform, not just a website builder.
+Stackwright's security model is called **Safe by Construction**.
+
+The mechanism is **The Bounded Contract**: a strict Zod schema defines exactly what is expressible. Every generated application **inherits** those guarantees — we call this **Verified Inheritance**. The schema is the parent class; every app is a derived type with the same safety properties.
+
+This is what makes Stackwright viable as an enterprise platform, not just a website builder.
 
 ### The Two-Layer Model
 
@@ -209,7 +213,7 @@ Each pro component follows the same contract as a free component: a YAML key, a 
 
 These boundaries are as important as the principles above:
 
-**Not a CMS replacement in the traditional sense.** The core framework does not have a content API, a headless delivery layer, or a media asset management system. The core is a static site framework. Dynamic, user-generated, or frequently-updated content is the domain of pro backend components or developer-written React components. However, the trajectory toward enterprise backend components (data tables, forms, approval flows) is explicit and deliberate — see "Verifiable Safety by Construction" above. The core framework is the foundation; pro components extend the same schema-constrained, verifiably-safe model to dynamic use cases.
+**Not a CMS replacement in the traditional sense.** The core framework does not have a content API, a headless delivery layer, or a media asset management system. The core is a static site framework. Dynamic, user-generated, or frequently-updated content is the domain of pro backend components or developer-written React components. However, the trajectory toward enterprise backend components (data tables, forms, approval flows) is explicit and deliberate — see "Safe by Construction" above. The core framework is the foundation; pro components extend the same schema-constrained, verifiably-safe model to dynamic use cases.
 
 **Not a design tool.** Themes provide color, typography, and spacing. Stackwright does not attempt to give users pixel-level layout control. Users who need that level of control should use developer-written React components, not try to push the YAML schema to accommodate it.
 
@@ -234,3 +238,4 @@ For contributors and agents making implementation decisions:
 5. **Agent-facing docs are part of the build.** The content type reference tables in AGENTS.md must be kept in sync with the TypeScript types. This is as important as keeping the JSON schemas in sync. Stale agent docs produce exactly the same class of bugs as stale type definitions.
 
 6. **Constrain first, extend later — in the free tier.** When in doubt about whether to add a new content type or field to `@stackwright/core`, wait. The cost of adding something is low; the cost of maintaining it, keeping it in the schema reference, making it agent-writable, and eventually removing it is high. The right answer to "I need something the core schema doesn't support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.
+t support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.

@@ -282,9 +282,13 @@ import { SearchModal } from '@stackwright/core';
 </>
 ```
 
-## The Safety Model
+## Safe by Construction
 
-Stackwright's constrained YAML grammar creates a fundamentally different security posture than traditional application development. The safety guarantees come from two interlocking layers:
+Stackwright's security model is called **Safe by Construction**.
+
+The mechanism is **The Bounded Contract**: a strict Zod schema defines exactly what is expressible. Every generated application **inherits** those guarantees — we call this **Verified Inheritance**. The schema is the parent class; every app is a derived type with the same safety properties.
+
+The safety guarantees come from two interlocking layers:
 
 ### Layer 1: Build-time Enforcement
 
@@ -343,6 +347,8 @@ For `@stackwright-pro/openapi`:
 Stackwright constrains the YAML layer and generated clients. Custom React components (written outside the YAML layer) are standard Next.js — they're your code, and security responsibility is yours. The framework makes it easy to stay inside the safe path; it doesn't prevent you from stepping outside it.
 
 **Bottom line**: You audit the Zod schemas once. Every app built on the platform inherits those guarantees. This is "verifiable safe" — not "we scanned it and it looks okay."
+
+> **Why this matters for government and enterprise**: You audit the schema once. Every application built on Stackwright inherits those guarantees. This isn't "we scanned it afterward" — it's mathematical proof that invalid inputs cannot reach the runtime.
 
 ## Examples
 
