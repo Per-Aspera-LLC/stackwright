@@ -1,0 +1,110 @@
+content:
+  meta:
+    title: "Pro | Stackwright"
+    description: "OpenAPI integration, CMS backends, and enterprise features for Stackwright."
+
+  content_items:
+    - type: main
+      label: hero
+      heading:
+        text: "Stackwright Pro 🔐"
+        textSize: h1
+      textBlocks:
+        - text: "Pro packages extend Stackwright into paid territory — third-party integrations, OpenAPI tooling, and enterprise features."
+          textSize: h3
+        - text: "The OSS monorepo defines interfaces; Pro ships implementations. Clean separation by design."
+          textSize: body1
+      background: background
+
+    - type: feature_list
+      label: features
+      heading:
+        text: "What's in Pro?"
+        textSize: h2
+      items:
+        - icon:
+            type: icon
+            src: Zap
+            height: 48
+            label: openapi-icon
+          heading: "OpenAPI Integration"
+          description: "Turn any OpenAPI spec into typed Zod schemas, CollectionProviders, and API clients. 'Here is an API spec' → 'Here is a working app' in hours."
+        - icon:
+            type: icon
+            src: Database
+            height: 48
+            label: cms-icon
+          heading: "CMS Backends"
+          description: "Contentful, Sanity, Shopify, Airtable, Notion — each as a CollectionProvider. Switching backends is a one-line change. No YAML changes needed."
+        - icon:
+            type: icon
+            src: Shield
+            height: 48
+            label: security-icon
+          heading: "Enterprise Ready"
+          description: "RBAC, secrets management, CSP headers, audit logging. Built for government and defense requirements."
+        - icon:
+            type: icon
+            src: Map
+            height: 48
+            label: map-icon
+          heading: "Map Integrations"
+          description: "Cesium 3D globe for enterprise logistics. deck.gl for massive data volumes. MapLibre GL included in OSS."
+      columns: 2
+      background: surface
+
+    - type: text_block
+      label: split-heading
+      heading:
+        text: "OSS + Pro: Clean Separation"
+        textSize: h2
+      textBlocks:
+        - text: "**Stackwright OSS** defines the interfaces, rendering engine, and file-backed implementations. It's the grammar — what you write."
+          textSize: body1
+        - text: "**Stackwright Pro** ships implementations too specialized, too maintenance-intensive, or too commercially sensitive for open source. It's the dictionary — what things mean."
+          textSize: body1
+        - text: "Your app never takes a hard dependency on Pro. Register a Pro provider the same way you register any Stackwright provider. Removing Pro degrades gracefully to OSS fallbacks."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: quickstart
+      language: bash
+      lineNumbers: false
+      code: |
+        # One command to scaffold Pro app
+        npx launch-stackwright-pro my-app --spec ./api.yaml --yes
+
+        # Or add Pro to existing project
+        pnpm add @stackwright-pro/openapi @stackwright-pro/auth
+
+        # Register in your app
+        import { registerOpenAPIProvider } from '@stackwright-pro/openapi';
+        registerOpenAPIProvider({ spec: './api.yaml' });
+
+    - type: alert
+      label: hackathon-tip
+      variant: tip
+      title: "Hackathon Teams"
+      body: "Stackwright Pro is built for your use case. Bring an OpenAPI spec, leave with a working app with RBAC, type-safe API clients, and mock auth for dev. See the Pro repo QUICKSTART.md for step-by-step."
+      background: surface
+
+    - type: main
+      label: cta
+      heading:
+        text: "Ready to build enterprise?"
+        textSize: h2
+      textBlocks:
+        - text: "Get started with Pro today."
+          textSize: body1
+      buttons:
+        - text: "View Pro Repo"
+          textSize: button
+          variant: contained
+          href: "https://github.com/Per-Aspera-LLC/stackwright-pro"
+          bgColor: accent
+        - text: "Read the Vision"
+          textSize: button
+          variant: outlined
+          href: "https://github.com/Per-Aspera-LLC/stackwright-pro/blob/main/VISION.md"
+      background: background

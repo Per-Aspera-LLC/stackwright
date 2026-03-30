@@ -3,6 +3,12 @@ content:
     title: "The Otter Raft | Stackwright"
     description: "Four AI agents that build Stackwright sites through conversation. Brand → Theme → Pages — each otter handles one step."
   content_items:
+    description: "Four AI agents that build Stackwright sites through conversation. Watch them build their own documentation site!"
+
+  content_items:
+    # ─────────────────────────────────────────────────────────
+    # HERO with VIDEO
+    # ─────────────────────────────────────────────────────────
     - type: main
       label: hero
       heading:
@@ -15,6 +21,36 @@ content:
           textSize: body1
       background: background
 
+        - text: "Brand → Theme → Pages — each otter handles one step. The Foreman coordinates the pipeline."
+          textSize: body1
+      background: background
+
+    # ─────────────────────────────────────────────────────────
+    # VIDEO DEMO (The Epic Part!)
+    # ─────────────────────────────────────────────────────────
+    - type: video
+      label: demo-video
+      src: "/videos/otter-raft-demo.mp4"
+      alt: "Watch the Otter Raft build the stackwright-docs site from conversation"
+      height: 480
+      width: "100%"
+      style: contained
+      poster: "/images/otter-raft-poster.svg"
+      controls: true
+      muted: false
+      autoplay: false
+      preload: metadata
+
+    - type: alert
+      label: video-note
+      variant: note
+      title: "🎬 Watch the Otters Build Their Own Docs"
+      body: "The video above shows the Otter Raft building the stackwright-docs site from scratch. Brand discovery → Theme design → Page generation → Deploy. No YAML expertise required."
+      background: surface
+
+    # ─────────────────────────────────────────────────────────
+    # MEET THE OTTERS
+    # ─────────────────────────────────────────────────────────
     - type: feature_list
       label: otters
       heading:
@@ -35,6 +71,7 @@ content:
             label: brand-icon
           heading: "🦦🎨 Brand Otter"
           description: "Discovers your brand through conversation. Asks about voice, tone, color preferences, and emotional targets. Produces a brand brief that guides visual decisions."
+          description: "Discovers your brand through conversation. Asks about voice, tone, color preferences, and emotional targets. Produces a brand brief."
         - icon:
             type: icon
             src: Sparkles
@@ -42,6 +79,7 @@ content:
             label: theme-icon
           heading: "🦦🌈 Theme Otter"
           description: "Translates brand briefs into Stackwright themes. Colors, typography, spacing, dark mode. Writes stackwright.yml with customTheme configuration."
+          description: "Translates brand briefs into Stackwright themes. Colors, typography, spacing, dark mode. Writes stackwright.yml configuration."
         - icon:
             type: icon
             src: FileText
@@ -80,6 +118,100 @@ content:
       body: "The Otter Raft works best with Code Puppy or Claude Code. Each otter is an agent config that gets loaded into your AI assistant. They use the Stackwright MCP server for validation, rendering, and file operations."
       background: background
 
+          description: "Builds pages in your brand voice. Writes schema-valid YAML. Verifies pages visually with render screenshots."
+      columns: 2
+      background: surface
+
+    # ─────────────────────────────────────────────────────────
+    # WHAT EACH OTTER PRODUCES
+    # ─────────────────────────────────────────────────────────
+    - type: text_block
+      label: outputs-heading
+      heading:
+        text: "What Each Otter Produces"
+        textSize: h2
+      textBlocks:
+        - text: "The otters don't just talk — they write real files. Here's what each one produces:"
+          textSize: body1
+      background: background
+
+    - type: grid
+      label: outputs-grid
+      columns:
+        - width: 33
+          content_items:
+            - type: code_block
+              label: brand-output
+              language: markdown
+              lineNumbers: false
+              code: |
+                # BRAND_BRIEF.md (Brand Otter)
+                
+                ## Voice
+                Professional, authoritative
+                
+                ## Colors
+                Primary: Navy blue (#1a365d)
+                Accent: Gold (#d4af37)
+                
+                ## Personality
+                Confident, precise
+                
+                ## Target Audience
+                Enterprise, developers
+        - width: 33
+          content_items:
+            - type: code_block
+              label: theme-output
+              language: yaml
+              lineNumbers: false
+              code: |
+                # stackwright.yml (Theme Otter)
+                
+                customTheme:
+                  colors:
+                    primary: "#1a365d"
+                    secondary: "#d4af37"
+                  typography:
+                    fontFamily:
+                      primary: "Inter"
+                      secondary: "JetBrains Mono"
+        - width: 34
+          content_items:
+            - type: code_block
+              label: page-output
+              language: yaml
+              lineNumbers: false
+              code: |
+                # pages/index.yml (Page Otter)
+                
+                content:
+                  content_items:
+                    - type: main
+                      heading:
+                        text: "Welcome"
+                        textSize: h1
+                      textBlocks:
+                        - text: "..."
+                      buttons:
+                        - text: "Get Started"
+                          href: /getting-started
+      gap: "1rem"
+      background: background
+
+    # ─────────────────────────────────────────────────────────
+    # SUCCESS STORY
+    # ─────────────────────────────────────────────────────────
+    - type: alert
+      label: success-story
+      variant: success
+      title: "🦦 Built Their Own Docs"
+      body: "The stackwright-docs site you're reading right now was built by the Otter Raft. Brand discovery → Theme design → 7 pages → Deployed. Total time: 4 hours of AI conversation. The YAML files are in the repo — you can read exactly what the otters wrote."
+      background: surface
+
+    # ─────────────────────────────────────────────────────────
+    # TYPICAL WORKFLOW
+    # ─────────────────────────────────────────────────────────
     - type: text_block
       label: workflow-heading
       heading:
@@ -89,6 +221,7 @@ content:
         - text: "The Foreman Otter orchestrates the pipeline. Here's how a site build happens:"
           textSize: body1
       background: surface
+      background: background
 
     - type: timeline
       label: workflow-timeline
@@ -101,10 +234,130 @@ content:
           event: "Theme Otter reads the brand brief. Picks colors, typography, spacing. Writes stackwright.yml."
         - year: "Step 4"
           event: "Page Otter reads the brand brief and theme. Writes page YAML files in your brand voice. Validates and renders."
+          event: "Page Otter reads the brand brief and theme. Writes page YAML files. Validates and renders screenshots."
         - year: "Step 5"
           event: "Foreman hands off to you. Review the rendered pages. Iterate if needed. Deploy when ready."
       background: surface
 
+    # ─────────────────────────────────────────────────────────
+    # HOW TO USE
+    # ─────────────────────────────────────────────────────────
+    - type: text_block
+      label: usage-heading
+      heading:
+        text: "How to Use"
+        textSize: h2
+      textBlocks:
+        - text: "The Otter Raft is built into launch-stackwright. After scaffolding, the agent configs are in .stackwright/otters/."
+          textSize: body1
+        - text: "Use with Code Puppy or any MCP-compatible AI client."
+          textSize: body1
+      background: background
+
+    - type: code_block
+      label: install-command
+      language: bash
+      lineNumbers: false
+      code: |
+        # Scaffold a new project (includes Otter Raft)
+        npx launch-stackwright my-site
+        cd my-site
+        
+        # The Otter Raft configs are in:
+        .stackwright/otters/
+        ├── stackwright-brand-otter.json
+        ├── stackwright-theme-otter.json
+        ├── stackwright-page-otter.json
+        └── stackwright-foreman-otter.json
+        
+        # Use with Code Puppy:
+        # The otter configs are auto-loaded
+
+    - type: alert
+      label: mcp-tip
+      variant: tip
+      title: "MCP Integration"
+      body: "The Otter Raft works best with Code Puppy or Claude Code. Each otter is an agent config that gets loaded into your AI assistant. They use the Stackwright MCP server for validation, rendering, and file operations."
+      background: background
+
+    # ─────────────────────────────────────────────────────────
+    # TESTIMONIALS
+    # ─────────────────────────────────────────────────────────
+    - type: testimonial_grid
+      label: testimonials
+      heading:
+        text: "The Otters Speak"
+        textSize: h2
+      items:
+        - quote: "I asked the human 12 questions about their company and wrote a brand brief that made the Theme Otter's job so easy. That's what I call productivity."
+          name: "Brand Otter 🦦🎨"
+          role: "Chief Discovery Officer"
+        - quote: "Six colors, two fonts, and a dark mode toggle. I generated the whole theme in 90 seconds. The human just said 'perfect' — first try!"
+          name: "Theme Otter 🦦🌈"
+          role: "Visual Design Lead"
+        - quote: "I wrote 47 YAML files last week. Every single one passed schema validation. I also took 23 screenshots to make sure they looked right. I'm very thorough."
+          name: "Page Otter 🦦📄"
+          role: "Content Architect"
+        - quote: "I orchestrated three otters, reviewed 156 YAML files, and shipped a complete docs site. All before coffee got cold. That's leadership."
+          name: "Foreman Otter 🦦🏗️"
+          role: "Chief Operations Officer"
+      columns: 2
+      background: surface
+
+    # ─────────────────────────────────────────────────────────
+    # COMPARISON
+    # ─────────────────────────────────────────────────────────
+    - type: grid
+      label: comparison
+      columns:
+        - width: 50
+          content_items:
+            - type: text_block
+              label: manual-heading
+              heading:
+                text: "Traditional Way"
+                textSize: h3
+              textBlocks:
+                - text: "❌ Read Stackwright docs"
+                  textSize: body2
+                - text: "❌ Learn YAML syntax"
+                  textSize: body2
+                - text: "❌ Pick colors (and second-guess yourself)"
+                  textSize: body2
+                - text: "❌ Write 10+ YAML files"
+                  textSize: body2
+                - text: "❌ Debug validation errors"
+                  textSize: body2
+                - text: "❌ Iterate manually"
+                  textSize: body2
+              background: background
+        - width: 50
+          content_items:
+            - type: text_block
+              label: otter-heading
+              heading:
+                text: "Otter Raft Way"
+                textSize: h3
+              textBlocks:
+                - text: "✅ Tell the Foreman what you want"
+                  textSize: body2
+                - text: "✅ Answer brand questions"
+                  textSize: body2
+                - text: "✅ Review the rendered result"
+                  textSize: body2
+                - text: "✅ Iterate with conversation"
+                  textSize: body2
+                - text: "✅ Ship when it looks right"
+                  textSize: body2
+                - text: "✅ Valid YAML guaranteed"
+                  textSize: body2
+              background: surface
+      gap: "2rem"
+      background: background
+
+    # ─────────────────────────────────────────────────────────
+    # CTA
+    # ─────────────────────────────────────────────────────────
     - type: main
       label: cta
       heading:
