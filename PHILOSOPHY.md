@@ -59,21 +59,55 @@ This is the key competitive insight: unconstrained code generation (asking an LL
 
 ---
 
-## Verifiable Safety by Construction
+## Safe by Construction
 
-The constrained YAML grammar creates a security model that is fundamentally different from traditional application development. This is the insight that makes Stackwright viable as an enterprise platform, not just a website builder.
+Stackwright's security model is called **Safe by Construction**.
 
-**The traditional security model**: A developer writes code → a security team reviews the code → every application is audited individually → the attack surface is unbounded because arbitrary code can do arbitrary things.
+The mechanism is **The Bounded Contract**: a strict Zod schema defines exactly what is expressible. Every generated application **inherits** those guarantees — we call this **Verified Inheritance**. The schema is the parent class; every app is a derived type with the same safety properties.
 
-**Stackwright's security model**: The platform defines a schema → the schema constrains what behaviors are expressible → applications are validated against the schema at build time and runtime → the attack surface is the schema itself — bounded, enumerable, auditable.
+This is what makes Stackwright viable as an enterprise platform, not just a website builder.
 
-You don't audit every application built on the platform. You audit the platform once. Then every application built on it inherits those safety guarantees. This is not "we scanned it and it looks okay." This is "the set of expressible states has been proven safe."
+### The Two-Layer Model
 
-**Why this matters for AI-generated applications**: When an LLM generates arbitrary code, it might have injection vulnerabilities, call APIs it shouldn't, or leak data through subtle logic errors. A human must review every line. When an LLM generates Stackwright YAML, it literally cannot express unsafe behavior — the schema is the security policy. Zod validates every field. The output is human-readable YAML, not opaque code. The entire application is a data structure that can be verified.
+**Layer 1: Build-time enforcement** — Every content file is validated against Zod schemas before it reaches the browser. The prebuild pipeline (`stackwright-prebuild`) runs `siteConfigSchema.safeParse()` and `pageContentSchema.safeParse()` as a gate. If the YAML is invalid, the build fails with a descriptive error.
 
-**How this extends to backend components**: The same pattern applies to pro backend YAML components: a `data_table` that can only query through a connection whitelist, a `form` that can only POST to approved endpoints, an `approval_flow` that can only route to defined roles. Each has a Zod schema. Each constrains what's expressible. The schema IS the security policy — for the frontend and the backend.
+**Layer 2: Typed generated output** — The validated YAML is compiled into typed JSON that powers React components with full TypeScript discriminated unions. For pro components (OpenAPI integrations), generated clients are **locked at generation time**: they can *only* call endpoints defined in the approved spec. There's no `fetch(url)` — only `getEquipment()`, `listSupplies()`, etc.
 
-**Implication for schema design**: Every field added to the schema expands the set of expressible behaviors. This is why the "constrain first" principle exists — it is not just about simplicity, it is about maintaining the safety guarantees that make the enterprise use case viable.
+### Why This Is Different from "We Scanned It and It Looks Okay"
+
+Traditional security review audits every application individually. The attack surface is unbounded because arbitrary code can do arbitrary things. A reviewer must understand the entire codebase to sign off.
+
+Stackwright's approach is different:
+
+1. The **schema is the security policy**. Every field in `@stackwright/types` defines what is expressible. New fields expand the attack surface; removing fields contracts it.
+
+2. You **audit the schema once**. The `ContentItem` discriminated union, the `integrationConfigSchema`, the `mediaItemSchema` — these are the trust boundary. When a security team reviews Stackwright, they're reviewing a bounded, enumerable codebase.
+
+3. **Every application inherits the guarantees**. An AI agent generates YAML. The YAML is validated. The validated YAML is compiled into typed components. The generated client can only call spec-defined endpoints. There's no step where "this looks reasonable" substitutes for "this is provably safe."
+
+### The Escape Hatch Is Safe, Not a Backdoor
+
+The output is standard Next.js. You can fork it, extend it, and write custom React components. This is intentional — it's the "no lock-in" guarantee.
+
+But the escape hatch is designed to be **obvious when you're using it**. Custom components are written in `src/components/`, not defined in YAML. The YAML layer is clearly demarcated: `pages/` contains `content.yml`, `content/` contains collections. The Stackwright-specific parts are locked down; the standard parts are standard.
+
+### The "Safe by Construction" Claim, Defined
+
+**"Safe" means**: Safe from the classes of vulnerabilities that are endemic to AI-generated code and hand-written content systems:
+- Content injection (YAML is parsed as data, never evaluated as code)
+- XSS via unsanitized content (text is never interpolated as HTML)
+- SSRF via arbitrary fetch calls (generated clients only call spec-defined endpoints)
+- Schema drift between API and client (Zod schemas are the source of truth; TypeScript types are derived from them)
+
+**"By construction" means**: The safety guarantees are inherent in the generated output, not added by linters, runtime checks, or human review. The code that renders your content is produced by a deterministic pipeline: YAML → Zod validation → typed JSON → React components with discriminated unions. At no point is there a step where "trust this input" substitutes for "validate this input."
+
+**"What it doesn't protect against"**: Custom React components written outside the YAML layer are standard Next.js. Dynamic data fetching in custom components must be secured by the developer. Stackwright constrains the platform; it doesn't constrain arbitrary code you add to the platform.
+
+### Implication for Schema Design
+
+Every field added to the schema expands the set of expressible behaviors. This is why the "constrain first" principle exists — it is not just about simplicity, it is about maintaining the safety guarantees that make the enterprise use case viable.
+
+When evaluating a new content type or field, ask: *What unsafe behavior does this enable, and is that behavior bounded and auditable?* If the answer is "it enables unbounded dynamic rendering" or "it allows arbitrary URLs," the feature belongs in a developer-written React component, not in the schema.
 
 ---
 
@@ -179,7 +213,7 @@ Each pro component follows the same contract as a free component: a YAML key, a 
 
 These boundaries are as important as the principles above:
 
-**Not a CMS replacement in the traditional sense.** The core framework does not have a content API, a headless delivery layer, or a media asset management system. The core is a static site framework. Dynamic, user-generated, or frequently-updated content is the domain of pro backend components or developer-written React components. However, the trajectory toward enterprise backend components (data tables, forms, approval flows) is explicit and deliberate — see "Verifiable Safety by Construction" above. The core framework is the foundation; pro components extend the same schema-constrained, verifiably-safe model to dynamic use cases.
+**Not a CMS replacement in the traditional sense.** The core framework does not have a content API, a headless delivery layer, or a media asset management system. The core is a static site framework. Dynamic, user-generated, or frequently-updated content is the domain of pro backend components or developer-written React components. However, the trajectory toward enterprise backend components (data tables, forms, approval flows) is explicit and deliberate — see "Safe by Construction" above. The core framework is the foundation; pro components extend the same schema-constrained, verifiably-safe model to dynamic use cases.
 
 **Not a design tool.** Themes provide color, typography, and spacing. Stackwright does not attempt to give users pixel-level layout control. Users who need that level of control should use developer-written React components, not try to push the YAML schema to accommodate it.
 
@@ -204,3 +238,4 @@ For contributors and agents making implementation decisions:
 5. **Agent-facing docs are part of the build.** The content type reference tables in AGENTS.md must be kept in sync with the TypeScript types. This is as important as keeping the JSON schemas in sync. Stale agent docs produce exactly the same class of bugs as stale type definitions.
 
 6. **Constrain first, extend later — in the free tier.** When in doubt about whether to add a new content type or field to `@stackwright/core`, wait. The cost of adding something is low; the cost of maintaining it, keeping it in the schema reference, making it agent-writable, and eventually removing it is high. The right answer to "I need something the core schema doesn't support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.
+t support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.

@@ -43,7 +43,9 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
       >
         {plans.map((plan, index) => {
           const isHighlighted = plan.highlighted === true;
-          const borderColor = isHighlighted ? theme.colors.primary : theme.colors.secondary;
+          const borderColor = isHighlighted
+            ? theme.colors.primary
+            : theme.colors.secondary;
 
           return (
             <div
