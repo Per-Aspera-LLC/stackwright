@@ -196,6 +196,31 @@ launch-stackwright         — One-command project launcher with otter raft incl
 
 `@stackwright/types` generates JSON schemas (`content-schema.json`, `theme-schema.json`, `siteconfig-schema.json`) that provide autocomplete and validation in YAML editors. Regenerate after type changes with `pnpm generate-schemas`.
 
+## Built-in Search
+
+Every Stackwright site comes with fuzzy full-text search out of the box. Press **Cmd+K** (Mac) or **Ctrl+K** (Windows/Linux) to open the search modal.
+
+- **Fuzzy matching** — Tolerates typos and partial matches via Fuse.js
+- **Schema-aware** — Indexes page titles, headings, and body content
+- **Keyboard-first** — Navigate results with arrow keys, select with Enter, dismiss with Escape
+- **Instant results** — Debounced 300ms for fast filtering
+
+The search index is generated at build time during prebuild — no external services required.
+
+### Adding Search to Your Site
+
+The SearchModal is automatically included in the page layout. To customize the keyboard shortcut or trigger:
+
+```tsx
+// In your _app.tsx or layout
+import { SearchModal } from '@stackwright/core';
+
+<>
+  <YourApp />
+  <SearchModal shortcut="Cmd+K" placeholder="Search..." />
+</>
+```
+
 ## The Safety Model
 
 Stackwright's constrained YAML grammar creates a fundamentally different security posture than traditional application development:
