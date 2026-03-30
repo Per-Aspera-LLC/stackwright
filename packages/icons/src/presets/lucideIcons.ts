@@ -44,6 +44,8 @@ import {
   FlaskConical, // FlaskConical (testing)
   FileCheck, // FileCheck (validation)
   Gem, // Gem (quality)
+  Code2, // Code2 (code)
+  Layout, // Layout (layout)
 } from 'lucide-react';
 
 import { registerStackwrightIcons } from '../registry/iconRegistry';
@@ -104,6 +106,8 @@ export const lucideIconPreset: Record<string, React.ComponentType<any>> = {
   FlaskConical,
   FileCheck,
   Gem,
+  Code2,
+  Layout,
 };
 
 export function registerLucideIcons() {
