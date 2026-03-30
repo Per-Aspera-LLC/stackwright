@@ -26,6 +26,36 @@ navigation:
   - label: "🧪 Showcase"
     href: "/showcase"
 
+# Search configuration (Cmd+K to open)
+search:
+  enabled: true
+  placeholder: "Search docs... ⌘K"
+
+# Sidebar navigation (persistent left sidebar)
+sidebar:
+  navigation:
+    - label: "📖 Documentation"
+      href: "/getting-started"
+    - label: "🚀 Getting Started"
+      href: "/getting-started"
+    - label: "📦 Content Types"
+      href: "/content-types"
+    - label: "🏗️ Architecture"
+      href: "/architecture"
+    - label: "⌨️ CLI Reference"
+      href: "/cli"
+    - label: "🤖 Otter Raft"
+      href: "/otter-raft"
+    - label: "🔐 Pro"
+      href: "/pro"
+    - label: "🙏 Acknowledgements"
+      href: "/acknowledgements"
+    - label: "🧪 Showcase"
+      href: "/showcase"
+  collapsed: false
+  width: 260
+  mobileBreakpoint: 768
+
 footer:
   backgroundColor: "primary"
   textColor: "secondary"

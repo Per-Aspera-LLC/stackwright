@@ -95,6 +95,24 @@ export const integrationConfigSchema = z
   })
   .passthrough();
 
+export const sidebarConfigSchema = z.object({
+  navigation: z.array(navigationItemSchema),
+  collapsed: z.boolean().optional().default(false),
+  width: z.number().optional().default(240),
+  mobileBreakpoint: z.number().optional().default(768),
+  backgroundColor: z.string().optional(),
+  textColor: z.string().optional(),
+});
+
+export const searchConfigSchema = z.object({
+  /** Enable or disable search functionality. Defaults to true. */
+  enabled: z.boolean().default(true),
+  /** Placeholder text shown in the search input. */
+  placeholder: z.string().default('Search...'),
+  /** Keyboard shortcut key (without modifier). Defaults to 'k' for Cmd+K. */
+  shortcut: z.string().default('k'),
+});
+
 export const siteConfigSchema = z.object({
   title: z.string(),
   meta: siteMetaSchema.optional(),
@@ -106,6 +124,10 @@ export const siteConfigSchema = z.object({
   breakpoints: breakpointsConfigSchema.optional(),
   /** Optional array of Pro package integrations (OpenAPI, GraphQL, REST). See integrationConfigSchema for details. */
   integrations: z.array(integrationConfigSchema).optional(),
+  /** Optional sidebar navigation configuration. When present, a sidebar will be rendered on all pages. */
+  sidebar: sidebarConfigSchema.optional(),
+  /** Optional search configuration. When present, a search modal will be available via Cmd+K. */
+  search: searchConfigSchema.optional(),
 });
 
 export type SiteMeta = z.infer<typeof siteMetaSchema>;
@@ -113,4 +135,6 @@ export type AppBarConfig = z.infer<typeof appBarConfigSchema>;
 export type BreakpointsConfig = z.infer<typeof breakpointsConfigSchema>;
 export type FooterConfig = z.infer<typeof footerConfigSchema>;
 export type IntegrationConfig = z.infer<typeof integrationConfigSchema>;
+export type SidebarConfig = z.infer<typeof sidebarConfigSchema>;
+export type SearchConfig = z.infer<typeof searchConfigSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;

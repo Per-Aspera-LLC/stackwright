@@ -426,6 +426,65 @@
         ],
         "additionalProperties": {}
       }
+    },
+    "sidebar": {
+      "type": "object",
+      "properties": {
+        "navigation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/__schema2"
+          }
+        },
+        "collapsed": {
+          "default": false,
+          "type": "boolean"
+        },
+        "width": {
+          "default": 240,
+          "type": "number"
+        },
+        "mobileBreakpoint": {
+          "default": 768,
+          "type": "number"
+        },
+        "backgroundColor": {
+          "type": "string"
+        },
+        "textColor": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "navigation",
+        "collapsed",
+        "width",
+        "mobileBreakpoint"
+      ],
+      "additionalProperties": false
+    },
+    "search": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean"
+        },
+        "placeholder": {
+          "default": "Search...",
+          "type": "string"
+        },
+        "shortcut": {
+          "default": "k",
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "placeholder",
+        "shortcut"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -508,6 +567,12 @@
         },
         "href": {
           "type": "string"
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/__schema2"
+          }
         }
       },
       "required": [
