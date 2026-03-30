@@ -116,6 +116,40 @@
         },
         "list_icon": {
           "type": "string"
+        },
+        "navSidebar": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "navigation": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/__schema18"
+                  }
+                },
+                "collapsed": {
+                  "type": "boolean"
+                },
+                "width": {
+                  "type": "number"
+                },
+                "mobileBreakpoint": {
+                  "type": "number"
+                },
+                "backgroundColor": {
+                  "type": "string"
+                },
+                "textColor": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
