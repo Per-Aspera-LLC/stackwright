@@ -60,6 +60,155 @@ const COLLECTION_CONFIG_NAMES = new Set(['_collection.yml', '_collection.yaml'])
 
 const LARGE_VIDEO_THRESHOLD_MB = 50;
 
+// -- Font Extraction ------------------------------------------------------------
+
+/**
+ * CSS generic font family keywords that should not be loaded from Google Fonts.
+ * These are built-in browser fonts and don't need external loading.
+ */
+const SYSTEM_FONT_KEYWORDS = new Set([
+  'serif',
+  'sans-serif',
+  'monospace',
+  'cursive',
+  'fantasy',
+  'system-ui',
+  'ui-serif',
+  'ui-sans-serif',
+  'ui-monospace',
+  'ui-rounded',
+  'math',
+  'emoji',
+  'fangsong',
+]);
+
+/**
+ * Extract Google Font names from a CSS font-family string.
+ *
+ * Handles:
+ *   - Single fonts: "Roboto"
+ *   - Multiple fonts: "JetBrains Mono, monospace"
+ *   - Quoted fonts: "Roboto", 'Inter'
+ *   - Mixed: "Helvetica Neue", Arial, sans-serif
+ *
+ * Returns an array of font names that should be loaded from Google Fonts,
+ * excluding system/generic font keywords.
+ */
+export function extractGoogleFontNames(fontFamily: string): string[] {
+  if (!fontFamily || typeof fontFamily !== 'string') {
+    return [];
+  }
+
+  // Split by comma and clean up each font name
+  const fonts = fontFamily
+    .split(',')
+    .map((name) => {
+      // Remove quotes and trim whitespace
+      return name.replace(/^['"]+|['"]+$/g, '').trim();
+    })
+    .filter((name) => {
+      // Exclude empty names
+      if (!name) return false;
+      // Exclude system font keywords (case-insensitive)
+      return !SYSTEM_FONT_KEYWORDS.has(name.toLowerCase());
+    });
+
+  return fonts;
+}
+
+/**
+ * Generate a Google Fonts URL from an array of font names.
+ *
+ * Format: https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600&display=swap
+ *
+ * Each font includes a default weight of 400 (Regular) since we don't have
+ * access to the actual weight specifications at this point.
+ */
+export function generateGoogleFontsUrl(fonts: string[]): string {
+  if (!fonts || fonts.length === 0) {
+    return '';
+  }
+
+  // Build the family parameter for each font
+  // Format: family=Font+Name:wght@400;600&family=Other+Font:wght@400
+  const familyParams = fonts
+    .map((font) => {
+      // Replace spaces with + for URL encoding
+      const encodedName = font.replace(/ /g, '+');
+      // Default to weight 400 (Regular) since we don't have weight info
+      return `family=${encodedName}:wght@400`;
+    })
+    .join('&');
+
+  return `https://fonts.googleapis.com/css2?${familyParams}&display=swap`;
+}
+
+/**
+ * Generate link tag objects from a site config for Google Fonts.
+ *
+ * Returns:
+ *   - A preconnect link to fonts.gstatic.com for performance
+ *   - A stylesheet link to Google Fonts CSS
+ *
+ * Reads from customTheme.typography.fontFamily.primary and .secondary
+ */
+export interface FontLink {
+  rel: string;
+  href: string;
+  crossorigin?: boolean;
+}
+
+export function generateFontLinkTags(siteConfig: unknown): FontLink[] {
+  const config = siteConfig as Record<string, unknown>;
+  const customTheme = config?.customTheme as Record<string, unknown> | undefined;
+
+  if (!customTheme) {
+    return [];
+  }
+
+  const typography = customTheme?.typography as Record<string, unknown> | undefined;
+  if (!typography) {
+    return [];
+  }
+
+  const fontFamily = typography?.fontFamily as Record<string, string> | undefined;
+  if (!fontFamily) {
+    return [];
+  }
+
+  // Extract fonts from primary and secondary
+  const primaryFonts = extractGoogleFontNames(fontFamily?.primary ?? '');
+  const secondaryFonts = extractGoogleFontNames(fontFamily?.secondary ?? '');
+
+  // Combine and deduplicate
+  const allFonts = [...new Set([...primaryFonts, ...secondaryFonts])];
+
+  if (allFonts.length === 0) {
+    return [];
+  }
+
+  // Generate Google Fonts URL
+  const fontsUrl = generateGoogleFontsUrl(allFonts);
+
+  if (!fontsUrl) {
+    return [];
+  }
+
+  return [
+    // Preconnect for performance
+    {
+      rel: 'preconnect',
+      href: 'https://fonts.gstatic.com',
+      crossorigin: true,
+    },
+    // The actual stylesheet
+    {
+      rel: 'stylesheet',
+      href: fontsUrl,
+    },
+  ];
+}
+
 // -- Helpers ----------------------------------------------------------------
 
 function isImagePath(str: string): boolean {
@@ -753,6 +902,16 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     JSON.stringify(processedConfig, null, 2)
   );
   console.log('  OK _site.json');
+
+  // 1b. Generate and write font links for Google Fonts
+  const fontLinks = generateFontLinkTags(processedConfig);
+  if (fontLinks.length > 0) {
+    fs.writeFileSync(
+      path.join(contentOutDir, '_font-links.json'),
+      JSON.stringify({ links: fontLinks }, null, 2)
+    );
+    console.log('  OK _font-links.json');
+  }
 
   // Run beforeBuild plugin hooks
   if (plugins.length > 0) {

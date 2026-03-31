@@ -21,6 +21,20 @@ Run the example app to verify everything works:
 pnpm dev:hellostackwright
 ```
 
+## Pre-commit Hooks
+
+This project uses husky for Git hooks:
+
+- **pre-commit**: Auto-formats and lints staged files using lint-staged
+- **commit-msg**: Validates conventional commit messages (feat:, fix:, etc.)
+
+Hooks run automatically before commits. To bypass temporarily:
+```bash
+git commit --no-verify -m "wip: temporary commit"
+```
+
+---
+
 ## Branching Workflow
 
 - **`dev`** is the integration branch. Feature branches are created from `dev` and PRs target `dev`.
@@ -137,7 +151,7 @@ Versioning and publishing are **fully automated**. When `dev` is merged to `main
 
 **When modifying `packages/types/src/types/` — adding, removing, or changing any content type, field, or enum — you MUST:**
 
-1. Run `pnpm stackwright -- generate-agent-docs` to regenerate AGENTS.md tables in both `/AGENTS.md` and `examples/hellostackwrightnext/AGENTS.md`
+1. Run `pnpm stackwright -- generate-agent-docs` to regenerate AGENTS.md tables in both `/AGENTS.md` and `examples/stackwright-docs/AGENTS.md`
 2. Regenerate JSON schemas: `cd packages/types && pnpm generate-schemas`
 3. Update or add unit tests in `packages/core/test/` for the affected component
 4. Verify E2E tests still pass (`pnpm test:e2e`) — add example usage in `examples/hellostackwrightnext/` for new content types so E2E coverage includes them

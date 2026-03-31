@@ -10,18 +10,17 @@ import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 // Security: URL Validation
 // ---------------------------------------------------------------------------
 
+const SAFE_URL_PREFIXES = ['https://', 'http://', '/', '#'];
+
 /**
  * Validates that a URL is safe to navigate to.
- * Blocks javascript:, data:, and vbscript: protocols to prevent XSS attacks.
+ * Only allows http://, https://, and relative paths (/, #).
+ * Blocks javascript:, data:, vbscript:, and other dangerous protocols.
  */
 function isSafeUrl(href: string | undefined): boolean {
   if (!href) return true;
-  const trimmed = href.trim().toLowerCase();
-  return (
-    !trimmed.startsWith('javascript:') &&
-    !trimmed.startsWith('data:') &&
-    !trimmed.startsWith('vbscript:')
-  );
+  const trimmed = href.trim();
+  return SAFE_URL_PREFIXES.some((prefix) => trimmed.startsWith(prefix));
 }
 
 // ---------------------------------------------------------------------------
@@ -46,6 +45,7 @@ interface NavItemProps {
   activeColor: string;
   theme: Theme;
   depth?: number;
+  isActiveCheck?: (item: NavigationItem) => boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -69,12 +69,12 @@ function NavItem({
   activeColor,
   theme,
   depth = 0,
+  isActiveCheck = () => false,
 }: NavItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasChildren =
     'children' in item && Array.isArray(item.children) && item.children.length > 0;
-  const children: NavigationItem[] =
-    hasChildren && item.children ? (item.children as NavigationItem[]) : [];
+  const children = hasChildren && item.children ? item.children : [];
   const uniqueId = useId();
   const hoverClass = `nav-item-hover-${uniqueId.replace(/:/g, '')}`;
   const registry = getIconRegistry();
@@ -173,12 +173,13 @@ function NavItem({
             <NavItem
               key={idx}
               item={child}
-              isActive={false}
+              isActive={isActiveCheck(child)}
               collapsed={false}
               textColor={textColor}
               activeColor={activeColor}
               theme={theme}
               depth={depth + 1}
+              isActiveCheck={isActiveCheck}
             />
           ))}
         </div>
@@ -392,10 +393,10 @@ export default function NavSidebar({
         role="navigation"
         aria-label="Main navigation"
         style={{
-          position: 'fixed',
+          position: 'sticky',
           top: 0,
           left: 0,
-          bottom: 0,
+          height: '100vh',
           width: isMobile ? 280 : effectiveWidth,
           backgroundColor: bgColor,
           boxShadow: getThemeShadow(theme, 'md'),
@@ -417,7 +418,7 @@ export default function NavSidebar({
           <div
             style={{
               padding: theme.spacing.xs,
-              borderBottom: `1px solid ${'divider' in theme.colors ? (theme.colors as any).divider : 'rgba(0,0,0,0.12)'}`,
+              borderBottom: '1px solid rgba(0,0,0,0.12)',
             }}
           >
             <CollapseToggle
@@ -445,6 +446,7 @@ export default function NavSidebar({
               textColor={textColorResolved}
               activeColor={activeColor}
               theme={theme}
+              isActiveCheck={isItemActive}
             />
           ))}
         </div>

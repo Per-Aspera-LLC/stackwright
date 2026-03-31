@@ -162,7 +162,8 @@ jobs:
         # a11y and performance tests are excluded here — they have dedicated workflows
         # (accessibility.yml, performance.yml) with their own reporting and thresholds.
         run: >-
-          pnpm --filter @stackwright/e2e exec playwright test
+          pnpm --filter @stackwright/e2e exec playwright --
+          test
           tests/smoke.spec.ts
           tests/visual.spec.ts
           tests/render-tools.spec.ts

@@ -3,7 +3,6 @@
   "name": "stackwright-brand-otter",
   "display_name": "Stackwright Brand Otter 🦦🎨",
   "description": "Brand strategist who guides users through conversational brand discovery and produces a comprehensive brand brief. First step in the Stackwright site building pipeline.",
-  "model": "claude-code-claude-sonnet-4-5-20250929",
   "tools": [
     "agent_share_your_reasoning",
     "ask_user_question",

@@ -31,10 +31,13 @@
         "lint": "eslint packages/",
         "lint:fix": "eslint --fix packages/",
         "format": "prettier --write \"packages/*/{src,test}/**/*.{ts,tsx}\"",
-        "format:check": "prettier --check \"packages/*/{src,test}/**/*.{ts,tsx}\""
+        "format:check": "prettier --check \"packages/*/{src,test}/**/*.{ts,tsx}\"",
+        "prepare": "husky"
     },
     "devDependencies": {
         "@changesets/cli": "^2.30.0",
+        "@commitlint/cli": "^20.5.0",
+        "@commitlint/config-conventional": "^20.5.0",
         "@typescript-eslint/eslint-plugin": "^8.56.1",
         "@typescript-eslint/parser": "^8.56.1",
         "@vitest/coverage-v8": "^4.1.2",
@@ -42,6 +45,8 @@
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-react-hooks": "^7.0.1",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.4.0",
         "playwright": "^1.58.2",
         "prettier": "^3.8.1",
         "vitest": "^4.1.2"
@@ -73,6 +78,20 @@
             "esbuild",
             "sharp",
             "unrs-resolver"
+        ]
+    },
+    "lint-staged": {
+        "*.{ts,tsx}": [
+            "prettier --write",
+            "eslint --fix"
+        ],
+        "*.{json,yml,yaml,md}": [
+            "prettier --write"
+        ]
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
         ]
     }
 }

@@ -17,43 +17,20 @@ interface LaunchOptions {
   yes?: boolean;
 }
 
-async function copyOtterRaft(targetDir: string): Promise<void> {
-  // Find the otters directory - it's in the stackwright repo root
-  // When published, we'll bundle the otter configs in this package
-  const ottersSourceDir = path.resolve(__dirname, '../templates/otters');
-  const ottersTargetDir = path.join(targetDir, '.stackwright', 'otters');
-
-  if (!fs.existsSync(ottersSourceDir)) {
-    console.warn(
-      chalk.yellow(
-        '\n⚠️  Could not find otter raft configs. Skipping otter setup.\n' +
-          '   You can add them later from: https://github.com/Per-Aspera-LLC/stackwright/tree/main/otters'
-      )
-    );
-    return;
-  }
-
-  await fs.ensureDir(ottersTargetDir);
-
-  // Copy all otter JSON files
-  const otterFiles = (await fs.readdir(ottersSourceDir)).filter((f) => f.endsWith('.json'));
-
-  for (const file of otterFiles) {
-    await fs.copy(path.join(ottersSourceDir, file), path.join(ottersTargetDir, file));
-  }
-
-  // Create .code-puppy.json for MCP auto-configuration
+async function setupCodePuppyConfig(targetDir: string): Promise<void> {
+  // Generate .code-puppy.json for MCP auto-configuration
+  // Otters are now installed as a package: @stackwright/otters
   const codePuppyConfig = {
     mcp_servers: {
       stackwright: {
         command: 'node',
-        args: [path.join(targetDir, 'node_modules', '@stackwright', 'mcp', 'dist', 'server.js')],
+        args: ['node_modules/@stackwright/mcp/dist/server.js'],
         env: {
           NODE_ENV: 'development',
         },
       },
     },
-    agents_path: '.stackwright/otters',
+    agents_path: 'node_modules/@stackwright/otters',
   };
 
   await fs.writeFile(
@@ -61,8 +38,8 @@ async function copyOtterRaft(targetDir: string): Promise<void> {
     JSON.stringify(codePuppyConfig, null, 2)
   );
 
-  console.log(chalk.green('✅ Otter raft ready! 🦦🦦🦦🦦'));
-  console.log(chalk.dim(`   Configs copied to: ${path.relative(process.cwd(), ottersTargetDir)}`));
+  console.log(chalk.green('✅ @stackwright/otters installed as dependency! 🦪🦪🦪🦪'));
+  console.log(chalk.dim('   MCP auto-config ready in .code-puppy.json'));
 }
 
 async function launch(targetDir: string, options: LaunchOptions): Promise<void> {
@@ -87,10 +64,10 @@ async function launch(targetDir: string, options: LaunchOptions): Promise<void> 
     console.log(chalk.dim(`   Theme: ${result.theme}`));
     console.log(chalk.dim(`   Pages: ${result.pages.join(', ')}`));
 
-    // Copy otter raft unless --skip-otters
+    // Setup Code Puppy MCP config unless --skip-otters
     if (!options.skipOtters) {
-      console.log(chalk.cyan('\n🦦 Setting up the otter raft...\n'));
-      await copyOtterRaft(targetDir);
+      console.log(chalk.cyan('\n🦪 Setting up the otter raft...\n'));
+      await setupCodePuppyConfig(targetDir);
     }
 
     // Print next steps
@@ -122,7 +99,7 @@ async function main(): Promise<void> {
     .option('--title <title>', 'Site title shown in the app bar and browser tab')
     .option('--theme <themeId>', 'Theme ID (e.g., corporate, creative, minimal)')
     .option('--force', 'Launch even if the target directory is not empty')
-    .option('--skip-otters', 'Skip copying otter raft configs')
+    .option('--skip-otters', 'Skip setting up Code Puppy MCP config')
     .option('-y, --yes', 'Skip all prompts, use defaults')
     .action(async (directory: string, options: LaunchOptions) => {
       const targetDir = path.resolve(directory);
