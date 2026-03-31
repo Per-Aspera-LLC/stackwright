@@ -19,7 +19,9 @@
     "stackwright-docs": "0.1.0"
   },
   "changesets": [
+    "add-code2-layout-icons",
     "bright-otters-glow",
+    "built-in-search-feature",
     "compose-site-atomic",
     "declarative-entry-pages",
     "fix-dark-mode-bugs",
@@ -27,6 +29,7 @@
     "integrations-config",
     "launch-stackwright-package",
     "map-adapter-phases-1-2",
+    "nav-sidebar-override",
     "remove-hello-example",
     "resolve-background-utility",
     "scaffold-bundled-default",

@@ -1,5 +1,14 @@
 # @stackwright/cli
 
+## 0.7.0-alpha.8
+
+### Patch Changes
+
+- Updated dependencies [02638c9]
+- Updated dependencies [a662f0c]
+  - @stackwright/build-scripts@0.4.0-alpha.6
+  - @stackwright/types@1.1.0-alpha.6
+
 ## 0.7.0-alpha.7
 
 ### Patch Changes

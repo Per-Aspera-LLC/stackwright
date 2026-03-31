@@ -1,5 +1,46 @@
 # @stackwright/core
 
+## 0.7.0-alpha.6
+
+### Minor Changes
+
+- 02638c9: Add built-in full-text search to every Stackwright site.
+
+  **New feature (`@stackwright/core`):**
+  - Client-side search using Fuse.js with fuzzy matching
+  - Search modal triggered by clicking search button or pressing `/`
+  - Keyboard navigation (↑↓ to navigate, Enter to select, Esc to close)
+  - Accessible: proper ARIA labels, focus trapping, screen reader announcements
+  - SSR-safe: no hydration mismatches
+
+  **Prebuild changes (`@stackwright/build-scripts`):**
+  - Generate search index JSON during prebuild containing all page content
+  - Index includes page slugs, headings, and text content
+  - Index placed in public folder for client-side fetching
+
+  **Type updates (`@stackwright/types`):**
+  - Add `searchIndexPath` option to SiteConfig
+
+  **E2E tests (`@stackwright/e2e`):**
+  - Add accessibility and interaction tests for search functionality
+
+- a662f0c: feat(core): add page-level `navSidebar` override in `content.yml`
+
+  Pages can now override the site-wide sidebar defined in `stackwright.yml` using the `navSidebar` field. This enables:
+  - Dashboard pages to hide the sidebar (`navSidebar: null`) for full-width content
+  - Documentation chapters to show page-specific navigation in the sidebar
+  - Page Otter to customize sidebar behavior without editing the theme
+
+  The resolution order is: page `navSidebar` > site `sidebar` (from Theme Otter) > no sidebar.
+
+  Docs and AGENTS.md updated with examples and Otter responsibility notes.
+
+### Patch Changes
+
+- Updated dependencies [02638c9]
+- Updated dependencies [a662f0c]
+  - @stackwright/types@1.1.0-alpha.6
+
 ## 0.7.0-alpha.5
 
 ### Minor Changes

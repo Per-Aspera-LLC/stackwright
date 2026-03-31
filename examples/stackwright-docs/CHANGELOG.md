@@ -4,6 +4,17 @@
 
 ### Patch Changes
 
+- Updated dependencies [5c3999d]
+- Updated dependencies [02638c9]
+- Updated dependencies [a662f0c]
+  - @stackwright/icons@0.4.0-alpha.1
+  - @stackwright/core@0.7.0-alpha.6
+  - @stackwright/nextjs@0.3.1-alpha.6
+
+## 0.1.1-alpha.0
+
+### Patch Changes
+
 - Remove hellostackwrightnext example and add legal pages
   - Delete hellostackwrightnext example directory
   - Add privacy-policy page to stackwright-docs

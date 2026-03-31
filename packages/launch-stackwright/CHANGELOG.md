@@ -1,5 +1,11 @@
 # launch-stackwright
 
+## 0.2.0-alpha.5
+
+### Patch Changes
+
+- @stackwright/cli@0.7.0-alpha.8
+
 ## 0.2.0-alpha.4
 
 ### Patch Changes

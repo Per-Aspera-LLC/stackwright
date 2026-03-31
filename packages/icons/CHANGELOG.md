@@ -1,5 +1,11 @@
 # @stackwright/icons
 
+## 0.4.0-alpha.1
+
+### Patch Changes
+
+- 5c3999d: Add Code2 and Layout icons to Lucide preset for docs site compatibility
+
 ## 0.4.0-alpha.0
 
 ### Minor Changes
