@@ -2,9 +2,9 @@ name: Visual Regression Tests
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, dev]
   push:
-    branches: [main, develop]
+    branches: [main, dev]
 
 permissions:
   contents: read
@@ -47,7 +47,8 @@ jobs:
         # so we use --update-snapshots to treat these as render-smoke-tests.
         # Pixel-perfect comparison runs locally where baselines were generated.
         run: >-
-          pnpm --filter @stackwright/e2e exec playwright test
+          pnpm --filter @stackwright/e2e exec playwright --
+          test
           tests/visual.spec.ts
           tests/smoke.spec.ts
           --project=chromium

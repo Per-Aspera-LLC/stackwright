@@ -21,6 +21,20 @@ Run the example app to verify everything works:
 pnpm dev:hellostackwright
 ```
 
+## Pre-commit Hooks
+
+This project uses husky for Git hooks:
+
+- **pre-commit**: Auto-formats and lints staged files using lint-staged
+- **commit-msg**: Validates conventional commit messages (feat:, fix:, etc.)
+
+Hooks run automatically before commits. To bypass temporarily:
+```bash
+git commit --no-verify -m "wip: temporary commit"
+```
+
+---
+
 ## Branching Workflow
 
 - **`dev`** is the integration branch. Feature branches are created from `dev` and PRs target `dev`.
