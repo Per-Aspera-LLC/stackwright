@@ -72,10 +72,7 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
   const backgroundColor = theme.colors.background;
 
   // Resolve sidebar: page-level override > site-level default
-  const resolvedSidebar = resolveSidebarConfig(
-    pageContent.content.navSidebar,
-    config.sidebar
-  );
+  const resolvedSidebar = resolveSidebarConfig(pageContent.content.navSidebar, config.sidebar);
 
   return (
     <div
@@ -108,9 +105,7 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
           />
         )}
 
-        <main style={{ flex: 1, backgroundColor }}>
-          {renderContent(pageContent)}
-        </main>
+        <main style={{ flex: 1, backgroundColor }}>{renderContent(pageContent)}</main>
       </div>
 
       <BottomAppBar footer={config.footer} />
