@@ -16,7 +16,7 @@ jobs:
     # Squash merges embed individual commit messages in the body, and automated
     # commits (prerelease bumps, etc.) include [skip ci] — which would incorrectly
     # suppress the release workflow if we used contains() on the full body.
-    if: ${{ !startsWith(github.event.head_commit.message, 'chore: version packages for release [skip ci]') }}
+    if: "${{ !startsWith(github.event.head_commit.message, 'chore: version packages for release [skip ci]') }}"
     steps:
       - name: Generate PerAsperaCI token
         id: app-token
