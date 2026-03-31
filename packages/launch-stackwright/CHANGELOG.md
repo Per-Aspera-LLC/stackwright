@@ -1,5 +1,21 @@
 # launch-stackwright
 
+## 0.2.0-alpha.6
+
+### Patch Changes
+
+- 8bb4629: feat(otters): install @stackwright/otters as npm package instead of copying files
+
+  Following the "Otters as Packages" pattern established by @stackwright-pro/otters:
+  - Created new @stackwright/otters package with all 4 otter JSON files
+  - Updated CLI to add @stackwright/otters as dependency in generated package.json
+  - Updated launch-stackwright to generate .code-puppy.json pointing to node_modules
+  - Removed file copying logic from launch-stackwright
+
+- Updated dependencies [8bb4629]
+  - @stackwright/otters@0.2.0-alpha.0
+  - @stackwright/cli@0.7.0-alpha.9
+
 ## 0.2.0-alpha.5
 
 ### Patch Changes
