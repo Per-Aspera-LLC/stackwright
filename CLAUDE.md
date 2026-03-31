@@ -50,7 +50,7 @@ pnpm stackwright -- preview /about
 pnpm stackwright -- preview / --width 375 --height 667 --output mobile.png
 
 # Project-aware commands must be run from inside a Stackwright project:
-# cd examples/hellostackwrightnext && pnpm stackwright -- page list
+# cd examples/stackwright-docs && pnpm stackwright -- page list
 
 # Run all unit tests
 pnpm test
@@ -116,7 +116,7 @@ User's Next.js App
 
 ### Example Application
 
-`examples/hellostackwrightnext/` is a Next.js app demonstrating the full stack:
+`examples/stackwright-docs/` is a Next.js app demonstrating the full stack:
 - `content/pages/` — YAML page definitions (images can be co-located here using `./relative` paths)
 - `content/site.yaml` — global site config (theme, navigation, app bar, footer)
 - `pages/_app.tsx` — where `registerNextJSComponents()` and `registerDefaultIcons()` are called
@@ -159,7 +159,7 @@ Images can be co-located with their page YAML files in `pages/`. Using a relativ
 
 Site config images (in `stackwright.yml`) that use bare filenames (e.g., `wave-tile.png`) must be in the project root. Images referenced with `./` can be anywhere relative to the config file.
 
-Add these hooks to the example app's `package.json` (already done in `hellostackwrightnext`):
+Add these hooks to the example app's `package.json` (already done in `stackwright-docs`):
 ```json
 "prebuild": "stackwright-prebuild",
 "predev": "stackwright-prebuild"

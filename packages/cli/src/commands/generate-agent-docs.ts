@@ -311,7 +311,7 @@ export function generateAgentDocs(root: string = process.cwd()): GenerateAgentDo
 
   const targetFiles = [
     path.join(root, 'AGENTS.md'),
-    path.join(root, 'examples', 'hellostackwrightnext', 'AGENTS.md'),
+    path.join(root, 'examples', 'stackwright-docs', 'AGENTS.md'),
   ];
 
   const filesUpdated: string[] = [];
