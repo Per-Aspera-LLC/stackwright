@@ -4,6 +4,23 @@ AI agent orchestration system for end-to-end Stackwright site generation.
 
 > **A raft of otters** is the collective noun for a group of otters floating together. Our raft of specialized AI agents coordinates seamlessly to build complete Stackwright sites! 🦦🦦🦦🦦
 
+## Installation
+
+Otters are distributed as the [`@stackwright/otters`](https://www.npmjs.com/package/@stackwright/otters) npm package:
+
+```bash
+npm install @stackwright/otters
+# or
+pnpm add @stackwright/otters
+```
+
+**Auto-install**: The package's `postinstall` script automatically installs otter agent files to `~/.code_puppy/agents/` for code-puppy discovery. No manual copying required!
+
+To re-run installation manually:
+```bash
+node node_modules/@stackwright/otters/scripts/install-agents.js
+```
+
 ## Architecture Overview
 
 ```
@@ -18,7 +35,7 @@ AI agent orchestration system for end-to-end Stackwright site generation.
 │                  (Coordinator)                               │
 │                                                              │
 │  • Project scaffolding                                       │
-│  • Sequential otter coordination                             │
+│  • Sequential otter coordination                            │
 │  • Validation & error handling                               │
 │  • Visual verification                                       │
 └────────┬──────────────────┬───────────────────┬─────────────┘
@@ -96,29 +113,68 @@ AI agent orchestration system for end-to-end Stackwright site generation.
 
 **Important**: Foreman Otter uses MCP tools (`stackwright_scaffold_project`) instead of shell commands for project scaffolding. This ensures it works without requiring a globally installed CLI.
 
+### Tool Categories
+
+All MCP tools are organized into these categories:
+
+**PROJECT TOOLS**
+- `stackwright_get_project_info` — Get project info (versions, theme, pages)
+- `stackwright_scaffold_project` — Scaffold new Stackwright project
+
+**SITE TOOLS**
+- `stackwright_get_site_config` — Read stackwright.yml content
+- `stackwright_write_site_config` — Write/update stackwright.yml
+- `stackwright_validate_site` — Validate stackwright.yml schema
+- `stackwright_list_themes` — List available built-in themes
+
+**PAGE TOOLS**
+- `stackwright_list_pages` — List all pages in project
+- `stackwright_get_page` — Read page YAML content
+- `stackwright_write_page` — Write/update page YAML
+- `stackwright_add_page` — Create new page with boilerplate
+- `stackwright_validate_pages` — Validate page YAML against schema
+
+**CONTENT TOOLS**
+- `stackwright_get_content_types` — List all content types with fields
+- `stackwright_preview_component` — Show screenshot preview of component
+
+**RENDER TOOLS**
+- `stackwright_check_dev_server` — Verify dev server is running
+- `stackwright_render_page` — Screenshot a page
+- `stackwright_render_yaml` — Preview YAML without saving (temporary)
+- `stackwright_render_diff` — Before/after comparison
+
+### MCP Tools by Otter
+
 ```
-┌─────────────────┬────────────────────────────────────────────┐
-│ Otter           │ MCP Tools                                  │
-├─────────────────┼────────────────────────────────────────────┤
-│ Brand Otter     │ • None (pure conversation)                 │
-│                 │ • Browser tools (research)                 │
-│                 │ • File creation (BRAND_BRIEF.md)           │
-├─────────────────┼────────────────────────────────────────────┤
-│ Theme Otter     │ • stackwright_write_site_config            │
-│                 │ • stackwright_validate_site                │
-│                 │ • stackwright_render_yaml (preview)        │
-│                 │ • stackwright_list_themes                  │
-├─────────────────┼────────────────────────────────────────────┤
-│ Page Otter      │ • stackwright_write_page                   │
-│                 │ • stackwright_validate_pages               │
-│                 │ • stackwright_render_page                  │
-│                 │ • stackwright_get_content_types            │
-├─────────────────┼────────────────────────────────────────────┤
-│ Foreman Otter   │ • stackwright_scaffold_project             │
-│                 │ • stackwright_validate_site                │
-│                 │ • stackwright_validate_pages               │
-│                 │ • invoke_agent (coordination)              │
-└─────────────────┴────────────────────────────────────────────┘
+┌─────────────────┬────────────────────────────────────────────────────────────┐
+│ Otter           │ MCP Tools                                                  │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Brand Otter     │ • None (pure conversation)                                 │
+│                 │ • Browser tools (research)                                 │
+│                 │ • File creation (BRAND_BRIEF.md)                           │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Theme Otter     │ • stackwright_get_site_config                              │
+│                 │ • stackwright_write_site_config                            │
+│                 │ • stackwright_validate_site                                │
+│                 │ • stackwright_list_themes                                  │
+│                 │ • stackwright_render_yaml (preview before commit)           │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Page Otter      │ • stackwright_get_content_types                            │
+│                 │ • stackwright_list_pages                                   │
+│                 │ • stackwright_write_page                                   │
+│                 │ • stackwright_validate_pages                               │
+│                 │ • stackwright_preview_component                             │
+│                 │ • stackwright_render_page                                  │
+│                 │ • stackwright_render_yaml (preview before commit)           │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Foreman Otter   │ • stackwright_get_project_info                             │
+│                 │ • stackwright_scaffold_project                             │
+│                 │ • stackwright_validate_site                                │
+│                 │ • stackwright_validate_pages                               │
+│                 │ • stackwright_check_dev_server                             │
+│                 │ • invoke_agent (coordination)                              │
+└─────────────────┴────────────────────────────────────────────────────────────┘
 ```
 
 ## Dependency Graph
@@ -395,10 +451,10 @@ All Otters ──┬──► RAG Server ◄── Example Corpus
              │       │
              │       ▼
              │   ┌────────────────────────────┐
-             │   │ • Semantic search          │
-             │   │ • Pattern matching         │
-             │   │ • Example retrieval        │
-             │   │ • Best practice lookup     │
+             │   │ • Semantic search            │
+             │   │ • Pattern matching           │
+             │   │ • Example retrieval          │
+             │   │ • Best practice lookup      │
              │   └────────────────────────────┘
              │
              └──► Grounded suggestions
