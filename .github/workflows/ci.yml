@@ -22,6 +22,7 @@ jobs:
   lint-and-format:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-stackwright
       - run: pnpm format:check
       - run: pnpm lint
@@ -30,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint-and-format]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
@@ -39,6 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint-and-format]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
@@ -87,6 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint-and-format]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
@@ -103,6 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint-and-format]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
@@ -142,6 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint-and-format]
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
