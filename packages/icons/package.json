@@ -28,7 +28,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "lucide-react": "^0.577.0"
+    "lucide-react": "^1.7.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6",
