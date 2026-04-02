@@ -1021,12 +1021,37 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   } catch (err) {
     console.warn('\n  [WARN] Search index generation skipped: ' + (err as Error).message);
   }
+
+  // 5. Generate SBOM (unless --no-sbom flag is set)
+  if (!process.argv.includes('--no-sbom')) {
+    try {
+      const { createSBOM } = await import('@stackwright/sbom-generator');
+      const sbom = await createSBOM({
+        projectRoot,
+        formats: ['spdx', 'cyclonedx', 'build-manifest'],
+        includeDevDependencies: false,
+        includePeerDependencies: true,
+        outputDir: path.join(projectRoot, '.stackwright', 'sbom'),
+      });
+      await sbom.writeTo(projectRoot);
+      console.log('\n  [OK] SBOM generated: .stackwright/sbom/');
+    } catch (error) {
+      // SBOM generation failure should not fail the build
+      console.warn('\n  [WARN] SBOM generation failed (non-critical): ' + (error as Error).message);
+    }
+  }
+
   console.log('\nStackwright prebuild complete.\n');
 }
 
 // Run when executed directly as a CLI (not when required as a module)
 if (require.main === module) {
   const watchMode = process.argv.includes('--watch');
+  const noSBOM = process.argv.includes('--no-sbom');
+
+  if (noSBOM) {
+    console.log('[INFO] SBOM generation skipped (--no-sbom flag)');
+  }
 
   if (watchMode) {
     // Dynamic import to avoid loading watch code in non-watch mode
