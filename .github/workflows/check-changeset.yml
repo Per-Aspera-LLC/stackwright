@@ -14,18 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-            fetch-depth: 0
+          fetch-depth: 0
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - run: pnpm install
+      - uses: ./.github/actions/setup-stackwright
 
       - name: Validate Changeset Presence
         run: node .github/scripts/check-for-changeset.js
