@@ -17,7 +17,8 @@
     "launch-stackwright": "0.1.0",
     "@stackwright/maplibre": "0.0.0",
     "stackwright-docs": "0.1.0",
-    "@stackwright/otters": "0.1.0"
+    "@stackwright/otters": "0.1.0",
+    "@stackwright/sbom-generator": "0.0.0"
   },
   "changesets": [
     "add-code2-layout-icons",
@@ -32,8 +33,11 @@
     "map-adapter-phases-1-2",
     "nav-sidebar-override",
     "otters-as-package",
+    "otters-postinstall",
     "remove-hello-example",
     "resolve-background-utility",
+    "sbom-generator-addition",
+    "sbom-hooks-addition",
     "scaffold-bundled-default",
     "scaffold-pin-versions",
     "text-block-feature",
