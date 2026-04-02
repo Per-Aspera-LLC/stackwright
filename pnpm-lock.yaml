@@ -361,6 +361,9 @@ importers:
       '@stackwright/otters':
         specifier: workspace:*
         version: link:../otters
+      '@stackwright/scaffold-core':
+        specifier: workspace:*
+        version: link:../scaffold-core
       chalk:
         specifier: ^5.6.2
         version: 5.6.2
