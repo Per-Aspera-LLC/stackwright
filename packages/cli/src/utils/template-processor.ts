@@ -73,7 +73,7 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
 
   // Mutable configs that hooks can modify
   let packageJson = config.packageJson;
-  const codePuppyConfig = config.codePuppyConfig;
+  let codePuppyConfig = config.codePuppyConfig;
 
   // Fetch static template files from GitHub repo (falls back to bundled copy)
   await fetchTemplate(targetDir, { offline });
@@ -158,8 +158,13 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
   }
 
   // Generate package.json if not provided by hooks
-  if (!packageJson) {
+  if (!packageJson || Object.keys(packageJson).length === 0) {
     packageJson = buildPackageJson(projectName, useWorkspaceDeps) as Record<string, any>;
+  }
+
+  // Initialize codePuppyConfig if empty
+  if (!codePuppyConfig || Object.keys(codePuppyConfig).length === 0) {
+    codePuppyConfig = {};
   }
 
   // Run preInstall hooks - hooks can modify packageJson
@@ -169,7 +174,7 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
     siteTitle,
     themeId,
     packageJson,
-    codePuppyConfig: codePuppyConfig || {},
+    codePuppyConfig,
     dependencyMode: useWorkspaceDeps ? 'workspace' : 'standalone',
   });
 
