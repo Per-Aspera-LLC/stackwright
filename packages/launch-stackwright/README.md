@@ -5,11 +5,12 @@ The fastest way to get started with Stackwright — launch a new project with th
 ## Quick Start
 
 ```bash
-npx launch-stackwright my-awesome-site
+npx launch-stackwright my-awesome-site --otter-raft
 cd my-awesome-site
-pnpm install
 pnpm dev
 ```
+
+> 💡 **Tip:** The `--otter-raft` flag sets up everything including AI agents and installs all dependencies in one go. Prefer manual control? Just run without it: `npx launch-stackwright my-site`, then `pnpm install` separately.
 
 ## What You Get
 
@@ -45,6 +46,7 @@ Options:
   --name <name>       Project name (used in package.json)
   --title <title>     Site title shown in app bar and browser tab
   --theme <themeId>   Theme ID (corporate, creative, minimal, etc.)
+  --otter-raft        Setup the otter raft AI agents and install all dependencies
   --force             Launch even if directory is not empty
   --skip-otters       Skip copying otter raft configs
   -y, --yes           Skip all prompts, use defaults
@@ -55,6 +57,9 @@ Options:
 ## Examples
 
 ```bash
+# One-command setup with otter raft (recommended)
+npx launch-stackwright my-site --otter-raft
+
 # Interactive mode (default)
 npx launch-stackwright my-site
 
@@ -88,6 +93,21 @@ my-awesome-site/
 ├── next.config.js             # Next.js config
 ├── package.json               # Dependencies
 └── tsconfig.json              # TypeScript config
+```
+
+## Next Steps
+
+### With `--otter-raft`
+After launching, you're ready to go! Run:
+```bash
+pnpm dev
+```
+
+### Without `--otter-raft`
+You'll need to install dependencies first:
+```bash
+pnpm install
+pnpm dev
 ```
 
 ## Prerequisites

@@ -28,6 +28,7 @@ pnpm build:nextjs
 pnpm build:cli
 pnpm build:build-scripts
 pnpm build:mcp
+pnpm build:scaffold-core
 
 # Run the MCP server (stdio — for use with Claude Code or Claude for Desktop)
 pnpm stackwright-mcp
@@ -108,6 +109,15 @@ User's Next.js App
 @stackwright/cli        ← Standalone CLI (scaffolding, validation, content generation)
 ```
 
+**Scaffold Dependency Chain:**
+```
+@stackwright/scaffold-core ← Hook system for extensible scaffold processing
+       ↓
+@stackwright/cli           ← Uses hooks for MCP config, Pro package integration
+       ↓
+@stackwright/launch-stackwright ← Registers MCP config via hooks
+```
+
 ### Key Architectural Concepts
 
 **Content Rendering Pipeline**: YAML files are loaded → parsed with `js-yaml` → validated against the grammar (TypeScript types/JSON schemas) → compiled to React components via `contentRenderer.tsx` → rendered with theme and context.
@@ -121,6 +131,34 @@ User's Next.js App
 **Static Generation**: `@stackwright/nextjs` provides `getStaticPropsForSlug` and related helpers for Next.js `getStaticPaths`/`getStaticProps`. The `SlugPage` component in `@stackwright/core` drives slug-based routing.
 
 **Grammar / JSON Schema Generation**: `@stackwright/types` is the single source of truth for the Stackwright grammar. Zod schemas are the source of truth; TypeScript types are inferred via `z.infer<>`. `zod-to-json-schema` generates `theme-schema.json`, `content-schema.json`, and `siteconfig-schema.json` — the machine-readable grammar specification used for IDE YAML validation. Must be regenerated after type changes (`pnpm generate-schemas`). Zod schemas are introspectable at runtime via `schema.def` (Zod v4) enabling MCP tools and future runtime validation.
+
+### Scaffold Hooks System
+
+`@stackwright/scaffold-core` provides a hook system for extensible post-scaffold processing. Pro packages register hooks that run at lifecycle points.
+
+**Hook lifecycle points:**
+| Hook | When | Use Case |
+|------|------|----------|
+| `preScaffold` | Before scaffolding | Validate credentials |
+| `preInstall` | After files, before install | Modify package.json, configure MCP |
+| `postInstall` | After pnpm install | Verify installation |
+| `postScaffold` | After complete | Final configuration |
+
+**Pro package integration:**
+```typescript
+import { registerScaffoldHook } from '@stackwright/scaffold-core';
+
+registerScaffoldHook({
+  type: 'preInstall',
+  name: 'enterprise-license',
+  critical: true,
+  handler: async (ctx) => {
+    ctx.packageJson.dependencies['@stackwright-pro/license'] = '^1.0.0';
+  },
+});
+```
+
+Hooks run automatically when using `launch-stackwright --otter-raft`.
 
 ### Key Files
 

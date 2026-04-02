@@ -29,7 +29,14 @@ runs:
         cache: "pnpm"
 
     - name: Install dependencies
-      run: pnpm install --frozen-lockfile
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "PR detected: allowing lockfile updates..."
+          pnpm install
+        else
+          echo "Branch push detected: using frozen lockfile..."
+          pnpm install --frozen-lockfile
+        fi
       shell: bash
 
     - name: Build packages

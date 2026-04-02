@@ -8,6 +8,10 @@
 - Updated dependencies [24fed0f]
   - @stackwright/otters@0.2.0-alpha.2
   - @stackwright/cli@0.7.0-alpha.10
+- Added `--otter-raft` flag for one-command project setup with all dependencies installed
+- Run `npx launch-stackwright my-site --otter-raft` to scaffold and install in one step
+- Updated to use scaffold hooks system for MCP configuration
+- Hooks run automatically when using --otter-raft flag
 
 ## 0.2.0-alpha.6
 
