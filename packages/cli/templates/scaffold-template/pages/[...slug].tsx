@@ -16,7 +16,9 @@ function findContentFiles(dir: string, baseDir: string): string[] {
     } else if (
       entry.name.endsWith('.json') &&
       entry.name !== '_site.json' &&
-      entry.name !== '_root.json' && entry.name !== 'search-index.json'
+      entry.name !== '_root.json' &&
+      entry.name !== 'search-index.json' &&
+      entry.name !== '_font-links.json'
     ) {
       const rel = path.relative(baseDir, path.join(dir, entry.name));
       results.push(rel.replace(/\.json$/, '').replace(/\\/g, '/'));

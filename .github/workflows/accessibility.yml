@@ -16,28 +16,10 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+      - uses: ./.github/actions/setup-stackwright
         with:
-          version: 10
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build packages
-        run: pnpm build
-
-      - name: Re-link bins after build
-        run: pnpm install
+          build: true
+          relink-bins: true
 
       - name: Install Playwright browsers
         run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium

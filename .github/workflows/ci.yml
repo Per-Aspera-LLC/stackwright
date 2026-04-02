@@ -3,72 +3,45 @@ name: CI
 on:
   push:
     branches: [main, dev]
+    paths:
+      - 'packages/**'
+      - 'examples/**'
+      - 'scripts/**'
+      - '!examples/stackwright-docs/content/**'
   pull_request:
+    paths:
+      - 'packages/**'
+      - 'examples/**'
+      - 'scripts/**'
+      - '!examples/stackwright-docs/content/**'
 
 permissions:
   contents: read
 
 jobs:
-  format:
+  lint-and-format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
+      - uses: ./.github/actions/setup-stackwright
       - run: pnpm format:check
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
       - run: pnpm lint
 
   test:
     runs-on: ubuntu-latest
+    needs: [lint-and-format]
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
+      - uses: ./.github/actions/setup-stackwright
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
-      - run: pnpm build
+          build: true
       - run: pnpm test
 
   scaffold-smoke-test:
     runs-on: ubuntu-latest
+    needs: [lint-and-format]
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
+      - uses: ./.github/actions/setup-stackwright
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
-      - run: pnpm build
+          build: true
 
       - name: Pack workspace packages as tarballs
         run: |
@@ -112,18 +85,11 @@ jobs:
 
   check-agent-docs:
     runs-on: ubuntu-latest
+    needs: [lint-and-format]
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
+      - uses: ./.github/actions/setup-stackwright
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
-      - run: pnpm build
+          build: true
 
       - name: Regenerate AGENTS.md tables
         run: node packages/cli/dist/cli.js generate-agent-docs
@@ -135,20 +101,12 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    needs: [lint-and-format]
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
+      - uses: ./.github/actions/setup-stackwright
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm install
-        name: Re-link bins after build
+          build: true
+          relink-bins: true
 
       - name: Install Playwright browsers
         run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
@@ -182,18 +140,11 @@ jobs:
 
   check-schemas:
     runs-on: ubuntu-latest
+    needs: [lint-and-format]
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
+      - uses: ./.github/actions/setup-stackwright
         with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
-      - run: pnpm build
+          build: true
 
       - name: Regenerate JSON schemas
         run: cd packages/types && pnpm generate-schemas
