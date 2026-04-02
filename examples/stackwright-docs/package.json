@@ -31,7 +31,7 @@
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.6",
     "playwright": "^1.58.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "engines": {
     "node": ">=20.0.0",
