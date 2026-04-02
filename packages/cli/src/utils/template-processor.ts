@@ -208,7 +208,7 @@ function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false
     swIcons: '^0.3.0',
     swBuildScripts: '^0.4.0',
     swUiShadcn: '^0.1.0',
-    swOtters: '^0.1.0',
+    swOtters: '^0.2.0-alpha.0',
     // Third-party
     jsYaml: '^4.1.1',
     next: '^16.1.6',
