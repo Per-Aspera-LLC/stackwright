@@ -31,7 +31,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@inquirer/prompts": "^8.3.0",
+    "@inquirer/prompts": "^8.3.2",
     "@stackwright/build-scripts": "workspace:*",
     "@stackwright/sbom-generator": "workspace:*",
     "@stackwright/themes": "workspace:*",
