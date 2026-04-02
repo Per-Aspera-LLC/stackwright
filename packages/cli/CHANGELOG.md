@@ -6,6 +6,9 @@
 
 - 24fed0f: feat: Add SBOM generation for supply chain transparency
 
+- Added scaffold hooks system via `@stackwright/scaffold-core` for extensible post-scaffold processing
+  - Pro packages can now register hooks at lifecycle points: preScaffold, preInstall, postInstall, postScaffold
+
   Every Stackwright build now generates a Software Bill of Materials (SBOM) with:
   - SPDX 2.3 format (US Government compliance)
   - CycloneDX 1.5 format (OWASP tooling compatibility)

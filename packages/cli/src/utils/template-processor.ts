@@ -12,6 +12,8 @@ import {
   getGenericPageHints,
 } from './scaffold-hints';
 import { fetchTemplate } from './template-fetcher';
+import { runScaffoldHooks } from '@stackwright/scaffold-core';
+import type { ScaffoldHookContext } from '@stackwright/scaffold-core';
 
 /**
  * Walk up from the given directory looking for a pnpm-workspace.yaml.
@@ -54,6 +56,10 @@ export interface TemplateConfig {
   standalone?: boolean;
   /** Comma-separated list of page slugs to create in addition to defaults. */
   pages?: string;
+  /** Pre-built package.json to modify (from hooks) */
+  packageJson?: Record<string, any>;
+  /** Pre-built code-puppy config (from hooks) */
+  codePuppyConfig?: Record<string, any>;
 }
 
 /**
@@ -64,6 +70,10 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
   const { projectName, siteTitle, themeId, targetDir, offline } = config;
   const written: string[] = [];
   const year = new Date().getFullYear();
+
+  // Mutable configs that hooks can modify
+  let packageJson = config.packageJson;
+  const codePuppyConfig = config.codePuppyConfig;
 
   // Fetch static template files from GitHub repo (falls back to bundled copy)
   await fetchTemplate(targetDir, { offline });
@@ -147,15 +157,34 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
     useWorkspaceDeps = detectMonorepoRoot(targetDir) !== null;
   }
 
-  // Generate package.json with proper formatting
+  // Generate package.json if not provided by hooks
+  if (!packageJson) {
+    packageJson = buildPackageJson(projectName, useWorkspaceDeps) as Record<string, any>;
+  }
+
+  // Run preInstall hooks - hooks can modify packageJson
+  await runScaffoldHooks('preInstall', {
+    targetDir,
+    projectName,
+    siteTitle,
+    themeId,
+    packageJson,
+    codePuppyConfig: codePuppyConfig || {},
+    dependencyMode: useWorkspaceDeps ? 'workspace' : 'standalone',
+  });
+
+  // Write package.json with all hook modifications
   const packageJsonPath = path.join(targetDir, 'package.json');
   await fs.ensureDir(path.dirname(packageJsonPath));
-  await fs.writeFile(
-    packageJsonPath,
-    JSON.stringify(buildPackageJson(projectName, useWorkspaceDeps), null, 2) + '\n',
-    'utf8'
-  );
+  await fs.writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n', 'utf8');
   written.push('package.json');
+
+  // Write .code-puppy.json if hooks populated it
+  if (codePuppyConfig && Object.keys(codePuppyConfig).length > 0) {
+    const codePuppyPath = path.join(targetDir, '.code-puppy.json');
+    await fs.writeFile(codePuppyPath, JSON.stringify(codePuppyConfig, null, 2) + '\n', 'utf8');
+    written.push('.code-puppy.json');
+  }
 
   // Generate tsconfig.json
   const tsconfigPath = path.join(targetDir, 'tsconfig.json');

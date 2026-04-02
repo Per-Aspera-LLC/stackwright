@@ -6,6 +6,8 @@ import chalk from 'chalk';
 import { promptThemeSelection } from '../utils/theme-selector';
 import { processTemplate } from '../utils/template-processor';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
+import { runScaffoldHooks } from '@stackwright/scaffold-core';
+import type { ScaffoldHookContext } from '@stackwright/scaffold-core';
 
 export interface ScaffoldOptions {
   name?: string;
@@ -18,6 +20,8 @@ export interface ScaffoldOptions {
   monorepo?: boolean;
   standalone?: boolean;
   pages?: string;
+  /** Install dependencies after scaffolding (default: false) */
+  install?: boolean;
 }
 
 export interface ScaffoldResult {
@@ -84,18 +88,59 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     theme = theme ?? 'corporate';
   }
 
+  // Initialize context for hooks
+  const packageJson: Record<string, any> = {};
+  const codePuppyConfig: Record<string, any> = {};
+
+  // Run preScaffold hooks
+  await runScaffoldHooks('preScaffold', {
+    targetDir,
+    projectName: name!,
+    siteTitle: title!,
+    themeId: theme!,
+    packageJson,
+    codePuppyConfig,
+    dependencyMode: determineDependencyMode(targetDir, opts),
+  });
+
   const pages = await processTemplate({
     projectName: name!,
     siteTitle: title!,
     themeId: theme!,
     targetDir,
-    offline: !opts.online, // was: offline: opts.offline
+    offline: !opts.online,
     monorepo: opts.monorepo,
     standalone: opts.standalone,
     pages: opts.pages,
+    packageJson,
+    codePuppyConfig,
   });
 
   const dependencyMode = determineDependencyMode(targetDir, opts);
+
+  // If install is requested, run postInstall hooks
+  if (opts.install) {
+    await runScaffoldHooks('postInstall', {
+      targetDir,
+      projectName: name!,
+      siteTitle: title!,
+      themeId: theme!,
+      packageJson,
+      codePuppyConfig,
+      dependencyMode,
+    });
+  }
+
+  // Run postScaffold hooks
+  await runScaffoldHooks('postScaffold', {
+    targetDir,
+    projectName: name!,
+    siteTitle: title!,
+    themeId: theme!,
+    packageJson,
+    codePuppyConfig,
+    dependencyMode,
+  });
 
   return {
     path: targetDir,
@@ -128,6 +173,7 @@ export function registerScaffold(program: Command): void {
       '--pages <slugs>',
       'Comma-separated list of page slugs to create (e.g., about,contact,pricing)'
     )
+    .option('--install', 'Install dependencies after scaffolding')
     .option('--json', 'Output machine-readable JSON')
     .action(async (dir: string | undefined, opts: ScaffoldOptions) => {
       const targetDir = path.resolve(dir ?? process.cwd());
