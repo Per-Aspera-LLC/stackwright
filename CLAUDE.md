@@ -68,7 +68,25 @@ cd packages/types && pnpm generate-schemas
 pnpm changeset          # Create a changeset for changes
 pnpm version-packages   # Update versions based on changesets
 pnpm release            # Build and publish to NPM
+
+### SBOM Generation
+
+Stackwright automatically generates SBOM (Software Bill of Materials) for every build:
+
+```bash
+# SBOM is generated automatically during prebuild
+pnpm build  # Generates .stackwright/sbom/
+
+# CLI commands for SBOM
+pnpm stackwright -- sbom generate   # Regenerate SBOM
+pnpm stackwright -- sbom validate   # Validate SBOM schemas
+pnpm stackwright -- sbom diff       # Compare two builds
+
+# Skip SBOM generation (rarely needed)
+pnpm build -- --no-sbom
 ```
+
+SBOM formats: SPDX 2.3, CycloneDX 1.5, and Stackwright Build Manifest.
 
 ## Architecture
 

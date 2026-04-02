@@ -29,6 +29,7 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
+        "@stackwright/sbom-generator": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0"
     },

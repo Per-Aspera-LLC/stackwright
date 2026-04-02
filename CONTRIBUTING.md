@@ -413,7 +413,39 @@ git commit -m "Update visual regression baselines"
 
 See `packages/e2e/README.md` for detailed visual testing guide.
 
+## SBOM Testing
+
+When modifying `@stackwright/sbom-generator`:
+
+1. **Unit tests** are required for all format generators (SPDX, CycloneDX, Build Manifest)
+2. **Integration tests** should use real lockfiles from test fixtures
+3. **Coverage target**: 80% minimum for the sbom-generator package
+4. **Schema validation**: Test that generated SBOMs pass official SPDX/CycloneDX validators
+5. **Error handling**: Test malformed lockfile scenarios
+
+```bash
+# Run SBOM tests
+pnpm --filter @stackwright/sbom-generator test
+
+# Update visual baselines if needed
+pnpm --filter @stackwright/sbom-generator test --update-snapshots
+```
+
+### Running Tests
+
+```bash
+# All tests including SBOM
+pnpm test
+
+# SBOM generator only
+pnpm --filter @stackwright/sbom-generator test
+
+# With coverage
+pnpm --filter @stackwright/sbom-generator test:coverage
+```
+
 ## Schema Fuzzing
+
 
 The `schema-fuzzing.test.ts` file stress-tests Zod schemas with randomized inputs:
 
