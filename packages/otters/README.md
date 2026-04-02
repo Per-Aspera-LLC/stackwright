@@ -6,6 +6,24 @@ A coordinated team of specialized AI agents (otters) that work together to build
 
 ---
 
+## Installation
+
+```bash
+npm install @stackwright/otters
+# or
+pnpm add @stackwright/otters
+```
+
+The postinstall script automatically installs otters to `~/.code_puppy/agents/` for code-puppy discovery.
+
+If you need to re-run the installation:
+
+```bash
+node node_modules/@stackwright/otters/scripts/install-agents.js
+```
+
+---
+
 ## The Otter Raft
 
 | Otter | Role | Output |
@@ -57,51 +75,24 @@ User Request
      USER
 ```
 
-### Installing as an npm Package
-
-Unlike traditional template-based approaches, this package is **installed via npm** and referenced directly:
-
-```bash
-npm install @stackwright/otters
-```
-
-Agents are loaded by Code Puppy using the `.code-puppy.json` configuration in this package:
-
-```json
-{
-  "agents_path": "src"
-}
-```
-
 ### Invoking Otters
 
-Otters are invoked through Code Puppy's `invoke_agent` tool:
+Otters are invoked through Code Puppy's agent invocation:
 
-```typescript
-// Start a full site build
-await invoke_agent({
-  agent_name: "stackwright-foreman-otter",
-  prompt: "Build me a law firm website"
-});
+```bash
+# Start a full site build
+code-puppy -i -a stackwright-foreman-otter
 
-// Just refine the theme
-await invoke_agent({
-  agent_name: "stackwright-theme-otter",
-  prompt: "Update the color palette to be warmer"
-});
+# Just refine the theme
+code-puppy -i -a stackwright-theme-otter
 
-// Add a new page
-await invoke_agent({
-  agent_name: "stackwright-page-otter",
-  prompt: "Add a pricing page"
-});
+# Add a new page
+code-puppy -i -a stackwright-page-otter
 ```
 
 ---
 
 ## File-Based Handoffs
-
-Otters communicate through files:
 
 | File | Created By | Read By |
 |------|-----------|---------|
@@ -141,9 +132,10 @@ For detailed architecture documentation, see [OTTER_ARCHITECTURE.md](../../OTTER
 @stackwright/otters/
 ├── package.json
 ├── tsconfig.json
-├── .code-puppy.json        # agents_path: "src"
 ├── README.md
 ├── AGENTS.md              # Agent reference
+├── scripts/
+│   └── install-agents.js  # Postinstall script
 └── src/
     ├── stackwright-brand-otter.json
     ├── stackwright-foreman-otter.json

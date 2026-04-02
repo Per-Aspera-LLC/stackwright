@@ -1,3 +1,11 @@
 {
-  "agents_path": "src"
+  "mcpServers": [
+    {
+      "name": "stackwright-mcp",
+      "command": "pnpm",
+      "args": ["exec", "stackwright-mcp"],
+      "autoStart": true,
+      "workingDirectory": "${PROJECT_ROOT}"
+    }
+  ]
 }
