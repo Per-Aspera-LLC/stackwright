@@ -103,6 +103,8 @@ But the escape hatch is designed to be **obvious when you're using it**. Custom 
 
 **"What it doesn't protect against"**: Custom React components written outside the YAML layer are standard Next.js. Dynamic data fetching in custom components must be secured by the developer. Stackwright constrains the platform; it doesn't constrain arbitrary code you add to the platform.
 
+- **Automatic SBOM Generation**: Every Stackwright build includes a complete Software Bill of Materials (SBOM) in SPDX 2.3 and CycloneDX 1.5 formats, ensuring supply chain transparency by default. This extends the "safe by construction" philosophy from content to dependencies.
+
 ### Implication for Schema Design
 
 Every field added to the schema expands the set of expressible behaviors. This is why the "constrain first" principle exists — it is not just about simplicity, it is about maintaining the safety guarantees that make the enterprise use case viable.
