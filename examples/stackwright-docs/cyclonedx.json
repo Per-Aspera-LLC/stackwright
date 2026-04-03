@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-04-03T19:28:43.494Z",
+    "timestamp": "2026-04-03T20:10:38.343Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -287,6 +287,25 @@
     },
     {
       "type": "library",
+      "name": "stackwright-docs",
+      "version": "link:",
+      "purl": "pkg:npm/stackwright-docs@link:",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "048f32c842b18fe0c8c18f64b17cedd18149860b0064ba12a2c595890048e568"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/stackwright-docs"
+        }
+      ]
+    },
+    {
+      "type": "library",
       "name": "tailwind-merge",
       "version": "2.6.0",
       "purl": "pkg:npm/tailwind-merge@2.6.0",
@@ -323,6 +342,7 @@
         "next",
         "react",
         "react-dom",
+        "stackwright-docs",
         "tailwind-merge"
       ],
       "dependencyType": "direct"

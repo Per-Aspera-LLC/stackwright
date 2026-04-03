@@ -1,11 +1,11 @@
 SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
-SPDXID: SPDXRef-DOCUMENT-9bbc3e93
+SPDXID: SPDXRef-DOCUMENT-0b5eb5d9
 DocumentName: stackwright-docs@0.1.1-alpha.1
-DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-03T19:28:43.491Z
+DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-03T20:10:38.342Z
 
 CreationInfo:
-  Created: 2026-04-03T19:28:43.491Z
+  Created: 2026-04-03T20:10:38.342Z
   Creator: Tool: @stackwright/sbom-generator
   Creator: Tool-Version: 0.0.0
 
@@ -121,6 +121,14 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: d321eb3d0478e2a58565081343e4d1da25caf8103b3dd72b3544a715f2e80418
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/react-dom@19.2.4
 
+PackageName: stackwright-docs
+SPDXID: SPDXRef-Package-stackwright-docs
+PackageVersion: link:
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageChecksum: SHA256: 048f32c842b18fe0c8c18f64b17cedd18149860b0064ba12a2c595890048e568
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/stackwright-docs@link:
+
 PackageName: tailwind-merge
 SPDXID: SPDXRef-Package-tailwind-merge
 PackageVersion: 2.6.0
@@ -129,7 +137,7 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: f55becd055a25a9ecb32ee3cf37faf157aa62b955195bb7f695909e582e8ae33
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@2.6.0
 
-Relationship: SPDXRef-DOCUMENT-9bbc3e93 DESCRIBES SPDXRef-Package-clsx
+Relationship: SPDXRef-DOCUMENT-0b5eb5d9 DESCRIBES SPDXRef-Package-clsx
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-accordion
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-slot
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-tabs
@@ -143,4 +151,5 @@ Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-lucide-react
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-next
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-react
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-react-dom
+Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-stackwright-docs
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-tailwind-merge

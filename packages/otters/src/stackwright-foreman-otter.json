@@ -3,7 +3,6 @@
   "name": "stackwright-foreman-otter",
   "display_name": "Stackwright Foreman Otter 🦦🏗️",
   "description": "The coordinator agent who orchestrates Brand, Theme, and Page Otters to build complete Stackwright sites. The user-facing interface for end-to-end site generation.",
-  "model": "claude-code-claude-sonnet-4-5-20250929",
   "tools": [
     "agent_share_your_reasoning",
     "agent_run_shell_command",
