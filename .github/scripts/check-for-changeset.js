@@ -36,13 +36,20 @@ function getChangedFiles() {
         });
         return diff.split('\n').filter(Boolean);
       } catch (fallbackErr) {
-        // If that also fails, just check for changesets in the working tree
-        console.log('⚠️ Merge-base fallback failed, checking for changesets directly...');
-        const files = execSync('git diff --name-only HEAD~1', {
+        // If that also fails, use the PR branch HEAD (second parent of merge commit)
+        console.log('⚠️ Merge-base fallback failed, trying PR branch diff...');
+        
+        // For merge commits: HEAD^1 is target branch, HEAD^2 is PR branch
+        const prBranchHead = execSync('git rev-parse HEAD^2', {
+          encoding: 'utf-8',
+          stdio: 'pipe',
+        }).trim();
+        
+        const diff = execSync(`git diff --name-only origin/${base}...${prBranchHead}`, {
           encoding: 'utf-8',
           stdio: 'pipe',
         });
-        return files.split('\n').filter(Boolean);
+        return diff.split('\n').filter(Boolean);
       }
     }
   } catch (err) {
