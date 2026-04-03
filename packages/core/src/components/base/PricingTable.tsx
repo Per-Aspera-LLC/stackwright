@@ -1,12 +1,13 @@
 import React from 'react';
 import { PricingTableContent } from '@stackwright/types';
-import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { useSafeColorMode, useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { getThemeShadow } from '../../utils/shadowUtils';
 
 export function PricingTable({ heading, plans, background }: PricingTableContent) {
   const theme = useSafeTheme();
+  const resolvedColorMode = useSafeColorMode();
 
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
@@ -17,7 +18,7 @@ export function PricingTable({ heading, plans, background }: PricingTableContent
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme),
+        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
       }}
     >
       {heading?.text && (

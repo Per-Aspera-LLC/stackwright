@@ -2,13 +2,14 @@ import React from 'react';
 import { MainContent, GraphicPosition } from '@stackwright/types';
 import { TextGrid } from './TextGrid';
 import { ThemedButton } from './ThemedButton';
-import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { useSafeColorMode, useSafeTheme } from '../../hooks/useSafeTheme';
 import { Media } from '../media/Media';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 
 export function MainContentGrid(content: MainContent) {
   const theme = useSafeTheme();
+  const resolvedColorMode = useSafeColorMode();
 
   const textPercent = content.textToGraphic ?? 58;
   const graphicPercent = 100 - textPercent;
@@ -73,7 +74,7 @@ export function MainContentGrid(content: MainContent) {
     <div
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: resolveBackground(content?.background, theme),
+        background: resolveBackground(content?.background, theme, resolvedColorMode === 'dark'),
         margin: theme.spacing.xl,
       }}
     >

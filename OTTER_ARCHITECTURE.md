@@ -1,8 +1,68 @@
 # Stackwright Otter Raft Architecture 🦦
 
-AI agent orchestration system for end-to-end Stackwright site generation.
-
 > **A raft of otters** is the collective noun for a group of otters floating together. Our raft of specialized AI agents coordinates seamlessly to build complete Stackwright sites! 🦦🦦🦦🦦
+
+## The Biology Analogy: How Real Otters Coordinate
+
+Real otters form rafts not because a central controller tells them to, but because they discover each other and find complementary behaviors. A mother otter knows her pup can't swim far yet—so she finds other mothers and they form a "creche," taking turns watching the young while others forage. An adult male finds other males and they patrol boundaries together. The raft emerges from **discovery**, not **command**.
+
+**Our AI otters work exactly the same way.** Each otter starts by looking around to see who else is available, then adapts its coordination strategy based on what it finds:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    DYNAMIC DISCOVERY                        │
+└─────────────────────────────────────────────────────────────┘
+
+  Brand Otter:     "Let me check who's in the water..."
+                   → list_agents() finds: [Theme Otter, Page Otter]
+                   → "I'll create a brand brief that sets up the theme"
+
+  Theme Otter:     "Dashboard Otter available! Want live data integration?"
+                   → discovers Dashboard Otter at runtime
+                   → adapts theme to support dashboard components
+
+  Page Otter:      "I see Brand Otter and Theme Otter completed their work"
+                   → reads BRAND_BRIEF.md and stackwright.yml
+                   → builds pages using established brand identity
+```
+
+This is fundamentally different from traditional agent systems where a central coordinator hard-codes knowledge of all agents. Here, **the raft self-organizes at runtime**.
+
+---
+
+## Dynamic Discovery (The Biological Model)
+
+Unlike traditional agent systems where a central coordinator hard-codes knowledge of all agents, our otters discover each other at runtime:
+
+```typescript
+// Every otter starts by discovering who else is in the water
+const agents = await list_agents();
+const otters = agents.filter(a => a.name.endsWith('-otter'));
+
+// Each otter adapts its behavior based on who it finds
+// Brand Otter: "I'm alone - I'll guide brand discovery myself"
+if (otters.length === 0) {
+  await run_brand_discovery();
+}
+
+// Page Otter: "Dashboard Otter available! Want live data?"
+if (otters.includes('dashboard-otter')) {
+  suggest_live_data_integration();
+}
+
+// Theme Otter: "Pro Theme Otter found! Shall I suggest enterprise variants?"
+if (otters.includes('pro-theme-otter')) {
+  suggest_enterprise_themes();
+}
+```
+
+This means:
+- **No central planner needs to know everything** — the Foreman discovers agents dynamically
+- **Otters self-organize based on availability** — new otters are picked up automatically
+- **New otters are discovered automatically** — drop in a new agent, it's immediately available
+- **The raft adapts to what's installed** — partial deployments work gracefully
+
+---
 
 ## Architecture Overview
 
@@ -14,13 +74,12 @@ AI agent orchestration system for end-to-end Stackwright site generation.
                          │
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              🦦🏗️  FOREMAN OTTER                             │
-│                  (Coordinator)                               │
+│              🦦🏗️  FOREMAN OTTER (Dynamic Coordinator)       │
 │                                                              │
-│  • Project scaffolding                                       │
-│  • Sequential otter coordination                             │
-│  • Validation & error handling                               │
-│  • Visual verification                                       │
+│  • Discovers available otters via list_agents()            │
+│  • Builds coordination graph at runtime                     │
+│  • Invokes discovered otters dynamically                    │
+│  • Handles missing otters gracefully                         │
 └────────┬──────────────────┬───────────────────┬─────────────┘
          │                  │                   │
          ▼                  ▼                   ▼
@@ -56,9 +115,70 @@ AI agent orchestration system for end-to-end Stackwright site generation.
 │    │   └── services/          (services page)               │
 │    │       └── content.yml                                  │
 │    └── public/                                               │
-│        └── images/            (co-located images)           │
+│        └── images/            (co-located images)            │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Emergent Coordination Examples
+
+The beauty of dynamic discovery is that coordination **emerges** from what otters find, rather than being hard-coded:
+
+### Example 1: Page Otter Discovers Dashboard Otter
+```
+Page Otter: "Running list_agents()..."
+           → Found: brand-otter, theme-otter, dashboard-otter
+
+Page Otter: "Dashboard Otter is available! Shall I create
+             a live metrics page with real-time data?"
+```
+
+### Example 2: Theme Otter Discovers Pro Theme Otter
+```
+Theme Otter: "Checking for specialized theme agents..."
+            → Found: pro-theme-otter
+
+Theme Otter: "Pro Theme Otter detected! I can suggest 
+              enterprise-grade theme variants with
+              advanced components."
+```
+
+### Example 3: Brand Otter Works Alone
+```
+Brand Otter: "Checking for collaboration..."
+            → Found: []
+
+Brand Otter: "No other otters available. I'll guide brand
+              discovery myself and create a complete
+              BRAND_BRIEF.md."
+```
+
+### Example 4: Foreman Handles Missing Otter Gracefully
+```
+Foreman: "Attempting to invoke dashboard-otter..."
+         → Error: Agent not found
+
+Foreman: "Dashboard Otter not installed. Falling back to
+          static page content. User can add Dashboard Otter
+          later for live data."
+```
+
+---
+
+## Comparison: Traditional vs. Stackwright Otters
+
+| Aspect | Traditional Agent Systems | Stackwright Otters |
+|--------|---------------------------|---------------------|
+| **Coordination** | Central planner hard-codes all agents | Otters discover each other at runtime |
+| **Extensibility** | New agent = update all coordinators | Drop in new otter = automatically discovered |
+| **Coupling** | Tight (by name/interface) | Loose (by capability) |
+| **Failure mode** | Single point of failure | Graceful degradation |
+| **Self-organization** | Top-down command | Bottom-up discovery |
+| **Partial deployment** | Requires all agents | Works with available otters |
+| **Knowledge required** | Central planner must know all | Each otter knows only its domain |
+
+---
 
 ## Data Flow
 
@@ -92,34 +212,78 @@ AI agent orchestration system for end-to-end Stackwright site generation.
                 └─> User review & iteration
 ```
 
+---
+
 ## MCP Tool Usage by Otter
 
 **Important**: Foreman Otter uses MCP tools (`stackwright_scaffold_project`) instead of shell commands for project scaffolding. This ensures it works without requiring a globally installed CLI.
 
+### Tool Categories
+
+All MCP tools are organized into these categories:
+
+**PROJECT TOOLS**
+- `stackwright_get_project_info` — Get project info (versions, theme, pages)
+- `stackwright_scaffold_project` — Scaffold new Stackwright project
+
+**SITE TOOLS**
+- `stackwright_get_site_config` — Read stackwright.yml content
+- `stackwright_write_site_config` — Write/update stackwright.yml
+- `stackwright_validate_site` — Validate stackwright.yml schema
+- `stackwright_list_themes` — List available built-in themes
+
+**PAGE TOOLS**
+- `stackwright_list_pages` — List all pages in project
+- `stackwright_get_page` — Read page YAML content
+- `stackwright_write_page` — Write/update page YAML
+- `stackwright_add_page` — Create new page with boilerplate
+- `stackwright_validate_pages` — Validate page YAML against schema
+
+**CONTENT TOOLS**
+- `stackwright_get_content_types` — List all content types with fields
+- `stackwright_preview_component` — Show screenshot preview of component
+
+**RENDER TOOLS**
+- `stackwright_check_dev_server` — Verify dev server is running
+- `stackwright_render_page` — Screenshot a page
+- `stackwright_render_yaml` — Preview YAML without saving (temporary)
+- `stackwright_render_diff` — Before/after comparison
+
+### MCP Tools by Otter
+
 ```
-┌─────────────────┬────────────────────────────────────────────┐
-│ Otter           │ MCP Tools                                  │
-├─────────────────┼────────────────────────────────────────────┤
-│ Brand Otter     │ • None (pure conversation)                 │
-│                 │ • Browser tools (research)                 │
-│                 │ • File creation (BRAND_BRIEF.md)           │
-├─────────────────┼────────────────────────────────────────────┤
-│ Theme Otter     │ • stackwright_write_site_config            │
-│                 │ • stackwright_validate_site                │
-│                 │ • stackwright_render_yaml (preview)        │
-│                 │ • stackwright_list_themes                  │
-├─────────────────┼────────────────────────────────────────────┤
-│ Page Otter      │ • stackwright_write_page                   │
-│                 │ • stackwright_validate_pages               │
-│                 │ • stackwright_render_page                  │
-│                 │ • stackwright_get_content_types            │
-├─────────────────┼────────────────────────────────────────────┤
-│ Foreman Otter   │ • stackwright_scaffold_project             │
-│                 │ • stackwright_validate_site                │
-│                 │ • stackwright_validate_pages               │
-│                 │ • invoke_agent (coordination)              │
-└─────────────────┴────────────────────────────────────────────┘
+┌─────────────────┬────────────────────────────────────────────────────────────┐
+│ Otter           │ MCP Tools                                                  │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Brand Otter     │ • None (pure conversation)                                 │
+│                 │ • Browser tools (research)                                 │
+│                 │ • File creation (BRAND_BRIEF.md)                           │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Theme Otter     │ • stackwright_get_site_config                              │
+│                 │ • stackwright_write_site_config                            │
+│                 │ • stackwright_validate_site                                │
+│                 │ • stackwright_list_themes                                  │
+│                 │ • stackwright_render_yaml (preview before commit)           │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Page Otter      │ • stackwright_get_content_types                            │
+│                 │ • stackwright_list_pages                                   │
+│                 │ • stackwright_write_page                                   │
+│                 │ • stackwright_validate_pages                               │
+│                 │ • stackwright_preview_component                             │
+│                 │ • stackwright_render_page                                  │
+│                 │ • stackwright_render_yaml (preview before commit)           │
+├─────────────────┼────────────────────────────────────────────────────────────┤
+│ Foreman Otter   │ • stackwright_get_project_info                             │
+│                 │ • stackwright_scaffold_project                             │
+│                 │ • stackwright_validate_site                                │
+│                 │ • stackwright_validate_pages                               │
+│                 │ • stackwright_check_dev_server                             │
+│                 │ • list_agents (dynamic discovery)                          │
+│                 │ • invoke_agent (coordination)                              │
+└─────────────────┴────────────────────────────────────────────────────────────┘
 ```
+
+---
 
 ## Dependency Graph
 
@@ -133,6 +297,7 @@ Level 0: User Input
 
 Level 1: Foreman Otter
   └─> Scaffolds project (if needed)
+  └─> Discovers available otters dynamically
 
 Level 2: Brand Otter
   └─> Creates BRAND_BRIEF.md
@@ -153,16 +318,19 @@ Level 5: Verification
 
 **CRITICAL**: Otters must be invoked SEQUENTIALLY, never in parallel.
 
+---
+
 ## Handoff Protocol
 
 ```
 User Request
      │
      ▼
-┌────────────────────────┐
-│  Foreman Otter         │ ◄── Entry point
-│  "Starting full build" │
-└───────┬────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│  Foreman Otter (Dynamic Coordinator)                        │
+│  "Starting full build"                                     │
+│  → list_agents() to discover available otters             │
+└───────┬────────────────────────────────────────────────────┘
         │ invoke
         ▼
 ┌────────────────────────┐
@@ -195,22 +363,24 @@ User Request
         ▼
 ┌────────────────────────┐
 │  Page Otter            │ ◄── Phase 3: Content
-│  "Building pages..."   │
+│  "Building pages..."  │
 └───────┬────────────────┘
         │ creates pages/*.yml
         ▼
 ┌────────────────────────┐
 │  Foreman Otter         │ ◄── Verification
-│  "Rendering pages..."  │
+│  "Rendering pages..." │
 └───────┬────────────────┘
         │ visual verification
         ▼
 ┌────────────────────────┐
 │  User                  │ ◄── Handoff
-│  "Site is ready!       │
-│   Run pnpm dev"        │
+│  "Site is ready!      │
+│   Run pnpm dev"       │
 └────────────────────────┘
 ```
+
+---
 
 ## State Machine
 
@@ -263,6 +433,8 @@ User Request
        └──────► (back to VERIFYING)
 ```
 
+---
+
 ## Error Handling Flow
 
 ```
@@ -303,6 +475,8 @@ Otter Invocation
 └────────────────┘
 ```
 
+---
+
 ## Comparison: Legacy vs. New Architecture
 
 ```
@@ -325,7 +499,7 @@ Otter Invocation
 └────────────────────────────────────────────────────────────┘
 
 ┌────────────────────────────────────────────────────────────┐
-│ NEW: Specialized Otters (Modular)                          │
+│ NEW: Specialized Otters (Modular, Self-Discovering)       │
 ├────────────────────────────────────────────────────────────┤
 │                                                             │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
@@ -339,15 +513,20 @@ Otter Invocation
 │                           │                                │
 │                  ┌────────────────┐                        │
 │                  │ Foreman Otter  │                        │
-│                  │ (Coordinator)  │                        │
+│                  │ (Dynamic       │                        │
+│                  │  Discovery)    │                        │
 │                  └────────────────┘                        │
 │                                                             │
 │  ✅ Single Responsibility Principle                        │
 │  ✅ Reusable phases (skip brand if brief exists)          │
 │  ✅ Pausable workflows                                     │
 │  ✅ Easy to test each phase independently                  │
+│  ✅ Self-organizing via runtime discovery                  │
+│  ✅ Graceful degradation when otters are missing          │
 └────────────────────────────────────────────────────────────┘
 ```
+
+---
 
 ## Future Extensions
 
@@ -395,10 +574,10 @@ All Otters ──┬──► RAG Server ◄── Example Corpus
              │       │
              │       ▼
              │   ┌────────────────────────────┐
-             │   │ • Semantic search          │
-             │   │ • Pattern matching         │
-             │   │ • Example retrieval        │
-             │   │ • Best practice lookup     │
+             │   │ • Semantic search            │
+             │   │ • Pattern matching           │
+             │   │ • Example retrieval          │
+             │   │ • Best practice lookup      │
              │   └────────────────────────────┘
              │
              └──► Grounded suggestions
@@ -406,15 +585,36 @@ All Otters ──┬──► RAG Server ◄── Example Corpus
 
 ---
 
+## Installation
+
+Otters are distributed as the [`@stackwright/otters`](https://www.npmjs.com/package/@stackwright/otters) npm package:
+
+```bash
+npm install @stackwright/otters
+# or
+pnpm add @stackwright/otters
+```
+
+**Auto-install**: The package's `postinstall` script automatically installs otter agent files to `~/.code_puppy/agents/` for code-puppy discovery. No manual copying required!
+
+To re-run installation manually:
+```bash
+node node_modules/@stackwright/otters/scripts/install-agents.js
+```
+
+---
+
 ## Key Architectural Principles
 
-1. **Separation of Concerns** — Each otter owns one domain
-2. **Sequential Execution** — Dependencies enforced by Foreman
-3. **File-Based Handoffs** — BRAND_BRIEF.md, stackwright.yml, pages/*.yml
-4. **Validation at Every Step** — No invalid YAML proceeds to next phase
-5. **Visual Verification** — Screenshots close the feedback loop
-6. **Pausable Workflows** — Can stop after brand, resume later for theme
-7. **Reusability** — Skip phases if artifacts already exist
+1. **Dynamic Discovery** — Otters find each other at runtime, not by hard-coded coordination
+2. **Separation of Concerns** — Each otter owns one domain
+3. **Sequential Execution** — Dependencies enforced by Foreman
+4. **File-Based Handoffs** — BRAND_BRIEF.md, stackwright.yml, pages/*.yml
+5. **Validation at Every Step** — No invalid YAML proceeds to next phase
+6. **Visual Verification** — Screenshots close the feedback loop
+7. **Pausable Workflows** — Can stop after brand, resume later for theme
+8. **Reusability** — Skip phases if artifacts already exist
+9. **Emergent Coordination** — The raft organizes itself based on available agents
 
 ---
 

@@ -1,33 +1,56 @@
 import React from 'react';
 import { AlertContent, AlertVariant } from '@stackwright/types';
-import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { useSafeColorMode, useSafeTheme } from '../../hooks/useSafeTheme';
 import { hexToRgba } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 
-const variantConfig: Record<AlertVariant, { color: string; iconName: string }> = {
-  info: { color: '#3b82f6', iconName: 'Info' },
-  warning: { color: '#f59e0b', iconName: 'AlertTriangle' },
-  success: { color: '#22c55e', iconName: 'CheckCircle' },
-  danger: { color: '#ef4444', iconName: 'CircleAlert' },
-  note: { color: '', iconName: 'Info' },
-  tip: { color: '#8b5cf6', iconName: 'CheckCircle' },
+// Light mode accent colors
+const VARIANT_COLORS = {
+  info: '#3b82f6',
+  warning: '#f59e0b',
+  success: '#22c55e',
+  danger: '#ef4444',
+  note: '#6b7280',
+  tip: '#8b5cf6',
+} as const;
+
+// Dark mode accent colors (higher contrast for dark backgrounds)
+const VARIANT_COLORS_DARK = {
+  info: '#60a5fa',
+  warning: '#fbbf24',
+  success: '#4ade80',
+  danger: '#f87171',
+  note: '#94a3b8',
+  tip: '#a78bfa',
+} as const;
+
+const ICON_NAMES: Record<AlertVariant, string> = {
+  info: 'Info',
+  warning: 'AlertTriangle',
+  success: 'CheckCircle',
+  danger: 'CircleAlert',
+  note: 'Info',
+  tip: 'CheckCircle',
 };
 
 export function Alert({ variant, title, body, background }: AlertContent) {
   const theme = useSafeTheme();
-  const config = variantConfig[variant];
-  const accentColor = config.color || theme.colors.textSecondary;
+  const resolvedColorMode = useSafeColorMode();
+
+  // Select appropriate accent color based on color mode
+  const colors = resolvedColorMode === 'dark' ? VARIANT_COLORS_DARK : VARIANT_COLORS;
+  const accentColor = colors[variant] || theme.colors.textSecondary;
   const alertBgColor = hexToRgba(accentColor, 0.1);
 
   const iconRegistry = getIconRegistry();
-  const IconComponent = iconRegistry?.get(config.iconName);
+  const IconComponent = iconRegistry?.get(ICON_NAMES[variant]);
 
   return (
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme),
+        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
       }}
     >
       <div
@@ -71,7 +94,7 @@ export function Alert({ variant, title, body, background }: AlertContent) {
             <div
               style={{
                 fontWeight: 600,
-                color: accentColor,
+                color: theme.colors.text,
                 marginBottom: body ? '4px' : 0,
               }}
             >

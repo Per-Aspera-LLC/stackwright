@@ -1,0 +1,50 @@
+name: "Setup Stackwright"
+description: "Standardized pnpm/Node setup for Stackwright monorepo"
+
+inputs:
+  build:
+    description: "Whether to run pnpm build after install"
+    required: false
+    default: "false"
+  relink-bins:
+    description: "Whether to re-link bins after build (needed for CLI tools)"
+    required: false
+    default: "false"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v3
+      with:
+        version: 10
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: "pnpm"
+
+    - name: Install dependencies
+      run: |
+        if [ "${{ github.event_name }}" = "pull_request" ]; then
+          echo "PR detected: allowing lockfile updates..."
+          pnpm install
+        else
+          echo "Branch push detected: using frozen lockfile..."
+          pnpm install --frozen-lockfile
+        fi
+      shell: bash
+
+    - name: Build packages
+      if: inputs.build == 'true'
+      run: pnpm build
+      shell: bash
+
+    - name: Relink bins
+      if: inputs.relink-bins == 'true'
+      run: pnpm install
+      shell: bash

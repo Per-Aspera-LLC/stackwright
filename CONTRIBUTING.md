@@ -192,6 +192,143 @@ The architect sets priority tiers. Contributors and agents should pick work from
 @stackwright/icons        — MUI icon registry
 @stackwright/build-scripts — Prebuild pipeline (image co-location, path rewriting)
 @stackwright/cli          — CLI for scaffolding, page management, validation
+@stackwright/scaffold-core — Hook system for extensible scaffold processing (Pro packages use this)
+```
+
+## Creating Pro Packages with Scaffold Hooks
+
+Pro packages can extend the scaffold process using the hooks system in `@stackwright/scaffold-core`.
+
+### Overview
+
+The scaffold hooks system allows Pro packages to:
+- Inject enterprise dependencies into `package.json`
+- Configure custom MCP servers
+- Add post-install verification
+- Run custom setup scripts
+
+### Hook Lifecycle Points
+
+| Hook | When | Use Case |
+|------|------|----------|
+| `preScaffold` | Before scaffolding begins | Validate environment, check licenses |
+| `preInstall` | After files created, before `pnpm install` | Modify `package.json`, set up `.code-puppy.json` |
+| `postInstall` | After `pnpm install` completes | Verify installation, run setup scripts |
+| `postScaffold` | After scaffolding complete | Final configuration, cleanup |
+
+### Creating a Pro Launch Hooks Package
+
+1. **Create package structure:**
+   ```
+   @stackwright-pro/launch-hooks/
+   ├── package.json
+   └── index.js
+   ```
+
+2. **package.json:**
+   ```json
+   {
+     "name": "@stackwright-pro/launch-hooks",
+     "version": "0.1.0",
+     "main": "index.js",
+     "dependencies": {
+       "@stackwright/scaffold-core": "workspace:*"
+     }
+   }
+   ```
+
+3. **index.js** — Register hooks:
+   ```javascript
+   const { registerScaffoldHook } = require('@stackwright/scaffold-core');
+
+   // Add enterprise license
+   registerScaffoldHook({
+     type: 'preInstall',
+     name: 'enterprise-license',
+     critical: true,
+     handler: async (ctx) => {
+       if (!process.env.PRO_API_KEY) {
+         throw new Error('PRO_API_KEY required');
+       }
+       ctx.packageJson.dependencies['@stackwright-pro/license'] = '^1.0.0';
+     },
+   });
+
+   // Configure enterprise MCP server
+   registerScaffoldHook({
+     type: 'preInstall',
+     name: 'enterprise-mcp',
+     priority: 20,
+     handler: async (ctx) => {
+       ctx.codePuppyConfig = ctx.codePuppyConfig || {};
+       ctx.codePuppyConfig.mcp_servers = ctx.codePuppyConfig.mcp_servers || {};
+       ctx.codePuppyConfig.mcp_servers.enterprise = {
+         command: 'node',
+         args: ['node_modules/@stackwright-pro/mcp/dist/server.js'],
+         env: { API_KEY: process.env.PRO_API_KEY },
+       };
+     },
+   });
+   ```
+
+4. **Usage:** Users add your package to their project:
+   ```bash
+   npx launch-stackwright --otter-raft my-site
+   # Pro hooks run automatically during scaffold
+   ```
+
+### Hook Context
+
+The context object passed to hooks:
+
+```typescript
+interface ScaffoldHookContext {
+  targetDir: string;           // Project directory
+  projectName: string;         // Project name
+  siteTitle: string;           // Site title  
+  themeId: string;             // Theme ID
+  packageJson: Record<string, any>;   // Mutable - add dependencies
+  codePuppyConfig?: Record<string, any>; // Mutable - add MCP config
+  dependencyMode: 'workspace' | 'standalone';
+  pages?: string[];            // Pages being created
+  install?: boolean;           // Whether install will run
+  [key: string]: any;          // Hooks can add custom properties
+}
+```
+
+### Hook Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `type` | `ScaffoldHookType` | Required | Lifecycle point |
+| `name` | `string` | Required | Unique hook name |
+| `priority` | `number` | `50` | Lower = runs first |
+| `critical` | `boolean` | `false` | If true, failure fails entire scaffold |
+| `handler` | `function` | Required | Async function to execute |
+
+### Testing Pro Hooks
+
+```bash
+# Test hooks by running scaffold with your package installed
+npx launch-stackwright --otter-raft test-project
+
+# Verify package.json includes your dependency
+cat test-project/package.json | grep @stackwright-pro
+
+# Verify .code-puppy.json includes your MCP config
+cat test-project/.code-puppy.json
+```
+
+### Hook Debugging
+
+Enable debug output:
+```bash
+DEBUG=scaffold-hooks npx launch-stackwright --otter-raft my-site
+```
+
+Non-critical hook failures are logged but don't stop scaffold:
+```
+[Scaffold Hook] Non-critical hook "my-hook" failed: some error
 ```
 
 ## Build System Notes

@@ -21,28 +21,11 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v3
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-stackwright
         with:
-          version: 10
-
-      - name: 🟢 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - name: 📚 Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: 🔨 Build packages
-        run: pnpm build
-
-      - name: 🔗 Re-link bins after build
-        run: pnpm install
+          build: true
+          relink-bins: true
 
       - name: ⚡ Run build time benchmarks
         id: build-time

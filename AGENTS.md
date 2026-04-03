@@ -6,6 +6,14 @@ Welcome to Stackwright! This is a YAML-driven React application framework that e
 
 The fastest way to get started with Stackwright is using **launch-stackwright**:
 
+**Recommended: Full otter raft experience (auto-installs dependencies)**
+```bash
+npx launch-stackwright my-site --otter-raft
+cd my-site
+pnpm dev
+```
+
+**Alternative: Manual setup**
 ```bash
 npx launch-stackwright my-site
 cd my-site
@@ -13,7 +21,7 @@ pnpm install
 pnpm dev
 ```
 
-This automatically sets up:
+Both set up:
 - ✅ A fully configured Next.js + Stackwright project
 - ✅ The otter raft (AI agents) ready to build your site
 - ✅ MCP server auto-configuration for Code Puppy

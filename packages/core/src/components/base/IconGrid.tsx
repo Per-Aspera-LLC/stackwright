@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { IconGridContent } from '@stackwright/types';
-import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { useSafeColorMode, useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
@@ -16,6 +16,7 @@ function renderIcon(src: string, sizePx: number, color: string) {
 
 export function IconGrid({ heading, icons, background }: IconGridContent) {
   const theme = useSafeTheme();
+  const resolvedColorMode = useSafeColorMode();
 
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
@@ -26,7 +27,7 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
     <div
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: resolveBackground(background, theme),
+        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
         margin: theme.spacing.xl,
       }}
     >
