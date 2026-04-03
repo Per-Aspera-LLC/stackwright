@@ -1,6 +1,6 @@
 import React from 'react';
 import { CodeBlockContent } from '@stackwright/types';
-import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { useSafeTheme, useSafeColorMode } from '../../hooks/useSafeTheme';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { highlightCode, getTokenColor, HighlightToken } from '../../utils/prismHighlighter';
 
@@ -24,6 +24,8 @@ function splitTokensByLine(tokens: HighlightToken[]): HighlightToken[][] {
 
 export function CodeBlock({ code, language, lineNumbers = false, background }: CodeBlockContent) {
   const theme = useSafeTheme();
+  const resolvedColorMode = useSafeColorMode();
+  const isDark = resolvedColorMode === 'dark';
 
   const tokens = highlightCode(code.trimEnd(), language);
   const tokenLines = splitTokensByLine(tokens);
@@ -33,7 +35,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
       style={{
         margin: `0 ${theme.spacing.xl}`,
         padding: `${theme.spacing.md} 0`,
-        background: resolveBackground(background, theme),
+        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
       }}
     >
       <div
@@ -91,7 +93,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
               <span>
                 {lineTokens.length > 0
                   ? lineTokens.map((t, j) => {
-                      const color = getTokenColor(t.type);
+                      const color = getTokenColor(t.type, isDark);
                       return color ? (
                         <span key={j} style={{ color }}>
                           {t.content}

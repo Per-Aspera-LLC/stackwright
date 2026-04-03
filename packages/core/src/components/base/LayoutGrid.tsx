@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GridContent, ContentItem } from '@stackwright/types';
 import { renderContent } from '../../utils/contentRenderer';
-import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { useSafeColorMode, useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 
@@ -16,6 +16,7 @@ const DEFAULT_STACK_BELOW = 768;
  */
 export function LayoutGrid({ heading, columns, gap, stackBelow, background }: GridContent) {
   const theme = useSafeTheme();
+  const resolvedColorMode = useSafeColorMode();
   const breakpoint = stackBelow ?? DEFAULT_STACK_BELOW;
 
   // SSR-safe responsive stacking: default to multi-column, hydrate to stacked if narrow
@@ -43,7 +44,7 @@ export function LayoutGrid({ heading, columns, gap, stackBelow, background }: Gr
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme),
+        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
       }}
     >
       {heading?.text && (

@@ -1,5 +1,5 @@
 import type { Theme } from '@stackwright/themes';
-import { useTheme } from '@stackwright/themes';
+import { useTheme, useThemeOptional } from '@stackwright/themes';
 
 // Default theme fallback - complete Theme type
 const defaultTheme: Theme = {
@@ -63,4 +63,13 @@ export function useSafeTheme() {
     }
     throw error;
   }
+}
+
+/**
+ * Safe hook to get the resolved color mode.
+ * Returns 'light' if ThemeProvider is not available (defaults to light mode for syntax highlighting).
+ */
+export function useSafeColorMode(): 'light' | 'dark' {
+  const context = useThemeOptional();
+  return context?.resolvedColorMode ?? 'light';
 }
