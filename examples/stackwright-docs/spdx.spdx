@@ -1,11 +1,11 @@
 SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
-SPDXID: SPDXRef-DOCUMENT-c3d0969a
-DocumentName: stackwright-docs@0.1.1-alpha.0
-DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-03T16:11:33.929Z
+SPDXID: SPDXRef-DOCUMENT-12b1dc75
+DocumentName: stackwright-docs@0.1.1-alpha.1
+DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-03T18:50:53.512Z
 
 CreationInfo:
-  Created: 2026-04-03T16:11:33.929Z
+  Created: 2026-04-03T18:50:53.512Z
   Creator: Tool: @stackwright/sbom-generator
   Creator: Tool-Version: 0.0.0
 
@@ -73,7 +73,7 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: d321eb3d0478e2a58565081343e4d1da25caf8103b3dd72b3544a715f2e80418
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/react-dom@19.2.4
 
-Relationship: SPDXRef-DOCUMENT-c3d0969a DESCRIBES SPDXRef-Package-js-yaml
+Relationship: SPDXRef-DOCUMENT-12b1dc75 DESCRIBES SPDXRef-Package-js-yaml
 Relationship: SPDXRef-Package-js-yaml CONTAINS SPDXRef-Package--stackwright-core
 Relationship: SPDXRef-Package-js-yaml CONTAINS SPDXRef-Package--stackwright-icons
 Relationship: SPDXRef-Package-js-yaml CONTAINS SPDXRef-Package--stackwright-nextjs
