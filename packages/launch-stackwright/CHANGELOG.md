@@ -1,5 +1,12 @@
 # launch-stackwright
 
+## 0.2.0-alpha.9
+
+### Patch Changes
+
+- Updated dependencies [1f30003]
+  - @stackwright/otters@0.2.0-alpha.3
+
 ## 0.2.0-alpha.8
 
 ### Minor Changes
