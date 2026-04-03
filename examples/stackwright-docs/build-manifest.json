@@ -1,7 +1,7 @@
 {
   "format": "stackwright-build-manifest",
   "version": "1.0.0",
-  "generated": "2026-04-03T19:28:43.494Z",
+  "generated": "2026-04-03T20:10:38.344Z",
   "project": {
     "name": "stackwright-docs",
     "version": "0.1.1-alpha.1",
@@ -136,6 +136,15 @@
       "depth": 0
     },
     {
+      "name": "stackwright-docs",
+      "version": "link:",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/stackwright-docs@link:",
+      "integrity": "048f32c842b18fe0c8c18f64b17cedd18149860b0064ba12a2c595890048e568",
+      "depth": 0
+    },
+    {
       "name": "tailwind-merge",
       "version": "2.6.0",
       "type": "direct",
@@ -146,12 +155,12 @@
     }
   ],
   "metadata": {
-    "totalDependencies": 15,
-    "directDependencies": 15,
+    "totalDependencies": 16,
+    "directDependencies": 16,
     "devDependencies": 0,
     "peerDependencies": 0,
     "transitiveDependencies": 0,
     "stackwrightInternal": 4,
-    "external": 11
+    "external": 12
   }
 }

@@ -6,12 +6,45 @@ function getChangedFiles() {
 
   try {
     // Ensure the base branch exists locally
-    execSync(`git fetch origin ${base}`, { stdio: 'inherit' });
-
-    const diff = execSync(`git diff --name-only origin/${base}...HEAD`, {
-      encoding: 'utf-8',
+    execSync(`git fetch origin ${base}:refs/remotes/origin/${base}`, { 
+      stdio: 'pipe',
+      timeout: 10000 
     });
-    return diff.split('\n').filter(Boolean);
+
+    // Try direct diff first
+    try {
+      const diff = execSync(`git diff --name-only origin/${base}...HEAD`, {
+        encoding: 'utf-8',
+        stdio: 'pipe',
+      });
+      return diff.split('\n').filter(Boolean);
+    } catch (diffErr) {
+      // If diff fails (e.g., no merge base for PR merge commits),
+      // fall back to using the first parent of the merge commit
+      console.log('⚠️ Direct diff failed, trying merge-base fallback...');
+      
+      try {
+        // Get the first parent (the PR branch HEAD before merge)
+        const parent = execSync('git rev-parse --verify HEAD^1', {
+          encoding: 'utf-8',
+          stdio: 'pipe',
+        }).trim();
+        
+        const diff = execSync(`git diff --name-only origin/${base}...${parent}`, {
+          encoding: 'utf-8',
+          stdio: 'pipe',
+        });
+        return diff.split('\n').filter(Boolean);
+      } catch (fallbackErr) {
+        // If that also fails, just check for changesets in the working tree
+        console.log('⚠️ Merge-base fallback failed, checking for changesets directly...');
+        const files = execSync('git diff --name-only HEAD~1', {
+          encoding: 'utf-8',
+          stdio: 'pipe',
+        });
+        return files.split('\n').filter(Boolean);
+      }
+    }
   } catch (err) {
     console.error(`❌ Could not determine changed files from ${base}`, err.message);
     process.exit(1);
