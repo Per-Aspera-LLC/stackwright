@@ -1,17 +1,86 @@
 {
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
-  "SPDXID": "SPDXRef-DOCUMENT-12b1dc75",
+  "SPDXID": "SPDXRef-DOCUMENT-9bbc3e93",
   "name": "stackwright-docs@0.1.1-alpha.1",
-  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-04-03T18:50:53.512Z",
+  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-04-03T19:28:43.491Z",
   "creationInfo": {
-    "created": "2026-04-03T18:50:53.512Z",
+    "created": "2026-04-03T19:28:43.491Z",
     "creators": [
       "Tool: @stackwright/sbom-generator",
       "Tool-Version: 0.0.0"
     ]
   },
   "packages": [
+    {
+      "SPDXID": "SPDXRef-Package--radix-ui-react-accordion",
+      "name": "@radix-ui/react-accordion",
+      "versionInfo": "1.2.2",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "6385b547dec3958e12e36af31946a77045ae9b94c89e53bfacbedb71c0f3a10c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/radix-ui/react-accordion@1.2.2"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package--radix-ui-react-slot",
+      "name": "@radix-ui/react-slot",
+      "versionInfo": "1.1.1",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "6c80259979afa356ff77686649e864a9be6fd187b480c8d3d49fecea2c977b75"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/radix-ui/react-slot@1.1.1"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package--radix-ui-react-tabs",
+      "name": "@radix-ui/react-tabs",
+      "versionInfo": "1.1.2",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "f3ad88f5751707a5c5f92a1603247d36820a4c7e2a748308c3c8c8acd4d07cd2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/radix-ui/react-tabs@1.1.2"
+        }
+      ]
+    },
     {
       "SPDXID": "SPDXRef-Package--stackwright-core",
       "name": "@stackwright/core",
@@ -105,6 +174,52 @@
       ]
     },
     {
+      "SPDXID": "SPDXRef-Package-clsx",
+      "name": "clsx",
+      "versionInfo": "2.1.1",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "d00f5fa05915e8916f882f17ae64d1bd58f60296bdf8bb490772cebdafa01b60"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/clsx@2.1.1"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-fuse-js",
+      "name": "fuse.js",
+      "versionInfo": "7.1.0",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "3f3d82b5a1943d6113a0f6476ef58cb75640ba889262edd8fed42a3254d8c119"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/fuse.js@7.1.0"
+        }
+      ]
+    },
+    {
       "SPDXID": "SPDXRef-Package-js-yaml",
       "name": "js-yaml",
       "versionInfo": "4.1.1",
@@ -124,6 +239,29 @@
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
           "referenceLocator": "pkg:npm/js-yaml@4.1.1"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-lucide-react",
+      "name": "lucide-react",
+      "versionInfo": "0.471.1",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "34516f0b69a564672a07087b4a907c82ef437a69c4ba2895f1dc37bb8ae402ac"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/lucide-react@0.471.1"
         }
       ]
     },
@@ -195,48 +333,106 @@
           "referenceLocator": "pkg:npm/react-dom@19.2.4"
         }
       ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-tailwind-merge",
+      "name": "tailwind-merge",
+      "versionInfo": "2.6.0",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "f55becd055a25a9ecb32ee3cf37faf157aa62b955195bb7f695909e582e8ae33"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/tailwind-merge@2.6.0"
+        }
+      ]
     }
   ],
   "relationships": [
     {
-      "spdxElementId": "SPDXRef-DOCUMENT-12b1dc75",
+      "spdxElementId": "SPDXRef-DOCUMENT-9bbc3e93",
       "relationshipType": "DESCRIBES",
-      "relatedSpdxElement": "SPDXRef-Package-js-yaml"
+      "relatedSpdxElement": "SPDXRef-Package-clsx"
     },
     {
-      "spdxElementId": "SPDXRef-Package-js-yaml",
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package--radix-ui-react-accordion"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package--radix-ui-react-slot"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package--radix-ui-react-tabs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package--stackwright-core"
     },
     {
-      "spdxElementId": "SPDXRef-Package-js-yaml",
+      "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package--stackwright-icons"
     },
     {
-      "spdxElementId": "SPDXRef-Package-js-yaml",
+      "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package--stackwright-nextjs"
     },
     {
-      "spdxElementId": "SPDXRef-Package-js-yaml",
+      "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package--stackwright-ui-shadcn"
     },
     {
-      "spdxElementId": "SPDXRef-Package-js-yaml",
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-fuse-js"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-js-yaml"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-lucide-react"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package-next"
     },
     {
-      "spdxElementId": "SPDXRef-Package-js-yaml",
+      "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package-react"
     },
     {
-      "spdxElementId": "SPDXRef-Package-js-yaml",
+      "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package-react-dom"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-tailwind-merge"
     }
   ]
 }

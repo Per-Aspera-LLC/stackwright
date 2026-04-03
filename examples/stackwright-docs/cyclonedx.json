@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-04-03T18:50:53.514Z",
+    "timestamp": "2026-04-03T19:28:43.494Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -19,6 +19,63 @@
     }
   },
   "components": [
+    {
+      "type": "library",
+      "name": "@radix-ui/react-accordion",
+      "version": "1.2.2",
+      "purl": "pkg:npm/radix-ui/react-accordion@1.2.2",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "6385b547dec3958e12e36af31946a77045ae9b94c89e53bfacbedb71c0f3a10c"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@radix-ui/react-accordion"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@radix-ui/react-slot",
+      "version": "1.1.1",
+      "purl": "pkg:npm/radix-ui/react-slot@1.1.1",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "6c80259979afa356ff77686649e864a9be6fd187b480c8d3d49fecea2c977b75"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@radix-ui/react-slot"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@radix-ui/react-tabs",
+      "version": "1.1.2",
+      "purl": "pkg:npm/radix-ui/react-tabs@1.1.2",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "f3ad88f5751707a5c5f92a1603247d36820a4c7e2a748308c3c8c8acd4d07cd2"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@radix-ui/react-tabs"
+        }
+      ]
+    },
     {
       "type": "library",
       "name": "@stackwright/core",
@@ -97,6 +154,44 @@
     },
     {
       "type": "library",
+      "name": "clsx",
+      "version": "2.1.1",
+      "purl": "pkg:npm/clsx@2.1.1",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "d00f5fa05915e8916f882f17ae64d1bd58f60296bdf8bb490772cebdafa01b60"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/clsx"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "fuse.js",
+      "version": "7.1.0",
+      "purl": "pkg:npm/fuse.js@7.1.0",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "3f3d82b5a1943d6113a0f6476ef58cb75640ba889262edd8fed42a3254d8c119"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/fuse.js"
+        }
+      ]
+    },
+    {
+      "type": "library",
       "name": "js-yaml",
       "version": "4.1.1",
       "purl": "pkg:npm/js-yaml@4.1.1",
@@ -111,6 +206,25 @@
         {
           "type": "package-manager",
           "url": "https://www.npmjs.com/package/js-yaml"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "lucide-react",
+      "version": "0.471.1",
+      "purl": "pkg:npm/lucide-react@0.471.1",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "34516f0b69a564672a07087b4a907c82ef437a69c4ba2895f1dc37bb8ae402ac"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/lucide-react"
         }
       ]
     },
@@ -170,20 +284,46 @@
           "url": "https://www.npmjs.com/package/react-dom"
         }
       ]
+    },
+    {
+      "type": "library",
+      "name": "tailwind-merge",
+      "version": "2.6.0",
+      "purl": "pkg:npm/tailwind-merge@2.6.0",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "f55becd055a25a9ecb32ee3cf37faf157aa62b955195bb7f695909e582e8ae33"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/tailwind-merge"
+        }
+      ]
     }
   ],
   "dependencies": [
     {
       "ref": "pkg:npm/stackwright-docs@0.1.1-alpha.1",
       "dependsOn": [
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-tabs",
         "@stackwright/core",
         "@stackwright/icons",
         "@stackwright/nextjs",
         "@stackwright/ui-shadcn",
+        "clsx",
+        "fuse.js",
         "js-yaml",
+        "lucide-react",
         "next",
         "react",
-        "react-dom"
+        "react-dom",
+        "tailwind-merge"
       ],
       "dependencyType": "direct"
     }

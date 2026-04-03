@@ -1,7 +1,7 @@
 {
   "format": "stackwright-build-manifest",
   "version": "1.0.0",
-  "generated": "2026-04-03T18:50:53.514Z",
+  "generated": "2026-04-03T19:28:43.494Z",
   "project": {
     "name": "stackwright-docs",
     "version": "0.1.1-alpha.1",
@@ -9,6 +9,33 @@
     "isMonorepo": false
   },
   "dependencies": [
+    {
+      "name": "@radix-ui/react-accordion",
+      "version": "1.2.2",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/radix-ui/react-accordion@1.2.2",
+      "integrity": "6385b547dec3958e12e36af31946a77045ae9b94c89e53bfacbedb71c0f3a10c",
+      "depth": 0
+    },
+    {
+      "name": "@radix-ui/react-slot",
+      "version": "1.1.1",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/radix-ui/react-slot@1.1.1",
+      "integrity": "6c80259979afa356ff77686649e864a9be6fd187b480c8d3d49fecea2c977b75",
+      "depth": 0
+    },
+    {
+      "name": "@radix-ui/react-tabs",
+      "version": "1.1.2",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/radix-ui/react-tabs@1.1.2",
+      "integrity": "f3ad88f5751707a5c5f92a1603247d36820a4c7e2a748308c3c8c8acd4d07cd2",
+      "depth": 0
+    },
     {
       "name": "@stackwright/core",
       "version": "workspace:*",
@@ -46,12 +73,39 @@
       "depth": 0
     },
     {
+      "name": "clsx",
+      "version": "2.1.1",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/clsx@2.1.1",
+      "integrity": "d00f5fa05915e8916f882f17ae64d1bd58f60296bdf8bb490772cebdafa01b60",
+      "depth": 0
+    },
+    {
+      "name": "fuse.js",
+      "version": "7.1.0",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/fuse.js@7.1.0",
+      "integrity": "3f3d82b5a1943d6113a0f6476ef58cb75640ba889262edd8fed42a3254d8c119",
+      "depth": 0
+    },
+    {
       "name": "js-yaml",
       "version": "4.1.1",
       "type": "direct",
       "category": "external",
       "purl": "pkg:npm/js-yaml@4.1.1",
       "integrity": "af705ed1eb31f1af61a3698569d8e0370c173e67024075b4f306d8c9010f1298",
+      "depth": 0
+    },
+    {
+      "name": "lucide-react",
+      "version": "0.471.1",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/lucide-react@0.471.1",
+      "integrity": "34516f0b69a564672a07087b4a907c82ef437a69c4ba2895f1dc37bb8ae402ac",
       "depth": 0
     },
     {
@@ -80,15 +134,24 @@
       "purl": "pkg:npm/react-dom@19.2.4",
       "integrity": "d321eb3d0478e2a58565081343e4d1da25caf8103b3dd72b3544a715f2e80418",
       "depth": 0
+    },
+    {
+      "name": "tailwind-merge",
+      "version": "2.6.0",
+      "type": "direct",
+      "category": "external",
+      "purl": "pkg:npm/tailwind-merge@2.6.0",
+      "integrity": "f55becd055a25a9ecb32ee3cf37faf157aa62b955195bb7f695909e582e8ae33",
+      "depth": 0
     }
   ],
   "metadata": {
-    "totalDependencies": 8,
-    "directDependencies": 8,
+    "totalDependencies": 15,
+    "directDependencies": 15,
     "devDependencies": 0,
     "peerDependencies": 0,
     "transitiveDependencies": 0,
     "stackwrightInternal": 4,
-    "external": 4
+    "external": 11
   }
 }
