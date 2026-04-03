@@ -61,10 +61,48 @@ const TOKEN_COLORS: Record<string, string> = {
   atrule: '#d73a49',
 };
 
+/**
+ * Dark mode color palette for syntax tokens.
+ * GitHub Dark-inspired colors for dark (#0d1117) code block background.
+ */
+const DARK_TOKEN_COLORS: Record<string, string> = {
+  comment: '#8b949e',
+  prolog: '#8b949e',
+  doctype: '#8b949e',
+  cdata: '#8b949e',
+  punctuation: '#c9d1d9',
+  property: '#79c0ff',
+  tag: '#7ee787',
+  boolean: '#79c0ff',
+  number: '#79c0ff',
+  constant: '#79c0ff',
+  symbol: '#79c0ff',
+  selector: '#d2a8ff',
+  'attr-name': '#d2a8ff',
+  string: '#a5d6ff',
+  char: '#a5d6ff',
+  'template-string': '#a5d6ff',
+  builtin: '#d2a8ff',
+  inserted: '#7ee787',
+  operator: '#ff7b72',
+  entity: '#79c0ff',
+  url: '#a5d6ff',
+  keyword: '#ff7b72',
+  'attr-value': '#a5d6ff',
+  function: '#d2a8ff',
+  'class-name': '#d2a8ff',
+  regex: '#a5d6ff',
+  important: '#ff7b72',
+  variable: '#ffa657',
+  deleted: '#ff7b72',
+  atrule: '#ff7b72',
+};
+
 /** A flattened token with type and text, ready for rendering. */
 export interface HighlightToken {
   type: string | null; // null = plain text
   content: string;
+  color?: string; // resolved color when using highlightCodeWithMode
 }
 
 /**
@@ -121,8 +159,29 @@ export function highlightCode(code: string, language?: string): HighlightToken[]
 
 /**
  * Get the inline color for a token type.
+ * @param type - The token type from Prism
+ * @param isDark - Whether to use dark mode colors (default: false)
  */
-export function getTokenColor(type: string | null): string | undefined {
+export function getTokenColor(type: string | null, isDark: boolean = false): string | undefined {
   if (!type) return undefined;
-  return TOKEN_COLORS[type];
+  const colors = isDark ? DARK_TOKEN_COLORS : TOKEN_COLORS;
+  return colors[type];
+}
+
+/**
+ * Tokenize code with Prism and return tokens with colors already resolved.
+ * @param code - The source code to highlight
+ * @param language - The language identifier
+ * @param isDark - Whether to use dark mode colors (default: false)
+ */
+export function highlightCodeWithMode(
+  code: string,
+  language?: string,
+  isDark: boolean = false
+): HighlightToken[] {
+  const tokens = highlightCode(code, language);
+  return tokens.map((token) => ({
+    ...token,
+    color: getTokenColor(token.type, isDark),
+  }));
 }

@@ -27,6 +27,7 @@ const mockTheme = {
 };
 
 vi.mock('../../src/hooks/useSafeTheme', () => ({
+  useSafeColorMode: () => 'light',
   useSafeTheme: () => mockTheme,
 }));
 

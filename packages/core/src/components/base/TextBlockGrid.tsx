@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextBlockContent } from '@stackwright/types';
-import { useSafeTheme } from '../../hooks/useSafeTheme';
+import { useSafeColorMode, useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { TextGrid } from './TextGrid';
@@ -8,6 +8,7 @@ import { ThemedButton } from './ThemedButton';
 
 export function TextBlockGrid({ heading, textBlocks, buttons, background }: TextBlockContent) {
   const theme = useSafeTheme();
+  const resolvedColorMode = useSafeColorMode();
 
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
@@ -18,7 +19,7 @@ export function TextBlockGrid({ heading, textBlocks, buttons, background }: Text
     <section
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: resolveBackground(background, theme),
+        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
         margin: theme.spacing.xl,
       }}
     >
