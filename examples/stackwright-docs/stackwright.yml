@@ -5,7 +5,7 @@ meta:
 appBar:
   titleText: "Stackwright"
   backgroundColor: "primary"
-  textColor: "secondary"
+  textColor: "text"
   colorModeToggle: false
 
 navigation:
@@ -54,7 +54,7 @@ sidebar:
 
 footer:
   backgroundColor: "primary"
-  textColor: "secondary"
+  textColor: "text"
   copyright: "Built with Stackwright 🦦"
   links:
     - label: "GitHub"

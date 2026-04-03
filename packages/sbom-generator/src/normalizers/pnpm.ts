@@ -47,7 +47,7 @@ export interface NormalizedDependency {
  * Parse semver version to extract clean version string
  */
 export function normalizeVersion(versionSpec: string): string {
-  return versionSpec.replace(/^[\^~>=<]+/, '').replace(/\s+.*$/, '');
+  return versionSpec.replace(/^[\^~>=<]+/, '').split(' ')[0];
 }
 
 /**
