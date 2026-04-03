@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/scaffold-core",
-    "version": "0.1.0-alpha.0",
+    "version": "0.1.0-alpha.1",
     "description": "Scaffold hooks system for Stackwright - enables extensible post-scaffold processing",
     "license": "MIT",
     "repository": {

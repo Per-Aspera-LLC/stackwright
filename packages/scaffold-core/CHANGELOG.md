@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.0-alpha.1
+
+### Minor Changes
+
+- b2e451a: Add scaffold hooks system for extensible post-scaffold processing. Pro packages can now register hooks at lifecycle points (preScaffold, preInstall, postInstall, postScaffold) to inject dependencies, configure MCP servers, and add custom setup.
+
 ## 0.1.0-alpha.0
 
 - Initial release

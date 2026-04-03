@@ -1,0 +1,191 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-04-03T16:11:33.930Z",
+    "tools": [
+      {
+        "vendor": "Stackwright",
+        "name": "@stackwright/sbom-generator",
+        "version": "0.0.0"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "name": "stackwright-docs",
+      "version": "0.1.1-alpha.0",
+      "purl": "pkg:npm/stackwright-docs@0.1.1-alpha.0"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "@stackwright/core",
+      "version": "workspace:*",
+      "purl": "pkg:npm/stackwright/core@workspace:*",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "9af5f734e5ee6bfa45ca6ed244194337e4b257d3be8a0927412f1076bf569c7b"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@stackwright/core"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@stackwright/icons",
+      "version": "workspace:*",
+      "purl": "pkg:npm/stackwright/icons@workspace:*",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "c255a8ba61a12722b066604f2487920c50bb20b28f6ba518b9525f191f0a7e52"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@stackwright/icons"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@stackwright/nextjs",
+      "version": "workspace:*",
+      "purl": "pkg:npm/stackwright/nextjs@workspace:*",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "b19c754719b46bf6371f09086bd8b754e289bf617322626044dbb47620163cf3"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@stackwright/nextjs"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "@stackwright/ui-shadcn",
+      "version": "workspace:*",
+      "purl": "pkg:npm/stackwright/ui-shadcn@workspace:*",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "ac159bdf9d62105719ef6d7d5be5b490eadd991e002ddaae9bab73c93f5c7667"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@stackwright/ui-shadcn"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "js-yaml",
+      "version": "4.1.1",
+      "purl": "pkg:npm/js-yaml@4.1.1",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "af705ed1eb31f1af61a3698569d8e0370c173e67024075b4f306d8c9010f1298"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/js-yaml"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "next",
+      "version": "16.1.6",
+      "purl": "pkg:npm/next@16.1.6",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "dab6b931b02c25bd4f20dd3f93ceb0b57f8971844a25f14feb62c8a20608db04"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/next"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "react",
+      "version": "19.2.4",
+      "purl": "pkg:npm/react@19.2.4",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "48fb44e34a2bbbc744bfc0d48b37e11ddb82d4121283c711adcf61883d28f525"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/react"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "react-dom",
+      "version": "19.2.4",
+      "purl": "pkg:npm/react-dom@19.2.4",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "d321eb3d0478e2a58565081343e4d1da25caf8103b3dd72b3544a715f2e80418"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/react-dom"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:npm/stackwright-docs@0.1.1-alpha.0",
+      "dependsOn": [
+        "@stackwright/core",
+        "@stackwright/icons",
+        "@stackwright/nextjs",
+        "@stackwright/ui-shadcn",
+        "js-yaml",
+        "next",
+        "react",
+        "react-dom"
+      ],
+      "dependencyType": "direct"
+    }
+  ]
+}

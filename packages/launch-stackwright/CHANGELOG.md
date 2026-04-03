@@ -1,5 +1,18 @@
 # launch-stackwright
 
+## 0.2.0-alpha.8
+
+### Minor Changes
+
+- b2e451a: Add scaffold hooks system for extensible post-scaffold processing. Pro packages can now register hooks at lifecycle points (preScaffold, preInstall, postInstall, postScaffold) to inject dependencies, configure MCP servers, and add custom setup.
+
+### Patch Changes
+
+- Updated dependencies [5c351f5]
+- Updated dependencies [b2e451a]
+  - @stackwright/cli@0.7.0-alpha.11
+  - @stackwright/scaffold-core@0.1.0-alpha.1
+
 ## 0.2.0-alpha.7
 
 ### Patch Changes

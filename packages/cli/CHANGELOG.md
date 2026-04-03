@@ -1,5 +1,17 @@
 # @stackwright/cli
 
+## 0.7.0-alpha.11
+
+### Minor Changes
+
+- b2e451a: Add scaffold hooks system for extensible post-scaffold processing. Pro packages can now register hooks at lifecycle points (preScaffold, preInstall, postInstall, postScaffold) to inject dependencies, configure MCP servers, and add custom setup.
+
+### Patch Changes
+
+- 5c351f5: Fix scaffold smoke-test TypeError by excluding \_font-links.json from static page generation
+- Updated dependencies [b2e451a]
+  - @stackwright/scaffold-core@0.1.0-alpha.1
+
 ## 0.7.0-alpha.10
 
 ### Minor Changes

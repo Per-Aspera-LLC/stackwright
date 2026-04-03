@@ -1,6 +1,6 @@
 {
   "name": "launch-stackwright",
-  "version": "0.2.0-alpha.7",
+  "version": "0.2.0-alpha.8",
   "description": "Launch a new Stackwright project with the otter raft ready to build",
   "license": "MIT",
   "repository": {
