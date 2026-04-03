@@ -8,3 +8,9 @@ ISSUE-*-PLAN.md
 coverage/
 */coverage/
 **/.nyc_output/
+
+#SBOM Reports
+examples/*/build-manifest.json
+examples/*/cyclonedx.json
+examples/*/spdx.json
+examples/*/spdx.spdx
