@@ -95,7 +95,7 @@ User Request
         │ creates pages/
         ▼
 ┌────────────────────────┐
-│  Visual Verification  │ ◄── Screenshots
+│  Visual Verification   │ ◄── Screenshots
 └───────┬────────────────┘
         │
         ▼

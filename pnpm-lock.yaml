@@ -172,9 +172,6 @@ importers:
       '@stackwright/sbom-generator':
         specifier: workspace:*
         version: link:../sbom-generator
-      '@stackwright/scaffold-core':
-        specifier: workspace:*
-        version: link:../scaffold-core
       '@stackwright/themes':
         specifier: workspace:*
         version: link:../themes
@@ -361,9 +358,6 @@ importers:
       '@stackwright/otters':
         specifier: workspace:*
         version: link:../otters
-      '@stackwright/scaffold-core':
-        specifier: workspace:*
-        version: link:../scaffold-core
       chalk:
         specifier: ^5.6.2
         version: 5.6.2
@@ -539,21 +533,6 @@ importers:
       '@types/js-yaml':
         specifier: ^4.0.0
         version: 4.0.9
-      '@types/node':
-        specifier: ^24.1.0
-        version: 24.11.0
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(@swc/core@1.15.18)(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)(typescript@5.9.3)(yaml@2.8.3)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-      vitest:
-        specifier: ^4.1.2
-        version: 4.1.2(@opentelemetry/api@1.9.1)(@types/node@24.11.0)(jsdom@28.1.0)(vite@7.3.1(@types/node@24.11.0)(jiti@2.6.1)(lightningcss@1.31.1)(tsx@4.21.0)(yaml@2.8.3))
-
-  packages/scaffold-core:
-    devDependencies:
       '@types/node':
         specifier: ^24.1.0
         version: 24.11.0
