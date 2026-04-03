@@ -19,12 +19,10 @@ function getChangedFiles() {
       });
       return diff.split('\n').filter(Boolean);
     } catch (diffErr) {
-      // If diff fails (e.g., no merge base for PR merge commits),
-      // fall back to using the first parent of the merge commit
-      console.log('⚠️ Direct diff failed, trying merge-base fallback...');
+      console.log('⚠️ Direct diff failed, trying HEAD^1 fallback...');
       
+      // Try HEAD^1 (first parent of merge commit, or parent of regular commit)
       try {
-        // Get the first parent (the PR branch HEAD before merge)
         const parent = execSync('git rev-parse --verify HEAD^1', {
           encoding: 'utf-8',
           stdio: 'pipe',
@@ -36,20 +34,56 @@ function getChangedFiles() {
         });
         return diff.split('\n').filter(Boolean);
       } catch (fallbackErr) {
-        // If that also fails, use the PR branch HEAD (second parent of merge commit)
-        console.log('⚠️ Merge-base fallback failed, trying PR branch diff...');
+        console.log('⚠️ HEAD^1 fallback failed, trying HEAD~1...');
         
-        // For merge commits: HEAD^1 is target branch, HEAD^2 is PR branch
-        const prBranchHead = execSync('git rev-parse HEAD^2', {
-          encoding: 'utf-8',
-          stdio: 'pipe',
-        }).trim();
-        
-        const diff = execSync(`git diff --name-only origin/${base}...${prBranchHead}`, {
-          encoding: 'utf-8',
-          stdio: 'pipe',
-        });
-        return diff.split('\n').filter(Boolean);
+        // Try HEAD~1 (first linear parent)
+        try {
+          const parent = execSync('git rev-parse --verify HEAD~1', {
+            encoding: 'utf-8',
+            stdio: 'pipe',
+          }).trim();
+          
+          const diff = execSync(`git diff --name-only origin/${base}...${parent}`, {
+            encoding: 'utf-8',
+            stdio: 'pipe',
+          });
+          return diff.split('\n').filter(Boolean);
+        } catch (fallbackErr2) {
+          console.log('⚠️ HEAD~1 also failed. Debugging git state...');
+          
+          // Debug: show git state
+          try {
+            console.log('Git log:', execSync('git log --oneline -3', { encoding: 'utf-8', stdio: 'pipe' }));
+          } catch (e) {
+            console.log('git log failed:', e.message);
+          }
+          
+          try {
+            console.log('Git status:', execSync('git status --short', { encoding: 'utf-8', stdio: 'pipe' }));
+          } catch (e) {
+            console.log('git status failed:', e.message);
+          }
+          
+          // Try to diff against origin directly
+          try {
+            const originHead = execSync(`git rev-parse origin/${base}`, {
+              encoding: 'utf-8',
+              stdio: 'pipe',
+            }).trim();
+            
+            console.log(`origin/${base} = ${originHead}`);
+            
+            const diff = execSync(`git diff --name-only ${originHead}...HEAD`, {
+              encoding: 'utf-8',
+              stdio: 'pipe',
+            });
+            return diff.split('\n').filter(Boolean);
+          } catch (e) {
+            console.log('origin diff also failed:', e.message);
+          }
+          
+          throw new Error('All diff methods exhausted');
+        }
       }
     }
   } catch (err) {
