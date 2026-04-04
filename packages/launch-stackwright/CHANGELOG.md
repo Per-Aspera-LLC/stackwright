@@ -1,5 +1,12 @@
 # launch-stackwright
 
+## 0.2.0-alpha.10
+
+### Patch Changes
+
+- Updated dependencies [ab178cb]
+  - @stackwright/otters@0.2.0-alpha.4
+
 ## 0.2.0-alpha.9
 
 ### Patch Changes

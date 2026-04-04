@@ -35,6 +35,7 @@
     "launch-stackwright-package",
     "map-adapter-phases-1-2",
     "nav-sidebar-override",
+    "otter-monorepo-relocation",
     "otters-as-package",
     "otters-postinstall",
     "resolve-background-utility",
