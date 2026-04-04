@@ -26,7 +26,7 @@ Both set up:
 - ✅ The otter raft (AI agents) ready to build your site
 - ✅ MCP server auto-configuration for Code Puppy
 
-See the [Otter Raft documentation](./otters/README.md) for how to use the AI agents to build complete sites through conversation.
+See the [Otter Raft documentation](./packages/otters/README.md) for how to use the AI agents to build complete sites through conversation.
 
 - **Framework Architecture**: To understand the big picture, read:
   - `packages/core/src/index.ts`: Core framework initialization

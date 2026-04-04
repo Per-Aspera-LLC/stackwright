@@ -33,7 +33,7 @@ The type system that defines what YAML can express — the Stackwright grammar �
 - MCP tools: `stackwright_render_page`, `stackwright_render_diff`, `stackwright_render_yaml`, `stackwright_check_dev_server`
 - CLI: `stackwright preview` command
 - E2E tests: full render pipeline verified against the example app
-- **Brand Otter** — part of the Otter Raft, discovers brand through conversation and produces BRAND_BRIEF.md (see `./otters/README.md`)
+- **Brand Otter** — part of the Otter Raft, discovers brand through conversation and produces BRAND_BRIEF.md (see `./packages/otters/README.md`)
 
 **Next step: branding expert iteration loop.** With Brand Otter shipped, the next evolution is enabling AI agents to visually iterate on themes — generate variations, render each, evaluate against brand criteria, and converge on the right feel. This builds on the visual rendering infrastructure now in place.
 
