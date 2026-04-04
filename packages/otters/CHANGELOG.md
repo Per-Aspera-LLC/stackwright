@@ -1,5 +1,11 @@
 # @stackwright/otters
 
+## 0.2.0-alpha.3
+
+### Patch Changes
+
+- 1f30003: fix(otters): unpin AI model versions to allow automatic model updates
+
 ## 0.2.0-alpha.2
 
 ### Minor Changes

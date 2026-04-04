@@ -1,11 +1,11 @@
 {
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
-  "SPDXID": "SPDXRef-DOCUMENT-9bbc3e93",
+  "SPDXID": "SPDXRef-DOCUMENT-0b5eb5d9",
   "name": "stackwright-docs@0.1.1-alpha.1",
-  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-04-03T19:28:43.491Z",
+  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-04-03T20:10:38.342Z",
   "creationInfo": {
-    "created": "2026-04-03T19:28:43.491Z",
+    "created": "2026-04-03T20:10:38.342Z",
     "creators": [
       "Tool: @stackwright/sbom-generator",
       "Tool-Version: 0.0.0"
@@ -335,6 +335,29 @@
       ]
     },
     {
+      "SPDXID": "SPDXRef-Package-stackwright-docs",
+      "name": "stackwright-docs",
+      "versionInfo": "link:",
+      "supplier": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "value": "048f32c842b18fe0c8c18f64b17cedd18149860b0064ba12a2c595890048e568"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/stackwright-docs@link:"
+        }
+      ]
+    },
+    {
       "SPDXID": "SPDXRef-Package-tailwind-merge",
       "name": "tailwind-merge",
       "versionInfo": "2.6.0",
@@ -360,7 +383,7 @@
   ],
   "relationships": [
     {
-      "spdxElementId": "SPDXRef-DOCUMENT-9bbc3e93",
+      "spdxElementId": "SPDXRef-DOCUMENT-0b5eb5d9",
       "relationshipType": "DESCRIBES",
       "relatedSpdxElement": "SPDXRef-Package-clsx"
     },
@@ -428,6 +451,11 @@
       "spdxElementId": "SPDXRef-Package-clsx",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-Package-react-dom"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-clsx",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-Package-stackwright-docs"
     },
     {
       "spdxElementId": "SPDXRef-Package-clsx",
