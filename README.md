@@ -169,7 +169,7 @@ Stackwright includes **The Otter Raft** — a group of specialized AI agents tha
 
 When you use `launch-stackwright`, the raft is automatically configured and ready to use with Code Puppy.
 
-See [otters/README.md](./otters/README.md) for full documentation.
+See [packages/otters/README.md](./packages/otters/README.md) for full documentation.
 
 ## MCP Server
 
