@@ -1,61 +1,42 @@
 name: Update Visual Snapshots
 
-# Runs after PRs are merged to dev or main. Regenerates visual regression
-# baselines on the CI platform and syncs them to the MCP screenshots directory,
-# then commits the updated images back to the branch.
-
 on:
-  push:
-    branches: [main, dev]
-
-permissions:
-  contents: write
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to update snapshots on'
+        required: true
+        default: 'dev'
 
 jobs:
   update-snapshots:
+    name: Update Visual Snapshots
     runs-on: ubuntu-latest
     steps:
-      - name: Generate PerAsperaCI token
-        id: app-token
-        uses: actions/create-github-app-token@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          app-id: ${{ secrets.PERASPECRACI_APP_ID }}
-          private-key: ${{ secrets.PERASPERA_CI_PRIVATE_KEY }}
+          fetch-depth: 0
 
-      - uses: actions/checkout@v4
+      - name: Setup Stackwright
+        uses: ./.github/actions/setup-stackwright
+
+      # NOTE: Only run visual and smoke tests with --update-snapshots
+      # Do NOT run all tests - accessibility tests and e2e tests have different requirements
+      - name: Update visual snapshots
+        run: >-
+          pnpm --filter @stackwright/e2e exec playwright test
+          tests/visual.spec.ts
+          tests/smoke.spec.ts
+          --project=chromium
+          --update-snapshots
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ steps.app-token.outputs.token }}
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: 'pnpm'
-
-      - run: pnpm install
-      - run: pnpm build
-      - run: pnpm install
-        name: Re-link bins after build
-
-      - name: Install Playwright browsers
-        run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
-
-      - name: Regenerate visual baselines
-        run: pnpm --filter @stackwright/e2e exec playwright test --update-snapshots
-
-      - name: Sync screenshots to MCP package
-        run: bash packages/e2e/scripts/sync-screenshots.sh
-
-      - name: Commit updated snapshots
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add packages/e2e/tests/__screenshots__ packages/mcp/screenshots
-          if git diff --cached --quiet; then
-            echo "No snapshot changes to commit."
-          else
-            git commit -m "chore: update visual regression baselines [skip ci]"
-            git push
-          fi
+          commit-message: 'test: update visual baselines'
+          title: 'Update Visual Baselines'
+          body: 'This PR updates visual regression baselines from CI. Review the changes before merging.'
+          branch: update-snapshots
+          base: ${{ github.event.inputs.branch || 'dev' }}
+          delete-branch: true
