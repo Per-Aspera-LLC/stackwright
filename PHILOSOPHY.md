@@ -207,9 +207,26 @@ Each pro component follows the same contract as a free component: a YAML key, a 
 
 **The "constrain first" principle applies to the free tier.** It is a guideline for what belongs in `@stackwright/core` and `@stackwright/types` — not a ceiling on what the ecosystem can express. Pro components exist precisely to serve use cases that are too specialized for the open-source core.
 
-**Agents and contributors should not remove or discourage pro component types** on the grounds that they exceed the static site scope. If a component type is in a pro package, its presence there is deliberate. Scope questions about whether something belongs in the free tier vs. a pro tier are product decisions, not correctness issues.
+Agents and contributors should not remove or discourage pro component types on the grounds that they exceed the static site scope. If a component type is in a pro package, its presence there is deliberate. Scope questions about whether something belongs in the free tier vs. a pro tier are product decisions, not correctness issues.
 
----
+### The Ecosystem Analogy
+
+Understanding Stackwright's architecture is easier with familiar analogies:
+
+| Stackwright | Spring (Java) | Description |
+|------------|---------------|-------------|
+| `@stackwright/core` | Spring Framework | Core runtime and rendering engine |
+| `@stackwright/nextjs` | Spring Boot Web | Next.js adapter (like Spring Boot starters) |
+| Pro packages | Spring Boot Starters | Pre-built integrations (CMS, Auth, Analytics) |
+| Marketplace extensions | Spring Initializr | Third-party plugins from partners |
+| Pro subscription | Red Hat Enterprise Linux | Commercial support + maintained integrations |
+
+**The analogy in practice:**
+- Spring provides the framework; partners build specialized starters
+- Stackwright provides the framework; pro packages maintain integrations
+- Just as Spring Initializr helped Spring adoption, a Stackwright marketplace could unlock partner-built extensions
+
+This framework helps contributors understand *why* certain decisions were made. Pro packages exist not because the core is lacking, but because maintaining third-party integrations (CMS SDKs, API clients) is an ongoing service — not a one-time implementation.
 
 ## What Stackwright Is Not
 
@@ -226,6 +243,18 @@ These boundaries are as important as the principles above:
 ---
 
 ## Architectural Principles Derived from the Above
+
+**These constraints must never be violated, even as Stackwright grows toward full-stack:**
+
+1. **Output is always standard code.** The user can eject from Stackwright and maintain the output directly. No proprietary runtime.
+
+2. **The schema is the contract.** Every service definition, infrastructure block, and content schema is validated at compile time. The system fails loudly before deployment, not silently in production.
+
+3. **The escape hatch is real.** A developer should be able to open any Stackwright-compiled application and work in it immediately without knowing Stackwright exists.
+
+4. **AI writes the YAML; the framework enforces correctness.** A loose schema produces unpredictable AI output. A tight schema produces reliable, reviewable, deployable output.
+
+---
 
 For contributors and agents making implementation decisions:
 
