@@ -2,6 +2,7 @@
     "name": "stackwright-workspace",
     "version": "0.2.0",
     "private": true,
+    "packageManager": "pnpm@10.30.3",
     "scripts": {
         "build": "pnpm -r --filter='!./examples/**' build",
         "build:types": "pnpm --filter @stackwright/types build",
@@ -33,7 +34,17 @@
         "lint:fix": "eslint --fix packages/",
         "format": "prettier --write \"packages/*/{src,test}/**/*.{ts,tsx}\"",
         "format:check": "prettier --check \"packages/*/{src,test}/**/*.{ts,tsx}\"",
-        "prepare": "husky"
+        "prepare": "husky",
+        "turbo:build": "turbo run build",
+        "turbo:test": "turbo run test",
+        "turbo:dev": "turbo run dev",
+        "turbo:lint": "turbo run lint",
+        "turbo:format": "turbo run format",
+        "turbo:build:core": "turbo run build --filter=@stackwright/core",
+        "turbo:build:types": "turbo run build --filter=@stackwright/types",
+        "turbo:build:themes": "turbo run build --filter=@stackwright/themes",
+        "turbo:build:nextjs": "turbo run build --filter=@stackwright/nextjs",
+        "turbo:build:cli": "turbo run build --filter=@stackwright/cli"
     },
     "devDependencies": {
         "@changesets/cli": "^2.30.0",
@@ -50,6 +61,7 @@
         "lint-staged": "^16.4.0",
         "playwright": "^1.58.2",
         "prettier": "^3.8.1",
+        "turbo": "^2.9.3",
         "vitest": "^4.1.2"
     },
     "pnpm": {

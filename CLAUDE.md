@@ -89,6 +89,38 @@ pnpm build -- --no-sbom
 
 SBOM formats: SPDX 2.3, CycloneDX 1.5, and Stackwright Build Manifest.
 
+## Turborepo Commands
+
+Stackwright uses Turborepo for incremental builds and intelligent caching. Turbo commands are prefixed with `turbo:` to avoid conflicts with existing pnpm commands.
+
+```bash
+# Build all packages (with caching)
+pnpm turbo:build
+
+# Build specific packages
+pnpm turbo:build:core
+pnpm turbo:build:types
+pnpm turbo:build:themes
+
+# Test all packages (automatically runs build first)
+pnpm turbo:test
+
+# Run dev mode on all packages
+pnpm turbo:dev
+
+# Lint all packages
+pnpm turbo:lint
+
+# Format all packages
+pnpm turbo:format
+```
+
+**Turborepo caching:**
+- Local cache is stored in `.turbo/` directory
+- Cache keys are based on source file hashes and inputs
+- To force a fresh build: `turbo run build --force`
+- To see what's cached: `turbo run build --dry-run=json`
+
 ## Architecture
 
 Stackwright is a **pnpm monorepo** implementing a typed DSL for web applications — a platform where visual rendering + constrained DSL + AI iteration = non-technical people building enterprise apps that are safe by construction. YAML is the syntax. `@stackwright/types` is the grammar. Zod schemas enforce the safety boundary. The framework compiles content files into production-ready Next.js/React applications. See `PHILOSOPHY.md` for the full architectural rationale.
