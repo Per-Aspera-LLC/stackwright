@@ -6,28 +6,45 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
-      "inputs": ["src/**", "tsup.config.ts", "package.json"]
-    },
-    "test": {
-      "dependsOn": ["build"],
-      "outputs": ["coverage/**"],
-      "inputs": ["src/**", "test/**", "*.config.ts"]
-    },
-    "test:coverage": {
-      "dependsOn": ["build"],
-      "outputs": ["coverage/**"],
-      "inputs": ["src/**", "test/**"]
+      "outputs": ["dist/**", "build/**", ".next/**", "!node_modules/**"],
+      "inputs": ["src/**", "tsup.config.ts", "package.json"],
+      "cache": true
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "lint": {
+      "dependsOn": ["^build"],
+      "cache": true,
       "outputs": []
     },
+    "test": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "outputs": ["coverage/**"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:coverage": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**", "test/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "cache": true
+    },
+    "clean": {
+      "cache": false
+    },
+    "format:check": {
+      "cache": true
+    },
     "format": {
-      "outputs": []
+      "cache": true
     }
   }
 }

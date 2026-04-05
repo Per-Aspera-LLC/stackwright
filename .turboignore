@@ -1,9 +1,9 @@
 # Dependencies
 node_modules
-.pnpm-store
 
 # Build outputs (these are cached via turbo, not needed in cache artifacts)
 dist
+.build
 .next
 build
 
@@ -26,7 +26,6 @@ coverage
 # CI/CD
 .github
 .circleci
-.gitlab-ci.yml
 
 # Docs and configs
 *.md
