@@ -92,6 +92,20 @@ pnpm stackwright -- info
 cd packages/types && pnpm generate-schemas
 ```
 
+## Turborepo (Optional)
+
+Stackwright includes Turborepo for faster incremental builds. It is installed automatically but usage is optional.
+
+```bash
+# Use turbo for faster builds (recommended)
+ppm turbo:build
+
+# See what will be built without running
+pnpm turbo:run build --dry-run
+```
+
+Turborepo caches build outputs locally. Use `turbo run build --force` to bypass cache.
+
 ## Testing
 
 **Unit tests** (`pnpm test`): Vitest with JSDOM. Tests live in `packages/*/test/`. When adding or modifying components, update the corresponding unit tests in `packages/core/test/`.
