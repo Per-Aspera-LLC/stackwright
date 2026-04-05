@@ -164,6 +164,56 @@ User's Next.js App
 
 **Grammar / JSON Schema Generation**: `@stackwright/types` is the single source of truth for the Stackwright grammar. Zod schemas are the source of truth; TypeScript types are inferred via `z.infer<>`. `zod-to-json-schema` generates `theme-schema.json`, `content-schema.json`, and `siteconfig-schema.json` — the machine-readable grammar specification used for IDE YAML validation. Must be regenerated after type changes (`pnpm generate-schemas`). Zod schemas are introspectable at runtime via `schema.def` (Zod v4) enabling MCP tools and future runtime validation.
 
+### The No Hard Dependencies Principle
+
+Stackwright packages follow a strict **no hard dependencies** pattern. This enables independent release cycles, testability without other packages installed, and clear separation of concerns.
+
+#### 1. Type-Only Imports
+
+Use `import type` for TypeScript interfaces. These imports are erased at compile time:
+
+```typescript
+// ✅ Good - type-only import
+import type { ContentBlock, ComponentProps } from '@stackwright/types';
+
+// ❌ Bad - runtime import (creates hard dependency)
+import { ContentBlock } from '@stackwright/types';
+```
+
+#### 2. Interface Contracts
+
+Define interfaces that match patterns without importing them. This enables compile-time safety while maintaining runtime independence:
+
+```typescript
+// Pro package defines its own interface compatible with OSS
+export interface ComponentRegistry {
+  register(name: string, component: React.ComponentType<any>): void;
+  get(name: string): React.ComponentType<any> | undefined;
+}
+```
+
+#### 3. Registration Functions
+
+Components integrate via registration functions that the user calls:
+
+```typescript
+// Pro package exports a registration function
+export function registerFormWidgets(registry: ComponentRegistry): void {
+  registry.register('MyWidget', MyWidget);
+}
+
+// User calls it in their app
+import { getRegistry } from '@stackwright/core';
+import { registerFormWidgets } from '@stackwright-pro/widgets';
+
+registerFormWidgets(getRegistry());
+```
+
+This pattern:
+- ✅ Zero runtime coupling between packages
+- ✅ User explicitly controls what gets registered
+- ✅ Packages can be tested without other packages installed
+
 ### Scaffold Hooks System
 
 `@stackwright/scaffold-core` provides a hook system for extensible post-scaffold processing. Pro packages register hooks that run at lifecycle points.

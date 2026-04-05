@@ -35,6 +35,41 @@ git commit --no-verify -m "wip: temporary commit"
 
 ---
 
+## CI Hardening Philosophy
+
+Stackwright follows a **"bugs drive CI"** philosophy: when a bug is discovered through manual testing or production, add an automated check to prevent regression. This approach prioritizes working code over extensive test coverage, then hardens based on real failure modes.
+
+### Required CI Checks
+
+| Check | Purpose | When to Add |
+|-------|---------|-------------|
+| **Changeset enforcement** | Every user-facing change gets a version bump | Adding new features, fixing bugs |
+| **AGENTS.md sync** | Schema changes are reflected in agent docs | Modifying `@stackwright/types` |
+| **Schema generation** | JSON schemas match Zod schemas | Any schema modification |
+| **Lint & format** | Code style is consistent | Always (enforced via pre-commit) |
+| **Unit tests** | Core logic works correctly | Adding or modifying logic |
+| **E2E tests** | Full pipeline works end-to-end | New content types, major features |
+
+### When to Add New CI Checks
+
+Add a new CI check when:
+1. A bug was discovered that could have been caught automatically
+2. A manual verification step is being repeated frequently
+3. A regression has occurred more than once
+
+**Do NOT add CI checks:**
+- Before a problem exists (premature optimization)
+- For things that are better caught by code review
+- For style issues already handled by lint/format
+
+### The Principle
+
+> "The best CI is the one that catches real bugs without slowing down development."
+
+Don't add tests or checks speculatively. Wait for a real failure, then automate the fix. This keeps CI fast and focused on actual problems.
+
+---
+
 ## Branching Workflow
 
 - **`dev`** is the integration branch. Feature branches are created from `dev` and PRs target `dev`.
