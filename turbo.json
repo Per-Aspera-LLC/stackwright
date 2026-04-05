@@ -1,9 +1,13 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [
+    "tsconfig.json"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "build/**", ".next/**", "!node_modules/**"],
+      "inputs": ["src/**", "tsup.config.ts", "package.json"],
       "cache": true
     },
     "dev": {
@@ -23,6 +27,11 @@
     "test:watch": {
       "cache": false,
       "persistent": true
+    },
+    "test:coverage": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**", "test/**"]
     },
     "typecheck": {
       "dependsOn": ["^build"],

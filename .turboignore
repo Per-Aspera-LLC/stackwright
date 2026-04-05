@@ -1,50 +1,51 @@
 # Dependencies
 node_modules
 
-# Build outputs
+# Build outputs (these are cached via turbo, not needed in cache artifacts)
 dist
-build
+.build
 .next
-.turbo
-.turbo/cache
-.turbo/run
+build
+
+# Test outputs
 coverage
-*.tsbuildinfo
+.nyc_output
 
 # Development
+.turbo
+.turbo-runner
+
+# Git
 .git
-.husky
+.gitignore
+
+# IDE
 .vscode
 .idea
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.npm
-.yarn
-
-# Testing
-__snapshots__
-*.test.ts.snap
-
-# Examples (large, not part of main build)
-examples/stackwright-docs/content
-
-# Documentation
-*.md
-docs
 
 # CI/CD
 .github
+.circleci
 
-# Configuration (not needed for builds)
-.prettier*
-.eslint*
+# Docs and configs
+*.md
+!README.md
+LICENSE
+
+# Examples (built separately)
+examples
+
+# E2E tests (run separately)
+packages/e2e
+
+# Configuration
+eslint.config.js
+prettier.config.js
 tsconfig.json
+tsconfig.base.json
+vitest.config.ts
 
-# Misc
+# Temporary
+*.log
+*.tmp
 .DS_Store
-*.pem
-.env
-.env.local
-.env.*.local

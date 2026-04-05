@@ -2,6 +2,7 @@
     "name": "stackwright-workspace",
     "version": "0.2.0",
     "private": true,
+    "packageManager": "pnpm@10.30.3",
     "scripts": {
         "build": "pnpm -r --filter='!./examples/**' build",
         "build:types": "pnpm --filter @stackwright/types build",
@@ -38,7 +39,12 @@
         "turbo:test": "turbo test",
         "turbo:dev": "turbo dev",
         "turbo:lint": "turbo lint",
-        "turbo:format": "turbo format"
+        "turbo:format": "turbo format",
+        "turbo:build:core": "turbo build --filter=@stackwright/core",
+        "turbo:build:types": "turbo build --filter=@stackwright/types",
+        "turbo:build:themes": "turbo build --filter=@stackwright/themes",
+        "turbo:build:nextjs": "turbo build --filter=@stackwright/nextjs",
+        "turbo:build:cli": "turbo build --filter=@stackwright/cli"
     },
     "devDependencies": {
         "@changesets/cli": "^2.30.0",
