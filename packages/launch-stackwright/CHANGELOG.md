@@ -1,5 +1,47 @@
 # launch-stackwright
 
+## 0.2.0
+
+### Minor Changes
+
+- b14b0d2: Add new `launch-stackwright` package — an npx-compatible scaffolding tool for creating new Stackwright projects. Automatically sets up a fully configured Next.js + Stackwright project with the otter raft (AI agents) ready to build your site through conversation.
+
+  Includes:
+  - Project scaffolding with Next.js and Stackwright dependencies
+  - Pre-configured otter agent templates (foreman, page, theme, and brand)
+  - MCP server auto-configuration for Code Puppy
+  - Full AI-assisted development workflow out of the box
+
+  Usage: `npx launch-stackwright my-site`
+
+- 53623f6: Add scaffold hooks system for extensible post-scaffold processing. Pro packages can now register hooks at lifecycle points (preScaffold, preInstall, postInstall, postScaffold) to inject dependencies, configure MCP servers, and add custom setup.
+
+### Patch Changes
+
+- 8bb4629: feat(otters): install @stackwright/otters as npm package instead of copying files
+
+  Following the "Otters as Packages" pattern established by @stackwright-pro/otters:
+  - Created new @stackwright/otters package with all 4 otter JSON files
+  - Updated CLI to add @stackwright/otters as dependency in generated package.json
+  - Updated launch-stackwright to generate .code-puppy.json pointing to node_modules
+  - Removed file copying logic from launch-stackwright
+
+- Updated dependencies [bbe2138]
+- Updated dependencies [f714fff]
+- Updated dependencies [53623f6]
+- Updated dependencies [1f30003]
+- Updated dependencies [6a51af8]
+- Updated dependencies [8bb4629]
+- Updated dependencies [c1ca6ed]
+- Updated dependencies [c1ca6ed]
+- Updated dependencies [06e97c0]
+- Updated dependencies [53623f6]
+- Updated dependencies [6cda0f0]
+- Updated dependencies [74c7efd]
+  - @stackwright/cli@0.7.0
+  - @stackwright/otters@0.2.0
+  - @stackwright/scaffold-core@0.1.0
+
 ## 0.2.0-alpha.9
 
 ### Patch Changes
