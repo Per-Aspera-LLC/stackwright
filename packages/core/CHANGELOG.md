@@ -1,5 +1,99 @@
 # @stackwright/core
 
+## 0.7.0
+
+### Minor Changes
+
+- f5d7ec2: Add built-in full-text search to every Stackwright site.
+
+  **New feature (`@stackwright/core`):**
+  - Client-side search using Fuse.js with fuzzy matching
+  - Search modal triggered by clicking search button or pressing `/`
+  - Keyboard navigation (↑↓ to navigate, Enter to select, Esc to close)
+  - Accessible: proper ARIA labels, focus trapping, screen reader announcements
+  - SSR-safe: no hydration mismatches
+
+  **Prebuild changes (`@stackwright/build-scripts`):**
+  - Generate search index JSON during prebuild containing all page content
+  - Index includes page slugs, headings, and text content
+  - Index placed in public folder for client-side fetching
+
+  **Type updates (`@stackwright/types`):**
+  - Add `searchIndexPath` option to SiteConfig
+
+  **E2E tests (`@stackwright/e2e`):**
+  - Add accessibility and interaction tests for search functionality
+
+- b14b0d2: Add map adapter system with MapLibre GL free tier - Phases 1 & 2 of geospatial visualization support
+
+  **Phase 1: Map Adapter Interface and Registry**
+  - Create MapAdapter interface following Image/Link/Router adapter pattern
+  - Add map registry with setMapAdapter/getMapAdapter functions
+  - Export map adapter types and utilities from @stackwright/core
+
+  **Phase 2: MapLibre GL Implementation**
+  - Create @stackwright/maplibre package with MapLibreAdapter
+  - Support map initialization with center, zoom, pitch, bearing controls
+  - Handle marker placement with simple format and GeoJSON FeatureCollections
+  - Add camera animation for smooth transitions
+  - Use MapLibre GL JS v4.7.1 for OSM-based vector tile rendering
+
+  **Content Type Support**
+  - Add MapContent schema with Zod validation
+  - Support declarative map configuration through YAML content files
+  - Generate JSON schema for MCP tool introspection
+
+  **Examples**
+  - Add comprehensive /maps showcase page to hellostackwright example
+  - Demonstrate simple maps, markers, custom styles, animations, 3D terrain, and GeoJSON layers
+
+  This establishes the foundation for pluggable map providers (MapLibre, Cesium, etc.) without coupling the core framework to any specific implementation. Phase 3 (Cesium ion integration) awaits OpenAPI work in pro repo.
+
+- a662f0c: feat(core): add page-level `navSidebar` override in `content.yml`
+
+  Pages can now override the site-wide sidebar defined in `stackwright.yml` using the `navSidebar` field. This enables:
+  - Dashboard pages to hide the sidebar (`navSidebar: null`) for full-width content
+  - Documentation chapters to show page-specific navigation in the sidebar
+  - Page Otter to customize sidebar behavior without editing the theme
+
+  The resolution order is: page `navSidebar` > site `sidebar` (from Theme Otter) > no sidebar.
+
+  Docs and AGENTS.md updated with examples and Otter responsibility notes.
+
+- 6cda0f0: feat: add resolveBackground utility for dark-mode-aware section backgrounds
+
+  All content components now resolve background values through resolveBackground().
+  Theme color keys (e.g., 'surface', 'primary') are mapped to the current theme.colors,
+  which is dark-mode-aware. Literal hex values pass through unchanged (backward compatible).
+
+- b14b0d2: Add text_block content type - a simpler alternative to main for heading + text + buttons without media-related fields. Perfect for text-heavy sections, announcements, and callouts within grid layouts.
+- a5b331f: Add video media type support to the Stackwright framework.
+  - New `video` discriminator in the `MediaItem` union (`@stackwright/types`)
+  - `VideoContent` type with `src`, `autoplay`, `loop`, `muted`, `controls`, and `poster` fields
+  - `Media` component renders `<video>` elements for video media items (`@stackwright/core`)
+  - Prebuild pipeline recognizes and copies video files alongside images (`@stackwright/build-scripts`)
+
+### Patch Changes
+
+- 6cda0f0: fix: dark mode toggle now updates in real-time (#252) and background images no longer override dark background color (#251)
+- 53623f6: Fixed dark mode text colors and background handling for improved demo/hackathon quality:
+  - **#252**: Verified ThemeProvider toggle updates correctly (no code changes needed)
+  - **#251**: Added dark overlay for background images to ensure text contrast
+  - **Alert component**: Added dark-mode-aware accent colors
+  - **CodeBlock component**: Added dark mode syntax highlighting palette
+  - **useSafeTheme hook**: Added `useSafeColorMode` hook for safe color mode access
+
+- Updated dependencies [f5d7ec2]
+- Updated dependencies [f714fff]
+- Updated dependencies [6cda0f0]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [a662f0c]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [a5b331f]
+  - @stackwright/types@1.1.0
+  - @stackwright/themes@0.5.1
+
 ## 0.7.0-alpha.7
 
 ### Patch Changes

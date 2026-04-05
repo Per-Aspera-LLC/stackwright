@@ -1,5 +1,93 @@
 # @stackwright/cli
 
+## 0.7.0
+
+### Minor Changes
+
+- bbe2138: Add `stackwright_compose_site` MCP tool and `stackwright compose` CLI command for atomic whole-site generation with cross-page semantic validation.
+
+  New capabilities:
+  - Validate and write site config + all pages in a single atomic operation
+  - Cross-page semantic checks: nav linkage, orphan pages, button hrefs, collection sources, duplicate titles, theme colors
+  - Errors block all writes; warnings are reported but don't block
+
+- f714fff: Declarative collection entry pages with YAML-based layout templates.
+
+  Collections with `entryPage` config in `_collection.yaml` now automatically generate full page JSON during prebuild — zero custom React code required.
+
+  **Template system (`@stackwright/build-scripts`, `@stackwright/types`):**
+  - Define entry page layouts using the same `content_items` syntax as regular pages, with `{{fieldName}}` placeholders resolved against each entry's data
+  - Single `{{field}}` references preserve the raw value type (arrays, objects pass through)
+  - Inline interpolation: `"{{date}} · {{author}} · {{tags}}"` with auto array-to-comma conversion
+  - Smart null handling: missing fields cause their containing block to be omitted, so a single template works for entries with and without optional fields (e.g., cover images)
+  - Default template used when `template` key is absent (backward-compatible with `body`/`meta`/`tags` config)
+  - Path traversal protection on `basePath` and slug values
+
+  **CLI (`@stackwright/cli`):**
+  - New `stackwright collection list` command shows all collections with entry counts
+  - New `stackwright collection add <name>` command with `--entry-page`, `--base-path`, `--sort` flags
+  - Scaffold template updated: `[slug].tsx` → `[...slug].tsx` catch-all route supporting nested paths
+
+  **MCP (`@stackwright/mcp`):**
+  - New `stackwright_list_collections` MCP tool
+  - New `stackwright_create_collection` MCP tool with full parameter validation
+
+- c1ca6ed: feat: Add SBOM generation for supply chain transparency
+
+  Every Stackwright build now generates a Software Bill of Materials (SBOM) with:
+  - SPDX 2.3 format (US Government compliance)
+  - CycloneDX 1.5 format (OWASP tooling compatibility)
+  - Stackwright build manifest (internal format)
+
+  New CLI commands:
+  - `stackwright sbom generate` - Regenerate SBOM
+  - `stackwright sbom validate` - Validate SBOM schemas
+  - `stackwright sbom diff` - Compare SBOMs between builds
+
+  Use `--no-sbom` flag to skip generation if needed.
+
+- 53623f6: Add scaffold hooks system for extensible post-scaffold processing. Pro packages can now register hooks at lifecycle points (preScaffold, preInstall, postInstall, postScaffold) to inject dependencies, configure MCP servers, and add custom setup.
+- 74c7efd: Add visual rendering tools to the MCP server — `stackwright_render_page`, `stackwright_render_diff`, `stackwright_render_yaml`, and `stackwright_check_dev_server`. These give AI agents a visual feedback loop: render any page to a screenshot, preview raw YAML before committing, capture before/after comparisons, and verify brand consistency.
+
+  Add `stackwright preview` CLI command for rendering pages to screenshot files. Requires Playwright (optional peer dependency).
+
+  Uses Playwright with browser instance pooling for sub-second re-renders after cold start.
+
+### Patch Changes
+
+- 53623f6: Fix scaffold smoke-test TypeError by excluding \_font-links.json from static page generation
+- 8bb4629: feat(otters): install @stackwright/otters as npm package instead of copying files
+
+  Following the "Otters as Packages" pattern established by @stackwright-pro/otters:
+  - Created new @stackwright/otters package with all 4 otter JSON files
+  - Updated CLI to add @stackwright/otters as dependency in generated package.json
+  - Updated launch-stackwright to generate .code-puppy.json pointing to node_modules
+  - Removed file copying logic from launch-stackwright
+
+- 06e97c0: fix: scaffold uses bundled templates by default and includes \_document.tsx for dark mode support
+  - Flip template fetch to bundled-by-default (eliminates network dependency and 10-second timeout risk)
+  - Add `--online` flag (replaces `--offline`) for explicit GitHub template fetch
+  - Add `_document.tsx` to scaffold template for ColorModeScript / dark mode persistence
+  - Make `check-template-sync` CI job non-blocking (informational warning instead of hard failure)
+
+- 6cda0f0: fix: scaffold now pins @stackwright/\* deps to stable caret ranges instead of 'latest'
+- Updated dependencies [f5d7ec2]
+- Updated dependencies [f714fff]
+- Updated dependencies [6cda0f0]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [a662f0c]
+- Updated dependencies [c1ca6ed]
+- Updated dependencies [c1ca6ed]
+- Updated dependencies [53623f6]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [a5b331f]
+  - @stackwright/build-scripts@0.4.0
+  - @stackwright/types@1.1.0
+  - @stackwright/themes@0.5.1
+  - @stackwright/sbom-generator@0.1.0
+  - @stackwright/scaffold-core@0.1.0
+
 ## 0.7.0-alpha.11
 
 ### Minor Changes
