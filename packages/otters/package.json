@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/otters",
-  "version": "0.2.0-alpha.3",
+  "version": "0.2.0",
   "description": "Stackwright Otter Raft - AI agents for site generation",
   "license": "MIT",
   "repository": {

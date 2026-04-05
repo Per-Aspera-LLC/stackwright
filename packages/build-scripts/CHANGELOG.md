@@ -1,5 +1,84 @@
 # @stackwright/build-scripts
 
+## 0.4.0
+
+### Minor Changes
+
+- f5d7ec2: Add built-in full-text search to every Stackwright site.
+
+  **New feature (`@stackwright/core`):**
+  - Client-side search using Fuse.js with fuzzy matching
+  - Search modal triggered by clicking search button or pressing `/`
+  - Keyboard navigation (↑↓ to navigate, Enter to select, Esc to close)
+  - Accessible: proper ARIA labels, focus trapping, screen reader announcements
+  - SSR-safe: no hydration mismatches
+
+  **Prebuild changes (`@stackwright/build-scripts`):**
+  - Generate search index JSON during prebuild containing all page content
+  - Index includes page slugs, headings, and text content
+  - Index placed in public folder for client-side fetching
+
+  **Type updates (`@stackwright/types`):**
+  - Add `searchIndexPath` option to SiteConfig
+
+  **E2E tests (`@stackwright/e2e`):**
+  - Add accessibility and interaction tests for search functionality
+
+- f714fff: Declarative collection entry pages with YAML-based layout templates.
+
+  Collections with `entryPage` config in `_collection.yaml` now automatically generate full page JSON during prebuild — zero custom React code required.
+
+  **Template system (`@stackwright/build-scripts`, `@stackwright/types`):**
+  - Define entry page layouts using the same `content_items` syntax as regular pages, with `{{fieldName}}` placeholders resolved against each entry's data
+  - Single `{{field}}` references preserve the raw value type (arrays, objects pass through)
+  - Inline interpolation: `"{{date}} · {{author}} · {{tags}}"` with auto array-to-comma conversion
+  - Smart null handling: missing fields cause their containing block to be omitted, so a single template works for entries with and without optional fields (e.g., cover images)
+  - Default template used when `template` key is absent (backward-compatible with `body`/`meta`/`tags` config)
+  - Path traversal protection on `basePath` and slug values
+
+  **CLI (`@stackwright/cli`):**
+  - New `stackwright collection list` command shows all collections with entry counts
+  - New `stackwright collection add <name>` command with `--entry-page`, `--base-path`, `--sort` flags
+  - Scaffold template updated: `[slug].tsx` → `[...slug].tsx` catch-all route supporting nested paths
+
+  **MCP (`@stackwright/mcp`):**
+  - New `stackwright_list_collections` MCP tool
+  - New `stackwright_create_collection` MCP tool with full parameter validation
+
+- c1ca6ed: feat: Add SBOM generation for supply chain transparency
+
+  Every Stackwright build now generates a Software Bill of Materials (SBOM) with:
+  - SPDX 2.3 format (US Government compliance)
+  - CycloneDX 1.5 format (OWASP tooling compatibility)
+  - Stackwright build manifest (internal format)
+
+  New CLI commands:
+  - `stackwright sbom generate` - Regenerate SBOM
+  - `stackwright sbom validate` - Validate SBOM schemas
+  - `stackwright sbom diff` - Compare SBOMs between builds
+
+  Use `--no-sbom` flag to skip generation if needed.
+
+- a5b331f: Add video media type support to the Stackwright framework.
+  - New `video` discriminator in the `MediaItem` union (`@stackwright/types`)
+  - `VideoContent` type with `src`, `autoplay`, `loop`, `muted`, `controls`, and `poster` fields
+  - `Media` component renders `<video>` elements for video media items (`@stackwright/core`)
+  - Prebuild pipeline recognizes and copies video files alongside images (`@stackwright/build-scripts`)
+
+### Patch Changes
+
+- Updated dependencies [f5d7ec2]
+- Updated dependencies [f714fff]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [a662f0c]
+- Updated dependencies [c1ca6ed]
+- Updated dependencies [c1ca6ed]
+- Updated dependencies [b14b0d2]
+- Updated dependencies [a5b331f]
+  - @stackwright/types@1.1.0
+  - @stackwright/sbom-generator@0.1.0
+
 ## 0.4.0-alpha.7
 
 ### Minor Changes
