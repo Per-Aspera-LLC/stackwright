@@ -17,6 +17,15 @@ on:
 
 permissions:
   contents: read
+env:
+  # Turborepo remote cache (Vercel)
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+
+
+env:
+  TURBO_REMOTE_CACHE: ${{ vars.TURBO_REMOTE_CACHE || 'false' }}
 
 jobs:
   lint-and-format:
@@ -24,8 +33,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-stackwright
-      - run: pnpm format:check
-      - run: pnpm lint
+
+      - name: Setup Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - run: pnpm turbo:format
+      - run: pnpm turbo:lint
 
   test:
     runs-on: ubuntu-latest
@@ -35,7 +53,16 @@ jobs:
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
-      - run: pnpm test
+
+      - name: Setup Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - run: pnpm turbo:test
 
   scaffold-smoke-test:
     runs-on: ubuntu-latest
@@ -45,6 +72,17 @@ jobs:
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
+
+      - name: Setup Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Build workspace packages with turbo
+        run: pnpm turbo:build --filter='!./examples/**'
 
       - name: Pack workspace packages as tarballs
         run: |
@@ -95,6 +133,14 @@ jobs:
         with:
           build: true
 
+      - name: Setup Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: Regenerate AGENTS.md tables
         run: node packages/cli/dist/cli.js generate-agent-docs
 
@@ -112,6 +158,14 @@ jobs:
         with:
           build: true
           relink-bins: true
+
+      - name: Setup Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install Playwright browsers
         run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
@@ -152,6 +206,14 @@ jobs:
       - uses: ./.github/actions/setup-stackwright
         with:
           build: true
+
+      - name: Setup Turborepo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Regenerate JSON schemas
         run: cd packages/types && pnpm generate-schemas

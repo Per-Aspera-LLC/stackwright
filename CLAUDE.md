@@ -89,6 +89,38 @@ pnpm build -- --no-sbom
 
 SBOM formats: SPDX 2.3, CycloneDX 1.5, and Stackwright Build Manifest.
 
+## Turborepo Commands
+
+Stackwright uses Turborepo for incremental builds and intelligent caching. Turbo commands are prefixed with `turbo:` to avoid conflicts with existing pnpm commands.
+
+```bash
+# Build all packages (with caching)
+pnpm turbo:build
+
+# Build specific packages
+pnpm turbo:build:core
+pnpm turbo:build:types
+pnpm turbo:build:themes
+
+# Test all packages (automatically runs build first)
+pnpm turbo:test
+
+# Run dev mode on all packages
+pnpm turbo:dev
+
+# Lint all packages
+pnpm turbo:lint
+
+# Format all packages
+pnpm turbo:format
+```
+
+**Turborepo caching:**
+- Local cache is stored in `.turbo/` directory
+- Cache keys are based on source file hashes and inputs
+- To force a fresh build: `turbo run build --force`
+- To see what's cached: `turbo run build --dry-run=json`
+
 ## Architecture
 
 Stackwright is a **pnpm monorepo** implementing a typed DSL for web applications — a platform where visual rendering + constrained DSL + AI iteration = non-technical people building enterprise apps that are safe by construction. YAML is the syntax. `@stackwright/types` is the grammar. Zod schemas enforce the safety boundary. The framework compiles content files into production-ready Next.js/React applications. See `PHILOSOPHY.md` for the full architectural rationale.
@@ -131,6 +163,56 @@ User's Next.js App
 **Static Generation**: `@stackwright/nextjs` provides `getStaticPropsForSlug` and related helpers for Next.js `getStaticPaths`/`getStaticProps`. The `SlugPage` component in `@stackwright/core` drives slug-based routing.
 
 **Grammar / JSON Schema Generation**: `@stackwright/types` is the single source of truth for the Stackwright grammar. Zod schemas are the source of truth; TypeScript types are inferred via `z.infer<>`. `zod-to-json-schema` generates `theme-schema.json`, `content-schema.json`, and `siteconfig-schema.json` — the machine-readable grammar specification used for IDE YAML validation. Must be regenerated after type changes (`pnpm generate-schemas`). Zod schemas are introspectable at runtime via `schema.def` (Zod v4) enabling MCP tools and future runtime validation.
+
+### The No Hard Dependencies Principle
+
+Stackwright packages follow a strict **no hard dependencies** pattern. This enables independent release cycles, testability without other packages installed, and clear separation of concerns.
+
+#### 1. Type-Only Imports
+
+Use `import type` for TypeScript interfaces. These imports are erased at compile time:
+
+```typescript
+// ✅ Good - type-only import
+import type { ContentBlock, ComponentProps } from '@stackwright/types';
+
+// ❌ Bad - runtime import (creates hard dependency)
+import { ContentBlock } from '@stackwright/types';
+```
+
+#### 2. Interface Contracts
+
+Define interfaces that match patterns without importing them. This enables compile-time safety while maintaining runtime independence:
+
+```typescript
+// Pro package defines its own interface compatible with OSS
+export interface ComponentRegistry {
+  register(name: string, component: React.ComponentType<any>): void;
+  get(name: string): React.ComponentType<any> | undefined;
+}
+```
+
+#### 3. Registration Functions
+
+Components integrate via registration functions that the user calls:
+
+```typescript
+// Pro package exports a registration function
+export function registerFormWidgets(registry: ComponentRegistry): void {
+  registry.register('MyWidget', MyWidget);
+}
+
+// User calls it in their app
+import { getRegistry } from '@stackwright/core';
+import { registerFormWidgets } from '@stackwright-pro/widgets';
+
+registerFormWidgets(getRegistry());
+```
+
+This pattern:
+- ✅ Zero runtime coupling between packages
+- ✅ User explicitly controls what gets registered
+- ✅ Packages can be tested without other packages installed
 
 ### Scaffold Hooks System
 

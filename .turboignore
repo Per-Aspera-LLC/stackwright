@@ -1,0 +1,51 @@
+# Dependencies
+node_modules
+
+# Build outputs (these are cached via turbo, not needed in cache artifacts)
+dist
+.build
+.next
+build
+
+# Test outputs
+coverage
+.nyc_output
+
+# Development
+.turbo
+.turbo-runner
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+
+# CI/CD
+.github
+.circleci
+
+# Docs and configs
+*.md
+!README.md
+LICENSE
+
+# Examples (built separately)
+examples
+
+# E2E tests (run separately)
+packages/e2e
+
+# Configuration
+eslint.config.js
+prettier.config.js
+tsconfig.json
+tsconfig.base.json
+vitest.config.ts
+
+# Temporary
+*.log
+*.tmp
+.DS_Store
