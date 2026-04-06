@@ -72,14 +72,71 @@ Don't add tests or checks speculatively. Wait for a real failure, then automate 
 
 ## Branching Workflow
 
-- **`dev`** is the integration branch. Feature branches are created from `dev` and PRs target `dev`.
-- **`main`** is the release branch. `dev` is merged to `main` only when cutting a release.
+### ⚠️ ALWAYS Target `dev` Branch
 
-Always pull the latest `dev` before creating a feature branch:
+**This is the single most important rule of this repo:**
+
+```
+Feature Branch → PR to dev → Merge to main (release only)
+```
+
+| Branch | Purpose | Who Pushes To It |
+|--------|---------|------------------|
+| `dev` | Integration branch for all work | PRs from feature branches |
+| `main` | Release/stable branch | Only during formal releases |
+
+### The Rule
+
+1. **Branch FROM `dev`**: `git checkout -b feat/issue-XX origin/dev`
+2. **Target `dev` in PRs**: All pull requests target `dev`
+3. **Only merge `dev` → `main`** during a formal release
+4. **Never commit directly to `dev` or `main`**
+
+### Standard Workflow
 
 ```bash
+# 1. Start fresh from dev
 git fetch origin dev && git checkout -b feat/issue-XX-description origin/dev
+
+# 2. Make changes, commit with conventional messages
+git commit -m "feat(cli): implement --watch mode (fixes #42)"
+
+# 3. Push and create PR targeting dev
+git push -u origin feat/issue-XX-description
+gh pr create --base dev --title "feat(cli): implement --watch mode"
+
+# 4. After review, merge to dev
+# CI automatically publishes alpha prereleases from dev
+
+
+# 5. During release, merge dev to main
+# CI exits prerelease mode and publishes stable versions
 ```
+
+### What Happens On Push To `dev`?
+
+CI automatically:
+1. Runs tests and builds
+2. Bumps alpha versions (e.g., `0.1.0` → `0.1.1-alpha.0`)
+3. Publishes to npm with `alpha` tag
+4. Backs up version changes
+
+### What Happens On Push To `main`?
+
+
+CI automatically:
+1. Exits prerelease mode
+2. Publishes stable versions (e.g., `0.1.0-alpha.5` → `0.1.0`)
+3. Back-merges version bumps to `dev`
+4. Re-enters prerelease mode for next cycle
+
+### Why This Structure?
+
+
+- `dev` is always releasable (continuous delivery of alphas)
+- `main` contains only stable, tested releases
+- Changesets accumulate in `dev` until a release is cut
+- No broken states ever reach `main`
 
 ## Commit Discipline
 
