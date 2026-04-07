@@ -20,7 +20,9 @@ const SAFE_URL_PREFIXES = ['https://', 'http://', '/', '#'];
 function isSafeUrl(href: string | undefined): boolean {
   if (!href) return true;
   const trimmed = href.trim();
-  return SAFE_URL_PREFIXES.some((prefix) => trimmed.startsWith(prefix));
+  return (
+    SAFE_URL_PREFIXES.some((prefix) => trimmed.startsWith(prefix)) || /^\/[^\s]*$/.test(trimmed) // Allow relative paths with query params
+  );
 }
 
 // ---------------------------------------------------------------------------

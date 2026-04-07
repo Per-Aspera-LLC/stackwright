@@ -345,7 +345,7 @@ The scaffold hooks system allows Pro packages to:
 
 3. **index.js** — Register hooks:
    ```javascript
-   const { registerScaffoldHook } = require('@stackwright/scaffold-core');
+   import { registerScaffoldHook } from '@stackwright/scaffold-core';
 
    // Add enterprise license
    registerScaffoldHook({

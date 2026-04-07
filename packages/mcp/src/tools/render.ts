@@ -7,6 +7,25 @@ import { renderPage, probeServer } from '../renderer/page-renderer.js';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 
+function isLocalhost(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return ['localhost', '127.0.0.1', '::1', '0.0.0.0'].includes(parsed.hostname);
+  } catch {
+    return false;
+  }
+}
+
+function validateLocalhost(baseUrl: string): { valid: boolean; error?: string } {
+  if (!isLocalhost(baseUrl)) {
+    return {
+      valid: false,
+      error: `baseUrl must be localhost for security. Received: ${baseUrl}`,
+    };
+  }
+  return { valid: true };
+}
+
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
@@ -24,6 +43,15 @@ export function registerRenderTools(server: McpServer): void {
         .describe('Base URL to check (default: http://localhost:3000)'),
     },
     async ({ baseUrl }) => {
+      // Security: Validate localhost only
+      const localCheck = validateLocalhost(baseUrl);
+      if (!localCheck.valid) {
+        return {
+          content: [{ type: 'text', text: `Error: ${localCheck.error}` }],
+          isError: true,
+        };
+      }
+
       const reachable = await probeServer(baseUrl);
       if (reachable) {
         return {
@@ -85,6 +113,15 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
         .describe('Image format. Use jpeg for smaller file size.'),
     },
     async ({ baseUrl, slug, viewport, fullPage, format }) => {
+      // Security: Validate localhost only
+      const localCheck = validateLocalhost(baseUrl);
+      if (!localCheck.valid) {
+        return {
+          content: [{ type: 'text', text: `Error: ${localCheck.error}` }],
+          isError: true,
+        };
+      }
+
       // Check server is reachable
       const reachable = await probeServer(baseUrl);
       if (!reachable) {
@@ -165,6 +202,15 @@ Use this for brand-critical changes where visual regression matters.`,
       fullPage: z.boolean().optional().default(true).describe('Capture full scrollable page'),
     },
     async ({ baseUrl, slug, viewport, fullPage }) => {
+      // Security: Validate localhost only
+      const localCheck = validateLocalhost(baseUrl);
+      if (!localCheck.valid) {
+        return {
+          content: [{ type: 'text', text: `Error: ${localCheck.error}` }],
+          isError: true,
+        };
+      }
+
       const reachable = await probeServer(baseUrl);
       if (!reachable) {
         return {
@@ -246,6 +292,15 @@ This is the "try before you buy" tool — see exactly how your YAML will look wi
       fullPage: z.boolean().optional().default(true).describe('Capture full scrollable page'),
     },
     async ({ projectRoot, yaml: yamlContent, baseUrl, viewport, fullPage }) => {
+      // Security: Validate localhost only
+      const localCheck = validateLocalhost(baseUrl);
+      if (!localCheck.valid) {
+        return {
+          content: [{ type: 'text', text: `Error: ${localCheck.error}` }],
+          isError: true,
+        };
+      }
+
       // Check server is reachable
       const reachable = await probeServer(baseUrl);
       if (!reachable) {

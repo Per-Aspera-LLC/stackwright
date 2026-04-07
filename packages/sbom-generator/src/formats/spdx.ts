@@ -98,7 +98,9 @@ function createSPDXPackage(
   const packageId = `SPDXRef-Package-${dep.name.replace(/[^a-zA-Z0-9]/g, '-')}`;
   const purl = npmPURL(dep.name, dep.version);
 
-  // Generate pseudo-checksum from package info
+  // Note: These checksums are informational only (derived from name+version).
+  // For real integrity verification, use lockfile integrity hashes or
+  // package registry checksums in production SBOM workflows.
   const checksumContent = `${dep.name}@${dep.version}`;
   const checksum = sha256(checksumContent);
 
