@@ -85,7 +85,7 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
 
   // Keyboard shortcuts
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
       // Cmd+K or Ctrl+K
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === shortcut.toLowerCase()) {
         e.preventDefault();
@@ -98,8 +98,8 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    return () => document.removeEventListener('keydown', handleGlobalKeyDown);
   }, [isOpen, shortcut]);
 
   // Focus input when modal opens

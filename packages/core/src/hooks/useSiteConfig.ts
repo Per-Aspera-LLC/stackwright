@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { SiteConfig } from '../../../types/src/types/siteConfig';
+import { SiteConfig } from '@stackwright/types';
 
 // Create the context
 const SiteConfigContext = createContext<SiteConfig | null>(null);

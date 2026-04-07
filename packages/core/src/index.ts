@@ -50,6 +50,7 @@ export {
   getRegisteredContentTypes,
   getContentTypeSchema,
 } from './utils/contentTypeRegistry';
+export type { ContentTypeEntry } from './utils/contentTypeRegistry';
 
 // Collection provider registration
 export {
@@ -66,3 +67,9 @@ export type { ConsentCategory, ConsentState } from './utils/consent';
 // Map adapter system
 export * from './map';
 export { Map } from './components/content/Map';
+export type {
+  MapMarker,
+  MapLayer,
+  MapProviderProps,
+  StackwrightMapProps,
+} from './map/map-provider';

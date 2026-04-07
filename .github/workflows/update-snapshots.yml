@@ -8,6 +8,10 @@ on:
         required: true
         default: 'dev'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-snapshots:
     name: Update Visual Snapshots
