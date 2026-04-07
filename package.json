@@ -38,7 +38,7 @@
         "turbo:build": "turbo build",
         "turbo:test": "turbo test",
         "turbo:dev": "turbo dev",
-        "turbo:lint": "turbo lint",
+        "turbo:lint": "turbo lint --filter='!./examples/**'",
         "turbo:format": "turbo format",
         "turbo:build:core": "turbo build --filter=@stackwright/core",
         "turbo:build:types": "turbo build --filter=@stackwright/types",
