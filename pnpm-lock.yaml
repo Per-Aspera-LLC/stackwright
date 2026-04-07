@@ -122,9 +122,6 @@ importers:
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
-      stackwright-docs:
-        specifier: 'link:'
-        version: 'link:'
       tailwind-merge:
         specifier: ^2.6.0
         version: 2.6.1

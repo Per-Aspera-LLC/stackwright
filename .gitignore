@@ -3,6 +3,7 @@ node_modules
 packages/**/dist
 www/
 ISSUE-*-PLAN.md
+.turbo/
 
 # Coverage reports
 coverage/

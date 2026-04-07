@@ -4,9 +4,48 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Branching & Commits
 
-- **`dev`** is the integration branch; **`main`** is the release branch. Feature branches branch from `dev`, PRs target `dev`.
-- `git fetch origin dev && git checkout -b feat/issue-XX-description origin/dev`
-- Use conventional commit prefixes (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`). Commit early and often at logical checkpoints.
+### ⚠️ IMPORTANT: Always Target `dev`
+
+
+**ALL pull requests must target `dev` branch.** This is non-negotiable.
+
+```
+main (release) ← ← ← ← ← ← ← dev (integration)
+                  \          ↗
+                   \        /
+                    PR #XX
+```
+
+- `dev` = integration branch where all work merges
+- `main` = release branch (only updated during releases)
+- Feature branches branch FROM `dev` and PRs target `dev`
+
+### Quick Start
+
+```bash
+# ALWAYS start from dev
+git fetch origin dev && git checkout -b feat/issue-XX-description origin/dev
+
+# Or for fixes:
+git fetch origin dev && git checkout -b fix/issue-XX-description origin/dev
+```
+
+
+### Commit Messages
+
+
+Use conventional commit prefixes:
+- `feat:` — new feature
+- `fix:` — bug fix
+- `refactor:` — code restructure (no behavior change)
+- `test:` — adding/updating tests
+- `docs:` — documentation only
+- `chore:` — tooling, dependencies, config
+
+
+Include issue numbers: `feat(cli): add --watch mode (fixes #42)`
+
+Commit early and often at logical checkpoints.
 
 ## Commands
 
