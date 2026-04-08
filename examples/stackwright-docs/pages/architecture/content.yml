@@ -1,4 +1,35 @@
 content:
+  navSidebar:
+    navigation:
+      - label: "📖 Documentation"
+        href: /getting-started
+        children:
+          - label: "🚀 Getting Started"
+            href: /getting-started
+          - label: "📦 Content Types"
+            href: /content-types
+          - label: "🏗️ Architecture"
+            href: /architecture
+          - label: "⌨️ CLI Reference"
+            href: /cli
+      - label: "🤖 AI Agents"
+        href: /otter-raft
+        children:
+          - label: "🤖 Otter Raft"
+            href: /otter-raft
+          - label: "🔐 Pro"
+            href: /pro
+      - label: "📜 Legal"
+        href: /acknowledgements
+        children:
+          - label: "🙏 Acknowledgements"
+            href: /acknowledgements
+          - label: "🔒 Privacy Policy"
+            href: /privacy-policy
+          - label: "📝 Terms of Service"
+            href: /terms-of-service
+      - label: "🧪 Showcase"
+        href: /showcase
   meta:
     title: Architecture | Stackwright
     description: How Stackwright compiles YAML into production Next.js apps. Technical deep-dive.
@@ -51,22 +82,57 @@ content:
     - text: 'The prebuild step compiles your YAML into static JSON. Here''s what that looks like:'
       textSize: body1
     background: background
-  - type: code_block
-    label: yaml-input
-    language: yaml
-    lineNumbers: true
-    code: 'content:\n  content_items:\n    - type: main\n      label: hero\n      heading:\n        text: "Hello, World!"\n        textSize: h1\n      textBlocks:\n        - text: "Welcome to my site."\n          textSize: body1\n      buttons:\n        - text: "Get Started"\n          href: /getting-started\n          variant: contained'
-  - type: text_block
-    label: arrow-1
-    textBlocks:
-    - text: ⬇️ prebuild transforms to
-      textSize: caption
-    background: background
-  - type: code_block
-    label: json-output
-    language: json
-    lineNumbers: true
-    code: '{\n  "content": {\n    "content_items": [{\n      "type": "main",\n      "label": "hero",\n      "heading": {\n        "text": "Hello, World!",\n        "textSize": "h1"\n      },\n      "textBlocks": [{\n        "text": "Welcome to my site.",\n        "textSize": "body1"\n      }],\n      "buttons": [{\n        "text": "Get Started",\n        "href": "/getting-started",\n        "variant": "contained"\n      }]\n    }]\n  }\n}'
+  - type: tabbed_content
+    label: yaml-json-tabs
+    heading:
+      text: YAML → JSON
+      textSize: h3
+    background: surface
+    tabs:
+      - label: YAML Input
+        type: code_block
+        language: yaml
+        lineNumbers: true
+        code: |
+          content:
+            content_items:
+              - type: main
+                label: hero
+                heading:
+                  text: "Hello, World!"
+                textBlocks:
+                  - text: "Welcome to my site."
+                    textSize: body1
+                buttons:
+                  - text: "Get Started"
+                    href: /getting-started
+                    variant: contained
+      - label: JSON Output
+        type: code_block
+        language: json
+        lineNumbers: true
+        code: |
+          {
+            "content": {
+              "content_items": [{
+                "type": "main",
+                "label": "hero",
+                "heading": {
+                  "text": "Hello, World!",
+                  "textSize": "h1"
+                },
+                "textBlocks": [{
+                  "text": "Welcome to my site.",
+                  "textSize": "body1"
+                }],
+                "buttons": [{
+                  "text": "Get Started",
+                  "href": "/getting-started",
+                  "variant": "contained"
+                }]
+              }]
+            }
+          }
   - type: alert
     label: no-runtime-fs
     variant: info
