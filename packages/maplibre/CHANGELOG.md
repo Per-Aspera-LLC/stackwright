@@ -1,5 +1,11 @@
 # @stackwright/maplibre
 
+## 1.0.1-alpha.2
+
+### Patch Changes
+
+- 85a9699: Fix TypeScript build error and verify package is properly registered in lockfile
+
 ## 1.0.1-alpha.1
 
 ### Patch Changes

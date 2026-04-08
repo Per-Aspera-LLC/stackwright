@@ -31,6 +31,7 @@
     "fix-dark-mode-bugs",
     "fix-dark-mode",
     "fix-icons-architecture-codeblock",
+    "fix-maplibre-lockfile",
     "fix-unpin-otter-models",
     "integrations-config",
     "launch-stackwright-package",
