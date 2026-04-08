@@ -89,7 +89,6 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
         }}
         style={{ width: '100%', height: '100%', borderRadius: '8px' }}
         mapStyle={mapStyle}
-        attributionControl={true}
       >
         {/* Navigation controls (zoom, rotate) */}
         <NavigationControl position="top-right" />
