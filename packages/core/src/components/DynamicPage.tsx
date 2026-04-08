@@ -223,7 +223,6 @@ function DynamicPageInner({
         style={{
           minHeight: '100vh',
           position: 'relative',
-          overflow: 'hidden',
           fontFamily: theme.typography?.fontFamily?.primary || 'sans-serif',
           ...backgroundImageStyles,
           animation: getDriftFloatAnimation(),
