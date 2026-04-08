@@ -1,0 +1,169 @@
+name: Sync Docs
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - 'examples/stackwright-docs/**'
+      - 'packages/**'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate PerAsperaCI token
+        id: app-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.PERASPECRACI_APP_ID }}
+          private-key: ${{ secrets.PERASPERA_CI_PRIVATE_KEY }}
+
+      - name: Determine target repo and versions
+        id: vars
+        run: |
+          BRANCH="${{ github.ref_name }}"
+          
+          if [ "$BRANCH" = "dev" ]; then
+            echo "target_repo=Per-Aspera-LLC/stackwright-docs-dev" >> "$GITHUB_OUTPUT"
+            echo "target_branch=main" >> "$GITHUB_OUTPUT"
+            echo "build_type=alpha" >> "$GITHUB_OUTPUT"
+          else
+            echo "target_repo=Per-Aspera-LLC/stackwright-docs" >> "$GITHUB_OUTPUT"
+            echo "target_branch=main" >> "$GITHUB_OUTPUT"
+            echo "build_type=stable" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Get package versions
+        id: versions
+        run: |
+          BUILD_TYPE="${{ steps.vars.outputs.build_type }}"
+          
+          if [ "$BUILD_TYPE" = "stable" ]; then
+            # For main branch: read stable version from packages/core/package.json
+            CORE_VERSION=$(jq -r '.version' packages/core/package.json)
+            echo "core_version=$CORE_VERSION" >> "$GITHUB_OUTPUT"
+            echo "All packages use stable version: $CORE_VERSION"
+          else
+            # For dev branch: check .changeset/pre.json for prerelease info
+            if [ -f .changeset/pre.json ]; then
+              PRERELEASE_ID=$(jq -r '.id' .changeset/pre.json)
+              PRERELEASE_VERSION=$(jq -r '.nodeVersion // "0.0.0"' .changeset/pre.json)
+              
+              # Read the base version from packages/core/package.json
+              CORE_VERSION=$(jq -r '.version' packages/core/package.json)
+              
+              # Construct alpha version: e.g., 1.2.3-alpha.4
+              if [ "$PRERELEASE_ID" != "null" ] && [ "$PRERELEASE_ID" != "" ]; then
+                ALPHA_SUFFIX="-$PRERELEASE_ID.$PRERELEASE_VERSION"
+                CORE_VERSION="${CORE_VERSION%%-*}$ALPHA_SUFFIX"
+              fi
+              
+              echo "core_version=$CORE_VERSION" >> "$GITHUB_OUTPUT"
+              echo "Using alpha version from pre.json: $CORE_VERSION"
+            else
+              # Fallback: use workspace versions from package.json (already bumped by changeset)
+              CORE_VERSION=$(jq -r '.version' packages/core/package.json)
+              echo "core_version=$CORE_VERSION" >> "$GITHUB_OUTPUT"
+              echo "Using package.json version (no pre.json found): $CORE_VERSION"
+            fi
+          fi
+
+      - name: Checkout target docs repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ steps.vars.outputs.target_repo }}
+          path: _docs-repo
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ steps.vars.outputs.target_branch }}
+
+      - name: Run stackwright-prebuild
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run prebuild || pnpm --filter @stackwright/build-scripts run prebuild || true
+
+      - name: Sync docs files
+        run: |
+          SOURCE="examples/stackwright-docs"
+          
+          # Copy examples/stackwright-docs to target repo
+          # Exclude .git, node_modules, .next, and other build artifacts
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='.next' \
+            --exclude='.turbo' \
+            --exclude='.cache' \
+            --exclude='dist' \
+            --exclude='build' \
+            "$SOURCE/" _docs-repo/
+
+      - name: Replace workspace:* versions in package.json
+        run: |
+          cd _docs-repo
+          
+          CORE_VERSION="${{ steps.versions.outputs.core_version }}"
+          
+          # Replace workspace:* with actual version for all @stackwright/* packages
+          # Using jq with --arg for proper variable passing
+          jq --arg v "$CORE_VERSION" '
+            (.dependencies, .devDependencies) |= with_entries(
+              if (.key | startswith("@stackwright/")) and .value == "workspace:*"
+              then .value = $v
+              else .
+              end
+            )
+          ' package.json > package.json.tmp && mv package.json.tmp package.json
+          
+          echo "Updated package.json dependencies"
+
+      - name: Generate fresh pnpm-lock.yaml
+        run: |
+          cd _docs-repo
+          
+          # Remove existing lockfile to force regeneration
+          rm -f pnpm-lock.yaml
+          
+          # Install to regenerate lockfile with real versions
+          pnpm install --no-frozen-lockfile
+          
+          echo "Generated fresh pnpm-lock.yaml"
+
+      - name: Check for changes
+        id: diff
+        working-directory: _docs-repo
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        working-directory: _docs-repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          BRANCH="${{ github.ref_name }}"
+          BUILD_TYPE="${{ steps.vars.outputs.build_type }}"
+          
+          if [ "$BRANCH" = "dev" ]; then
+            COMMIT_MSG="chore: sync stackwright-docs (alpha)\n\nAutomated sync from Per-Aspera-LLC/stackwright@${GITHUB_SHA}\nBuild type: alpha"
+          else
+            COMMIT_MSG="chore: sync stackwright-docs\n\nAutomated sync from Per-Aspera-LLC/stackwright@${GITHUB_SHA}\nBuild type: stable"
+          fi
+          
+          git commit -m "$COMMIT_MSG"
+          git push
