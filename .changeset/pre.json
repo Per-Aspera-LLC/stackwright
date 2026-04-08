@@ -30,6 +30,7 @@
     "fix-cli-scaffold-smoke-test",
     "fix-dark-mode-bugs",
     "fix-dark-mode",
+    "fix-icons-architecture-codeblock",
     "fix-unpin-otter-models",
     "integrations-config",
     "launch-stackwright-package",
