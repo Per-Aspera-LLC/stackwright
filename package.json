@@ -23,7 +23,7 @@
         "changeset": "changeset",
         "version-packages": "changeset version",
         "release": "pnpm build && changeset publish",
-        "test": "pnpm -r --filter='!@stackwright/e2e' --filter='!launch-stackwright' --filter='!@stackwright/scaffold-core' --filter='!@stackwright/ui-shadcn' test",
+        "test": "pnpm -r --filter='!@stackwright/e2e' --filter='!launch-stackwright' --filter='!@stackwright/ui-shadcn' test",
         "test:core": "pnpm --filter @stackwright/core test",
         "test:e2e": "pnpm --filter @stackwright/e2e test",
         "test:coverage": "pnpm -r --filter='!@stackwright/e2e' --filter='!launch-stackwright' --filter='!@stackwright/ui-shadcn' test:coverage && node scripts/merge-coverage.js",

@@ -58,7 +58,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
-      - run: pnpm turbo:test
+      - run: pnpm test
 
   scaffold-smoke-test:
     runs-on: ubuntu-latest
