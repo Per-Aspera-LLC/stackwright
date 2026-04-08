@@ -16,17 +16,18 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout monorepo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Generate PerAsperaCI token
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.PERASPECRACI_APP_ID }}
           private-key: ${{ secrets.PERASPERA_CI_PRIVATE_KEY }}
+
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
 
       - name: Determine target repo and versions
         id: vars
