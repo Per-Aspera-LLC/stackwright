@@ -26,6 +26,7 @@
     "built-in-search-feature",
     "compose-site-atomic",
     "declarative-entry-pages",
+    "docs-architecture-principles",
     "fix-cli-scaffold-smoke-test",
     "fix-dark-mode-bugs",
     "fix-dark-mode",

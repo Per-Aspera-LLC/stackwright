@@ -1,5 +1,21 @@
 # @stackwright/core
 
+## 0.7.1-alpha.0
+
+### Patch Changes
+
+- 8f34fd6: docs: add architecture principles, ecosystem analogy, and CI philosophy
+
+  Added to PHILOSOPHY.md:
+  - "The Ecosystem Analogy" (Spring comparison table)
+  - 4 constraints that must never be violated
+
+  Added to CLAUDE.md:
+  - "No Hard Dependencies" principle with type-only imports, interface contracts, and registration patterns
+
+  Added to CONTRIBUTING.md:
+  - "CI Hardening Philosophy" section explaining the "bugs drive CI" approach
+
 ## 0.7.0
 
 ### Minor Changes
