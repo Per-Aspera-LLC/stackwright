@@ -65,14 +65,11 @@ jobs:
           PNPM_SKIP_OPTIONAL_PACKAGES: 'true'
 
       - name: Build monorepo packages
-        run: |
-          pnpm build
-          # Refresh bin symlinks after build (pnpm install creates them before dist/ exists)
-          pnpm install --frozen-lockfile
+        run: pnpm build
 
       - name: Build documentation site
         run: |
-          pnpm exec stackwright-prebuild
+          node node_modules/@stackwright/build-scripts/dist/prebuild.js
           pnpm build --filter stackwright-docs
 
       # ============================================
