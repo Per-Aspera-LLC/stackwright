@@ -26,12 +26,6 @@ on:
       - 'examples/stackwright-docs/**'
       - 'packages/**'
 
-# Set timeout for build and deploy steps
-timeout-minutes:
-  build: 30
-  deploy: 10
-
-# Permissions - read-only for contents, write for OIDC token (if needed for cloud auth)
 permissions:
   contents: read
   id-token: write
@@ -40,6 +34,7 @@ jobs:
   deploy-docs:
     name: Deploy Documentation
     runs-on: ubuntu-latest
+    timeout-minutes: 45  # combined build + deploy
     environment:
       name: ${{ github.ref_name == 'main' && 'production' || 'development' }}
 
