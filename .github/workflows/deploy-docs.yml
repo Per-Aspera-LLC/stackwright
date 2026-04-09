@@ -65,7 +65,10 @@ jobs:
           PNPM_SKIP_OPTIONAL_PACKAGES: 'true'
 
       - name: Build monorepo packages
-        run: pnpm build
+        run: |
+          pnpm build
+          # Refresh bin symlinks after build (pnpm install creates them before dist/ exists)
+          pnpm install --frozen-lockfile
 
       - name: Build documentation site
         run: |
