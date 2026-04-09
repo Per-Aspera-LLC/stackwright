@@ -50,11 +50,13 @@ jobs:
           # Full history needed for changeset version detection
           fetch-depth: 0
 
+      - name: Install pnpm
+        run: npm install -g pnpm@10.30.3
+
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
-          package-manager: pnpm@10.30.3
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
