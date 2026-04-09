@@ -69,8 +69,8 @@ jobs:
 
       - name: Build documentation site
         run: |
-          cd examples/stackwright-docs
-          pnpm build
+          pnpm run -r prebuild --filter stackwright-docs
+          pnpm build --filter stackwright-docs
 
       # ============================================
       # Deploy Steps
