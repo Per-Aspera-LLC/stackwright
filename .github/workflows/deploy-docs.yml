@@ -94,8 +94,8 @@ jobs:
           [R2]
           type = s3
           provider = Cloudflare
-          access_key_id = ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          secret_access_key = dummy_secret_for_cloudflare_auth
+          access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
+          secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
           region = auto
           endpoint = https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
           acl = public-read
