@@ -121,7 +121,7 @@ content:
         - type: text_block
           label: "Deployment"
           textBlocks:
-            - text: "Deploy to Vercel, Netlify, or any Node.js host. The output is a standard Next.js app with no special runtime requirements."
+            - text: "Deploy to Cloudflare R2, Netlify, or any static host. The output is a standard Next.js app with no special runtime requirements."
               textSize: body1
       background: background
 
