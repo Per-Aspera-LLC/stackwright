@@ -82,8 +82,8 @@ jobs:
           # Download and install rclone binary
           curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
           unzip rclone-current-linux-amd64.zip
-          sudo mv rclone-linux-amd64/rclone /usr/local/bin/
-          rm -rf rclone-current-linux-amd64.zip rclone-linux-amd64
+          sudo mv rclone-v1.73.4-linux-amd64/rclone /usr/local/bin/
+          rm -rf rclone-current-linux-amd64.zip rclone-v1.73.4-linux-amd64
           rclone version
 
       - name: Configure rclone for R2
