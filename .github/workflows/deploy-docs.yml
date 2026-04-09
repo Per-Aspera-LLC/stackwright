@@ -69,7 +69,7 @@ jobs:
 
       - name: Build documentation site
         run: |
-          node node_modules/@stackwright/build-scripts/dist/prebuild.js
+          node packages/build-scripts/dist/prebuild.js
           pnpm build --filter stackwright-docs
 
       # ============================================
