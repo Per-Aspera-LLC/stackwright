@@ -23,6 +23,7 @@ on:
       - dev
       - main
     paths:
+      - '.github/workflows/deploy-docs.yml'
       - 'examples/stackwright-docs/**'
       - 'packages/**'
 
@@ -35,7 +36,6 @@ jobs:
     name: Deploy Documentation
     runs-on: ubuntu-latest
     timeout-minutes: 45  # combined build + deploy
-    # Note: timeout is per-job, not per-step
     environment:
       name: ${{ github.ref_name == 'main' && 'production' || 'development' }}
 
@@ -45,20 +45,22 @@ jobs:
       # ============================================
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5  # was v4, now v5
         with:
           # Full history needed for changeset version detection
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
-          node-version: '20'
+          node-version: '22'
+          # Use pnpm caching for faster builds
+          cache: 'pnpm'
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: '9'
+          version: "10.30.3"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
