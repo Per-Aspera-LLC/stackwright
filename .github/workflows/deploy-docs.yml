@@ -71,7 +71,7 @@ jobs:
         run: |
           cd examples/stackwright-docs
           node ../../packages/build-scripts/dist/prebuild.js
-          pnpm build
+          npx next build
 
       # ============================================
       # Deploy Steps
