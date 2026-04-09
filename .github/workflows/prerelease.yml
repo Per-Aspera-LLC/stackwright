@@ -23,17 +23,17 @@ jobs:
           app-id: ${{ secrets.PERASPECRACI_APP_ID }}
           private-key: ${{ secrets.PERASPERA_CI_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           token: ${{ steps.app-token.outputs.token }}
 
-      - uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: "10.30.3"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
           provenance: true
