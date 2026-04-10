@@ -13,4 +13,6 @@ module.exports = createStackwrightNextConfig({
     images: {
         unoptimized: true,
     },
+    // Add trailing slash so URLs work without requiring explicit trailing slashes on R2/CDN hosting
+    trailingSlash: true,
 });
