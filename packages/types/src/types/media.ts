@@ -21,10 +21,24 @@ export const iconContentSchema = mediaBaseSchema.extend({
   color: z.string().optional(),
 });
 
-export const imageContentSchema = mediaBaseSchema.extend({
-  type: z.literal('image'),
-  aspect_ratio: z.number().optional(),
-});
+export const imageContentSchema = mediaBaseSchema
+  .extend({
+    type: z.literal('image'),
+    aspect_ratio: z.number().optional(),
+  })
+  .refine(
+    (data) => {
+      // Valid if: both dimensions provided, OR aspect_ratio provided
+      const hasBothDimensions = data.height !== undefined && data.width !== undefined;
+      const hasAspectRatio = data.aspect_ratio !== undefined;
+      return hasBothDimensions || hasAspectRatio;
+    },
+    {
+      message:
+        "Image must have either both 'height' and 'width', or provide 'aspect_ratio' for responsive fill mode.",
+      path: [],
+    }
+  );
 
 export const videoContentSchema = mediaBaseSchema.extend({
   type: z.literal('video'),
