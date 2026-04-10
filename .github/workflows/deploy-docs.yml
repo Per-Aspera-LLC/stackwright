@@ -117,20 +117,9 @@ jobs:
         run: |
           rclone sync \
             --fast-list \
-            --exclude ".next/BUILD_ID" \
-            --exclude ".next/cache/**" \
             --exclude "node_modules/**" \
             --progress \
-            examples/stackwright-docs/.next/ \
-            "R2:${{ steps.bucket.outputs.bucket }}/"
-
-      - name: Sync public assets to R2
-        run: |
-          rclone copy \
-            --fast-list \
-            --exclude "node_modules/**" \
-            --progress \
-            examples/stackwright-docs/public/ \
+            examples/stackwright-docs/out/ \
             "R2:${{ steps.bucket.outputs.bucket }}/"
 
       - name: Deployment summary
