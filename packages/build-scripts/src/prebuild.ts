@@ -234,6 +234,14 @@ function isCollectionConfig(filename: string): boolean {
 /** Copy src to dest only if dest is missing or older than src. */
 function copyIfNewer(src: string, dest: string, rootDir: string): void {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
+
+  // Security: Reject symlinks to prevent path traversal attacks
+  const srcStat = fs.lstatSync(src);
+  if (srcStat.isSymbolicLink()) {
+    console.warn(`  WARNING: Skipping symlink: ${src}`);
+    return;
+  }
+
   if (!fs.existsSync(dest) || fs.statSync(src).mtimeMs > fs.statSync(dest).mtimeMs) {
     fs.copyFileSync(src, dest);
     console.log(`  asset: ${path.relative(rootDir, src)} -> ${path.relative(rootDir, dest)}`);

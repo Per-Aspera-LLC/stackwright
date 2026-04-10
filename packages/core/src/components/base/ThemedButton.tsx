@@ -64,6 +64,7 @@ export function ThemedButton({ button, className }: ThemedButtonProps) {
     <>
       {button.icon && (
         <Media
+          type="icon"
           src={button.icon.src}
           alt={''}
           label={button.text.concat(' icon')}

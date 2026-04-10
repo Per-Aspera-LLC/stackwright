@@ -8,6 +8,10 @@ on:
         required: true
         default: 'dev'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-snapshots:
     name: Update Visual Snapshots
@@ -32,7 +36,7 @@ jobs:
           --update-snapshots
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: 'test: update visual baselines'
           title: 'Update Visual Baselines'

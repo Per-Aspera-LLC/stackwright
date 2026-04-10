@@ -218,7 +218,7 @@ const result = await invoke_agent({
 
 **User**: "This is exactly what I wanted!"
 
-**Foreman**: "Site is ready! Run 'pnpm dev' in your project to preview locally. Deploy with 'vercel deploy' when ready."
+**Foreman**: "Site is ready! Run 'pnpm dev' in your project to preview locally. The live site is auto-deployed via GitHub Actions to Cloudflare R2."
 
 ---
 

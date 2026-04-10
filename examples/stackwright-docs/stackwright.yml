@@ -5,22 +5,23 @@ meta:
 appBar:
   titleText: "Stackwright"
   backgroundColor: "primary"
-  textColor: "text"
-  colorModeToggle: false
+  textColor: "#1A1A2E"   # Dark navy for readability on yellow
+  colorModeToggle: true
+  logo:
+    type: image
+    src: ./stackwright-logo.png
+    height: 40
+    width: 40
 
 navigation:
   - label: "🦦 Home"
     href: "/"
   - label: "🚀 Getting Started"
     href: "/getting-started"
-  - label: "📦 Content Types"
-    href: "/content-types"
   - label: "⌨️ CLI"
     href: "/cli"
   - label: "🤖 Otter Raft"
     href: "/otter-raft"
-  - label: "🧪 Showcase"
-    href: "/showcase"
 
 # Search configuration (Cmd+K to open)
 search:
@@ -36,6 +37,8 @@ sidebar:
       href: "/getting-started"
     - label: "📦 Content Types"
       href: "/content-types"
+    - label: "🧪 Showcase"
+      href: "/showcase"
     - label: "🏗️ Architecture"
       href: "/architecture"
     - label: "⌨️ CLI Reference"
@@ -46,8 +49,7 @@ sidebar:
       href: "/pro"
     - label: "🙏 Acknowledgements"
       href: "/acknowledgements"
-    - label: "🧪 Showcase"
-      href: "/showcase"
+
   collapsed: false
   width: 260
   mobileBreakpoint: 768
@@ -59,25 +61,25 @@ footer:
   links:
     - label: "GitHub"
       href: "https://github.com/Per-Aspera-LLC/stackwright"
-    - label: "Example App"
-      href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/hellostackwrightnext"
+    - label: "Source for this Site"
+      href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/stackwright-docs"
 
 customTheme:
   id: "stackwright-docs"
   name: "Stackwright Docs"
-  description: "Dark-mode-first documentation theme with warm amber accents and monospace headings"
+  description: "Dark-mode-first documentation theme with golden yellow accents and monospace headings"
   colors:
-    primary: "#E67E22"
+    primary: "#FCC03E"   # Safety Yellow
     secondary: "#4FC3F7"
-    accent: "#D4AF37"
+    accent: "#F59E0B"   # Amber - slightly darker accent
     background: "#0B1F3A"
     surface: "#1A2C46"
     text: "#FFFFFF"
     textSecondary: "#B0BEC5"
   darkColors:
-    primary: "#D35400"
+    primary: "#D97706"   # Amber 600 - darker for dark mode
     secondary: "#0288D1"
-    accent: "#B8860B"
+    accent: "#F59E0B"   # Amber 500
     background: "#FDFDFD"
     surface: "#F5F5F5"
     text: "#1A1A2E"

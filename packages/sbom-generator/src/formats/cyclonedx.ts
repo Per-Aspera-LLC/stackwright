@@ -165,7 +165,9 @@ function createCycloneDXComponent(dep: NormalizedDependency): CycloneDXComponent
     type = 'application';
   }
 
-  // Generate pseudo-hash
+  // Note: These hashes are informational only (derived from name+version).
+  // For real integrity verification, use lockfile integrity hashes or
+  // package registry checksums in production SBOM workflows.
   const hashContent = `${dep.name}@${dep.version}`;
   const hash = sha256(hashContent);
 

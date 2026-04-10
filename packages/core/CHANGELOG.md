@@ -1,5 +1,39 @@
 # @stackwright/core
 
+## 0.7.1-alpha.1
+
+### Patch Changes
+
+- 115c658: Fix missing Lucide icons (Code2, Layout) and improve CodeBlock rendering for ASCII art diagrams
+
+  ### Icon Registry Fixes
+  - **Code2 icon**: Added direct import to lucideAllIcons.ts (was missing from barrel export)
+  - **Layout icon**: Added direct import to lucideAllIcons.ts (was missing from barrel export)
+
+  ### CodeBlock Improvements
+  - Better monospace font stack for proper ASCII art alignment
+  - Added font-variant-ligatures: none to prevent character transformation issues
+
+  ### Architecture Page Fixes
+  - Replaced problematic YAML/JSON code blocks with tabbed_content component
+  - Fixed overflow issues caused by ASCII art alignment problems
+
+## 0.7.1-alpha.0
+
+### Patch Changes
+
+- 8f34fd6: docs: add architecture principles, ecosystem analogy, and CI philosophy
+
+  Added to PHILOSOPHY.md:
+  - "The Ecosystem Analogy" (Spring comparison table)
+  - 4 constraints that must never be violated
+
+  Added to CLAUDE.md:
+  - "No Hard Dependencies" principle with type-only imports, interface contracts, and registration patterns
+
+  Added to CONTRIBUTING.md:
+  - "CI Hardening Philosophy" section explaining the "bugs drive CI" approach
+
 ## 0.7.0
 
 ### Minor Changes

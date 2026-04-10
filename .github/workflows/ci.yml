@@ -31,7 +31,7 @@ jobs:
       - uses: ./.github/actions/setup-stackwright
 
       - name: Setup Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
@@ -51,14 +51,14 @@ jobs:
           build: true
 
       - name: Setup Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
 
-      - run: pnpm turbo:test
+      - run: pnpm test
 
   scaffold-smoke-test:
     runs-on: ubuntu-latest
@@ -70,7 +70,7 @@ jobs:
           build: true
 
       - name: Setup Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
@@ -130,7 +130,7 @@ jobs:
           build: true
 
       - name: Setup Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
@@ -156,7 +156,7 @@ jobs:
           relink-bins: true
 
       - name: Setup Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
@@ -204,7 +204,7 @@ jobs:
           build: true
 
       - name: Setup Turborepo
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}

@@ -40,7 +40,7 @@ export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardPr
         }}
       >
         <div style={{ width: '100%', height: '100%', backgroundColor: backgroundColor }}>
-          <Media {...(item.media as MediaItem)} label={item.title} style="cover" />
+          <Media {...(item.media as MediaItem)} label={item.title} style="overflow" />
 
           <h3 style={{ margin: theme.spacing.xs, color: theme.colors.text, textAlign: 'center' }}>
             {item.title}

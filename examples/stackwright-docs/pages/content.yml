@@ -2,7 +2,7 @@ content:
   meta:
     title: "Stackwright — YAML is the syntax. The schema is the safety net. AI writes the code."
     description: "From API spec to working Next.js app in hours. Stackwright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
-  
+
 
   content_items:
     # 1. Hero Section
@@ -24,6 +24,14 @@ content:
           textSize: button
           variant: outlined
           href: https://github.com/Per-Aspera-LLC/stackwright
+      media:
+        type: image
+        src: ./stackwright-digital.png
+        alt: Stackwright Logo
+        label: hero-logo
+        height: 280
+        width: 280
+      graphic_position: right
       background: background
       color: text
 

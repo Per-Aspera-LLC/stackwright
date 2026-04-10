@@ -118,6 +118,18 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
 
   const dependencyMode = determineDependencyMode(targetDir, opts);
 
+  // Run preInstall hooks (after files created, before any install)
+  // This is the primary hook for adding Pro dependencies
+  await runScaffoldHooks('preInstall', {
+    targetDir,
+    projectName: name!,
+    siteTitle: title!,
+    themeId: theme!,
+    packageJson,
+    codePuppyConfig,
+    dependencyMode,
+  });
+
   // If install is requested, run postInstall hooks
   if (opts.install) {
     await runScaffoldHooks('postInstall', {

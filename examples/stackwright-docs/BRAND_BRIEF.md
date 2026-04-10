@@ -26,7 +26,7 @@ Stackwright is a typed DSL that compiles YAML content files into production-read
 - **After visit**: Relief ("I have a real app, not a prototype")
 
 **Voice Tone**:  
-Technical but approachable. Like the best developer docs (Stripe, Vercel, Tailwind) — confident without arrogance. The tool speaks through what it enables. Every word earns its space. No buzzwords, only outcomes.
+Technical but approachable. Like the best developer docs (Stripe, Cloudflare, Tailwind) — confident without arrogance. The tool speaks through what it enables. Every word earns its space. No buzzwords, only outcomes.
 
 ---
 

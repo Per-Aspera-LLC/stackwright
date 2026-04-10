@@ -1,0 +1,147 @@
+# Deploy Docs Workflow
+#
+# This workflow replaces the old pattern of:
+# - Vercel deployments for preview/production
+# - Separate repo syncing to R2
+#
+# Now we build once and sync directly to R2 buckets with Cloudflare CDN serving.
+# R2 uses Cloudflare API token auth — no AWS credentials needed.
+# The dev branch deploys to stackwright-docs-dev for preview/testing.
+# The main branch deploys to stackwright-docs for production.
+
+# Required secrets for R2 deployment:
+# - CLOUDFLARE_API_TOKEN: Cloudflare API token with R2 read/write permissions
+# - R2_ACCOUNT_ID: Cloudflare account ID
+# - R2_BUCKET_STABLE: Production bucket name
+# - R2_BUCKET_DEV: Development bucket name
+
+name: Deploy Docs to R2
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - '.github/workflows/deploy-docs.yml'
+      - 'examples/stackwright-docs/**'
+      - 'packages/**'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy-docs:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 45  # combined build + deploy
+    environment:
+      name: ${{ github.ref_name == 'main' && 'production' || 'development' }}
+
+    steps:
+      # ============================================
+      # Build Steps
+      # ============================================
+
+      - name: Checkout repository
+        uses: actions/checkout@v5  # was v4, now v5
+        with:
+          # Full history needed for changeset version detection
+          fetch-depth: 0
+
+      - name: Install pnpm
+        run: npm install -g pnpm@10.30.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          # Speed up installation by skipping optional packages
+          PNPM_SKIP_OPTIONAL_PACKAGES: 'true'
+
+      - name: Build monorepo packages
+        run: pnpm build
+
+      - name: Build documentation site
+        run: |
+          cd examples/stackwright-docs
+          node ../../packages/build-scripts/dist/prebuild.js
+          npx next build
+
+      # ============================================
+      # Deploy Steps
+      # ============================================
+
+      - name: Install rclone
+        run: |
+          # Download and install rclone binary
+          curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
+          unzip rclone-current-linux-amd64.zip
+          sudo mv rclone-v1.73.4-linux-amd64/rclone /usr/local/bin/
+          rm -rf rclone-current-linux-amd64.zip rclone-v1.73.4-linux-amd64
+          rclone version
+
+      - name: Configure rclone for R2
+        run: |
+          # Create rclone config file with R2 remote
+          # R2 uses Cloudflare API token auth directly
+          cat > ~/.config/rclone/rclone.conf << EOF
+          [R2]
+          type = s3
+          provider = Cloudflare
+          access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
+          secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          region = auto
+          endpoint = https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
+          acl = public-read
+          EOF
+
+      - name: Determine target bucket
+        id: bucket
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "bucket=${{ secrets.R2_BUCKET_STABLE }}" >> $GITHUB_OUTPUT
+            echo "env=production" >> $GITHUB_OUTPUT
+          else
+            echo "bucket=${{ secrets.R2_BUCKET_DEV }}" >> $GITHUB_OUTPUT
+            echo "env=development" >> $GITHUB_OUTPUT
+          fi
+          echo "Selected bucket: ${{ steps.bucket.outputs.bucket }}"
+
+      - name: Sync to R2
+        run: |
+          rclone sync \
+            --fast-list \
+            --exclude ".next/BUILD_ID" \
+            --exclude ".next/cache/**" \
+            --exclude "node_modules/**" \
+            --progress \
+            examples/stackwright-docs/.next/ \
+            "R2:${{ steps.bucket.outputs.bucket }}/"
+
+      - name: Sync public assets to R2
+        run: |
+          rclone copy \
+            --fast-list \
+            --exclude "node_modules/**" \
+            --progress \
+            examples/stackwright-docs/public/ \
+            "R2:${{ steps.bucket.outputs.bucket }}/"
+
+      - name: Deployment summary
+        run: |
+          echo "## Deployment Complete 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ steps.bucket.outputs.env }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Bucket | \`${{ steps.bucket.outputs.bucket }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Note:** Cloudflare CDN serves directly from R2. No cache invalidation needed."

@@ -2,7 +2,7 @@
 // Imports the complete icon library (~1,500+ icons) via Lucide's barrel export.
 // For a lighter alternative with ~40 curated icons, use lucideIcons.ts instead.
 
-import { icons } from 'lucide-react';
+import { icons, Code2, Layout } from 'lucide-react';
 import { registerStackwrightIcons } from '../registry/iconRegistry';
 
 // Legacy MUI icon name aliases — ensures existing YAML content continues to work.
@@ -29,9 +29,17 @@ const lucideRenamedAliases: Record<string, React.ComponentType<any>> = {
   AlertTriangle: icons.TriangleAlert,
 };
 
+// Direct export icons — these exist in lucide-react but are NOT in the icons barrel export.
+// Code2 is exported directly but missing from the icons object type.
+const lucideDirectExports: Record<string, React.ComponentType<any>> = {
+  Code2,
+  Layout,
+};
+
 export const lucideAllIconsPreset: Record<string, React.ComponentType<any>> = {
   ...(icons as unknown as Record<string, React.ComponentType<any>>),
   ...lucideRenamedAliases,
+  ...lucideDirectExports,
   ...legacyMuiAliases,
 };
 

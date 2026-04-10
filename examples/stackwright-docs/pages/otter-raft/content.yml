@@ -24,7 +24,7 @@ content:
     # ─────────────────────────────────────────────────────────
     - type: video
       label: demo-video
-      src: "/videos/otter-raft-demo.mp4"
+      src: "./otter-raft-demo.mp4"
       alt: "Watch the Otter Raft build the stackwright-docs site from conversation"
       height: 480
       width: "100%"
@@ -39,7 +39,7 @@ content:
       label: video-note
       variant: note
       title: "🎬 Watch the Otters Build Their Own Docs"
-      body: "The video above shows the Otter Raft building the stackwright-docs site from scratch. Brand discovery → Theme design → Page generation → Deploy. No YAML expertise required."
+      body: "The video above shows the Otter Raft working on the stackwright-docs site, which was built from scratch. Brand discovery → Theme design → Page generation → Deploy. No YAML expertise required."
       background: surface
 
     # ─────────────────────────────────────────────────────────
@@ -106,17 +106,17 @@ content:
               lineNumbers: false
               code: |
                 # BRAND_BRIEF.md (Brand Otter)
-                
+
                 ## Voice
                 Professional, authoritative
-                
+
                 ## Colors
                 Primary: Navy blue (#1a365d)
                 Accent: Gold (#d4af37)
-                
+
                 ## Personality
                 Confident, precise
-                
+
                 ## Target Audience
                 Enterprise, developers
         - width: 33
@@ -127,7 +127,7 @@ content:
               lineNumbers: false
               code: |
                 # stackwright.yml (Theme Otter)
-                
+
                 customTheme:
                   colors:
                     primary: "#1a365d"
@@ -144,7 +144,7 @@ content:
               lineNumbers: false
               code: |
                 # pages/index.yml (Page Otter)
-                
+
                 content:
                   content_items:
                     - type: main
@@ -220,14 +220,14 @@ content:
         # Scaffold a new project (includes Otter Raft)
         npx launch-stackwright my-site
         cd my-site
-        
+
         # The Otter Raft configs are in:
         .stackwright/otters/
         ├── stackwright-brand-otter.json
         ├── stackwright-theme-otter.json
         ├── stackwright-page-otter.json
         └── stackwright-foreman-otter.json
-        
+
         # Use with Code Puppy:
         # The otter configs are auto-loaded
 

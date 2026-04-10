@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.3.1",
+    "version": "0.3.2-alpha.1",
     "description": "Next.js implementations for Stackwright components",
     "license": "MIT",
     "repository": {
@@ -41,7 +41,7 @@
         "@types/js-yaml": "^4.0",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
-        "jsdom": "^28.1.0",
+        "jsdom": "^29.0.2",
         "next": "^16.1.6",
         "react": "^19",
         "react-dom": "^19",
@@ -50,7 +50,7 @@
         "vitest": "^4.0.18"
     },
     "peerDependencies": {
-        "next": ">=16.1.6",
+        "next": ">=16.1.7",
         "react": "^19",
         "react-dom": "^19"
     }
