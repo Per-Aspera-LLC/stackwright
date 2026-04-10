@@ -69,24 +69,23 @@ jobs:
       # Deploy Steps
       # ============================================
 
-      - name: Determine target project
-        id: target
+      - name: Set deployment variables
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "project=stackwright-docs" >> $GITHUB_OUTPUT
-            echo "env=production" >> $GITHUB_OUTPUT
+            echo "DEPLOY_PROJECT=stackwright-docs" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
           else
-            echo "project=stackwright-docs-dev" >> $GITHUB_OUTPUT
-            echo "env=development" >> $GITHUB_OUTPUT
+            echo "DEPLOY_PROJECT=stackwright-docs-dev" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
           fi
-          echo "Selected project: ${{ steps.target.outputs.project }}"
+          echo "Selected project: ${{ env.DEPLOY_PROJECT }}"
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: ${{ steps.target.outputs.project }}
+          projectName: ${{ env.DEPLOY_PROJECT }}
           directory: examples/stackwright-docs/out
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
@@ -97,8 +96,8 @@ jobs:
           echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Environment | ${{ steps.target.outputs.env }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Project | \`${{ steps.target.outputs.project }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ env.DEPLOY_ENV }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Project | \`${{ env.DEPLOY_PROJECT }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Deployed to Cloudflare Pages**"
