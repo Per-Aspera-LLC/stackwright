@@ -25,8 +25,7 @@ import path from 'path';
 import yaml from 'js-yaml';
 import {
   siteConfigSchema,
-  pageContentSchema,
-  KNOWN_CONTENT_TYPE_KEYS,
+  validatePageContent,
   collectionConfigSchema,
   VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
 } from '@stackwright/types';
@@ -362,35 +361,7 @@ function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
 }
 
 // -- Content type validation ------------------------------------------------
-
-const knownContentKeys = new Set<string>(KNOWN_CONTENT_TYPE_KEYS);
-
-/**
- * Inspect raw (pre-Zod-parse) content items for unrecognized content type keys.
- * Zod's default `.strip()` silently removes unknown keys, so a typo like
- * `feture_list` would pass validation but render as an invisible gap.
- * This check catches those typos at build time.
- */
-function warnUnknownContentKeys(contentItems: Record<string, unknown>[], filePath: string): void {
-  for (let i = 0; i < contentItems.length; i++) {
-    const item = contentItems[i];
-    const itemType = item.type as string | undefined;
-
-    if (!itemType) {
-      console.warn(
-        `  WARNING: content_items[${i}] in ${filePath} is missing required "type" field.`
-      );
-      continue;
-    }
-
-    if (!knownContentKeys.has(itemType)) {
-      console.warn(
-        `  WARNING: Unknown content type "${itemType}" in ${filePath} (content_items[${i}]). ` +
-          `Known types: ${KNOWN_CONTENT_TYPE_KEYS.join(', ')}`
-      );
-    }
-  }
-}
+// NOTE: Unknown content type checking is now handled by validatePageContent()
 
 // -- Collections ------------------------------------------------------------
 
@@ -957,21 +928,17 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
 
-    const pageValidation = pageContentSchema.safeParse(rawContent);
-    if (!pageValidation.success) {
-      const details = pageValidation.error.issues
-        .map((issue) => {
-          const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
-          return `  ${field}: ${issue.message}`;
-        })
-        .join('\n');
-      throw new Error(`Invalid content: ${filePath}\n${details}`);
-    }
-
-    // Warn about unknown content type keys in the raw YAML (before Zod strips them)
-    const rawItems = (rawContent as any)?.content?.content_items;
-    if (Array.isArray(rawItems)) {
-      warnUnknownContentKeys(rawItems, filePath);
+    // Validate using shared validator (includes unknown content type checking)
+    const pageValidation = validatePageContent(rawContent);
+    if (!pageValidation.valid) {
+      const output = [
+        `Invalid content: ${filePath}`,
+        ...pageValidation.errors.map(
+          (e) =>
+            `  ${e.fieldPath}: ${e.hint}${e.suggestion ? ` (did you mean "${e.suggestion}"?)` : ''}`
+        ),
+      ].join('\n');
+      throw new Error(output);
     }
 
     const slugDir = slug ?? '_root';

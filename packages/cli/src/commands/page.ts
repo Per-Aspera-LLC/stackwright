@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
 import { detectProject } from '../utils/project-detector';
-import { pageContentSchema } from '../utils/schema-loader';
+import { validatePageContent } from '@stackwright/types';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
@@ -89,11 +89,10 @@ export function validatePages(pagesDir: string, slug?: string): PageValidateResu
       continue;
     }
 
-    const result = pageContentSchema.safeParse(raw);
-    if (!result.success) {
-      for (const issue of result.error.issues) {
-        const fieldPath = issue.path.length > 0 ? issue.path.join('.') : '(root)';
-        errors.push({ slug: page.slug, message: `${fieldPath}: ${issue.message}` });
+    const result = validatePageContent(raw);
+    if (!result.valid) {
+      for (const err of result.errors) {
+        errors.push({ slug: page.slug, message: `${err.fieldPath}: ${err.hint}` });
       }
     }
   }
@@ -152,11 +151,12 @@ export function writePage(pagesDir: string, slug: string, yamlContent: string): 
     throw err;
   }
 
-  const result = pageContentSchema.safeParse(raw);
-  if (!result.success) {
-    const fieldErrors = result.error.issues.map((issue) => {
-      const fieldPath = issue.path.length > 0 ? issue.path.join('.') : '(root)';
-      return `${fieldPath}: ${issue.message}`;
+  // Validate using shared validator
+  const result = validatePageContent(raw);
+  if (!result.valid) {
+    const fieldErrors = result.errors.map((e) => {
+      const suggestion = e.suggestion ? ` (did you mean "${e.suggestion}"?)` : '';
+      return `${e.fieldPath}: ${e.hint}${suggestion}`;
     });
     const err = new Error(`Validation failed:\n  ${fieldErrors.join('\n  ')}`);
     (err as NodeJS.ErrnoException).code = 'VALIDATION_FAILED';
@@ -379,8 +379,18 @@ export function registerPage(program: Command): void {
           if (result.valid) {
             console.log(chalk.green('All pages are valid.'));
           } else {
+            console.log(chalk.red(`\n${result.errors.length} validation error(s):\n`));
             for (const e of result.errors) {
-              console.log(chalk.red(`  ${e.slug}: ${e.message}`));
+              console.log(chalk.red(`  ${e.slug}: ${e.message.split(':')[0]}`));
+              const hint = e.message.split(':').slice(1).join(':').trim();
+              if (hint) {
+                console.log(`    ${hint}`);
+              }
+              // Check for suggestions in the original error
+              const suggestionMatch = hint.match(/Did you mean "([^"]+)"/);
+              if (suggestionMatch) {
+                console.log(chalk.yellow(`    Did you mean: "${suggestionMatch[1]}"?`));
+              }
             }
           }
         });
