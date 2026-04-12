@@ -7,7 +7,6 @@ import { promptThemeSelection } from '../utils/theme-selector';
 import { processTemplate } from '../utils/template-processor';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 import { runScaffoldHooks } from '@stackwright/scaffold-core';
-import type { ScaffoldHookContext } from '@stackwright/scaffold-core';
 
 export interface ScaffoldOptions {
   name?: string;

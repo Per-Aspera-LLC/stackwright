@@ -1,11 +1,11 @@
 SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
-SPDXID: SPDXRef-DOCUMENT-0b5eb5d9
-DocumentName: stackwright-docs@0.1.1-alpha.1
-DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-03T20:10:38.342Z
+SPDXID: SPDXRef-DOCUMENT-5a46aea3
+DocumentName: stackwright-docs@0.1.2-alpha.1
+DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-12T17:19:57.943Z
 
 CreationInfo:
-  Created: 2026-04-03T20:10:38.342Z
+  Created: 2026-04-12T17:19:57.943Z
   Creator: Tool: @stackwright/sbom-generator
   Creator: Tool-Version: 0.0.0
 
@@ -99,11 +99,11 @@ ExternalRef: PACKAGE-MANAGER purl pkg:npm/lucide-react@0.471.1
 
 PackageName: next
 SPDXID: SPDXRef-Package-next
-PackageVersion: 16.1.6
+PackageVersion: 16.2.2
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: dab6b931b02c25bd4f20dd3f93ceb0b57f8971844a25f14feb62c8a20608db04
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/next@16.1.6
+PackageChecksum: SHA256: 2037941b242dfcf433d88c748a094cc731b35a4559f7adbc45359fbbafe1d236
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/next@16.2.2
 
 PackageName: react
 SPDXID: SPDXRef-Package-react
@@ -121,23 +121,15 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: d321eb3d0478e2a58565081343e4d1da25caf8103b3dd72b3544a715f2e80418
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/react-dom@19.2.4
 
-PackageName: stackwright-docs
-SPDXID: SPDXRef-Package-stackwright-docs
-PackageVersion: link:
-PackageLicenseConcluded: NOASSERTION
-PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: 048f32c842b18fe0c8c18f64b17cedd18149860b0064ba12a2c595890048e568
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/stackwright-docs@link:
-
 PackageName: tailwind-merge
 SPDXID: SPDXRef-Package-tailwind-merge
-PackageVersion: 2.6.0
+PackageVersion: 3.5.0
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: f55becd055a25a9ecb32ee3cf37faf157aa62b955195bb7f695909e582e8ae33
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@2.6.0
+PackageChecksum: SHA256: 039d2e92d475e4268b1babe22545c8cc507d46e9fc09aacaa75ee5925b885a10
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@3.5.0
 
-Relationship: SPDXRef-DOCUMENT-0b5eb5d9 DESCRIBES SPDXRef-Package-clsx
+Relationship: SPDXRef-DOCUMENT-5a46aea3 DESCRIBES SPDXRef-Package-clsx
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-accordion
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-slot
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-tabs
@@ -151,5 +143,4 @@ Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-lucide-react
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-next
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-react
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-react-dom
-Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-stackwright-docs
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-tailwind-merge

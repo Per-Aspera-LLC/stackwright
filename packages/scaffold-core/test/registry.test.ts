@@ -5,7 +5,7 @@ import {
   getScaffoldHooks,
   getScaffoldHooksForType,
   runScaffoldHooks,
-} from '../src/registry';
+} from '../src/index';
 
 describe('Scaffold Hook Registry', () => {
   beforeEach(() => {

@@ -1,13 +1,9 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
+import { describe, it, expect } from 'vitest';
 import {
   extractGoogleFontNames,
   generateGoogleFontsUrl,
   generateFontLinkTags,
 } from '../src/prebuild';
-import { runPrebuild } from '../src/prebuild';
 
 // --------------------------------------------------------------------------
 // extractGoogleFontNames tests

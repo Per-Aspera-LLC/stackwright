@@ -3,8 +3,8 @@
  * @package @stackwright/sbom-generator
  */
 
-import { mkdir, writeFile, access } from 'node:fs/promises';
-import { resolve, dirname } from 'node:path';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { analyzeDependencies } from './analyzer';
 import { StackwrightProjectInfo, NormalizedDependency } from './types';
 import { generateSPDX, toSPDXJSON, toSPDXTV, SPDXDocument } from './formats/spdx';
