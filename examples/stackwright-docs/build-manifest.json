@@ -1,7 +1,7 @@
 {
   "format": "stackwright-build-manifest",
   "version": "1.0.0",
-  "generated": "2026-04-12T15:15:45.400Z",
+  "generated": "2026-04-12T17:19:57.945Z",
   "project": {
     "name": "stackwright-docs",
     "version": "0.1.2-alpha.1",
