@@ -44,9 +44,18 @@ function isThemeToken(color: string): color is ThemeTokenColor {
 
 /** Convert theme token to CSS variable name */
 function themeTokenToCSSVar(token: ThemeTokenColor): string {
-  // textSecondary becomes text-secondary in CSS var
-  const cssName = token === 'textSecondary' ? 'text-secondary' : token;
-  return `--sw-color-${cssName}`;
+  // Map theme token names to CSS variable names
+  // Some tokens have different names in CSS vs theme
+  const cssNameMap: Record<ThemeTokenColor, string> = {
+    primary: 'primary',
+    secondary: 'secondary',
+    accent: 'accent',
+    background: 'bg', // background → bg
+    surface: 'surface',
+    text: 'text',
+    textSecondary: 'text-secondary', // textSecondary → text-secondary
+  };
+  return `--sw-color-${cssNameMap[token]}`;
 }
 
 const renderIcon = (src: string, sizePx: number | string, color?: string) => {

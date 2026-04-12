@@ -8,6 +8,7 @@
 
 import yaml from 'js-yaml';
 import { siteConfigSchema, pageContentSchema } from './schema-loader';
+import { suggestContentType } from '@stackwright/types';
 
 // ---------------------------------------------------------------------------
 // Types
