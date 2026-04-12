@@ -384,20 +384,74 @@ describe('Scaffold Hook Registry', () => {
   });
 
   describe('singleton behavior', () => {
-    it('registry persists across module reloads via Symbol.for', () => {
-      // This test verifies the pattern works - actual persistence is
-      // achieved through globalThis + Symbol.for combination
-      const key = Symbol.for('@stackwright/hooks-registry:test');
-      const global = globalThis as typeof globalThis & { [key]?: string };
+    // The actual Symbol used by the registry
+    const REGISTRY_KEY = Symbol.for('@stackwright/hooks-registry:hooks');
+    type HookEntry = {
+      type: string;
+      name: string;
+      priority: number;
+      critical: boolean;
+      handler: Function;
+    };
 
-      global[key] = 'test-value';
+    it('hooks persist in globalThis via Symbol.for', () => {
+      // Register a hook
+      registerScaffoldHook({
+        type: 'preScaffold',
+        name: 'global-test-hook',
+        priority: 25,
+        handler: vi.fn(),
+      });
 
-      // Simulate re-import by accessing global directly
-      const retrieved = global[key];
-      expect(retrieved).toBe('test-value');
+      // Access the actual global registry
+      const global = globalThis as typeof globalThis & {
+        [REGISTRY_KEY]?: Map<string, HookEntry>;
+      };
 
-      // Cleanup
-      delete global[key];
+      expect(global[REGISTRY_KEY]).toBeDefined();
+      expect(global[REGISTRY_KEY]!.has('global-test-hook')).toBe(true);
+      expect(global[REGISTRY_KEY]!.get('global-test-hook')!.priority).toBe(25);
+    });
+
+    it('resetForTesting clears global registry', () => {
+      // Register a hook
+      registerScaffoldHook({
+        type: 'preInstall',
+        name: 'should-be-cleared',
+        handler: vi.fn(),
+      });
+
+      // Verify it's in the global registry
+      const global = globalThis as typeof globalThis & {
+        [REGISTRY_KEY]?: Map<string, HookEntry>;
+      };
+      expect(global[REGISTRY_KEY]!.size).toBeGreaterThan(0);
+
+      // Reset
+      resetForTesting();
+
+      // Verify global registry is cleared
+      expect(global[REGISTRY_KEY]!.size).toBe(0);
+    });
+
+    it('hooks survive simulated module boundary', () => {
+      // This simulates two "different" modules accessing the same registry
+      // Module A registers a hook
+      registerScaffoldHook({
+        type: 'postScaffold',
+        name: 'module-a-hook',
+        handler: vi.fn(),
+      });
+
+      // Module B would see the same registry
+      // Verify by checking global directly
+      const global = globalThis as typeof globalThis & {
+        [REGISTRY_KEY]?: Map<string, HookEntry>;
+      };
+
+      // The hook registered above should be visible
+      const hooks = Array.from(global[REGISTRY_KEY]!.values());
+      expect(hooks.some((h) => h.name === 'module-a-hook')).toBe(true);
     });
   });
 });

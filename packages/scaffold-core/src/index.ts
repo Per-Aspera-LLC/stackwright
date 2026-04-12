@@ -19,5 +19,6 @@ export {
   getScaffoldHooks,
   getScaffoldHooksForType,
   clearScaffoldHooks,
+  resetForTesting,
   runScaffoldHooks,
 } from '@stackwright/hooks-registry';
