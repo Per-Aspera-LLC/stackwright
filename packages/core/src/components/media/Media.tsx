@@ -24,11 +24,42 @@ const isIconSource = (src: string): boolean => {
   );
 };
 
+// Known theme token names that map to CSS custom properties
+const THEME_TOKEN_COLORS = [
+  'primary',
+  'secondary',
+  'accent',
+  'background',
+  'surface',
+  'text',
+  'textSecondary',
+] as const;
+
+type ThemeTokenColor = (typeof THEME_TOKEN_COLORS)[number];
+
+/** Check if a color string is a known theme token */
+function isThemeToken(color: string): color is ThemeTokenColor {
+  return THEME_TOKEN_COLORS.includes(color as ThemeTokenColor);
+}
+
+/** Convert theme token to CSS variable name */
+function themeTokenToCSSVar(token: ThemeTokenColor): string {
+  // textSecondary becomes text-secondary in CSS var
+  const cssName = token === 'textSecondary' ? 'text-secondary' : token;
+  return `--sw-color-${cssName}`;
+}
+
 const renderIcon = (src: string, sizePx: number | string, color?: string) => {
   // Registry lookup only — no require(). See packages/icons/AGENTS.md for why.
   const IconComponent = getIconRegistry()?.get(src);
 
   if (IconComponent) {
+    // Handle theme tokens via CSS variables for proper dark mode support
+    if (color && isThemeToken(color)) {
+      const cssVar = themeTokenToCSSVar(color);
+      return <IconComponent size={sizePx} style={{ color: `var(${cssVar})` }} />;
+    }
+    // Fallback to direct color or currentColor
     return <IconComponent size={sizePx} color={color || 'currentColor'} />;
   }
 
