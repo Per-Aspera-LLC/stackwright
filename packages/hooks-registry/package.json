@@ -1,7 +1,7 @@
 {
-    "name": "@stackwright/scaffold-core",
-    "version": "0.1.0",
-    "description": "Scaffold hooks system for Stackwright - enables extensible post-scaffold processing",
+    "name": "@stackwright/hooks-registry",
+    "version": "0.1.0-alpha.0",
+    "description": "Singleton registry for scaffold hooks - survives module boundary crossings",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -24,9 +24,6 @@
         "build": "tsup",
         "dev": "tsup --watch",
         "test": "vitest run"
-    },
-    "dependencies": {
-        "@stackwright/hooks-registry": "workspace:*"
     },
     "devDependencies": {
         "@types/node": "^20.0.0",

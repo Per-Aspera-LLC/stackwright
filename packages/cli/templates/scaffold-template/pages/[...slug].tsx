@@ -34,7 +34,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths: slugPaths.map((slugPath) => ({
       params: { slug: slugPath.split('/') },
     })),
-    fallback: 'blocking',
+    fallback: false,
   };
 };
 

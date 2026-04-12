@@ -2,22 +2,22 @@
  * @stackwright/scaffold-core
  *
  * Hook system for extensible scaffold processing.
+ * Re-exports from @stackwright/hooks-registry for backward compatibility.
  * Pro packages register hooks that run at lifecycle points.
  */
 
-// Types
+// Re-export all types from the shared registry
 export type {
-  ScaffoldHookType,
   ScaffoldHook,
-  ScaffoldHookOptions,
+  ScaffoldHookType,
   ScaffoldHookContext,
-} from './types/hooks';
+} from '@stackwright/hooks-registry';
 
-// Registry functions
+// Re-export all registry functions
 export {
   registerScaffoldHook,
   getScaffoldHooks,
   getScaffoldHooksForType,
   clearScaffoldHooks,
   runScaffoldHooks,
-} from './registry';
+} from '@stackwright/hooks-registry';

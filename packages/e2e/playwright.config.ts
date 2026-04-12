@@ -28,7 +28,7 @@ const SITE_CONFIG: Record<string, { filter: string; port: number }> = {
     filter: 'stackwright-docs',
     port: 3000,
   },
-  'hellostackwrightnext': {
+  hellostackwrightnext: {
     filter: 'stackwright-example-app',
     port: 3000,
   },
@@ -36,7 +36,9 @@ const SITE_CONFIG: Record<string, { filter: string; port: number }> = {
 
 const site = SITE_CONFIG[TEST_SITE];
 if (!site) {
-  throw new Error(`Unknown TEST_SITE="${TEST_SITE}". Valid: ${Object.keys(SITE_CONFIG).join(', ')}`);
+  throw new Error(
+    `Unknown TEST_SITE="${TEST_SITE}". Valid: ${Object.keys(SITE_CONFIG).join(', ')}`
+  );
 }
 
 export default defineConfig({
@@ -106,7 +108,7 @@ export default defineConfig({
   webServer: process.env.PERF_NO_SERVER
     ? undefined
     : {
-        command: `pnpm --filter ${site.filter} exec stackwright-prebuild && pnpm --filter ${site.filter} exec next build && pnpm --filter ${site.filter} exec next start`,
+        command: `pnpm --filter ${site.filter} exec stackwright-prebuild && pnpm --filter ${site.filter} exec next build && pnpm --filter ${site.filter} exec npx serve out -l ${site.port}`,
         cwd: path.resolve(__dirname, '../..'),
         port: site.port,
         timeout: 180_000,

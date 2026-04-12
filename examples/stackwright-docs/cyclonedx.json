@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-04-03T20:10:38.343Z",
+    "timestamp": "2026-04-12T15:15:45.399Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -14,8 +14,8 @@
     "component": {
       "type": "application",
       "name": "stackwright-docs",
-      "version": "0.1.1-alpha.1",
-      "purl": "pkg:npm/stackwright-docs@0.1.1-alpha.1"
+      "version": "0.1.2-alpha.1",
+      "purl": "pkg:npm/stackwright-docs@0.1.2-alpha.1"
     }
   },
   "components": [
@@ -231,13 +231,13 @@
     {
       "type": "library",
       "name": "next",
-      "version": "16.1.6",
-      "purl": "pkg:npm/next@16.1.6",
+      "version": "16.2.2",
+      "purl": "pkg:npm/next@16.2.2",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "dab6b931b02c25bd4f20dd3f93ceb0b57f8971844a25f14feb62c8a20608db04"
+          "content": "2037941b242dfcf433d88c748a094cc731b35a4559f7adbc45359fbbafe1d236"
         }
       ],
       "externalReferences": [
@@ -287,33 +287,14 @@
     },
     {
       "type": "library",
-      "name": "stackwright-docs",
-      "version": "link:",
-      "purl": "pkg:npm/stackwright-docs@link:",
-      "scope": "required",
-      "hashes": [
-        {
-          "alg": "SHA-256",
-          "content": "048f32c842b18fe0c8c18f64b17cedd18149860b0064ba12a2c595890048e568"
-        }
-      ],
-      "externalReferences": [
-        {
-          "type": "package-manager",
-          "url": "https://www.npmjs.com/package/stackwright-docs"
-        }
-      ]
-    },
-    {
-      "type": "library",
       "name": "tailwind-merge",
-      "version": "2.6.0",
-      "purl": "pkg:npm/tailwind-merge@2.6.0",
+      "version": "3.5.0",
+      "purl": "pkg:npm/tailwind-merge@3.5.0",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f55becd055a25a9ecb32ee3cf37faf157aa62b955195bb7f695909e582e8ae33"
+          "content": "039d2e92d475e4268b1babe22545c8cc507d46e9fc09aacaa75ee5925b885a10"
         }
       ],
       "externalReferences": [
@@ -326,7 +307,7 @@
   ],
   "dependencies": [
     {
-      "ref": "pkg:npm/stackwright-docs@0.1.1-alpha.1",
+      "ref": "pkg:npm/stackwright-docs@0.1.2-alpha.1",
       "dependsOn": [
         "@radix-ui/react-accordion",
         "@radix-ui/react-slot",
@@ -342,7 +323,6 @@
         "next",
         "react",
         "react-dom",
-        "stackwright-docs",
         "tailwind-merge"
       ],
       "dependencyType": "direct"

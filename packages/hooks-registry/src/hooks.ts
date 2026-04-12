@@ -34,14 +34,6 @@ export interface ScaffoldHook {
 }
 
 /**
- * Hook registration options
- */
-export interface ScaffoldHookOptions extends Partial<ScaffoldHook> {
-  type: ScaffoldHookType;
-  name: string;
-}
-
-/**
  * Context passed to all hooks
  */
 export interface ScaffoldHookContext {
