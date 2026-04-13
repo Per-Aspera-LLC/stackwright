@@ -1,0 +1,99 @@
+# Gitleaks Configuration for Stackwright
+# Prevents accidental credential commits in CI/CD
+
+[allowlist]
+description = "Allowed patterns for test fixtures and documentation"
+regexes = [
+  # Allow env var references (strict: $VAR_NAME format, 2-31 chars)
+  '''\$[A-Z][A-Z0-9_]{1,30}''',
+  # Allow test/example credentials in fixtures
+  '''fake[_-]?(password|secret|key|token)\s*[:=]\s*['"]test['"]''',
+  '''example[_-]?(token|key|secret)''',
+  # Allow placeholder patterns in docs
+  '''your[_-]?(api[_-]?key|token|secret)''',
+  # Allow generic test patterns
+  '''test[_-]?fixture''',
+]
+
+paths = [
+  # Skip test fixtures directory
+  '''test/fixtures/.*''',
+  # Skip generated schemas
+  '''schemas/.*\.json''',
+  # Skip generated SBOMs
+  '''\.stackwright/sbom/.*''',
+  # Skip coverage reports
+  '''coverage/.*''',
+  # Skip node_modules
+  '''node_modules/.*''',
+]
+
+[[rules]]
+description = "AWS Access Key ID"
+regex = '''AKIA[0-9A-Z]{16}'''
+severity = "critical"
+
+[[rules]]
+description = "AWS Secret Access Key"
+regex = '''(?i)aws(.{0,20})?['"][0-9a-zA-Z\/+]{40}['"]'''
+severity = "critical"
+
+[[rules]]
+description = "GitHub Personal Access Token"
+regex = '''ghp_[a-zA-Z0-9]{36}'''
+severity = "critical"
+
+[[rules]]
+description = "GitHub OAuth Access Token"
+regex = '''gho_[a-zA-Z0-9]{36}'''
+severity = "critical"
+
+[[rules]]
+description = "GitHub App Token"
+regex = '''ghu_[a-zA-Z0-9]{36}'''
+severity = "critical"
+
+[[rules]]
+description = "GitLab Personal Access Token"
+regex = '''glpat-[a-zA-Z0-9\-]{20}'''
+severity = "critical"
+
+[[rules]]
+description = "Google API Key"
+regex = '''AIza[a-zA-Z0-9_-]{35}'''
+severity = "critical"
+
+[[rules]]
+description = "OpenAI API Key"
+regex = '''sk-[a-zA-Z0-9]{48}'''
+severity = "critical"
+
+[[rules]]
+description = "NPM Token"
+regex = '''npm_[a-zA-Z0-9]{36}'''
+severity = "high"
+
+[[rules]]
+description = "Private Key (generic)"
+regex = '''-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----'''
+severity = "critical"
+
+[[rules]]
+description = "Generic API Key"
+regex = '''(?i)(api[_-]?key|apikey|api[_-]?secret)\s*[:=]\s*['"]?[a-zA-Z0-9]{16,64}['"]?'''
+severity = "high"
+
+[[rules]]
+description = "Generic Secret"
+regex = '''(?i)(secret|password|passwd|pwd|token|auth)\s*[:=]\s*['"]?[a-zA-Z0-9_\-]{8,64}['"]?'''
+severity = "medium"
+
+[[rules]]
+description = "Azure Storage Account Key"
+regex = '''(?i)DefaultEndpointsProtocol=https;AccountName=[a-zA-Z0-9]+;AccountKey=[a-zA-Z0-9+/]{86}=='''
+severity = "critical"
+
+[[rules]]
+description = "Generic JWT Token"
+regex = '''eyJ[a-zA-Z0-9_-]{10,}\.eyJ[a-zA-Z0-9_-]{10,}\.[a-zA-Z0-9_-]{10,}'''
+severity = "high"

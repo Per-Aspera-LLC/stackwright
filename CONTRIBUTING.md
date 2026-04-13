@@ -307,6 +307,8 @@ Pro packages can extend the scaffold process using the hooks system in `@stackwr
 
 ### Overview
 
+> ⚠️ **Security First:** When creating scaffold hooks, always consider the security implications. See [docs/PLUGIN_SECURITY.md](./docs/PLUGIN_SECURITY.md) for security guidelines, input validation requirements, and common vulnerability patterns to avoid.
+
 The scaffold hooks system allows Pro packages to:
 - Inject enterprise dependencies into `package.json`
 - Configure custom MCP servers

@@ -1,0 +1,97 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main, dev]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'examples/stackwright-docs/content/**'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'examples/stackwright-docs/content/**'
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  secrets-scan:
+    name: Scan for Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for gitleaks
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_COMMENTS: true
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: true
+          GITLEAKS_REPORT_DIR: .gitleaks_reports
+
+      - name: Upload SARIF results
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: .gitleaks_reports/gitleaks-*.sarif
+          category: gitleaks
+
+  dependency-audit:
+    name: Dependency Vulnerability Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          # Prevent optional dependencies from causing issues
+          PUPPETEER_SKIP_DOWNLOAD: true
+
+      - name: Run npm audit
+        run: pnpm audit --audit-level=medium
+
+  semgrep-sast:
+    name: Semgrep SAST Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: |
+            p/ci
+            p/typescript
+            p/nodejs
+          upload-to: code-scanning
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+          category: semgrep

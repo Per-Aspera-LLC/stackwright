@@ -352,6 +352,10 @@ Stackwright constrains the YAML layer and generated clients. Custom React compon
 
 > **Why this matters for government and enterprise**: You audit the schema once. Every application built on Stackwright inherits those guarantees. This isn't "we scanned it afterward" — it's mathematical proof that invalid inputs cannot reach the runtime.
 
+### Plugin Security
+
+For information about securing plugins and extensions, see [docs/PLUGIN_SECURITY.md](./docs/PLUGIN_SECURITY.md).
+
 ## Examples
 
 See `examples/hellostackwrightnext/` for a complete working site demonstrating all content types, the theme system, co-located images, and the full prebuild pipeline.
