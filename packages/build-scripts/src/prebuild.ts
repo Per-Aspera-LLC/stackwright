@@ -28,6 +28,7 @@ import {
   validatePageContent,
   collectionConfigSchema,
   VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
+  resolveEnvVarsDeep,
 } from '@stackwright/types';
 import type {
   CollectionConfig,
@@ -38,6 +39,14 @@ import type {
   PrebuildPlugin,
   PrebuildPluginContext,
 } from '@stackwright/types';
+
+/**
+ * Recursively resolve environment variable references in config values.
+ * Replaces $VAR_NAME with actual env var values at build time.
+ */
+function applyEnvVarResolution(obj: unknown): unknown {
+  return resolveEnvVarsDeep(obj);
+}
 
 // -- Config -----------------------------------------------------------------
 
@@ -876,14 +885,19 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   }
 
   const processedConfig = processSiteConfig(rawConfig, projectRoot, imagesDir);
+
+  // Resolve environment variable references in integrations
+  const configWithEnvResolved = applyEnvVarResolution(processedConfig);
+  console.log('  ✓ Resolved environment variable references in integrations');
+
   fs.writeFileSync(
     path.join(contentOutDir, '_site.json'),
-    JSON.stringify(processedConfig, null, 2)
+    JSON.stringify(configWithEnvResolved, null, 2)
   );
   console.log('  OK _site.json');
 
   // 1b. Generate and write font links for Google Fonts
-  const fontLinks = generateFontLinkTags(processedConfig);
+  const fontLinks = generateFontLinkTags(configWithEnvResolved);
   if (fontLinks.length > 0) {
     fs.writeFileSync(
       path.join(contentOutDir, '_font-links.json'),
@@ -898,7 +912,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const generatedDir = path.join(projectRoot, 'src', 'generated');
     const pluginContext: PrebuildPluginContext = {
       projectRoot,
-      siteConfig: processedConfig as Record<string, unknown>,
+      siteConfig: configWithEnvResolved as Record<string, unknown>,
       contentOutDir,
       imagesDir,
       generatedDir,
@@ -980,7 +994,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const generatedDir = path.join(projectRoot, 'src', 'generated');
     const pluginContext: PrebuildPluginContext = {
       projectRoot,
-      siteConfig: processedConfig as Record<string, unknown>,
+      siteConfig: configWithEnvResolved as Record<string, unknown>,
       contentOutDir,
       imagesDir,
       generatedDir,

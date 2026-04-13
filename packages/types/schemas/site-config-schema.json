@@ -418,6 +418,52 @@
             "minLength": 1,
             "maxLength": 50,
             "pattern": "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+          },
+          "auth": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bearer",
+                  "apiKey",
+                  "oauth2",
+                  "basic",
+                  "none"
+                ]
+              },
+              "token": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/__schema13"
+                  }
+                ]
+              },
+              "value": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/__schema13"
+                  }
+                ]
+              },
+              "apiKeyHeader": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              },
+              "password": {
+                "allOf": [
+                  {
+                    "$ref": "#/definitions/__schema13"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -850,6 +896,11 @@
         "button",
         "overline"
       ]
+    },
+    "__schema13": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Token value or env var reference ($TOKEN). Use $VAR_NAME format for env var references."
     }
   }
 }

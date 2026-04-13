@@ -8,6 +8,8 @@ export * from './layout';
 export * from './enums';
 export * from './collection';
 export * from './plugin';
+export * from './secrets';
+export * from './secret-detection';
 export * from '../constants';
 
 // Re-export validation utilities

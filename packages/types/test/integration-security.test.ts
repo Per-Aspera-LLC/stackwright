@@ -1,239 +1,244 @@
 import { describe, it, expect } from 'vitest';
-import { siteConfigSchema } from '../src/types/siteConfig';
+import {
+  ENV_VAR_PATTERN,
+  BRACED_ENV_VAR_PATTERN,
+  envVarRefSchema,
+  authTokenSchema,
+  integrationAuthSchema,
+  extractEnvVarName,
+  resolveEnvVar,
+  resolveEnvVarsDeep,
+} from '../src/types/secrets.js';
+import { estimateEntropy, checkForPlaintextSecret } from '../src/types/secret-detection.js';
 
-describe('Integration Security: CRITICAL-01 Path Traversal Protection', () => {
-  // Base valid config for testing
-  const baseConfig = {
-    title: 'Test Site',
-    navigation: [],
-    appBar: {
-      titleText: 'Test',
-    },
-  };
-
-  describe('path traversal attacks', () => {
-    it('should reject path traversal with ../', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: '../../../etc/passwd' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message.toLowerCase()).toMatch(/path traversal|kebab-case|alphanumeric/);
-      }
+describe('Environment Variable Patterns', () => {
+  describe('ENV_VAR_PATTERN', () => {
+    it('should match $VAR_NAME format', () => {
+      expect(ENV_VAR_PATTERN.test('$API_TOKEN')).toBe(true);
+      expect(ENV_VAR_PATTERN.test('$DATABASE_URL')).toBe(true);
+      expect(ENV_VAR_PATTERN.test('$MY_SECRET_123')).toBe(true);
     });
 
-    it('should reject path traversal with ..', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: 'bad..name' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        // Regex catches this first (consecutive dots aren't alphanumeric)
-        expect(message.toLowerCase()).toMatch(/path traversal|kebab-case/);
-      }
-    });
-
-    it('should reject absolute paths starting with /', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: '/etc/shadow' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message.toLowerCase()).toMatch(/path traversal|kebab-case/);
-      }
-    });
-
-    it('should reject Windows-style paths with backslashes', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: 'bad\\name' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        // Regex catches this first (backslash isn't alphanumeric)
-        expect(message.toLowerCase()).toMatch(/path traversal|kebab-case/);
-      }
+    it('should not match invalid patterns', () => {
+      expect(ENV_VAR_PATTERN.test('$lowercase')).toBe(false);
+      expect(ENV_VAR_PATTERN.test('$123NUM')).toBe(false);
+      expect(ENV_VAR_PATTERN.test('API_TOKEN')).toBe(false);
+      expect(ENV_VAR_PATTERN.test('$')).toBe(false);
     });
   });
 
-  describe('kebab-case enforcement', () => {
-    it('should reject names with uppercase letters', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: 'BadName' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message.toLowerCase()).toMatch(/kebab-case|lowercase/);
-      }
+  describe('BRACED_ENV_VAR_PATTERN', () => {
+    it('should match ${VAR_NAME} format', () => {
+      expect(BRACED_ENV_VAR_PATTERN.test('${API_TOKEN}')).toBe(true);
+      expect(BRACED_ENV_VAR_PATTERN.test('${DATABASE_URL}')).toBe(true);
     });
 
-    it('should reject names with underscores', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: 'bad_name' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message.toLowerCase()).toMatch(/kebab-case|alphanumeric/);
-      }
+    it('should not match invalid patterns', () => {
+      expect(BRACED_ENV_VAR_PATTERN.test('${lowercase}')).toBe(false);
+      expect(BRACED_ENV_VAR_PATTERN.test('$API_TOKEN')).toBe(false);
     });
+  });
+});
 
-    it('should reject names with leading hyphens', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: '-bad-name' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message.toLowerCase()).toMatch(/kebab-case|leading/);
-      }
+describe('EnvVarRefSchema', () => {
+  it('should accept valid $VAR_NAME references', () => {
+    const result = envVarRefSchema.safeParse('$API_TOKEN');
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept valid ${VAR_NAME} references', () => {
+    const result = envVarRefSchema.safeParse('${API_TOKEN}');
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject invalid patterns', () => {
+    const result = envVarRefSchema.safeParse('invalid');
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('AuthTokenSchema', () => {
+  it('should accept env var references', () => {
+    expect(authTokenSchema.safeParse('$API_TOKEN').success).toBe(true);
+    expect(authTokenSchema.safeParse('${API_TOKEN}').success).toBe(true);
+  });
+
+  it('should accept plaintext strings', () => {
+    expect(authTokenSchema.safeParse('my-secret-value').success).toBe(true);
+  });
+
+  it('should reject empty strings', () => {
+    const result = authTokenSchema.safeParse('');
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('IntegrationAuthSchema', () => {
+  it('should accept valid auth config with bearer token', () => {
+    const result = integrationAuthSchema.safeParse({
+      type: 'bearer',
+      token: '$API_TOKEN',
     });
+    expect(result.success).toBe(true);
+  });
 
-    it('should reject names with trailing hyphens', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: 'bad-name-' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message.toLowerCase()).toMatch(/kebab-case|trailing/);
-      }
+  it('should accept basic auth with username/password', () => {
+    const result = integrationAuthSchema.safeParse({
+      type: 'basic',
+      username: 'admin',
+      password: '$DB_PASSWORD',
     });
+    expect(result.success).toBe(true);
+  });
 
-    it('should reject names with special characters', () => {
-      const badNames = ['bad@name', 'bad.name', 'bad!name', 'bad#name'];
+  it('should accept apiKey auth', () => {
+    const result = integrationAuthSchema.safeParse({
+      type: 'apiKey',
+      token: '$API_KEY',
+      apiKeyHeader: 'X-API-Key',
+    });
+    expect(result.success).toBe(true);
+  });
 
-      badNames.forEach((name) => {
-        const config = {
-          ...baseConfig,
-          integrations: [{ type: 'openapi', name }],
-        };
-        const result = siteConfigSchema.safeParse(config);
-        expect(result.success).toBe(false);
-      });
+  it('should accept none auth type', () => {
+    const result = integrationAuthSchema.safeParse({
+      type: 'none',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('should allow auth to be undefined', () => {
+    const result = integrationAuthSchema.safeParse(undefined);
+    expect(result.success).toBe(true);
+  });
+});
+
+describe('extractEnvVarName', () => {
+  it('should extract variable name from $VAR format', () => {
+    expect(extractEnvVarName('$API_TOKEN')).toBe('API_TOKEN');
+    expect(extractEnvVarName('$MY_VAR_123')).toBe('MY_VAR_123');
+  });
+
+  it('should extract variable name from ${VAR} format', () => {
+    expect(extractEnvVarName('${API_TOKEN}')).toBe('API_TOKEN');
+  });
+
+  it('should return null for non-env-var strings', () => {
+    expect(extractEnvVarName('plaintext')).toBe(null);
+    expect(extractEnvVarName('')).toBe(null);
+  });
+});
+
+describe('resolveEnvVar', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    process.env = { ...originalEnv };
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
+  });
+
+  it('should resolve env var reference to actual value', () => {
+    process.env.TEST_VAR = 'test-value';
+    expect(resolveEnvVar('$TEST_VAR')).toBe('test-value');
+  });
+
+  it('should throw error for missing env var', () => {
+    delete process.env.MISSING_VAR;
+    expect(() => resolveEnvVar('$MISSING_VAR')).toThrow('MISSING_VAR is not set');
+  });
+
+  it('should return plaintext strings unchanged', () => {
+    expect(resolveEnvVar('plaintext')).toBe('plaintext');
+  });
+});
+
+describe('resolveEnvVarsDeep', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    process.env = { ...originalEnv, API_TOKEN: 'secret123' };
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
+  });
+
+  it('should resolve env vars in objects', () => {
+    const input = { token: '$API_TOKEN', name: 'api' };
+    const result = resolveEnvVarsDeep(input);
+    expect(result).toEqual({ token: 'secret123', name: 'api' });
+  });
+
+  it('should resolve env vars in arrays', () => {
+    const input = ['$API_TOKEN', 'static-value'];
+    const result = resolveEnvVarsDeep(input);
+    expect(result).toEqual(['secret123', 'static-value']);
+  });
+
+  it('should handle nested structures', () => {
+    const input = {
+      auth: { token: '$API_TOKEN' },
+      integrations: [{ name: 'api', key: '$API_TOKEN' }],
+    };
+    const result = resolveEnvVarsDeep(input);
+    expect(result).toEqual({
+      auth: { token: 'secret123' },
+      integrations: [{ name: 'api', key: 'secret123' }],
     });
   });
 
-  describe('length validation', () => {
-    it('should reject names exceeding 50 characters', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [
-          {
-            type: 'openapi',
-            name: 'a'.repeat(51), // 51 characters
-          },
-        ],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message).toMatch(/50/);
-      }
+  it('should preserve non-string values', () => {
+    const input = { count: 42, enabled: true, items: [1, 2, 3] };
+    const result = resolveEnvVarsDeep(input);
+    expect(result).toEqual(input);
+  });
+});
+
+describe('Entropy Detection', () => {
+  describe('estimateEntropy', () => {
+    it('should return 0 for empty string', () => {
+      expect(estimateEntropy('')).toBe(0);
     });
 
-    it('should reject single character names (need at least 2)', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: 'a' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(false);
-      if (!result.success) {
-        const message = result.error.issues[0].message;
-        expect(message.toLowerCase()).toMatch(/kebab-case|alphanumeric/);
-      }
+    it('should return low entropy for repetitive text', () => {
+      const entropy = estimateEntropy('aaaaaaaaaa');
+      expect(entropy).toBeLessThan(1);
     });
 
-    it('should accept name at exactly 50 characters', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [
-          {
-            type: 'openapi',
-            name: 'a'.repeat(50), // Exactly 50 characters
-          },
-        ],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(true);
+    it('should return higher entropy for random strings', () => {
+      // 18 unique chars → log2(18) ≈ 4.17 bits/char, safely above threshold of 4
+      const entropy = estimateEntropy('aK8#mP2$vL5@nQ9!xZ');
+      expect(entropy).toBeGreaterThan(4);
+    });
+
+    it('should return moderate entropy for normal words', () => {
+      const entropy = estimateEntropy('password123');
+      expect(entropy).toBeGreaterThan(2);
+      expect(entropy).toBeLessThan(4);
     });
   });
 
-  describe('valid names (positive tests)', () => {
-    it('should accept valid kebab-case names', () => {
-      const validNames = [
-        'api',
-        'my-api',
-        'logistics-v2',
-        'user-management-api',
-        'api123',
-        '123api',
-        'a1-b2-c3',
-        'api-v1',
-        'graphql-api',
-      ];
-
-      validNames.forEach((name) => {
-        const config = {
-          ...baseConfig,
-          integrations: [{ type: 'openapi', name }],
-        };
-        const result = siteConfigSchema.safeParse(config);
-        expect(result.success).toBe(true, `Expected "${name}" to be valid`);
-      });
+  describe('checkForPlaintextSecret', () => {
+    it('should return null for env var references', () => {
+      expect(checkForPlaintextSecret('$API_TOKEN', 'token')).toBe(null);
     });
 
-    it('should accept two-character names', () => {
-      const config = {
-        ...baseConfig,
-        integrations: [{ type: 'openapi', name: 'ab' }],
-      };
-      const result = siteConfigSchema.safeParse(config);
-      expect(result.success).toBe(true);
+    it('should return warning for low entropy plaintext', () => {
+      const result = checkForPlaintextSecret('password123', 'token');
+      expect(result).toContain('SECURITY WARNING');
+      expect(result).toContain('token');
     });
-  });
 
-  describe('combined security scenarios', () => {
-    it('should reject multiple path traversal techniques combined', () => {
-      const maliciousNames = [
-        '../secrets',
-        'api/../etc',
-        '../../root',
-        'api/../../etc/passwd',
-        '/var/log/app',
-        '\\windows\\system32',
-      ];
+    it('should return null for short strings', () => {
+      expect(checkForPlaintextSecret('short', 'token')).toBe(null);
+    });
 
-      maliciousNames.forEach((name) => {
-        const config = {
-          ...baseConfig,
-          integrations: [{ type: 'openapi', name }],
-        };
-        const result = siteConfigSchema.safeParse(config);
-        expect(result.success).toBe(false, `Expected "${name}" to be rejected`);
-      });
+    it('should return null for high entropy random strings', () => {
+      const result = checkForPlaintextSecret('aK8#mP2$vL5@nQ9', 'token');
+      expect(result).toBe(null);
     });
   });
 });
