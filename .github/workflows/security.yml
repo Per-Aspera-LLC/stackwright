@@ -20,7 +20,7 @@ permissions:
 
 jobs:
   secrets-scan:
-    name: Scan for Secrets (Gitleaks v1)
+    name: Scan for Secrets (Gitleaks)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -28,11 +28,16 @@ jobs:
         with:
           fetch-depth: 0  # Full history for gitleaks
 
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install Gitleaks
+        run: go install github.com/gitleaks/gitleaks/v9@latest
+
       - name: Run Gitleaks
-        # Using v1.6.0 which is MIT licensed
-        uses: gitleaks/gitleaks-action@v1.6.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gitleaks detect --source . --config .gitleaks.toml --verbose --log-level info
 
   dependency-audit:
     name: Dependency Vulnerability Audit
