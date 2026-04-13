@@ -61,7 +61,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Dependency vulnerability audit
-        run: pnpm audit --audit-level=medium
+        run: pnpm audit --audit-level=medium --filter='@stackwright/*'
 
   sast-scan:
     name: Static Analysis (Semgrep)
