@@ -8,6 +8,8 @@
  * TypeScript types from OpenAPI specs during prebuild.
  */
 
+import { z } from 'zod';
+
 /**
  * Plugin context provided to plugin hooks
  */
@@ -34,6 +36,30 @@ export interface PrebuildPluginContext {
 export interface PrebuildPlugin {
   /** Plugin name (for logging) */
   name: string;
+
+  /**
+   * Optional schema for validating integration configs.
+   *
+   * When a plugin declares a configSchema, the prebuild pipeline will validate
+   * any integration configs of type `integration-{plugin.name}` against this schema.
+   * This prevents:
+   * - Prototype pollution attacks (__proto__, constructor)
+   * - Plugin-specific malicious options
+   * - Config without type safety
+   *
+   * @example
+   * ```typescript
+   * const myPlugin: PrebuildPlugin = {
+   *   name: 'openapi',
+   *   configSchema: z.object({
+   *     spec: z.string(),
+   *     timeout: z.number().optional(),
+   *   }),
+   *   beforeBuild: async (ctx) => { /* ... *\/ },
+   * };
+   * ```
+   */
+  configSchema?: z.ZodSchema;
 
   /**
    * Called after site config is loaded but before page/collection processing
