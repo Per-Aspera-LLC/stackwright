@@ -3,6 +3,7 @@ import { navigationItemSchema } from './navigation';
 import { buttonContentSchema } from './base';
 import { mediaItemSchema } from './media';
 import { themeSchema } from '@stackwright/themes';
+import { integrationAuthSchema } from './secrets';
 
 export const appBarConfigSchema = z.object({
   titleText: z.string(),
@@ -92,6 +93,8 @@ export const integrationConfigSchema = z
         (name) => !name.includes('..') && !name.startsWith('/') && !name.includes('\\'),
         'Integration name cannot contain path traversal sequences'
       ),
+    /** Optional authentication configuration for this integration. */
+    auth: integrationAuthSchema,
   })
   .passthrough();
 
