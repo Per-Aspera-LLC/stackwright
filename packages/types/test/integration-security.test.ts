@@ -1,4 +1,6 @@
+import { z } from 'zod';
 import { describe, it, expect } from 'vitest';
+import type { PrebuildPlugin } from '../src/types/plugin.js';
 import {
   ENV_VAR_PATTERN,
   BRACED_ENV_VAR_PATTERN,
@@ -239,6 +241,134 @@ describe('Entropy Detection', () => {
     it('should return null for high entropy random strings', () => {
       const result = checkForPlaintextSecret('aK8#mP2$vL5@nQ9', 'token');
       expect(result).toBe(null);
+    });
+  });
+});
+
+describe('Plugin Config Schema Validation', () => {
+  // Mock integration config schema for testing
+  const mockIntegrationSchema = z.object({
+    spec: z.string(),
+    timeout: z.number().optional(),
+  });
+
+  describe('PrebuildPlugin.configSchema', () => {
+    it('should allow plugins to declare a configSchema', () => {
+      const plugin: PrebuildPlugin = {
+        name: 'integration-openapi',
+        configSchema: mockIntegrationSchema,
+      };
+      expect(plugin.configSchema).toBeDefined();
+      expect(plugin.configSchema?.parse).toBeDefined();
+    });
+
+    it('should validate correct config against schema', () => {
+      const validConfig = { spec: './openapi.yaml', timeout: 5000 };
+      const result = mockIntegrationSchema.safeParse(validConfig);
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject config missing required fields', () => {
+      const invalidConfig = { timeout: 5000 }; // missing spec
+      const result = mockIntegrationSchema.safeParse(invalidConfig);
+      expect(result.success).toBe(false);
+    });
+
+    it('should reject config with wrong types', () => {
+      const invalidConfig = { spec: './openapi.yaml', timeout: 'not-a-number' };
+      const result = mockIntegrationSchema.safeParse(invalidConfig);
+      expect(result.success).toBe(false);
+    });
+
+    it('should block prototype pollution attempts', () => {
+      const maliciousConfig = {
+        spec: './openapi.yaml',
+        __proto__: { admin: true },
+        constructor: { prototype: {} },
+      };
+      const result = mockIntegrationSchema.safeParse(maliciousConfig);
+      // Zod strips unknown keys by default, so this should pass
+      // but the __proto__ won't be added to the parsed object
+      expect(result.success).toBe(true);
+      if (result.success) {
+        // Use Object.hasOwn to check for literal property (not prototype chain)
+        expect(Object.hasOwn(result.data, '__proto__')).toBe(false);
+        expect(Object.hasOwn(result.data, 'constructor')).toBe(false);
+      }
+    });
+
+    it('should allow undefined configSchema (backward compatibility)', () => {
+      const plugin: PrebuildPlugin = {
+        name: 'integration-legacy',
+        beforeBuild: async () => {},
+      };
+      expect(plugin.configSchema).toBeUndefined();
+    });
+  });
+
+  describe('Integration schema security', () => {
+    it('should strip __proto__ from parsed config', () => {
+      const schema = z.object({
+        name: z.string(),
+      });
+      const input = {
+        name: 'test',
+        __proto__: { pollution: true },
+      };
+      const result = schema.safeParse(input);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(Object.prototype.hasOwnProperty.call(result.data, '__proto__')).toBe(false);
+      }
+    });
+
+    it('should strip constructor from parsed config', () => {
+      const schema = z.object({
+        name: z.string(),
+      });
+      const input = {
+        name: 'test',
+        constructor: { prototype: {} },
+      };
+      const result = schema.safeParse(input);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(Object.prototype.hasOwnProperty.call(result.data, 'constructor')).toBe(false);
+      }
+    });
+
+    it('should strip prototype from parsed config', () => {
+      const schema = z.object({
+        name: z.string(),
+      });
+      const input = {
+        name: 'test',
+        prototype: {},
+      };
+      const result = schema.safeParse(input);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(Object.prototype.hasOwnProperty.call(result.data, 'prototype')).toBe(false);
+      }
+    });
+
+    it('should handle nested malicious keys', () => {
+      const schema = z.object({
+        config: z.object({
+          value: z.string(),
+        }),
+      });
+      const input = {
+        config: {
+          value: 'test',
+          __proto__: { evil: true },
+        },
+      };
+      const result = schema.safeParse(input);
+      expect(result.success).toBe(true);
+      if (result.success && result.data.config) {
+        expect(Object.prototype.hasOwnProperty.call(result.data.config, '__proto__')).toBe(false);
+      }
     });
   });
 });
