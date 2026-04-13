@@ -1,21 +1,13 @@
 # Deploy Docs Workflow
 #
-# This workflow replaces the old pattern of:
-# - Vercel deployments for preview/production
-# - Separate repo syncing to R2
-#
-# Now we build once and sync directly to R2 buckets with Cloudflare CDN serving.
-# R2 uses Cloudflare API token auth — no AWS credentials needed.
+# This workflow builds the documentation and deploys to Cloudflare Pages.
 # The dev branch deploys to stackwright-docs-dev for preview/testing.
 # The main branch deploys to stackwright-docs for production.
+# Required secrets for Pages deployment:
+# - CLOUDFLARE_API_TOKEN: Cloudflare API token with Pages edit permissions
+# - CLOUDFLARE_ACCOUNT_ID: Cloudflare account ID
 
-# Required secrets for R2 deployment:
-# - CLOUDFLARE_API_TOKEN: Cloudflare API token with R2 read/write permissions
-# - R2_ACCOUNT_ID: Cloudflare account ID
-# - R2_BUCKET_STABLE: Production bucket name
-# - R2_BUCKET_DEV: Development bucket name
-
-name: Deploy Docs to R2
+name: Deploy Docs to Pages
 
 on:
   push:
@@ -77,50 +69,25 @@ jobs:
       # Deploy Steps
       # ============================================
 
-      - name: Install rclone
-        run: |
-          # Download and install rclone binary
-          curl -O https://downloads.rclone.org/rclone-current-linux-amd64.zip
-          unzip rclone-current-linux-amd64.zip
-          sudo mv rclone-v1.73.4-linux-amd64/rclone /usr/local/bin/
-          rm -rf rclone-current-linux-amd64.zip rclone-v1.73.4-linux-amd64
-          rclone version
-
-      - name: Configure rclone for R2
-        run: |
-          # Create rclone config file with R2 remote
-          # R2 uses Cloudflare API token auth directly
-          cat > ~/.config/rclone/rclone.conf << EOF
-          [R2]
-          type = s3
-          provider = Cloudflare
-          access_key_id = ${{ secrets.R2_ACCESS_KEY_ID }}
-          secret_access_key = ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          region = auto
-          endpoint = https://${{ secrets.R2_ACCOUNT_ID }}.r2.cloudflarestorage.com
-          acl = public-read
-          EOF
-
-      - name: Determine target bucket
-        id: bucket
+      - name: Set deployment variables
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "bucket=${{ secrets.R2_BUCKET_STABLE }}" >> $GITHUB_OUTPUT
-            echo "env=production" >> $GITHUB_OUTPUT
+            echo "DEPLOY_PROJECT=stackwright-docs" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
           else
-            echo "bucket=${{ secrets.R2_BUCKET_DEV }}" >> $GITHUB_OUTPUT
-            echo "env=development" >> $GITHUB_OUTPUT
+            echo "DEPLOY_PROJECT=stackwright-docs-dev" >> $GITHUB_ENV
+            echo "DEPLOY_ENV=development" >> $GITHUB_ENV
           fi
-          echo "Selected bucket: ${{ steps.bucket.outputs.bucket }}"
+          echo "Selected project: ${{ env.DEPLOY_PROJECT }}"
 
-      - name: Sync to R2
-        run: |
-          rclone sync \
-            --fast-list \
-            --exclude "node_modules/**" \
-            --progress \
-            examples/stackwright-docs/out/ \
-            "R2:${{ steps.bucket.outputs.bucket }}/"
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ env.DEPLOY_PROJECT }}
+          directory: examples/stackwright-docs/out
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deployment summary
         run: |
@@ -129,8 +96,8 @@ jobs:
           echo "| Detail | Value |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Branch | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| Environment | ${{ steps.bucket.outputs.env }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Bucket | \`${{ steps.bucket.outputs.bucket }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| Environment | ${{ env.DEPLOY_ENV }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Project | \`${{ env.DEPLOY_PROJECT }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "| Commit | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Note:** Cloudflare CDN serves directly from R2. No cache invalidation needed."
+          echo "**Deployed to Cloudflare Pages**"

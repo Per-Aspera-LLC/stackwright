@@ -13,7 +13,6 @@ import {
 } from './scaffold-hints';
 import { fetchTemplate } from './template-fetcher';
 import { runScaffoldHooks } from '@stackwright/scaffold-core';
-import type { ScaffoldHookContext } from '@stackwright/scaffold-core';
 
 /**
  * Walk up from the given directory looking for a pnpm-workspace.yaml.

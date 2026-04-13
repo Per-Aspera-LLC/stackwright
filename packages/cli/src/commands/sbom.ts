@@ -139,8 +139,8 @@ export interface SBOMDiffResult {
   changed: string[];
 }
 
-async function diffSBOM(options: SBOMDiffOptions): Promise<SBOMDiffResult> {
-  const { quickSummary } = await import('@stackwright/sbom-generator');
+async function diffSBOM(_options: SBOMDiffOptions): Promise<SBOMDiffResult> {
+  void (await import('@stackwright/sbom-generator'));
 
   const oldPath = path.resolve(options.oldFile);
   const newPath = path.resolve(options.newFile);

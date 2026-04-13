@@ -70,7 +70,6 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
   const theme = useSafeTheme();
   const config = siteConfig || defaultSiteConfig;
   const backgroundColor = theme.colors.background;
-  const hasSidebar = !!config.sidebar;
 
   // Resolve sidebar: page-level override > site-level default
   const resolvedSidebar = resolveSidebarConfig(pageContent.content.navSidebar, config.sidebar);

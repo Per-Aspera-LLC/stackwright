@@ -50,7 +50,7 @@ function registerLaunchHooks(): void {
   });
 }
 
-function setupOtterRaft(targetDir: string): void {
+function _setupOtterRaft(targetDir: string): void {
   console.log(chalk.cyan('\n🦦 Installing the otter raft...\n'));
 
   try {

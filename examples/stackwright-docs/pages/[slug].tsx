@@ -13,7 +13,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
         .map(f => f.replace(/\.json$/, ""));
     return {
         paths: slugs.map(slug => ({ params: { slug } })),
-        fallback: "blocking",
+        fallback: false,
     };
 };
 

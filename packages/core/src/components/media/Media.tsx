@@ -24,11 +24,51 @@ const isIconSource = (src: string): boolean => {
   );
 };
 
+// Known theme token names that map to CSS custom properties
+const THEME_TOKEN_COLORS = [
+  'primary',
+  'secondary',
+  'accent',
+  'background',
+  'surface',
+  'text',
+  'textSecondary',
+] as const;
+
+type ThemeTokenColor = (typeof THEME_TOKEN_COLORS)[number];
+
+/** Check if a color string is a known theme token */
+function isThemeToken(color: string): color is ThemeTokenColor {
+  return THEME_TOKEN_COLORS.includes(color as ThemeTokenColor);
+}
+
+/** Convert theme token to CSS variable name */
+function themeTokenToCSSVar(token: ThemeTokenColor): string {
+  // Map theme token names to CSS variable names
+  // Some tokens have different names in CSS vs theme
+  const cssNameMap: Record<ThemeTokenColor, string> = {
+    primary: 'primary',
+    secondary: 'secondary',
+    accent: 'accent',
+    background: 'bg', // background → bg
+    surface: 'surface',
+    text: 'text',
+    textSecondary: 'text-secondary', // textSecondary → text-secondary
+  };
+  return `--sw-color-${cssNameMap[token]}`;
+}
+
 const renderIcon = (src: string, sizePx: number | string, color?: string) => {
   // Registry lookup only — no require(). See packages/icons/AGENTS.md for why.
   const IconComponent = getIconRegistry()?.get(src);
 
   if (IconComponent) {
+    // Handle theme tokens via CSS variables for proper dark mode support
+    if (color && isThemeToken(color)) {
+      const cssVar = themeTokenToCSSVar(color);
+      return <IconComponent size={sizePx} style={{ color: `var(${cssVar})` }} />;
+    }
+    // Fallback to direct color or currentColor
     return <IconComponent size={sizePx} color={color || 'currentColor'} />;
   }
 

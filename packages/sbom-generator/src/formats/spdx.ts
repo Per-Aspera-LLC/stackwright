@@ -55,14 +55,14 @@ export interface SPDXRelationship {
  * Generate SPDX document from dependencies
  */
 export function generateSPDX(
-  project: StackwrightProjectInfo,
+  _project: StackwrightProjectInfo,
   dependencies: NormalizedDependency[],
   options: {
     includeDevDependencies?: boolean;
     namespace?: string;
   } = {}
 ): SPDXDocument {
-  const { namespace = `https://stackwright.dev/spdx/${project.name}` } = options;
+  const { namespace = `https://stackwright.dev/spdx/${_project.name}` } = options;
   const docId = `SPDXRef-DOCUMENT-${randomUUID().split('-')[0]}`;
   const timestamp = new Date().toISOString();
 
@@ -70,14 +70,14 @@ export function generateSPDX(
     ? dependencies
     : dependencies.filter((d) => !d.isDev);
 
-  const packages: SPDXPackage[] = filteredDeps.map((dep) => createSPDXPackage(dep, project));
+  const packages: SPDXPackage[] = filteredDeps.map((dep) => createSPDXPackage(dep, _project));
   const relationships: SPDXRelationship[] = createRelationships(docId, packages);
 
   return {
     spdxVersion: 'SPDX-2.3',
     dataLicense: 'CC0-1.0',
     SPDXID: docId,
-    name: `${project.name}@${project.version}`,
+    name: `${_project.name}@${_project.version}`,
     documentNamespace: `${namespace}/${timestamp}`,
     creationInfo: {
       created: timestamp,
@@ -93,7 +93,7 @@ export function generateSPDX(
  */
 function createSPDXPackage(
   dep: NormalizedDependency,
-  project: StackwrightProjectInfo
+  _project: StackwrightProjectInfo
 ): SPDXPackage {
   const packageId = `SPDXRef-Package-${dep.name.replace(/[^a-zA-Z0-9]/g, '-')}`;
   const purl = npmPURL(dep.name, dep.version);

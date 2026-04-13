@@ -123,7 +123,6 @@ export function parsePURL(purl: string): {
 
     let remaining = parts.slice(1);
     let namespace: string | undefined;
-    let name: string;
     let version: string | undefined;
     let qualifiers: Record<string, string> | undefined;
     let subpath: string | undefined;
@@ -161,7 +160,7 @@ export function parsePURL(purl: string): {
       remaining = remaining.slice(1);
     }
 
-    name = remaining.join('/');
+    const name = remaining.join('/');
 
     return { type, namespace, name, version, qualifiers, subpath };
   } catch {

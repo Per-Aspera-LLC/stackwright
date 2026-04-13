@@ -1,10 +1,10 @@
 {
   "format": "stackwright-build-manifest",
   "version": "1.0.0",
-  "generated": "2026-04-03T20:10:38.344Z",
+  "generated": "2026-04-12T17:19:57.945Z",
   "project": {
     "name": "stackwright-docs",
-    "version": "0.1.1-alpha.1",
+    "version": "0.1.2-alpha.1",
     "root": "/home/charles/git/peraspera/stackwright/examples/stackwright-docs",
     "isMonorepo": false
   },
@@ -110,11 +110,11 @@
     },
     {
       "name": "next",
-      "version": "16.1.6",
+      "version": "16.2.2",
       "type": "direct",
       "category": "external",
-      "purl": "pkg:npm/next@16.1.6",
-      "integrity": "dab6b931b02c25bd4f20dd3f93ceb0b57f8971844a25f14feb62c8a20608db04",
+      "purl": "pkg:npm/next@16.2.2",
+      "integrity": "2037941b242dfcf433d88c748a094cc731b35a4559f7adbc45359fbbafe1d236",
       "depth": 0
     },
     {
@@ -136,31 +136,22 @@
       "depth": 0
     },
     {
-      "name": "stackwright-docs",
-      "version": "link:",
-      "type": "direct",
-      "category": "external",
-      "purl": "pkg:npm/stackwright-docs@link:",
-      "integrity": "048f32c842b18fe0c8c18f64b17cedd18149860b0064ba12a2c595890048e568",
-      "depth": 0
-    },
-    {
       "name": "tailwind-merge",
-      "version": "2.6.0",
+      "version": "3.5.0",
       "type": "direct",
       "category": "external",
-      "purl": "pkg:npm/tailwind-merge@2.6.0",
-      "integrity": "f55becd055a25a9ecb32ee3cf37faf157aa62b955195bb7f695909e582e8ae33",
+      "purl": "pkg:npm/tailwind-merge@3.5.0",
+      "integrity": "039d2e92d475e4268b1babe22545c8cc507d46e9fc09aacaa75ee5925b885a10",
       "depth": 0
     }
   ],
   "metadata": {
-    "totalDependencies": 16,
-    "directDependencies": 16,
+    "totalDependencies": 15,
+    "directDependencies": 15,
     "devDependencies": 0,
     "peerDependencies": 0,
     "transitiveDependencies": 0,
     "stackwrightInternal": 4,
-    "external": 12
+    "external": 11
   }
 }
