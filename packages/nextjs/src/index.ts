@@ -5,7 +5,17 @@ export { NextStackwrightLink } from './components/NextStackwrightLink';
 export { NextStackwrightRouter, NextStackwrightRoute } from './components/NextStackwrightRouter';
 export { NextStackwrightHead } from './components/NextStackwrightHead';
 export { StackwrightDocument } from './components/StackwrightDocument';
-export { createStackwrightNextConfig } from './config/NextStackwrightConfig';
+export {
+  createStackwrightNextConfig,
+  createSecurityHeadersConfig,
+  headers,
+} from './config/NextStackwrightConfig';
+export {
+  defaultSecurityHeaders,
+  buildSecurityHeaders,
+  type SecurityHeadersOptions,
+  type SecurityHeader,
+} from './config/security';
 
 import { NextStackwrightImage } from './components/NextStackwrightImage';
 import { NextStackwrightLink } from './components/NextStackwrightLink';
