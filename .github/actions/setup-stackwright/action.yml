@@ -32,14 +32,18 @@ runs:
       run: |
         if [ "${{ github.event_name }}" = "pull_request" ]; then
           echo "PR detected: clearing stale pnpm store and regenerating lockfile..."
-          # Remove workspace lockfile so pnpm generates a fresh one
-          rm -f "$GITHUB_WORKSPACE/pnpm-lock.yaml"
-          # Clear the pnpm store so stale cached packages don't produce an
-          # inconsistent lockfile (causes ERR_PNPM_BROKEN_LOCKFILE on audit)
           STORE_PATH="$(pnpm store path)"
-          echo "Clearing pnpm store at: $STORE_PATH"
+          echo "Store path: $STORE_PATH"
+          echo "Removing lockfile and store..."
+          rm -f "$GITHUB_WORKSPACE/pnpm-lock.yaml"
           rm -rf "$STORE_PATH"
-          pnpm install
+          echo "Lockfile present after rm: $(ls '$GITHUB_WORKSPACE/pnpm-lock.yaml' 2>/dev/null && echo YES || echo NO)"
+          echo "Running pnpm install..."
+          pnpm install 2>&1
+          echo "=== Lockfile first 5 lines after install ==="
+          head -5 "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null || echo "(no lockfile)"
+          echo "=== YAML document separators in lockfile ==="
+          grep -c "^---" "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null || echo "0"
         else
           echo "Branch push detected: using frozen lockfile..."
           pnpm install --frozen-lockfile
