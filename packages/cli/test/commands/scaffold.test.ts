@@ -252,3 +252,60 @@ describe('scaffold — result shape', () => {
     expect(commands.some((c) => c.includes('pnpm dev'))).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Hook lifecycle — regression tests for issue #351
+// ---------------------------------------------------------------------------
+
+describe('scaffold — preInstall hook lifecycle (issue #351)', () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = makeTmpDir();
+  });
+
+  afterEach(async () => {
+    fs.removeSync(tmpDir);
+    // Reset hook registry so registered hooks don't bleed across tests
+    const { resetForTesting } = await import('@stackwright/scaffold-core');
+    resetForTesting();
+  });
+
+  it('preInstall hook runs exactly once', async () => {
+    const { registerScaffoldHook } = await import('@stackwright/scaffold-core');
+    const spy = vi.fn();
+    registerScaffoldHook({
+      type: 'preInstall',
+      name: 'test-spy-hook',
+      handler: async () => {
+        spy();
+      },
+    });
+
+    const targetDir = path.join(tmpDir, 'hook-once');
+    await scaffold(targetDir, baseOpts({ name: 'hook-once' }));
+
+    expect(spy).toHaveBeenCalledOnce();
+  });
+
+  it('preInstall hook modifications appear in the written package.json', async () => {
+    const { registerScaffoldHook } = await import('@stackwright/scaffold-core');
+    registerScaffoldHook({
+      type: 'preInstall',
+      name: 'test-dep-hook',
+      handler: async (ctx) => {
+        ctx.packageJson.dependencies = {
+          ...((ctx.packageJson.dependencies as Record<string, string>) ?? {}),
+          '@test-pro/widget': '^1.2.3',
+        };
+      },
+    });
+
+    const targetDir = path.join(tmpDir, 'hook-writes');
+    await scaffold(targetDir, baseOpts({ name: 'hook-writes' }));
+
+    const pkg = readJson(path.join(targetDir, 'package.json'));
+    const deps = pkg.dependencies as Record<string, string>;
+    expect(deps['@test-pro/widget']).toBe('^1.2.3');
+  });
+});

@@ -12,7 +12,6 @@ import {
   getGenericPageHints,
 } from './scaffold-hints';
 import { fetchTemplate } from './template-fetcher';
-import { runScaffoldHooks } from '@stackwright/scaffold-core';
 
 /**
  * Walk up from the given directory looking for a pnpm-workspace.yaml.
@@ -166,17 +165,6 @@ export async function processTemplate(config: TemplateConfig): Promise<string[]>
     codePuppyConfig = {};
   }
 
-  // Run preInstall hooks - hooks can modify packageJson
-  await runScaffoldHooks('preInstall', {
-    targetDir,
-    projectName,
-    siteTitle,
-    themeId,
-    packageJson,
-    codePuppyConfig,
-    dependencyMode: useWorkspaceDeps ? 'workspace' : 'standalone',
-  });
-
   // Write package.json with all hook modifications
   const packageJsonPath = path.join(targetDir, 'package.json');
   await fs.ensureDir(path.dirname(packageJsonPath));
@@ -232,7 +220,7 @@ async function collectFiles(dir: string, base: string = ''): Promise<string[]> {
 // Non-schema builders (npm/TypeScript config — not Stackwright grammar)
 // ---------------------------------------------------------------------------
 
-function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false): object {
+export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false): object {
   const VERSIONS = {
     tailwindcss: '^4.1.11',
     // Stackwright packages — pinned to current stable for reproducibility
