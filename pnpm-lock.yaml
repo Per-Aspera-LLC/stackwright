@@ -84,67 +84,6 @@ importers:
         specifier: ^4.1.3
         version: 4.1.4(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.4)(@vitest/ui@4.1.4)(jsdom@29.0.2)(vite@7.3.2(@types/node@24.12.2)(jiti@2.6.1)(lightningcss@1.32.0)(tsx@4.21.0)(yaml@2.8.3))
 
-  ../www:
-    dependencies:
-      '@stackwright/cli':
-        specifier: 0.7.0-alpha.11
-        version: 0.7.0-alpha.11(@types/node@24.12.2)(playwright@1.59.1)(react@19.2.4)
-      '@stackwright/core':
-        specifier: 0.7.0-alpha.7
-        version: 0.7.0-alpha.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@stackwright/icons':
-        specifier: 0.4.0
-        version: 0.4.0(react@19.2.4)
-      '@stackwright/mcp':
-        specifier: 0.3.0-alpha.11
-        version: 0.3.0-alpha.11(@types/node@24.12.2)(react@19.2.4)
-      '@stackwright/nextjs':
-        specifier: 0.3.1-alpha.7
-        version: 0.3.1-alpha.7(next@16.2.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@stackwright/otters':
-        specifier: latest
-        version: 0.2.0
-      '@stackwright/ui-shadcn':
-        specifier: 0.1.0
-        version: 0.1.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      js-yaml:
-        specifier: ^4.1.1
-        version: 4.1.1
-      next:
-        specifier: '>=16.1.7'
-        version: 16.2.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react:
-        specifier: 19.2.4
-        version: 19.2.4
-      react-dom:
-        specifier: 19.2.4
-        version: 19.2.4(react@19.2.4)
-    devDependencies:
-      '@stackwright/build-scripts':
-        specifier: latest
-        version: 0.4.0-alpha.6(react@19.2.4)
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
-      '@types/node':
-        specifier: ^24.1.0
-        version: 24.12.2
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
-      eslint:
-        specifier: ^9.39.4
-        version: 9.39.4(jiti@2.6.1)
-      eslint-config-next:
-        specifier: ^16.2.3
-        version: 16.2.3(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
-      typescript:
-        specifier: ^5.8.3
-        version: 5.9.3
-
   examples/stackwright-docs:
     dependencies:
       '@radix-ui/react-accordion':
@@ -178,8 +117,8 @@ importers:
         specifier: ^4.1.1
         version: 4.1.1
       lucide-react:
-        specifier: ^0.471.1
-        version: 0.471.2(react@19.2.4)
+        specifier: ^1.8.0
+        version: 1.8.0(react@19.2.4)
       next:
         specifier: '>=16.1.7'
         version: 16.2.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -425,7 +364,7 @@ importers:
   packages/icons:
     dependencies:
       lucide-react:
-        specifier: ^1.7.0
+        specifier: ^1.8.0
         version: 1.8.0(react@19.2.4)
     devDependencies:
       '@testing-library/jest-dom':
@@ -775,8 +714,8 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       lucide-react:
-        specifier: ^0.525.0
-        version: 0.525.0(react@19.2.4)
+        specifier: ^1.8.0
+        version: 1.8.0(react@19.2.4)
       react-dom:
         specifier: 19.2.4
         version: 19.2.4(react@19.2.4)
@@ -2434,75 +2373,6 @@ packages:
   '@simple-libs/stream-utils@1.2.0':
     resolution: {integrity: sha512-KxXvfapcixpz6rVEB6HPjOUZT22yN6v0vI0urQSk1L8MlEWPDFCZkhw2xmkyoTGYeFw7tWTZd7e3lVzRZRN/EA==}
     engines: {node: '>=18'}
-
-  '@stackwright/build-scripts@0.4.0-alpha.6':
-    resolution: {integrity: sha512-oVDVxaKr91a4JtIn9q09CMHNltU5AGQT+mCbduCYvjFdASDryTKSg67hO44+fMBVxKnOuXNdPrtDAHMoAEqy1Q==}
-    engines: {node: '>=20.0.0'}
-    hasBin: true
-
-  '@stackwright/build-scripts@0.4.0-alpha.7':
-    resolution: {integrity: sha512-54WaQGI/dhcps35UpxWo7jmZLkdE3Arz0ANEcOvsqD3NhTWoiKFujvEptDjvgMt0OJ+Pgo5HxoHCLOa2RAxGhg==}
-    engines: {node: '>=20.0.0'}
-    hasBin: true
-
-  '@stackwright/cli@0.7.0-alpha.11':
-    resolution: {integrity: sha512-x+lAo+89F9gEzTkns/gCPROAqBUgpDf4eAEi10FSfWlGC3wN4q0mm2elU11Gj+4o1iOGrFq4CcqMUYZiA4LXtQ==}
-    hasBin: true
-    peerDependencies:
-      playwright: ^1.52.0
-    peerDependenciesMeta:
-      playwright:
-        optional: true
-
-  '@stackwright/collections@0.1.0':
-    resolution: {integrity: sha512-jKlS0sHJDfnmtWEHt86OQL1LLgrsAPdBFD8zlDiQXyE4yQ1ZGHYNAvvAkQp/GKGgQmLMEhWK5/5Ek67EolC+tA==}
-
-  '@stackwright/core@0.7.0-alpha.7':
-    resolution: {integrity: sha512-ALh3RkxKVd3772TdtfxoRDW4NcpeCWsqIrXP0gyKDUkufyQHCuMmp8/PIyh+1cMMO9IZF5K8Ru18CUoT/m2ctg==}
-    peerDependencies:
-      react: 19.2.4
-      react-dom: 19.2.4
-
-  '@stackwright/icons@0.4.0':
-    resolution: {integrity: sha512-Nay2rj/u3ALxxrq2kUF9+SLsQ7vXFKwAvqVMJfTYTKt1TKaM03gZdPzkPKA0FyB+H3WL+39LOBau9i+t4wVLJg==}
-    peerDependencies:
-      react: 19.2.4
-
-  '@stackwright/mcp@0.3.0-alpha.11':
-    resolution: {integrity: sha512-eONzJPvnWyR8lKcoLFhQTYFeI39dDpkHvWwUY0YeLdQWcwgYSq/u7xVjnwYYl2lzdHFGwqIubdrDhPWx2DD9zw==}
-    hasBin: true
-
-  '@stackwright/nextjs@0.3.1-alpha.7':
-    resolution: {integrity: sha512-u9ql3yBEidShEhLpcoygcCl/KNM7MtekP1SxBiOfXtEDJY9RS2GE68TH0T+HMLAlreCybNrRnaiyMDTFSzg50w==}
-    peerDependencies:
-      next: '>=16.1.7'
-      react: 19.2.4
-      react-dom: 19.2.4
-
-  '@stackwright/otters@0.2.0':
-    resolution: {integrity: sha512-SCcD3kam5niwL9N9Jw+rWaZR5TrBM+J3F6GI3oG+ANBMCmLiS074tb0zjQOvT4WuaQBbg5ejedHXLccFuKNNbQ==}
-
-  '@stackwright/sbom-generator@0.1.0-alpha.0':
-    resolution: {integrity: sha512-Jq/sKpW5i22Gn3x7kEMqnwux0xRWKJA5R4a+7ovLGfIfGyrbudOJ02zbxptZ/GMx2GcX4KJu1XOG0S0HD0h1ZA==}
-    engines: {node: '>=20.0.0'}
-
-  '@stackwright/scaffold-core@0.1.0-alpha.1':
-    resolution: {integrity: sha512-rMtavpBneLBTFvV0NLKbnJyT99gR+5d51ABDmE/F769LXtTjsDwLd7zZK1xpFaxri/KETtVa/7ZZ8TmRyGwFVQ==}
-    engines: {node: '>=20.0.0'}
-
-  '@stackwright/themes@0.5.1-alpha.0':
-    resolution: {integrity: sha512-nqShTWeEbm03Z7NAQXaw9pK06d9Wkusjn9K4QT4GQVDiVJW4Zje6Q0QopqFVEAlKYK0pkWfz9smAjzQ6BgcryQ==}
-    peerDependencies:
-      react: 19.2.4
-
-  '@stackwright/types@1.1.0-alpha.6':
-    resolution: {integrity: sha512-RRYLFiexiyjwDAfe+BqCzijTRNxTnBtsHR+MZZTXXRxamKyGvBTLvjZM43OiYR0ldnX04h2T+ywryF2pLO0zcQ==}
-
-  '@stackwright/ui-shadcn@0.1.0':
-    resolution: {integrity: sha512-b73oE/fW0G8kCcxldm3w4dQeBfvesyjOvD4hzHgT3mz1R4Z7DI7oF0+YlgLoWOLdnjRTGJlcU//5WCPrq5HIRg==}
-    peerDependencies:
-      react: 19.2.4
-      react-dom: 19.2.4
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -4735,21 +4605,6 @@ packages:
   lru-cache@7.18.3:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
-
-  lucide-react@0.471.2:
-    resolution: {integrity: sha512-A8fDycQxGeaSOTaI7Bm4fg8LBXO7Qr9ORAX47bDRvugCsjLIliugQO0PkKFoeAD57LIQwlWKd3NIQ3J7hYp84g==}
-    peerDependencies:
-      react: 19.2.4
-
-  lucide-react@0.525.0:
-    resolution: {integrity: sha512-Tm1txJ2OkymCGkvwoHt33Y2JpN5xucVq1slHcgE6Lk0WjDfjgKWor5CdVER8U6DvcfMwh4M8XxmpTiyzfmfDYQ==}
-    peerDependencies:
-      react: 19.2.4
-
-  lucide-react@0.577.0:
-    resolution: {integrity: sha512-4LjoFv2eEPwYDPg/CUdBJQSDfPyzXCRrVW1X7jrx/trgxnxkHFjnVZINbzvzxjN70dxychOfg+FTYwBiS3pQ5A==}
-    peerDependencies:
-      react: 19.2.4
 
   lucide-react@1.8.0:
     resolution: {integrity: sha512-WuvlsjngSk7TnTBJ1hsCy3ql9V9VOdcPkd3PKcSmM34vJD8KG6molxz7m7zbYFgICwsanQWmJ13JlYs4Zp7Arw==}
@@ -7730,120 +7585,6 @@ snapshots:
 
   '@simple-libs/stream-utils@1.2.0': {}
 
-  '@stackwright/build-scripts@0.4.0-alpha.6(react@19.2.4)':
-    dependencies:
-      '@stackwright/types': 1.1.0-alpha.6(react@19.2.4)
-      js-yaml: 4.1.1
-    transitivePeerDependencies:
-      - react
-
-  '@stackwright/build-scripts@0.4.0-alpha.7(react@19.2.4)':
-    dependencies:
-      '@stackwright/sbom-generator': 0.1.0-alpha.0
-      '@stackwright/types': 1.1.0-alpha.6(react@19.2.4)
-      js-yaml: 4.1.1
-    transitivePeerDependencies:
-      - react
-
-  '@stackwright/cli@0.7.0-alpha.11(@types/node@24.12.2)(playwright@1.59.1)(react@19.2.4)':
-    dependencies:
-      '@inquirer/prompts': 8.4.1(@types/node@24.12.2)
-      '@stackwright/build-scripts': 0.4.0-alpha.7(react@19.2.4)
-      '@stackwright/sbom-generator': 0.1.0-alpha.0
-      '@stackwright/scaffold-core': 0.1.0-alpha.1
-      '@stackwright/themes': 0.5.1-alpha.0(react@19.2.4)
-      '@stackwright/types': 1.1.0-alpha.6(react@19.2.4)
-      chalk: 5.6.2
-      commander: 14.0.3
-      fs-extra: 11.3.4
-      js-yaml: 4.1.1
-      zod: 4.3.6
-    optionalDependencies:
-      playwright: 1.59.1
-    transitivePeerDependencies:
-      - '@types/node'
-      - react
-
-  '@stackwright/collections@0.1.0': {}
-
-  '@stackwright/core@0.7.0-alpha.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@stackwright/collections': 0.1.0
-      '@stackwright/themes': 0.5.1-alpha.0(react@19.2.4)
-      '@stackwright/types': 1.1.0-alpha.6(react@19.2.4)
-      fuse.js: 7.3.0
-      js-yaml: 4.1.1
-      prismjs: 1.30.0
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      uuid: 13.0.0
-      zod: 4.3.6
-
-  '@stackwright/icons@0.4.0(react@19.2.4)':
-    dependencies:
-      lucide-react: 0.577.0(react@19.2.4)
-      react: 19.2.4
-
-  '@stackwright/mcp@0.3.0-alpha.11(@types/node@24.12.2)(react@19.2.4)':
-    dependencies:
-      '@modelcontextprotocol/sdk': 1.29.0(zod@4.3.6)
-      '@stackwright/cli': 0.7.0-alpha.11(@types/node@24.12.2)(playwright@1.59.1)(react@19.2.4)
-      '@stackwright/types': 1.1.0-alpha.6(react@19.2.4)
-      playwright: 1.59.1
-      zod: 4.3.6
-    transitivePeerDependencies:
-      - '@cfworker/json-schema'
-      - '@types/node'
-      - react
-      - supports-color
-
-  '@stackwright/nextjs@0.3.1-alpha.7(next@16.2.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@stackwright/core': 0.7.0-alpha.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@stackwright/themes': 0.5.1-alpha.0(react@19.2.4)
-      '@stackwright/types': 1.1.0-alpha.6(react@19.2.4)
-      js-yaml: 4.1.1
-      next: 16.2.3(@babel/core@7.29.0)(@opentelemetry/api@1.9.1)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-
-  '@stackwright/otters@0.2.0': {}
-
-  '@stackwright/sbom-generator@0.1.0-alpha.0':
-    dependencies:
-      js-yaml: 4.1.1
-      zod: 4.3.6
-
-  '@stackwright/scaffold-core@0.1.0-alpha.1': {}
-
-  '@stackwright/themes@0.5.1-alpha.0(react@19.2.4)':
-    dependencies:
-      js-yaml: 4.1.1
-      react: 19.2.4
-      zod: 4.3.6
-
-  '@stackwright/types@1.1.0-alpha.6(react@19.2.4)':
-    dependencies:
-      '@stackwright/themes': 0.5.1-alpha.0(react@19.2.4)
-      js-yaml: 4.1.1
-      zod: 4.3.6
-    transitivePeerDependencies:
-      - react
-
-  '@stackwright/ui-shadcn@0.1.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
-    dependencies:
-      '@radix-ui/react-accordion': 1.2.12(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@radix-ui/react-slot': 1.2.4(@types/react@19.2.14)(react@19.2.4)
-      '@radix-ui/react-tabs': 1.1.13(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      clsx: 2.1.1
-      lucide-react: 0.525.0(react@19.2.4)
-      react: 19.2.4
-      react-dom: 19.2.4(react@19.2.4)
-      tailwind-merge: 3.5.0
-    transitivePeerDependencies:
-      - '@types/react'
-      - '@types/react-dom'
-
   '@standard-schema/spec@1.1.0': {}
 
   '@swc/core-darwin-arm64@1.15.24':
@@ -9086,8 +8827,8 @@ snapshots:
       '@next/eslint-plugin-next': 16.2.3
       eslint: 9.39.4(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.6.1))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-react: 7.37.5(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-react-hooks: 7.0.1(eslint@9.39.4(jiti@2.6.1))
@@ -9113,7 +8854,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
@@ -9124,22 +8865,22 @@ snapshots:
       tinyglobby: 0.2.16
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.4(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)):
+  eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.9
@@ -9150,7 +8891,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.4(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.58.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -10212,18 +9953,6 @@ snapshots:
       yallist: 3.1.1
 
   lru-cache@7.18.3: {}
-
-  lucide-react@0.471.2(react@19.2.4):
-    dependencies:
-      react: 19.2.4
-
-  lucide-react@0.525.0(react@19.2.4):
-    dependencies:
-      react: 19.2.4
-
-  lucide-react@0.577.0(react@19.2.4):
-    dependencies:
-      react: 19.2.4
 
   lucide-react@1.8.0(react@19.2.4):
     dependencies:
