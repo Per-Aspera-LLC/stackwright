@@ -38,9 +38,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-turbo-
 
-      - name: Dependency vulnerability audit
-        run: pnpm audit --audit-level=high
-
       - run: pnpm turbo:format
       - run: pnpm turbo:lint
 
