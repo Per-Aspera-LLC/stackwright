@@ -33,17 +33,16 @@ runs:
         if [ "${{ github.event_name }}" = "pull_request" ]; then
           echo "PR detected: clearing stale pnpm store and regenerating lockfile..."
           STORE_PATH="$(pnpm store path)"
-          echo "Store path: $STORE_PATH"
-          echo "Removing lockfile and store..."
           rm -f "$GITHUB_WORKSPACE/pnpm-lock.yaml"
           rm -rf "$STORE_PATH"
-          echo "Lockfile present after rm: $(ls '$GITHUB_WORKSPACE/pnpm-lock.yaml' 2>/dev/null && echo YES || echo NO)"
-          echo "Running pnpm install..."
-          pnpm install 2>&1
-          echo "=== Lockfile first 5 lines after install ==="
-          head -5 "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null || echo "(no lockfile)"
-          echo "=== YAML document separators in lockfile ==="
-          grep -c "^---" "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null || echo "0"
+          pnpm install
+          LF="$GITHUB_WORKSPACE/pnpm-lock.yaml"
+          echo "=== Post-install lockfile analysis ==="
+          echo "Line count: $(wc -l < "$LF" 2>/dev/null || echo MISSING)"
+          echo "--- at line start: $(grep -c '^---' "$LF" 2>/dev/null; true)"
+          echo "--- anywhere in file: $(grep -c -- '---' "$LF" 2>/dev/null; true)"
+          echo "First 3 lines:"; head -3 "$LF" 2>/dev/null || echo MISSING
+          echo "Last 3 lines:"; tail -3 "$LF" 2>/dev/null || echo MISSING
         else
           echo "Branch push detected: using frozen lockfile..."
           pnpm install --frozen-lockfile
