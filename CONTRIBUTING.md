@@ -146,7 +146,7 @@ Good commit points:
 - After adding a new module or file that compiles/passes lint
 - After wiring up a new feature end-to-end (even before tests)
 - After adding or updating tests for the feature
-- After updating docs, ROADMAP.md, or changesets
+- After updating docs or changesets
 - Before and after a refactor that touches many files
 
 Commit messages should be concise and use conventional commit prefixes (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`). Include the issue number when relevant (e.g., `feat(build-scripts): add --watch mode (#122)`).
@@ -266,7 +266,7 @@ The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit t
 
 ## Priority Labels & Product Board
 
-Work is tracked via GitHub Issues with priority labels. `ROADMAP.md` is a narrative document describing architectural direction — not a task tracker.
+Work is tracked via GitHub Issues with priority labels. GitHub Issues are the single source of truth for planned work — run `pnpm stackwright -- board` to see the prioritized board.
 
 | Label | Meaning |
 |-------|--------|
@@ -286,7 +286,7 @@ pnpm stackwright -- board --json
 
 Agents can call `stackwright_get_board` via MCP for the same data.
 
-The architect sets priority tiers. Contributors and agents should pick work from `priority:now` first, then `priority:next`. When a PR closes an issue, GitHub handles it automatically — no manual ROADMAP.md updates needed.
+The architect sets priority tiers. Contributors and agents should pick work from `priority:now` first, then `priority:next`. When a PR closes an issue, GitHub handles it automatically.
 
 ## Package Structure
 

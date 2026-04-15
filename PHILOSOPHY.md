@@ -4,7 +4,7 @@ This document captures the product intent and architectural principles behind St
 
 Stackwright's one-sentence thesis: **Visual rendering + constrained DSL + AI iteration = non-technical people building enterprise apps that are safe by construction.**
 
-[CONTRIBUTING.md](./CONTRIBUTING.md) tells you how to work in this repo. [ROADMAP.md](./ROADMAP.md) tells you what to build next. This document tells you what Stackwright is and why it is built the way it is.
+[CONTRIBUTING.md](./CONTRIBUTING.md) tells you how to work in this repo. For the live list of what's being worked on, run `pnpm stackwright -- board` or see the [GitHub Issues](https://github.com/Per-Aspera-LLC/stackwright/issues). This document tells you what Stackwright is and why it is built the way it is.
 
 ---
 
@@ -269,4 +269,3 @@ For contributors and agents making implementation decisions:
 5. **Agent-facing docs are part of the build.** The content type reference tables in AGENTS.md must be kept in sync with the TypeScript types. This is as important as keeping the JSON schemas in sync. Stale agent docs produce exactly the same class of bugs as stale type definitions.
 
 6. **Constrain first, extend later — in the free tier.** When in doubt about whether to add a new content type or field to `@stackwright/core`, wait. The cost of adding something is low; the cost of maintaining it, keeping it in the schema reference, making it agent-writable, and eventually removing it is high. The right answer to "I need something the core schema doesn't support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.
-t support" is either a developer-written React component or a pro component package — not a core schema extension. This principle does not apply to pro packages, which exist specifically to serve specialized use cases.
