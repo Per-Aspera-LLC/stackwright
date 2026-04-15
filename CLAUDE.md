@@ -325,6 +325,17 @@ Core components (`packages/core/src/components/`) use **inline `style={{}}` prop
 - For flex layouts that must stack on mobile, use `flexWrap: 'wrap'` with a `minWidth` on children to control the wrap breakpoint. Use `minWidth: 'min(Xpx, 100%)'` to prevent overflow on very narrow viewports.
 - For text that may overflow on narrow viewports (emails, URLs, long strings), add `wordBreak: 'break-word'` or `wordBreak: 'break-all'` as appropriate.
 
+### Security Headers
+
+Stackwright projects should implement security headers for defense in depth. See [docs/CSP-BEST-PRACTICES.md](./docs/CSP-BEST-PRACTICES.md) for:
+- Complete `next.config.js` CSP configuration
+- Next.js App Router (middleware.ts) patterns
+- Google Fonts-specific directives
+- Permissions-Policy recommendations
+- Common gotchas and testing strategies
+
+Quick reference snippet: [docs/snippets/CSP-QUICK-REF.js](./docs/snippets/CSP-QUICK-REF.js)
+
 ### Image Co-location Pipeline
 
 Images can be co-located with their page YAML files in `pages/`. Using a relative path starting with `./` in YAML (e.g., `src: ./hero-image.png`) triggers automatic processing during the prebuild step:
