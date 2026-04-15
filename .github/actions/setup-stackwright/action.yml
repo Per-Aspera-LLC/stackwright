@@ -32,7 +32,10 @@ runs:
       run: |
         if [ "${{ github.event_name }}" = "pull_request" ]; then
           echo "PR detected: regenerating lockfile to ensure consistency..."
-          rm -f pnpm-lock.yaml
+          echo "Workspace: $GITHUB_WORKSPACE, PWD: $(pwd)"
+          ls -la "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null && echo "Lockfile exists, removing..." || echo "No lockfile found."
+          rm -f "$GITHUB_WORKSPACE/pnpm-lock.yaml"
+          ls -la "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null && echo "WARNING: lockfile still exists after rm!" || echo "Lockfile removed successfully."
           pnpm install
         else
           echo "Branch push detected: using frozen lockfile..."
