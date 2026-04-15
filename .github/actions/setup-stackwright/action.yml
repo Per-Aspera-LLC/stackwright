@@ -31,11 +31,14 @@ runs:
     - name: Install dependencies
       run: |
         if [ "${{ github.event_name }}" = "pull_request" ]; then
-          echo "PR detected: regenerating lockfile to ensure consistency..."
-          echo "Workspace: $GITHUB_WORKSPACE, PWD: $(pwd)"
-          ls -la "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null && echo "Lockfile exists, removing..." || echo "No lockfile found."
+          echo "PR detected: clearing stale pnpm store and regenerating lockfile..."
+          # Remove workspace lockfile so pnpm generates a fresh one
           rm -f "$GITHUB_WORKSPACE/pnpm-lock.yaml"
-          ls -la "$GITHUB_WORKSPACE/pnpm-lock.yaml" 2>/dev/null && echo "WARNING: lockfile still exists after rm!" || echo "Lockfile removed successfully."
+          # Clear the pnpm store so stale cached packages don't produce an
+          # inconsistent lockfile (causes ERR_PNPM_BROKEN_LOCKFILE on audit)
+          STORE_PATH="$(pnpm store path)"
+          echo "Clearing pnpm store at: $STORE_PATH"
+          rm -rf "$STORE_PATH"
           pnpm install
         else
           echo "Branch push detected: using frozen lockfile..."
