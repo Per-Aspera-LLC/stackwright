@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import { Command } from 'commander';
 import { input } from '@inquirer/prompts';
 import path from 'path';
@@ -134,8 +135,9 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     codePuppyConfig,
   });
 
-  // If install is requested, run postInstall hooks
+  // If install is requested, run pnpm install then postInstall hooks
   if (opts.install) {
+    execSync('pnpm install', { cwd: targetDir, stdio: 'inherit' });
     await runScaffoldHooks('postInstall', {
       targetDir,
       projectName: name!,
@@ -167,7 +169,7 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     pagesDir: path.join(targetDir, 'pages'),
     nextSteps: [
       { command: `cd ${targetDir}`, description: 'Enter the project directory' },
-      { command: 'pnpm install', description: 'Install dependencies' },
+      ...(opts.install ? [] : [{ command: 'pnpm install', description: 'Install dependencies' }]),
       { command: 'pnpm dev', description: 'Start the development server' },
     ],
   };
