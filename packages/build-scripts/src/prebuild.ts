@@ -48,6 +48,81 @@ function applyEnvVarResolution(obj: unknown): unknown {
   return resolveEnvVarsDeep(obj);
 }
 
+/**
+ * Validate an integration config against its plugin's schema (if available).
+ *
+ * Security: This function validates integration configs passed through from
+ * stackwright.yml against the declaring plugin's configSchema. This prevents:
+ * - Prototype pollution attacks (__proto__, constructor)
+ * - Plugin-specific malicious options
+ * - Config without type safety
+ *
+ * Throws if validation fails.
+ */
+function validateIntegrationConfig(
+  integration: Record<string, unknown>,
+  plugins: PrebuildPlugin[]
+): void {
+  // Integration type is formatted as "integration-{pluginName}"
+  const integrationType = integration.type as string | undefined;
+  if (!integrationType) {
+    // No type specified - let Zod schema handle this
+    return;
+  }
+
+  // Look for a plugin that handles this integration type
+  // Plugin names are like "integration-openapi", "integration-graphql"
+  const pluginName = `integration-${integrationType}`;
+  const plugin = plugins.find((p) => p.name === pluginName);
+
+  if (!plugin) {
+    // No plugin registered for this integration type - allow passthrough for now
+    // but warn in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        `  WARNING: No plugin registered for integration type "${integrationType}". Config will be passed through without validation.`
+      );
+    }
+    return;
+  }
+
+  if (!plugin.configSchema) {
+    // Plugin exists but doesn't declare a config schema
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        `  WARNING: Plugin "${pluginName}" does not declare a configSchema. Config will be passed through without validation.`
+      );
+    }
+    return;
+  }
+
+  // Validate the integration config against the plugin's schema
+  const result = plugin.configSchema.safeParse(integration);
+  if (!result.success) {
+    const details = result.error.issues
+      .map((issue) => `    - ${issue.path.join('.')}: ${issue.message}`)
+      .join('\n');
+    throw new Error(
+      `Invalid configuration for integration "${integration.name}" (${integration.type}):\n${details}`
+    );
+  }
+}
+
+/**
+ * Validate all integrations in the site config against their respective plugin schemas.
+ */
+function validateIntegrations(integrations: unknown, plugins: PrebuildPlugin[]): void {
+  if (!Array.isArray(integrations)) {
+    return;
+  }
+
+  for (const integration of integrations) {
+    if (integration && typeof integration === 'object') {
+      validateIntegrationConfig(integration as Record<string, unknown>, plugins);
+    }
+  }
+}
+
 // -- Config -----------------------------------------------------------------
 
 const IMAGE_EXTENSIONS = new Set([
@@ -889,6 +964,15 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   // Resolve environment variable references in integrations
   const configWithEnvResolved = applyEnvVarResolution(processedConfig);
   console.log('  ✓ Resolved environment variable references in integrations');
+
+  // Validate integration configs against plugin schemas (if plugins are registered)
+  if (plugins.length > 0) {
+    const integrations = (configWithEnvResolved as Record<string, unknown>).integrations;
+    if (Array.isArray(integrations)) {
+      validateIntegrations(integrations, plugins);
+      console.log('  ✓ Validated integration configurations against plugin schemas');
+    }
+  }
 
   fs.writeFileSync(
     path.join(contentOutDir, '_site.json'),

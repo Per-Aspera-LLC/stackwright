@@ -6,6 +6,28 @@
 
 ## Two-Layer Security Model
 
+### Layer 0: HTTP Security Headers
+
+Stackwright applications include comprehensive HTTP security headers by default:
+
+1. **Content-Security-Policy (CSP)** — Prevents XSS, data injection, and clickjacking attacks
+2. **Strict-Transport-Security (HSTS)** — Forces HTTPS connections and prevents protocol downgrade attacks
+3. **X-Content-Type-Options** — Prevents MIME type sniffing attacks
+4. **X-Frame-Options** — Protects against clickjacking via iframe embedding
+5. **Permissions-Policy** — Disables unused browser features (camera, microphone, geolocation, etc.)
+6. **Referrer-Policy** — Controls information leakage in the Referer header
+
+These headers are enabled with a single export in `next.config.ts`:
+
+```typescript
+const { createStackwrightNextConfig, headers } = require('@stackwright/nextjs')
+
+module.exports = createStackwrightNextConfig()
+export { headers }
+```
+
+See [SECURITY_HEADERS.md](./SECURITY_HEADERS.md) for full documentation and customization options.
+
 ### Layer 1: Build-Time Spec Validation (`ApprovedSpecsValidator`)
 
 Before any code is generated, the system validates:

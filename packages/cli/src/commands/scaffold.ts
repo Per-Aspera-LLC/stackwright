@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs-extra';
 import chalk from 'chalk';
 import { promptThemeSelection } from '../utils/theme-selector';
-import { processTemplate } from '../utils/template-processor';
+import { processTemplate, buildPackageJson } from '../utils/template-processor';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 import { runScaffoldHooks } from '@stackwright/scaffold-core';
 
@@ -91,6 +91,8 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
   const packageJson: Record<string, any> = {};
   const codePuppyConfig: Record<string, any> = {};
 
+  const dependencyMode = determineDependencyMode(targetDir, opts);
+
   // Run preScaffold hooks
   await runScaffoldHooks('preScaffold', {
     targetDir,
@@ -99,7 +101,24 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     themeId: theme!,
     packageJson,
     codePuppyConfig,
-    dependencyMode: determineDependencyMode(targetDir, opts),
+    dependencyMode,
+  });
+
+  // Build default packageJson if preScaffold hooks didn't populate it
+  if (Object.keys(packageJson).length === 0) {
+    Object.assign(packageJson, buildPackageJson(name!, dependencyMode === 'workspace'));
+  }
+
+  // Run preInstall hooks (after files created, before any install)
+  // This is the primary hook for adding Pro dependencies
+  await runScaffoldHooks('preInstall', {
+    targetDir,
+    projectName: name!,
+    siteTitle: title!,
+    themeId: theme!,
+    packageJson,
+    codePuppyConfig,
+    dependencyMode,
   });
 
   const pages = await processTemplate({
@@ -113,20 +132,6 @@ export async function scaffold(targetDir: string, opts: ScaffoldOptions): Promis
     pages: opts.pages,
     packageJson,
     codePuppyConfig,
-  });
-
-  const dependencyMode = determineDependencyMode(targetDir, opts);
-
-  // Run preInstall hooks (after files created, before any install)
-  // This is the primary hook for adding Pro dependencies
-  await runScaffoldHooks('preInstall', {
-    targetDir,
-    projectName: name!,
-    siteTitle: title!,
-    themeId: theme!,
-    packageJson,
-    codePuppyConfig,
-    dependencyMode,
   });
 
   // If install is requested, run postInstall hooks
