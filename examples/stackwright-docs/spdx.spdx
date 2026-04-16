@@ -1,11 +1,11 @@
 SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
-SPDXID: SPDXRef-DOCUMENT-ba1373d7
+SPDXID: SPDXRef-DOCUMENT-0458494c
 DocumentName: stackwright-docs@0.1.2-alpha.1
-DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-15T17:21:40.044Z
+DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-04-16T15:01:00.913Z
 
 CreationInfo:
-  Created: 2026-04-15T17:21:40.044Z
+  Created: 2026-04-16T15:01:00.913Z
   Creator: Tool: @stackwright/sbom-generator
   Creator: Tool-Version: 0.0.0
 
@@ -91,11 +91,11 @@ ExternalRef: PACKAGE-MANAGER purl pkg:npm/js-yaml@4.1.1
 
 PackageName: lucide-react
 SPDXID: SPDXRef-Package-lucide-react
-PackageVersion: 0.471.1
+PackageVersion: 1.8.0
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: 34516f0b69a564672a07087b4a907c82ef437a69c4ba2895f1dc37bb8ae402ac
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/lucide-react@0.471.1
+PackageChecksum: SHA256: 40d803f28472791a029ae0f633449a6526c50a08932f2b8a36b28efc84e9ec5d
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/lucide-react@1.8.0
 
 PackageName: next
 SPDXID: SPDXRef-Package-next
@@ -129,7 +129,7 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: 039d2e92d475e4268b1babe22545c8cc507d46e9fc09aacaa75ee5925b885a10
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@3.5.0
 
-Relationship: SPDXRef-DOCUMENT-ba1373d7 DESCRIBES SPDXRef-Package-clsx
+Relationship: SPDXRef-DOCUMENT-0458494c DESCRIBES SPDXRef-Package-clsx
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-accordion
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-slot
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-tabs

@@ -1,7 +1,6 @@
 packages:
   - packages/*
   - examples/*
-  - ../www
 
 onlyBuiltDependencies:
   - '@swc/core'

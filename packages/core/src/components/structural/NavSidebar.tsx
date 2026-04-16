@@ -395,7 +395,7 @@ export default function NavSidebar({
         role="navigation"
         aria-label="Main navigation"
         style={{
-          position: 'sticky',
+          position: isMobile ? 'fixed' : 'sticky',
           top: 0,
           left: 0,
           height: '100vh',
