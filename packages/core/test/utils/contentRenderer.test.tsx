@@ -154,3 +154,85 @@ describe('renderContent — PageContent', () => {
     warnSpy.mockRestore();
   });
 });
+
+// ---------------------------------------------------------------------------
+// contentItemsOnly option
+// ---------------------------------------------------------------------------
+
+// We mock the structural components so we can assert they are (or aren't) rendered
+// without pulling in all of their hooks.
+vi.mock('../../src/components/structural/', () => ({
+  TopAppBar: ({ title }: { title?: string }) => (
+    <div data-testid="top-app-bar">{title ?? 'AppBar'}</div>
+  ),
+  BottomAppBar: () => <div data-testid="bottom-app-bar">Footer</div>,
+}));
+
+describe('renderContent — contentItemsOnly option', () => {
+  it('renders app_bar by default when present in PageContent', () => {
+    const pageContent = {
+      content: {
+        app_bar: { title: 'My Site' },
+        content_items: [{ type: 'main', heading: { text: 'Page Body' } }],
+      },
+    };
+    renderOutput(pageContent);
+    expect(screen.getByTestId('top-app-bar')).toBeInTheDocument();
+    expect(screen.getByText('Page Body')).toBeInTheDocument();
+  });
+
+  it('skips app_bar when contentItemsOnly: true', () => {
+    const pageContent = {
+      content: {
+        app_bar: { title: 'My Site' },
+        content_items: [{ type: 'main', heading: { text: 'Content Only' } }],
+      },
+    };
+    const result = renderContent(pageContent, { contentItemsOnly: true });
+    render(<>{Array.isArray(result) ? result : result}</>);
+    expect(screen.queryByTestId('top-app-bar')).not.toBeInTheDocument();
+    expect(screen.getByText('Content Only')).toBeInTheDocument();
+  });
+
+  it('skips footer when contentItemsOnly: true', () => {
+    const pageContent = {
+      content: {
+        footer: { copyright: '© 2025' },
+        content_items: [{ type: 'main', heading: { text: 'Body' } }],
+      },
+    };
+    const result = renderContent(pageContent, { contentItemsOnly: true });
+    render(<>{Array.isArray(result) ? result : result}</>);
+    expect(screen.queryByTestId('bottom-app-bar')).not.toBeInTheDocument();
+    expect(screen.getByText('Body')).toBeInTheDocument();
+  });
+
+  it('still renders content_items when contentItemsOnly: true', () => {
+    const pageContent = {
+      content: {
+        app_bar: { title: 'My Site' },
+        footer: { copyright: '© 2025' },
+        content_items: [
+          { type: 'main', heading: { text: 'Item One' } },
+          { type: 'carousel', heading: 'Item Two', label: 'c3', items: [] },
+        ],
+      },
+    };
+    const result = renderContent(pageContent, { contentItemsOnly: true });
+    render(<>{Array.isArray(result) ? result : result}</>);
+    expect(screen.getByText('Item One')).toBeInTheDocument();
+    expect(screen.getByTestId('test-carousel')).toBeInTheDocument();
+  });
+
+  it('contentItemsOnly: false behaves identically to the default', () => {
+    const pageContent = {
+      content: {
+        app_bar: { title: 'My Site' },
+        content_items: [{ type: 'main', heading: { text: 'Default Behaviour' } }],
+      },
+    };
+    renderOutput(pageContent); // default (no flag)
+    expect(screen.getByTestId('top-app-bar')).toBeInTheDocument();
+    expect(screen.getByText('Default Behaviour')).toBeInTheDocument();
+  });
+});

@@ -165,10 +165,15 @@ export default function TopAppBar({
             </div>
             <h1
               style={{
-                fontSize: '2.125rem',
+                fontSize: 'clamp(1rem, 4vw, 2.125rem)',
                 fontWeight: 400,
                 margin: 0,
                 marginRight: theme.spacing.xl,
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                minWidth: 0,
+                flexShrink: 1,
               }}
             >
               {title}
@@ -177,10 +182,15 @@ export default function TopAppBar({
         ) : (
           <h1
             style={{
-              fontSize: '2.125rem',
+              fontSize: 'clamp(1rem, 4vw, 2.125rem)',
               fontWeight: 400,
               margin: 0,
               marginRight: theme.spacing.xl,
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              minWidth: 0,
+              flexShrink: 1,
             }}
           >
             {title}
@@ -199,6 +209,8 @@ export default function TopAppBar({
               onMenuOpen={handleMenuOpen}
               onMenuClose={handleMenuClose}
               buildMenu={buildMenu}
+              textColor={headerTextColor}
+              menuBackground={theme.colors.background}
             />
           ) : (
             <div style={{ display: 'flex', gap: theme.spacing.md, alignItems: 'center' }}>
@@ -216,12 +228,11 @@ export default function TopAppBar({
                   size="medium"
                 />
               ))}
-              {colorModeToggle && <ColorModeToggle textColor={headerTextColor} />}
             </div>
           ))}
 
-        {/* Show toggle even without menu items, or on mobile */}
-        {colorModeToggle && (!menuItems || menuItems.length === 0 || isSmDown) && (
+        {/* Show standalone toggle only when: no menu items exist, OR on desktop */}
+        {colorModeToggle && (!menuItems || menuItems.length === 0 || !isSmDown) && (
           <ColorModeToggle textColor={headerTextColor} />
         )}
       </nav>

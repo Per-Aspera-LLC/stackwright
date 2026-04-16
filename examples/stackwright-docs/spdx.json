@@ -1,11 +1,11 @@
 {
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
-  "SPDXID": "SPDXRef-DOCUMENT-ba1373d7",
+  "SPDXID": "SPDXRef-DOCUMENT-0458494c",
   "name": "stackwright-docs@0.1.2-alpha.1",
-  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-04-15T17:21:40.044Z",
+  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-04-16T15:01:00.913Z",
   "creationInfo": {
-    "created": "2026-04-15T17:21:40.044Z",
+    "created": "2026-04-16T15:01:00.913Z",
     "creators": [
       "Tool: @stackwright/sbom-generator",
       "Tool-Version: 0.0.0"
@@ -245,14 +245,14 @@
     {
       "SPDXID": "SPDXRef-Package-lucide-react",
       "name": "lucide-react",
-      "versionInfo": "0.471.1",
+      "versionInfo": "1.8.0",
       "supplier": "NOASSERTION",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "checksums": [
         {
           "algorithm": "SHA256",
-          "value": "34516f0b69a564672a07087b4a907c82ef437a69c4ba2895f1dc37bb8ae402ac"
+          "value": "40d803f28472791a029ae0f633449a6526c50a08932f2b8a36b28efc84e9ec5d"
         }
       ],
       "licenseConcluded": "NOASSERTION",
@@ -261,7 +261,7 @@
         {
           "referenceCategory": "PACKAGE-MANAGER",
           "referenceType": "purl",
-          "referenceLocator": "pkg:npm/lucide-react@0.471.1"
+          "referenceLocator": "pkg:npm/lucide-react@1.8.0"
         }
       ]
     },
@@ -360,7 +360,7 @@
   ],
   "relationships": [
     {
-      "spdxElementId": "SPDXRef-DOCUMENT-ba1373d7",
+      "spdxElementId": "SPDXRef-DOCUMENT-0458494c",
       "relationshipType": "DESCRIBES",
       "relatedSpdxElement": "SPDXRef-Package-clsx"
     },
