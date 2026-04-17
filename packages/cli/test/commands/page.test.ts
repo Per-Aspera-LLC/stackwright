@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import fs from 'fs-extra';
 import path from 'path';
 import os from 'os';
-import { addPage, listPages, validatePages } from '../../src/commands/page';
+import { addPage, listPages, validatePages, writePage } from '../../src/commands/page';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -127,6 +127,65 @@ describe('listPages', () => {
     const result = listPages(pagesDir);
     const page = result.pages.find((p) => p.slug === '/empty-page');
     expect(page?.heading).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// writePage (via addPage --content path)
+// ---------------------------------------------------------------------------
+
+const VALID_PAGE_YAML = `content:
+  content_items:
+    - type: main
+      label: "test-hero"
+      heading:
+        text: "Test Page"
+        textSize: "h1"
+      textBlocks:
+        - text: "Hello world"
+          textSize: "body1"
+`;
+
+describe('writePage (via addPage --content path)', () => {
+  let pagesDir: string;
+
+  beforeEach(() => {
+    pagesDir = path.join(makeTmpDir(), 'pages');
+    fs.ensureDirSync(pagesDir);
+  });
+
+  it('creates the file and returns created: true for a new page', () => {
+    const result = writePage(pagesDir, 'new-page', VALID_PAGE_YAML);
+    expect(result.created).toBe(true);
+    expect(fs.existsSync(result.path)).toBe(true);
+    expect(result.slug).toBe('/new-page');
+  });
+
+  it('throws VALIDATION_FAILED for structurally invalid YAML', () => {
+    const badStructure =
+      'content:\n  content_items:\n    - type: totally_fake_type\n      label: "oops"\n';
+    expect(() => writePage(pagesDir, 'bad-page', badStructure)).toThrow();
+    try {
+      writePage(pagesDir, 'bad-page-2', badStructure);
+    } catch (err: unknown) {
+      expect((err as NodeJS.ErrnoException).code).toBe('VALIDATION_FAILED');
+    }
+  });
+
+  it('returns created: false when writing to an already-existing page', () => {
+    writePage(pagesDir, 'existing-page', VALID_PAGE_YAML);
+    const result = writePage(pagesDir, 'existing-page', VALID_PAGE_YAML);
+    expect(result.created).toBe(false);
+  });
+
+  it('throws YAML_PARSE_ERROR for unparseable YAML syntax', () => {
+    const unparseable = '{ bad yaml: : :';
+    expect(() => writePage(pagesDir, 'syntax-error-page', unparseable)).toThrow();
+    try {
+      writePage(pagesDir, 'syntax-error-page-2', unparseable);
+    } catch (err: unknown) {
+      expect((err as NodeJS.ErrnoException).code).toBe('YAML_PARSE_ERROR');
+    }
   });
 });
 

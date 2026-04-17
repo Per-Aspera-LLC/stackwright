@@ -230,17 +230,39 @@ export function registerPage(program: Command): void {
     .command('add <slug>')
     .description('Create a new page with boilerplate content')
     .option('--heading <heading>', 'Page heading text')
+    .option(
+      '--content <yaml>',
+      'YAML content for the page (skips boilerplate, validates before writing)'
+    )
     .option('--json', 'Output machine-readable JSON')
-    .action(async (slug: string, opts: { heading?: string; json?: boolean }) => {
+    .action(async (slug: string, opts: { heading?: string; content?: string; json?: boolean }) => {
       const json = Boolean(opts.json);
       try {
         const { pagesDir } = detectProject();
-        const heading =
-          opts.heading ?? (!json ? await input({ message: 'Page heading:', default: slug }) : slug);
-        const result = await addPage(pagesDir, slug, { heading });
-        outputResult(result, { json }, () => {
-          console.log(chalk.green(`Created ${result.path}`));
-        });
+        if (opts.content !== undefined) {
+          // --content path: validate and write directly, skip heading prompt entirely
+          const result = writePage(pagesDir, slug, opts.content);
+          if (!result.created) {
+            outputError(
+              `Page already exists: ${result.path}\n  Hint: Use "stackwright page write <slug>" to update an existing page.`,
+              'PAGE_EXISTS',
+              { json }
+            );
+            return;
+          }
+          outputResult(result, { json }, () => {
+            console.log(chalk.green(`Created ${result.path}`));
+          });
+        } else {
+          // Existing boilerplate path: completely unchanged
+          const heading =
+            opts.heading ??
+            (!json ? await input({ message: 'Page heading:', default: slug }) : slug);
+          const result = await addPage(pagesDir, slug, { heading });
+          outputResult(result, { json }, () => {
+            console.log(chalk.green(`Created ${result.path}`));
+          });
+        }
       } catch (err: unknown) {
         const code = getErrorCode(err);
         if (code === 'NOT_A_PROJECT') {
@@ -255,6 +277,8 @@ export function registerPage(program: Command): void {
               ? '\n  Hint: Use "stackwright page write <slug>" to update an existing page.'
               : '';
           outputError(formatError(err) + hint, code, { json });
+        } else if (code === 'VALIDATION_FAILED' || code === 'YAML_PARSE_ERROR') {
+          outputError(formatError(err), code, { json });
         } else {
           outputError(formatError(err), 'ADD_PAGE_FAILED', { json }, 2);
         }
