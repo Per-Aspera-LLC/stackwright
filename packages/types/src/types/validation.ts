@@ -7,7 +7,7 @@
 
 import { z } from 'zod';
 import { contentItemSchema, KNOWN_CONTENT_TYPE_KEYS, type GridColumn } from './content';
-import { pageContentSchema } from './layout';
+import { pageContentSchema, buildExtendedPageContentSchema } from './layout';
 import { CONTENT_TYPE_HINTS, getContentTypeHints, suggestContentType } from './validation-hints';
 
 // ============================================================================
@@ -259,7 +259,10 @@ function createHint(issue: z.ZodIssue, root: Record<string, unknown>): Validatio
 /**
  * Check for unknown content type keys in content items.
  */
-function checkUnknownContentTypes(root: Record<string, unknown>): ValidationError[] {
+function checkUnknownContentTypes(
+  root: Record<string, unknown>,
+  allowedExtraTypes: readonly string[] = []
+): ValidationError[] {
   const errors: ValidationError[] = [];
 
   walkContentItems(root, (item, path) => {
@@ -286,7 +289,7 @@ function checkUnknownContentTypes(root: Record<string, unknown>): ValidationErro
       return;
     }
 
-    if (!KNOWN_CONTENT_TYPE_KEYS.includes(type as any)) {
+    if (!KNOWN_CONTENT_TYPE_KEYS.includes(type as any) && !allowedExtraTypes.includes(type)) {
       const suggested = suggestContentType(type);
       errors.push({
         path,
@@ -310,12 +313,39 @@ function checkUnknownContentTypes(root: Record<string, unknown>): ValidationErro
 // ============================================================================
 
 /**
+ * Options for validatePageContent.
+ */
+export interface ValidatePageContentOptions {
+  /**
+   * Additional Zod schemas for pro/plugin content item types.
+   * These are merged into the content item union during validation.
+   */
+  extraContentItemSchemas?: z.ZodTypeAny[];
+
+  /**
+   * Additional content type key strings to treat as valid.
+   * Type strings listed here will NOT generate "unknown content type" errors.
+   */
+  allowedExtraTypes?: readonly string[];
+}
+
+/**
  * Validate page content YAML against the schema.
  * Returns structured validation result with AI-friendly errors.
  */
-export function validatePageContent(yamlContent: unknown): ValidationResult {
+export function validatePageContent(
+  yamlContent: unknown,
+  options?: ValidatePageContentOptions
+): ValidationResult {
+  const extraSchemas = options?.extraContentItemSchemas ?? [];
+  const allowedExtraTypes = options?.allowedExtraTypes ?? [];
+
+  // Choose schema: extended (with pro types) or standard
+  const effectiveSchema =
+    extraSchemas.length > 0 ? buildExtendedPageContentSchema(extraSchemas) : pageContentSchema;
+
   // First pass: Zod schema validation
-  const result = pageContentSchema.safeParse(yamlContent);
+  const result = effectiveSchema.safeParse(yamlContent);
 
   const errors: ValidationError[] = [];
 
@@ -331,7 +361,10 @@ export function validatePageContent(yamlContent: unknown): ValidationResult {
 
   // Second pass: check for unknown content types (catches typos before Zod strips them)
   if (typeof yamlContent === 'object' && yamlContent !== null) {
-    const unknownTypeErrors = checkUnknownContentTypes(yamlContent as Record<string, unknown>);
+    const unknownTypeErrors = checkUnknownContentTypes(
+      yamlContent as Record<string, unknown>,
+      allowedExtraTypes
+    );
     errors.push(...unknownTypeErrors);
   }
 

@@ -29,6 +29,7 @@ import {
   collectionConfigSchema,
   VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
   resolveEnvVarsDeep,
+  buildExtendedPageContentSchema,
 } from '@stackwright/types';
 import type {
   CollectionConfig,
@@ -881,6 +882,79 @@ function injectCollectionEntries(
   return result;
 }
 
+// ---------------------------------------------------------------------------
+// Content format normalization
+//
+// Pro content items may be authored in YAML mapping-key-as-type format:
+//   - page_header:
+//       title: "Hello"
+//
+// This normalizes them to the OSS type-field format:
+//   - type: page_header
+//     title: "Hello"
+// ---------------------------------------------------------------------------
+
+function normalizeNestedContent(obj: Record<string, unknown>): Record<string, unknown> {
+  const result = { ...obj };
+  if (Array.isArray(obj.content_items)) {
+    result.content_items = (obj.content_items as unknown[]).map(normalizeContentItem);
+  }
+  if (Array.isArray(obj.tabs)) {
+    result.tabs = (obj.tabs as unknown[]).map(normalizeContentItem);
+  }
+  if (Array.isArray(obj.columns)) {
+    result.columns = (obj.columns as Record<string, unknown>[]).map((col) => ({
+      ...col,
+      ...(Array.isArray(col.content_items)
+        ? { content_items: (col.content_items as unknown[]).map(normalizeContentItem) }
+        : {}),
+    }));
+  }
+  return result;
+}
+
+function normalizeContentItem(item: unknown): unknown {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) return item;
+  const obj = item as Record<string, unknown>;
+
+  // Already in OSS format (has 'type' string field) — just recurse into nested items
+  if (typeof obj.type === 'string') {
+    return normalizeNestedContent(obj);
+  }
+
+  // Check for mapping-key format: exactly one key whose value is a plain object
+  const keys = Object.keys(obj);
+  if (keys.length === 1) {
+    const [typeKey] = keys;
+    const value = obj[typeKey];
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const normalized: Record<string, unknown> = {
+        type: typeKey,
+        ...(value as Record<string, unknown>),
+      };
+      return normalizeNestedContent(normalized);
+    }
+  }
+
+  return obj;
+}
+
+function normalizePageContent(rawContent: unknown): unknown {
+  if (!rawContent || typeof rawContent !== 'object') return rawContent;
+  const page = rawContent as Record<string, unknown>;
+  const content = page.content as Record<string, unknown> | undefined;
+  if (!content) return rawContent;
+  const items = content.content_items;
+  if (!Array.isArray(items)) return rawContent;
+  return {
+    ...page,
+    content: {
+      ...content,
+      content_items: items.map(normalizeContentItem),
+    },
+  };
+}
+
 // -- Plugin Execution -------------------------------------------------------
 
 /**
@@ -923,6 +997,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   const projectRoot =
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
   const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+
+  // Collect extra content schemas and known type keys from all plugins
+  const extraContentSchemas = plugins.flatMap((p) => p.contentItemSchemas ?? []);
+  const pluginKnownTypes = plugins.flatMap((p) => p.knownContentTypeKeys ?? []);
 
   const pagesDir = path.join(projectRoot, 'pages');
   const publicDir = path.join(projectRoot, 'public');
@@ -1026,8 +1104,14 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
 
-    // Validate using shared validator (includes unknown content type checking)
-    const pageValidation = validatePageContent(rawContent);
+    // Normalize mapping-key format to type-field format (backward compat for pro content)
+    const normalizedContent = normalizePageContent(rawContent);
+
+    // Validate using shared validator — extended with plugin schemas if provided
+    const pageValidation = validatePageContent(normalizedContent, {
+      extraContentItemSchemas: extraContentSchemas,
+      allowedExtraTypes: pluginKnownTypes,
+    });
     if (!pageValidation.valid) {
       const output = [
         `Invalid content: ${filePath}`,
@@ -1044,7 +1128,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const publicPrefix = `/images/${slugDir}`;
 
     const processedContent = processPageContent(
-      rawContent,
+      normalizedContent,
       contentDir,
       imageDestDir,
       publicPrefix,
