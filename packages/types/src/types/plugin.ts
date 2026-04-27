@@ -62,6 +62,41 @@ export interface PrebuildPlugin {
   configSchema?: z.ZodSchema;
 
   /**
+   * Additional Zod schemas for content items provided by this plugin.
+   *
+   * When registered, the prebuild will include these schemas in the content
+   * item union validator, allowing pro content types to pass validation.
+   * Each schema should match objects with a `type` field set to the plugin's
+   * content type name(s).
+   *
+   * @example
+   * ```typescript
+   * const myPlugin: PrebuildPlugin = {
+   *   name: 'pro-content',
+   *   contentItemSchemas: [
+   *     z.object({ type: z.literal('page_header') }).passthrough(),
+   *     z.object({ type: z.literal('stats_grid') }).passthrough(),
+   *   ],
+   * };
+   * ```
+   */
+  contentItemSchemas?: z.ZodTypeAny[];
+
+  /**
+   * Additional content type key strings recognized by this plugin.
+   *
+   * Type strings listed here will NOT generate "unknown content type" errors
+   * during prebuild validation. Should match the `type` values used in the
+   * plugin's content item schemas.
+   *
+   * @example
+   * ```typescript
+   * knownContentTypeKeys: ['page_header', 'stats_grid', 'two_column_layout'],
+   * ```
+   */
+  knownContentTypeKeys?: readonly string[];
+
+  /**
    * Called after site config is loaded but before page/collection processing
    *
    * Use this hook to:

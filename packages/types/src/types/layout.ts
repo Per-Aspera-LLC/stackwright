@@ -78,6 +78,36 @@ export const pageContentSchema = z.object({
   }),
 });
 
+/**
+ * Build an extended page content schema that includes additional content item schemas.
+ *
+ * Used by the prebuild pipeline to support pro/plugin content types alongside
+ * the built-in OSS content types.
+ *
+ * @param extraSchemas - Additional Zod schemas to include in the content item union
+ * @returns Extended page content schema
+ */
+export function buildExtendedPageContentSchema(extraSchemas: z.ZodTypeAny[]): z.ZodTypeAny {
+  if (extraSchemas.length === 0) return pageContentSchema;
+
+  const extendedContentItem = z.union([contentItemSchema, ...extraSchemas] as [
+    z.ZodTypeAny,
+    z.ZodTypeAny,
+    ...z.ZodTypeAny[],
+  ]);
+
+  return z.object({
+    content: z.object({
+      meta: pageMetaSchema.optional(),
+      app_bar: appBarContentSchema.optional(),
+      footer: footerContentSchema.optional(),
+      content_items: z.array(extendedContentItem),
+      list_icon: z.string().optional(),
+      navSidebar: pageSidebarSchema,
+    }),
+  });
+}
+
 export type PageMeta = z.infer<typeof pageMetaSchema>;
 export type FooterContent = z.infer<typeof footerContentSchema>;
 export type PageContent = z.infer<typeof pageContentSchema>;
