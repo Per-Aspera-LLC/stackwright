@@ -29,6 +29,7 @@ import {
   collectionConfigSchema,
   VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
   resolveEnvVarsDeep,
+  buildExtendedPageContentSchema,
 } from '@stackwright/types';
 import type {
   CollectionConfig,
@@ -46,6 +47,81 @@ import type {
  */
 function applyEnvVarResolution(obj: unknown): unknown {
   return resolveEnvVarsDeep(obj);
+}
+
+/**
+ * Validate an integration config against its plugin's schema (if available).
+ *
+ * Security: This function validates integration configs passed through from
+ * stackwright.yml against the declaring plugin's configSchema. This prevents:
+ * - Prototype pollution attacks (__proto__, constructor)
+ * - Plugin-specific malicious options
+ * - Config without type safety
+ *
+ * Throws if validation fails.
+ */
+function validateIntegrationConfig(
+  integration: Record<string, unknown>,
+  plugins: PrebuildPlugin[]
+): void {
+  // Integration type is formatted as "integration-{pluginName}"
+  const integrationType = integration.type as string | undefined;
+  if (!integrationType) {
+    // No type specified - let Zod schema handle this
+    return;
+  }
+
+  // Look for a plugin that handles this integration type
+  // Plugin names are like "integration-openapi", "integration-graphql"
+  const pluginName = `integration-${integrationType}`;
+  const plugin = plugins.find((p) => p.name === pluginName);
+
+  if (!plugin) {
+    // No plugin registered for this integration type - allow passthrough for now
+    // but warn in development
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        `  WARNING: No plugin registered for integration type "${integrationType}". Config will be passed through without validation.`
+      );
+    }
+    return;
+  }
+
+  if (!plugin.configSchema) {
+    // Plugin exists but doesn't declare a config schema
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        `  WARNING: Plugin "${pluginName}" does not declare a configSchema. Config will be passed through without validation.`
+      );
+    }
+    return;
+  }
+
+  // Validate the integration config against the plugin's schema
+  const result = plugin.configSchema.safeParse(integration);
+  if (!result.success) {
+    const details = result.error.issues
+      .map((issue) => `    - ${issue.path.join('.')}: ${issue.message}`)
+      .join('\n');
+    throw new Error(
+      `Invalid configuration for integration "${integration.name}" (${integration.type}):\n${details}`
+    );
+  }
+}
+
+/**
+ * Validate all integrations in the site config against their respective plugin schemas.
+ */
+function validateIntegrations(integrations: unknown, plugins: PrebuildPlugin[]): void {
+  if (!Array.isArray(integrations)) {
+    return;
+  }
+
+  for (const integration of integrations) {
+    if (integration && typeof integration === 'object') {
+      validateIntegrationConfig(integration as Record<string, unknown>, plugins);
+    }
+  }
 }
 
 // -- Config -----------------------------------------------------------------
@@ -806,6 +882,79 @@ function injectCollectionEntries(
   return result;
 }
 
+// ---------------------------------------------------------------------------
+// Content format normalization
+//
+// Pro content items may be authored in YAML mapping-key-as-type format:
+//   - page_header:
+//       title: "Hello"
+//
+// This normalizes them to the OSS type-field format:
+//   - type: page_header
+//     title: "Hello"
+// ---------------------------------------------------------------------------
+
+function normalizeNestedContent(obj: Record<string, unknown>): Record<string, unknown> {
+  const result = { ...obj };
+  if (Array.isArray(obj.content_items)) {
+    result.content_items = (obj.content_items as unknown[]).map(normalizeContentItem);
+  }
+  if (Array.isArray(obj.tabs)) {
+    result.tabs = (obj.tabs as unknown[]).map(normalizeContentItem);
+  }
+  if (Array.isArray(obj.columns)) {
+    result.columns = (obj.columns as Record<string, unknown>[]).map((col) => ({
+      ...col,
+      ...(Array.isArray(col.content_items)
+        ? { content_items: (col.content_items as unknown[]).map(normalizeContentItem) }
+        : {}),
+    }));
+  }
+  return result;
+}
+
+function normalizeContentItem(item: unknown): unknown {
+  if (!item || typeof item !== 'object' || Array.isArray(item)) return item;
+  const obj = item as Record<string, unknown>;
+
+  // Already in OSS format (has 'type' string field) — just recurse into nested items
+  if (typeof obj.type === 'string') {
+    return normalizeNestedContent(obj);
+  }
+
+  // Check for mapping-key format: exactly one key whose value is a plain object
+  const keys = Object.keys(obj);
+  if (keys.length === 1) {
+    const [typeKey] = keys;
+    const value = obj[typeKey];
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const normalized: Record<string, unknown> = {
+        type: typeKey,
+        ...(value as Record<string, unknown>),
+      };
+      return normalizeNestedContent(normalized);
+    }
+  }
+
+  return obj;
+}
+
+function normalizePageContent(rawContent: unknown): unknown {
+  if (!rawContent || typeof rawContent !== 'object') return rawContent;
+  const page = rawContent as Record<string, unknown>;
+  const content = page.content as Record<string, unknown> | undefined;
+  if (!content) return rawContent;
+  const items = content.content_items;
+  if (!Array.isArray(items)) return rawContent;
+  return {
+    ...page,
+    content: {
+      ...content,
+      content_items: items.map(normalizeContentItem),
+    },
+  };
+}
+
 // -- Plugin Execution -------------------------------------------------------
 
 /**
@@ -849,6 +998,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
   const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
 
+  // Collect extra content schemas and known type keys from all plugins
+  const extraContentSchemas = plugins.flatMap((p) => p.contentItemSchemas ?? []);
+  const pluginKnownTypes = plugins.flatMap((p) => p.knownContentTypeKeys ?? []);
+
   const pagesDir = path.join(projectRoot, 'pages');
   const publicDir = path.join(projectRoot, 'public');
   const imagesDir = path.join(publicDir, 'images');
@@ -889,6 +1042,15 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   // Resolve environment variable references in integrations
   const configWithEnvResolved = applyEnvVarResolution(processedConfig);
   console.log('  ✓ Resolved environment variable references in integrations');
+
+  // Validate integration configs against plugin schemas (if plugins are registered)
+  if (plugins.length > 0) {
+    const integrations = (configWithEnvResolved as Record<string, unknown>).integrations;
+    if (Array.isArray(integrations)) {
+      validateIntegrations(integrations, plugins);
+      console.log('  ✓ Validated integration configurations against plugin schemas');
+    }
+  }
 
   fs.writeFileSync(
     path.join(contentOutDir, '_site.json'),
@@ -942,8 +1104,14 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
 
-    // Validate using shared validator (includes unknown content type checking)
-    const pageValidation = validatePageContent(rawContent);
+    // Normalize mapping-key format to type-field format (backward compat for pro content)
+    const normalizedContent = normalizePageContent(rawContent);
+
+    // Validate using shared validator — extended with plugin schemas if provided
+    const pageValidation = validatePageContent(normalizedContent, {
+      extraContentItemSchemas: extraContentSchemas,
+      allowedExtraTypes: pluginKnownTypes,
+    });
     if (!pageValidation.valid) {
       const output = [
         `Invalid content: ${filePath}`,
@@ -960,7 +1128,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const publicPrefix = `/images/${slugDir}`;
 
     const processedContent = processPageContent(
-      rawContent,
+      normalizedContent,
       contentDir,
       imageDestDir,
       publicPrefix,

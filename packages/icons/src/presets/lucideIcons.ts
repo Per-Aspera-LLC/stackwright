@@ -10,7 +10,7 @@ import {
   Palette, // Palette
   Code, // Code
   Star, // Star
-  CheckCircle, // CheckCircle
+  CircleCheck, // CheckCircle (canonical v1 name)
   Rocket, // Rocket
   Lock, // Lock
   Globe, // Language
@@ -44,8 +44,7 @@ import {
   FlaskConical, // FlaskConical (testing)
   FileCheck, // FileCheck (validation)
   Gem, // Gem (quality)
-  Code2, // Code2 (code)
-  Layout, // Layout (layout)
+  LayoutTemplate, // Layout (canonical layout intent)
 } from 'lucide-react';
 
 import { registerStackwrightIcons } from '../registry/iconRegistry';
@@ -72,7 +71,8 @@ export const lucideIconPreset: Record<string, React.ComponentType<any>> = {
   Palette,
   Code,
   Star,
-  CheckCircle,
+  CircleCheck,
+  CheckCircle: CircleCheck, // backward-compat alias
   Rocket,
   Lock,
   Globe,
@@ -106,8 +106,9 @@ export const lucideIconPreset: Record<string, React.ComponentType<any>> = {
   FlaskConical,
   FileCheck,
   Gem,
-  Code2,
-  Layout,
+  Code2: Code, // backward-compat alias (was CodeXml in v1 compat layer)
+  LayoutTemplate,
+  Layout: LayoutTemplate, // backward-compat alias
 };
 
 export function registerLucideIcons() {

@@ -23,12 +23,38 @@ function isPageContent(content: PageContent | ContentItem): content is PageConte
   );
 }
 
+export interface RenderContentOptions {
+  key?: string;
+  /**
+   * When `true`, skips rendering `app_bar` and `footer` from a PageContent
+   * object. Use this when the caller (e.g. PageLayout) already renders the
+   * structural chrome itself — otherwise the TopAppBar and BottomAppBar would
+   * be rendered twice, producing a duplicate dark-mode toggle and footer.
+   */
+  contentItemsOnly?: boolean;
+}
+
 export function renderContent(
   content: PageContent | ContentItem,
-  config?: StackwrightConfig,
+  configOrOptions?: StackwrightConfig | RenderContentOptions,
   key?: string
 ) {
   if (!content) return null;
+
+  // Support legacy (config, key) positional args as well as the new options object.
+  // Note: `configOrOptions` as StackwrightConfig is accepted for backward compatibility
+  // but is not consumed — it was historically needed for the dark-mode toggle logic,
+  // which now lives elsewhere in the component tree.
+  let options: RenderContentOptions = {};
+  if (
+    configOrOptions &&
+    typeof configOrOptions === 'object' &&
+    ('contentItemsOnly' in configOrOptions || 'key' in configOrOptions)
+  ) {
+    options = configOrOptions as RenderContentOptions;
+  } else if (key) {
+    options = { key };
+  }
 
   // Full page structure: app_bar + content_items + footer
   if (isPageContent(content)) {
@@ -36,7 +62,7 @@ export function renderContent(
 
     const elements = [];
 
-    if (content.content.app_bar) {
+    if (!options.contentItemsOnly && content.content.app_bar) {
       elements.push(<TopAppBar key="topbar" {...content.content.app_bar} />);
     }
 
@@ -48,7 +74,7 @@ export function renderContent(
       );
     }
 
-    if (content.content.footer) {
+    if (!options.contentItemsOnly && content.content.footer) {
       elements.push(<BottomAppBar key="footer" {...content.content.footer} />);
     }
 
@@ -56,7 +82,7 @@ export function renderContent(
   }
 
   // Single content item
-  return renderContentItem(content, key);
+  return renderContentItem(content, options.key ?? key);
 }
 
 // Helper function to handle individual content item rendering

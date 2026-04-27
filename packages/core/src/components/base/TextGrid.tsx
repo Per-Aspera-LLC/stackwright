@@ -13,6 +13,31 @@ interface TextGridProps {
   };
 }
 
+/**
+ * Renders a string with inline markdown: **bold**, *italic*, `code`.
+ * Returns an array of React nodes safe to embed in JSX.
+ */
+function renderInlineMarkdown(text: string): React.ReactNode[] {
+  // Pattern captures: **bold**, *italic*, `code`
+  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('*') && part.endsWith('*')) {
+      return <em key={i}>{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={i} style={{ fontFamily: 'monospace', fontSize: '0.9em' }}>
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+}
+
 export function TextGrid({ content, config }: TextGridProps) {
   const theme = useSafeTheme();
   const listIcon = config?.list_icon || '•';
@@ -50,7 +75,7 @@ export function TextGrid({ content, config }: TextGridProps) {
               color: textBlock.textColor || theme.colors.text,
             }}
           >
-            {textBlock.text}
+            {renderInlineMarkdown(textBlock.text)}
           </p>
         );
     }

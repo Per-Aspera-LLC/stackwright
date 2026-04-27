@@ -22,7 +22,7 @@
     "clsx": "^2.1.1",
     "fuse.js": "^7.1.0",
     "js-yaml": "^4.1.1",
-    "lucide-react": "^0.471.1",
+    "lucide-react": "^1.8.0",
     "next": "^16.2.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
@@ -44,5 +44,5 @@
     "node": ">=20.0.0",
     "pnpm": ">=10.0.0"
   },
-  "packageManager": "pnpm@10.30.3"
+  "packageManager": "pnpm@10.33.0"
 }

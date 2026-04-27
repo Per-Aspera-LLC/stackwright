@@ -7,6 +7,8 @@ interface CompressedMenuProps<T = unknown> {
   onMenuOpen: (event: React.MouseEvent<HTMLElement>) => void;
   onMenuClose: () => void;
   buildMenu: (items: T[], compressed: boolean) => React.ReactNode;
+  textColor?: string;
+  menuBackground?: string;
 }
 
 export function CompressedMenu<T>({
@@ -16,6 +18,8 @@ export function CompressedMenu<T>({
   onMenuOpen,
   onMenuClose,
   buildMenu,
+  textColor,
+  menuBackground,
 }: CompressedMenuProps<T>) {
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -41,7 +45,9 @@ export function CompressedMenu<T>({
           padding: 'var(--sw-spacing-xs, 0.5rem)',
           display: 'flex',
           alignItems: 'center',
-          color: 'var(--sw-color-primary, currentColor)',
+          // Use the passed-in textColor (the nav bar's own text color) so the
+          // hamburger icon is always visible regardless of background color.
+          color: textColor || 'currentColor',
         }}
         aria-label="Menu"
       >
@@ -69,7 +75,7 @@ export function CompressedMenu<T>({
             right: 0,
             width: 'auto',
             maxWidth: '200px',
-            backgroundColor: 'white',
+            backgroundColor: menuBackground || 'white',
             boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
             borderRadius: '4px',
             zIndex: 1000,

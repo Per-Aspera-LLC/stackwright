@@ -2,7 +2,7 @@ name: Performance Benchmarks
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, dev]
   workflow_dispatch:
     inputs:
       run-all:
@@ -26,6 +26,9 @@ jobs:
         with:
           build: true
           relink-bins: true
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
 
       - name: ⚡ Run build time benchmarks
         id: build-time
@@ -91,7 +94,7 @@ jobs:
 
       - name: 💬 Comment PR with results
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         continue-on-error: true
         with:
           script: |

@@ -1,6 +1,6 @@
 # Plugin Security Guide
 
-*This guide establishes security requirements and best practices for Stackwright plugin developers. For framework security architecture, see [security-model-for-docs.md](./security-model-for-docs.md).*
+*This guide establishes security requirements and best practices for Stackwright plugin developers. For framework security architecture, see [SECURITY-MODEL.md](./SECURITY-MODEL.md).*
 
 ---
 
@@ -336,7 +336,7 @@ Contact security@per-aspera.dev with:
 
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — General contribution guidelines
 - [AGENTS.md](../AGENTS.md) — AI agent guidance
-- [security-model-for-docs.md](./security-model-for-docs.md) — Framework security architecture
+- [SECURITY-MODEL.md](./SECURITY-MODEL.md) — Framework security architecture
 
 ---
 

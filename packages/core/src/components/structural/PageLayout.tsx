@@ -105,7 +105,9 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
           />
         )}
 
-        <main style={{ flex: 1, backgroundColor }}>{renderContent(pageContent)}</main>
+        <main style={{ flex: 1, minWidth: 0, backgroundColor }}>
+          {renderContent(pageContent, { contentItemsOnly: true })}
+        </main>
       </div>
 
       <BottomAppBar footer={config.footer} />

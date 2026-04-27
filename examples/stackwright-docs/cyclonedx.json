@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-04-12T17:19:57.945Z",
+    "timestamp": "2026-04-16T15:01:00.915Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -212,13 +212,13 @@
     {
       "type": "library",
       "name": "lucide-react",
-      "version": "0.471.1",
-      "purl": "pkg:npm/lucide-react@0.471.1",
+      "version": "1.8.0",
+      "purl": "pkg:npm/lucide-react@1.8.0",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "34516f0b69a564672a07087b4a907c82ef437a69c4ba2895f1dc37bb8ae402ac"
+          "content": "40d803f28472791a029ae0f633449a6526c50a08932f2b8a36b28efc84e9ec5d"
         }
       ],
       "externalReferences": [

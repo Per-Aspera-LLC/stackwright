@@ -43,7 +43,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install pnpm
-        run: npm install -g pnpm@10.30.3
+        run: npm install -g pnpm@10.33.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
