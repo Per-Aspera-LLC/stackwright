@@ -2,7 +2,7 @@ name: Performance Benchmarks
 
 on:
   pull_request:
-    branches: [main, develop]
+    branches: [main, dev]
   workflow_dispatch:
     inputs:
       run-all:
@@ -26,6 +26,9 @@ jobs:
         with:
           build: true
           relink-bins: true
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @stackwright/e2e exec playwright install --with-deps chromium
 
       - name: ⚡ Run build time benchmarks
         id: build-time
