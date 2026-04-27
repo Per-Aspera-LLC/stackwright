@@ -1,6 +1,5 @@
+import { describe, it, expect, beforeEach, afterAll } from 'vitest';
 import { z } from 'zod';
-import { describe, it, expect } from 'vitest';
-import type { PrebuildPlugin } from '../src/types/plugin.js';
 import {
   ENV_VAR_PATTERN,
   BRACED_ENV_VAR_PATTERN,
@@ -12,6 +11,7 @@ import {
   resolveEnvVarsDeep,
 } from '../src/types/secrets.js';
 import { estimateEntropy, checkForPlaintextSecret } from '../src/types/secret-detection.js';
+import { PrebuildPlugin } from '../src/types/plugin.js';
 
 describe('Environment Variable Patterns', () => {
   describe('ENV_VAR_PATTERN', () => {
