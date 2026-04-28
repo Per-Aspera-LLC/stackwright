@@ -1,5 +1,11 @@
 # @stackwright/build-scripts
 
+## 0.5.1
+
+### Patch Changes
+
+- 2fab531: fix(build-scripts): create parent directory before writing nested page slug output files
+
 ## 0.5.0
 
 ### Minor Changes

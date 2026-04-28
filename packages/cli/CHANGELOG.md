@@ -1,5 +1,12 @@
 # @stackwright/cli
 
+## 0.8.1
+
+### Patch Changes
+
+- Updated dependencies [2fab531]
+  - @stackwright/build-scripts@0.5.1
+
 ## 0.8.0
 
 ### Minor Changes
