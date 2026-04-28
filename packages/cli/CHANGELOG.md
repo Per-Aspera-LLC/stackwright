@@ -1,43 +1,5 @@
 # @stackwright/cli
 
-## 0.8.1-alpha.1
-
-### Patch Changes
-
-- Updated dependencies [bb4ecb7]
-  - @stackwright/build-scripts@0.6.0-alpha.1
-
-## 0.8.1-alpha.0
-
-### Patch Changes
-
-- f0b74ef: feat(cli): add --content flag to `page add` for inline YAML (#188)
-
-  Agents can now create a page with full content in a single command instead of a two-step add + write sequence. Content is validated before writing; invalid YAML is rejected with field-level errors.
-
-- 90a22c6: fix(cli): --install flag now runs pnpm install before postInstall hooks
-- a410f02: fix(cli): remove duplicate preInstall hook call from processTemplate
-
-  `processTemplate()` was calling `runScaffoldHooks('preInstall', ...)` internally,
-  then `scaffold.ts` called it again after `processTemplate` returned — running every
-  preInstall handler twice. Worse, the second call passed the original empty `{}` object
-  (not the built package.json), so hooks registered via `scaffold.ts` could never affect
-  the written file.
-
-  Fix: lifecycle orchestration now lives entirely in `scaffold.ts`. `buildPackageJson` is
-  exported so `scaffold.ts` can build the default package.json before running preInstall
-  hooks, then passes the already-hooks-modified object into `processTemplate` for writing.
-  `processTemplate` no longer calls hooks.
-
-  Fixes #351.
-
-- Updated dependencies [bdf7fe0]
-- Updated dependencies [bdf7fe0]
-- Updated dependencies [68bdad5]
-- Updated dependencies [83ba70c]
-  - @stackwright/types@1.3.0-alpha.0
-  - @stackwright/build-scripts@0.6.0-alpha.0
-
 ## 0.8.0
 
 ### Minor Changes
