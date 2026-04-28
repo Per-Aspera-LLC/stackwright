@@ -970,7 +970,7 @@ async function executePluginHook(
 
   try {
     console.log(`  Running ${plugin.name} (${hook})...`);
-    await Promise.resolve(hookFn(context));
+    await Promise.resolve(hookFn.call(plugin, context));
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Plugin "${plugin.name}" failed during ${hook}: ${message}`);
