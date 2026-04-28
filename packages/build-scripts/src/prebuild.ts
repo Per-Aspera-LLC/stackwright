@@ -1139,9 +1139,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const expandedContent = injectCollectionEntries(processedContent, collectionIndexes);
 
     const outFile = slug ? `${slug}.json` : '_root.json';
-    const outPath = path.join(contentOutDir, outFile);
-    fs.mkdirSync(path.dirname(outPath), { recursive: true });
-    fs.writeFileSync(outPath, JSON.stringify(expandedContent, null, 2));
+    fs.writeFileSync(path.join(contentOutDir, outFile), JSON.stringify(expandedContent, null, 2));
     console.log(`  OK ${outFile}  (${label})`);
   }
 
