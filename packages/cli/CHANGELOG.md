@@ -1,5 +1,12 @@
 # @stackwright/cli
 
+## 0.8.1-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [bb4ecb7]
+  - @stackwright/build-scripts@0.6.0-alpha.1
+
 ## 0.8.1-alpha.0
 
 ### Patch Changes

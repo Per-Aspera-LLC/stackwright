@@ -30,6 +30,7 @@
     "fix-352-install-flag-actually-installs",
     "fix-plugin-config-schema-242",
     "fix-plugin-this-binding",
+    "fix-prebuild-mkdir-nested-slugs",
     "fix-preinstall-double-run",
     "grumpy-paws-create"
   ]
