@@ -1,0 +1,37 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "stackwright-docs": "0.1.2",
+    "@stackwright/build-scripts": "0.5.0",
+    "@stackwright/cli": "0.8.0",
+    "@stackwright/collections": "0.1.0",
+    "@stackwright/core": "0.8.0",
+    "@stackwright/e2e": "0.3.0",
+    "@stackwright/hooks-registry": "0.1.0",
+    "@stackwright/icons": "0.5.0",
+    "launch-stackwright": "0.2.0",
+    "@stackwright/maplibre": "2.0.0",
+    "@stackwright/mcp": "0.4.0",
+    "@stackwright/nextjs": "0.4.0",
+    "@stackwright/otters": "0.2.0",
+    "@stackwright/sbom-generator": "0.2.0",
+    "@stackwright/scaffold-core": "0.3.0",
+    "@stackwright/themes": "0.5.2",
+    "@stackwright/types": "1.2.0",
+    "@stackwright/ui-shadcn": "0.1.1"
+  },
+  "changesets": [
+    "add-plugin-content-schema-extension",
+    "add-pro-content-normalization",
+    "dependabot-batch-updates",
+    "feat-188-page-add-content-flag",
+    "feat-243-security-headers",
+    "fix-352-install-flag-actually-installs",
+    "fix-plugin-config-schema-242",
+    "fix-plugin-this-binding",
+    "fix-prebuild-mkdir-nested-slugs",
+    "fix-preinstall-double-run",
+    "grumpy-paws-create"
+  ]
+}
