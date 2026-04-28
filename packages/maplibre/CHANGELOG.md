@@ -1,5 +1,59 @@
 # @stackwright/maplibre
 
+## 2.0.0
+
+### Minor Changes
+
+- 8f34fd6: Add map adapter system with MapLibre GL free tier - Phases 1 & 2 of geospatial visualization support
+
+  **Phase 1: Map Adapter Interface and Registry**
+  - Create MapAdapter interface following Image/Link/Router adapter pattern
+  - Add map registry with setMapAdapter/getMapAdapter functions
+  - Export map adapter types and utilities from @stackwright/core
+
+  **Phase 2: MapLibre GL Implementation**
+  - Create @stackwright/maplibre package with MapLibreAdapter
+  - Support map initialization with center, zoom, pitch, bearing controls
+  - Handle marker placement with simple format and GeoJSON FeatureCollections
+  - Add camera animation for smooth transitions
+  - Use MapLibre GL JS v4.7.1 for OSM-based vector tile rendering
+
+  **Content Type Support**
+  - Add MapContent schema with Zod validation
+  - Support declarative map configuration through YAML content files
+  - Generate JSON schema for MCP tool introspection
+
+  **Examples**
+  - Add comprehensive /maps showcase page to hellostackwright example
+  - Demonstrate simple maps, markers, custom styles, animations, 3D terrain, and GeoJSON layers
+
+  This establishes the foundation for pluggable map providers (MapLibre, Cesium, etc.) without coupling the core framework to any specific implementation. Phase 3 (Cesium ion integration) awaits OpenAPI work in pro repo.
+
+### Patch Changes
+
+- 46df0c5: chore: consolidate dependabot dependency updates
+  - `lucide-react`: `^0.525.0` → `^1.8.0` (icons, ui-shadcn) — includes icon rename fixes for v1 API (`CheckCircle` → `CircleCheck`, `Code2`/`Layout` backward-compat aliases)
+  - `@swc/core`: `^1.15.18` → `^1.15.26` (core, nextjs)
+  - `jsdom`: `^28.1.0` → `^29.0.2` (maplibre)
+  - `react-dom`: `19.2.4` → `19.2.5` (pnpm.overrides)
+  - `prettier`: `^3.8.1` → `^3.8.3` (devDependencies)
+
+- 85a9699: Fix TypeScript build error and verify package is properly registered in lockfile
+- Updated dependencies [8f34fd6]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [115c658]
+- Updated dependencies [199ca1c]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+  - @stackwright/core@0.8.0
+
 ## 1.0.1-alpha.2
 
 ### Patch Changes

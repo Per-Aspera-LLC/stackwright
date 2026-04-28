@@ -1,5 +1,110 @@
 # @stackwright/build-scripts
 
+## 0.5.0
+
+### Minor Changes
+
+- 46df0c5: Add content format normalization (mapping-key YAML format → type-field format) to prebuild pipeline.
+  Plugin `contentItemSchemas` and `knownContentTypeKeys` are now applied during page validation.
+- 8f34fd6: Add built-in full-text search to every Stackwright site.
+
+  **New feature (`@stackwright/core`):**
+  - Client-side search using Fuse.js with fuzzy matching
+  - Search modal triggered by clicking search button or pressing `/`
+  - Keyboard navigation (↑↓ to navigate, Enter to select, Esc to close)
+  - Accessible: proper ARIA labels, focus trapping, screen reader announcements
+  - SSR-safe: no hydration mismatches
+
+  **Prebuild changes (`@stackwright/build-scripts`):**
+  - Generate search index JSON during prebuild containing all page content
+  - Index includes page slugs, headings, and text content
+  - Index placed in public folder for client-side fetching
+
+  **Type updates (`@stackwright/types`):**
+  - Add `searchIndexPath` option to SiteConfig
+
+  **E2E tests (`@stackwright/e2e`):**
+  - Add accessibility and interaction tests for search functionality
+
+- 8f34fd6: Declarative collection entry pages with YAML-based layout templates.
+
+  Collections with `entryPage` config in `_collection.yaml` now automatically generate full page JSON during prebuild — zero custom React code required.
+
+  **Template system (`@stackwright/build-scripts`, `@stackwright/types`):**
+  - Define entry page layouts using the same `content_items` syntax as regular pages, with `{{fieldName}}` placeholders resolved against each entry's data
+  - Single `{{field}}` references preserve the raw value type (arrays, objects pass through)
+  - Inline interpolation: `"{{date}} · {{author}} · {{tags}}"` with auto array-to-comma conversion
+  - Smart null handling: missing fields cause their containing block to be omitted, so a single template works for entries with and without optional fields (e.g., cover images)
+  - Default template used when `template` key is absent (backward-compatible with `body`/`meta`/`tags` config)
+  - Path traversal protection on `basePath` and slug values
+
+  **CLI (`@stackwright/cli`):**
+  - New `stackwright collection list` command shows all collections with entry counts
+  - New `stackwright collection add <name>` command with `--entry-page`, `--base-path`, `--sort` flags
+  - Scaffold template updated: `[slug].tsx` → `[...slug].tsx` catch-all route supporting nested paths
+
+  **MCP (`@stackwright/mcp`):**
+  - New `stackwright_list_collections` MCP tool
+  - New `stackwright_create_collection` MCP tool with full parameter validation
+
+- 199ca1c: Add environment variable resolution for integration secrets
+
+  This PR introduces support for referencing secrets from environment variables in integration configurations. Key changes include:
+  - New `SecretReference` type for env var secret resolution
+  - `SecretDetection` utilities for runtime secret validation
+  - Updated site config schema with integration secret support
+  - Prebuild script updates for env var substitution
+
+- 8f34fd6: feat: Add SBOM generation for supply chain transparency
+
+  Every Stackwright build now generates a Software Bill of Materials (SBOM) with:
+  - SPDX 2.3 format (US Government compliance)
+  - CycloneDX 1.5 format (OWASP tooling compatibility)
+  - Stackwright build manifest (internal format)
+
+  New CLI commands:
+  - `stackwright sbom generate` - Regenerate SBOM
+  - `stackwright sbom validate` - Validate SBOM schemas
+  - `stackwright sbom diff` - Compare SBOMs between builds
+
+  Use `--no-sbom` flag to skip generation if needed.
+
+- 8f34fd6: Add video media type support to the Stackwright framework.
+  - New `video` discriminator in the `MediaItem` union (`@stackwright/types`)
+  - `VideoContent` type with `src`, `autoplay`, `loop`, `muted`, `controls`, and `poster` fields
+  - `Media` component renders `<video>` elements for video media items (`@stackwright/core`)
+  - Prebuild pipeline recognizes and copies video files alongside images (`@stackwright/build-scripts`)
+
+### Patch Changes
+
+- 46df0c5: Add configSchema field to PrebuildPlugin for plugin config validation
+- db1ab10: fix(executePluginHook): preserve `this` binding when calling plugin lifecycle hooks
+
+  `executePluginHook` was extracting hook methods as unbound references
+  (`const hookFn = plugin[hook]`) and calling them as plain functions
+  (`hookFn(context)`). In strict-mode ES classes, this strips `this`,
+  causing any plugin that calls a private/instance method from `beforeBuild`
+  or `afterBuild` to throw `Cannot read properties of undefined`.
+
+  Fix: use `hookFn.call(plugin, context)` so the plugin instance is always
+  the receiver.
+
+- Updated dependencies [f365749]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [199ca1c]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+  - @stackwright/types@1.2.0
+  - @stackwright/sbom-generator@0.2.0
+
 ## 0.4.0
 
 ### Minor Changes

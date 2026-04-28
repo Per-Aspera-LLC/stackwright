@@ -1,5 +1,11 @@
 # @stackwright/themes
 
+## 0.5.2
+
+### Patch Changes
+
+- 8f34fd6: fix: dark mode toggle now updates in real-time (#252) and background images no longer override dark background color (#251)
+
 ## 0.5.1
 
 ### Patch Changes

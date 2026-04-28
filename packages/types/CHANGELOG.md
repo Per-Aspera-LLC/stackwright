@@ -1,5 +1,117 @@
 # @stackwright/types
 
+## 1.2.0
+
+### Minor Changes
+
+- 46df0c5: Add `contentItemSchemas` and `knownContentTypeKeys` to `PrebuildPlugin` interface.
+  Add `buildExtendedPageContentSchema()` function for merging OSS and plugin content schemas.
+  Add `ValidatePageContentOptions` to `validatePageContent()` for plugin-aware validation.
+- 8f34fd6: Add built-in full-text search to every Stackwright site.
+
+  **New feature (`@stackwright/core`):**
+  - Client-side search using Fuse.js with fuzzy matching
+  - Search modal triggered by clicking search button or pressing `/`
+  - Keyboard navigation (↑↓ to navigate, Enter to select, Esc to close)
+  - Accessible: proper ARIA labels, focus trapping, screen reader announcements
+  - SSR-safe: no hydration mismatches
+
+  **Prebuild changes (`@stackwright/build-scripts`):**
+  - Generate search index JSON during prebuild containing all page content
+  - Index includes page slugs, headings, and text content
+  - Index placed in public folder for client-side fetching
+
+  **Type updates (`@stackwright/types`):**
+  - Add `searchIndexPath` option to SiteConfig
+
+  **E2E tests (`@stackwright/e2e`):**
+  - Add accessibility and interaction tests for search functionality
+
+- 8f34fd6: Declarative collection entry pages with YAML-based layout templates.
+
+  Collections with `entryPage` config in `_collection.yaml` now automatically generate full page JSON during prebuild — zero custom React code required.
+
+  **Template system (`@stackwright/build-scripts`, `@stackwright/types`):**
+  - Define entry page layouts using the same `content_items` syntax as regular pages, with `{{fieldName}}` placeholders resolved against each entry's data
+  - Single `{{field}}` references preserve the raw value type (arrays, objects pass through)
+  - Inline interpolation: `"{{date}} · {{author}} · {{tags}}"` with auto array-to-comma conversion
+  - Smart null handling: missing fields cause their containing block to be omitted, so a single template works for entries with and without optional fields (e.g., cover images)
+  - Default template used when `template` key is absent (backward-compatible with `body`/`meta`/`tags` config)
+  - Path traversal protection on `basePath` and slug values
+
+  **CLI (`@stackwright/cli`):**
+  - New `stackwright collection list` command shows all collections with entry counts
+  - New `stackwright collection add <name>` command with `--entry-page`, `--base-path`, `--sort` flags
+  - Scaffold template updated: `[slug].tsx` → `[...slug].tsx` catch-all route supporting nested paths
+
+  **MCP (`@stackwright/mcp`):**
+  - New `stackwright_list_collections` MCP tool
+  - New `stackwright_create_collection` MCP tool with full parameter validation
+
+- 199ca1c: Add environment variable resolution for integration secrets
+
+  This PR introduces support for referencing secrets from environment variables in integration configurations. Key changes include:
+  - New `SecretReference` type for env var secret resolution
+  - `SecretDetection` utilities for runtime secret validation
+  - Updated site config schema with integration secret support
+  - Prebuild script updates for env var substitution
+
+- 8f34fd6: feat: add integrations config to site schema
+
+  Adds `integrations` field to site config schema for Pro package integrations (OpenAPI, GraphQL, REST). Each integration requires `type` and `name` fields, with additional plugin-specific config allowed via passthrough.
+
+  Closes #240
+
+- 8f34fd6: Add map adapter system with MapLibre GL free tier - Phases 1 & 2 of geospatial visualization support
+
+  **Phase 1: Map Adapter Interface and Registry**
+  - Create MapAdapter interface following Image/Link/Router adapter pattern
+  - Add map registry with setMapAdapter/getMapAdapter functions
+  - Export map adapter types and utilities from @stackwright/core
+
+  **Phase 2: MapLibre GL Implementation**
+  - Create @stackwright/maplibre package with MapLibreAdapter
+  - Support map initialization with center, zoom, pitch, bearing controls
+  - Handle marker placement with simple format and GeoJSON FeatureCollections
+  - Add camera animation for smooth transitions
+  - Use MapLibre GL JS v4.7.1 for OSM-based vector tile rendering
+
+  **Content Type Support**
+  - Add MapContent schema with Zod validation
+  - Support declarative map configuration through YAML content files
+  - Generate JSON schema for MCP tool introspection
+
+  **Examples**
+  - Add comprehensive /maps showcase page to hellostackwright example
+  - Demonstrate simple maps, markers, custom styles, animations, 3D terrain, and GeoJSON layers
+
+  This establishes the foundation for pluggable map providers (MapLibre, Cesium, etc.) without coupling the core framework to any specific implementation. Phase 3 (Cesium ion integration) awaits OpenAPI work in pro repo.
+
+- 8f34fd6: feat(core): add page-level `navSidebar` override in `content.yml`
+
+  Pages can now override the site-wide sidebar defined in `stackwright.yml` using the `navSidebar` field. This enables:
+  - Dashboard pages to hide the sidebar (`navSidebar: null`) for full-width content
+  - Documentation chapters to show page-specific navigation in the sidebar
+  - Page Otter to customize sidebar behavior without editing the theme
+
+  The resolution order is: page `navSidebar` > site `sidebar` (from Theme Otter) > no sidebar.
+
+  Docs and AGENTS.md updated with examples and Otter responsibility notes.
+
+- 8f34fd6: Add text_block content type - a simpler alternative to main for heading + text + buttons without media-related fields. Perfect for text-heavy sections, announcements, and callouts within grid layouts.
+- 8f34fd6: Add video media type support to the Stackwright framework.
+  - New `video` discriminator in the `MediaItem` union (`@stackwright/types`)
+  - `VideoContent` type with `src`, `autoplay`, `loop`, `muted`, `controls`, and `poster` fields
+  - `Media` component renders `<video>` elements for video media items (`@stackwright/core`)
+  - Prebuild pipeline recognizes and copies video files alongside images (`@stackwright/build-scripts`)
+
+### Patch Changes
+
+- f365749: Add Zod `.refine()` validation for image dimensions. BREAKING: Images must have both height+width OR height+aspect_ratio. Fix content.yml with explicit dimensions.
+- 46df0c5: Add configSchema field to PrebuildPlugin for plugin config validation
+- Updated dependencies [8f34fd6]
+  - @stackwright/themes@0.5.2
+
 ## 1.1.0
 
 ### Minor Changes

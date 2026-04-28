@@ -1,5 +1,35 @@
 # @stackwright/icons
 
+## 0.5.0
+
+### Minor Changes
+
+- 8f34fd6: Register the full Lucide icon set (~1,500+ icons) by default. `registerDefaultIcons()` now includes every Lucide icon — YAML authors can use any icon by PascalCase name without code changes. Added `registerAllLucideIcons()` and `lucideAllIconsPreset` exports. The curated ~40-icon preset remains available via `registerLucideIcons()` for bundle-conscious apps.
+
+### Patch Changes
+
+- 8f34fd6: Add Code2 and Layout icons to Lucide preset for docs site compatibility
+- 46df0c5: chore: consolidate dependabot dependency updates
+  - `lucide-react`: `^0.525.0` → `^1.8.0` (icons, ui-shadcn) — includes icon rename fixes for v1 API (`CheckCircle` → `CircleCheck`, `Code2`/`Layout` backward-compat aliases)
+  - `@swc/core`: `^1.15.18` → `^1.15.26` (core, nextjs)
+  - `jsdom`: `^28.1.0` → `^29.0.2` (maplibre)
+  - `react-dom`: `19.2.4` → `19.2.5` (pnpm.overrides)
+  - `prettier`: `^3.8.1` → `^3.8.3` (devDependencies)
+
+- 115c658: Fix missing Lucide icons (Code2, Layout) and improve CodeBlock rendering for ASCII art diagrams
+
+  ### Icon Registry Fixes
+  - **Code2 icon**: Added direct import to lucideAllIcons.ts (was missing from barrel export)
+  - **Layout icon**: Added direct import to lucideAllIcons.ts (was missing from barrel export)
+
+  ### CodeBlock Improvements
+  - Better monospace font stack for proper ASCII art alignment
+  - Added font-variant-ligatures: none to prevent character transformation issues
+
+  ### Architecture Page Fixes
+  - Replaced problematic YAML/JSON code blocks with tabbed_content component
+  - Fixed overflow issues caused by ASCII art alignment problems
+
 ## 0.4.1-alpha.0
 
 ### Patch Changes

@@ -1,5 +1,43 @@
 # @stackwright/nextjs
 
+## 0.4.0
+
+### Minor Changes
+
+- 46df0c5: Add security headers (CSP, HSTS, COOP/CORP/COEP) to Next.js integration with customizable configuration
+
+### Patch Changes
+
+- 46df0c5: chore: consolidate dependabot dependency updates
+  - `lucide-react`: `^0.525.0` → `^1.8.0` (icons, ui-shadcn) — includes icon rename fixes for v1 API (`CheckCircle` → `CircleCheck`, `Code2`/`Layout` backward-compat aliases)
+  - `@swc/core`: `^1.15.18` → `^1.15.26` (core, nextjs)
+  - `jsdom`: `^28.1.0` → `^29.0.2` (maplibre)
+  - `react-dom`: `19.2.4` → `19.2.5` (pnpm.overrides)
+  - `prettier`: `^3.8.1` → `^3.8.3` (devDependencies)
+
+- Updated dependencies [f365749]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [199ca1c]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [115c658]
+- Updated dependencies [199ca1c]
+- Updated dependencies [46df0c5]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+  - @stackwright/types@1.2.0
+  - @stackwright/core@0.8.0
+  - @stackwright/themes@0.5.2
+
 ## 0.3.2-alpha.1
 
 ### Patch Changes

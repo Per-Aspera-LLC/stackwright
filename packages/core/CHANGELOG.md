@@ -1,5 +1,138 @@
 # @stackwright/core
 
+## 0.8.0
+
+### Minor Changes
+
+- 8f34fd6: Add built-in full-text search to every Stackwright site.
+
+  **New feature (`@stackwright/core`):**
+  - Client-side search using Fuse.js with fuzzy matching
+  - Search modal triggered by clicking search button or pressing `/`
+  - Keyboard navigation (↑↓ to navigate, Enter to select, Esc to close)
+  - Accessible: proper ARIA labels, focus trapping, screen reader announcements
+  - SSR-safe: no hydration mismatches
+
+  **Prebuild changes (`@stackwright/build-scripts`):**
+  - Generate search index JSON during prebuild containing all page content
+  - Index includes page slugs, headings, and text content
+  - Index placed in public folder for client-side fetching
+
+  **Type updates (`@stackwright/types`):**
+  - Add `searchIndexPath` option to SiteConfig
+
+  **E2E tests (`@stackwright/e2e`):**
+  - Add accessibility and interaction tests for search functionality
+
+- 8f34fd6: Add map adapter system with MapLibre GL free tier - Phases 1 & 2 of geospatial visualization support
+
+  **Phase 1: Map Adapter Interface and Registry**
+  - Create MapAdapter interface following Image/Link/Router adapter pattern
+  - Add map registry with setMapAdapter/getMapAdapter functions
+  - Export map adapter types and utilities from @stackwright/core
+
+  **Phase 2: MapLibre GL Implementation**
+  - Create @stackwright/maplibre package with MapLibreAdapter
+  - Support map initialization with center, zoom, pitch, bearing controls
+  - Handle marker placement with simple format and GeoJSON FeatureCollections
+  - Add camera animation for smooth transitions
+  - Use MapLibre GL JS v4.7.1 for OSM-based vector tile rendering
+
+  **Content Type Support**
+  - Add MapContent schema with Zod validation
+  - Support declarative map configuration through YAML content files
+  - Generate JSON schema for MCP tool introspection
+
+  **Examples**
+  - Add comprehensive /maps showcase page to hellostackwright example
+  - Demonstrate simple maps, markers, custom styles, animations, 3D terrain, and GeoJSON layers
+
+  This establishes the foundation for pluggable map providers (MapLibre, Cesium, etc.) without coupling the core framework to any specific implementation. Phase 3 (Cesium ion integration) awaits OpenAPI work in pro repo.
+
+- 8f34fd6: feat(core): add page-level `navSidebar` override in `content.yml`
+
+  Pages can now override the site-wide sidebar defined in `stackwright.yml` using the `navSidebar` field. This enables:
+  - Dashboard pages to hide the sidebar (`navSidebar: null`) for full-width content
+  - Documentation chapters to show page-specific navigation in the sidebar
+  - Page Otter to customize sidebar behavior without editing the theme
+
+  The resolution order is: page `navSidebar` > site `sidebar` (from Theme Otter) > no sidebar.
+
+  Docs and AGENTS.md updated with examples and Otter responsibility notes.
+
+- 8f34fd6: feat: add resolveBackground utility for dark-mode-aware section backgrounds
+
+  All content components now resolve background values through resolveBackground().
+  Theme color keys (e.g., 'surface', 'primary') are mapped to the current theme.colors,
+  which is dark-mode-aware. Literal hex values pass through unchanged (backward compatible).
+
+- 8f34fd6: Add text_block content type - a simpler alternative to main for heading + text + buttons without media-related fields. Perfect for text-heavy sections, announcements, and callouts within grid layouts.
+- 8f34fd6: Add video media type support to the Stackwright framework.
+  - New `video` discriminator in the `MediaItem` union (`@stackwright/types`)
+  - `VideoContent` type with `src`, `autoplay`, `loop`, `muted`, `controls`, and `poster` fields
+  - `Media` component renders `<video>` elements for video media items (`@stackwright/core`)
+  - Prebuild pipeline recognizes and copies video files alongside images (`@stackwright/build-scripts`)
+
+### Patch Changes
+
+- 46df0c5: chore: consolidate dependabot dependency updates
+  - `lucide-react`: `^0.525.0` → `^1.8.0` (icons, ui-shadcn) — includes icon rename fixes for v1 API (`CheckCircle` → `CircleCheck`, `Code2`/`Layout` backward-compat aliases)
+  - `@swc/core`: `^1.15.18` → `^1.15.26` (core, nextjs)
+  - `jsdom`: `^28.1.0` → `^29.0.2` (maplibre)
+  - `react-dom`: `19.2.4` → `19.2.5` (pnpm.overrides)
+  - `prettier`: `^3.8.1` → `^3.8.3` (devDependencies)
+
+- 8f34fd6: docs: add architecture principles, ecosystem analogy, and CI philosophy
+
+  Added to PHILOSOPHY.md:
+  - "The Ecosystem Analogy" (Spring comparison table)
+  - 4 constraints that must never be violated
+
+  Added to CLAUDE.md:
+  - "No Hard Dependencies" principle with type-only imports, interface contracts, and registration patterns
+
+  Added to CONTRIBUTING.md:
+  - "CI Hardening Philosophy" section explaining the "bugs drive CI" approach
+
+- 8f34fd6: fix: dark mode toggle now updates in real-time (#252) and background images no longer override dark background color (#251)
+- 8f34fd6: Fixed dark mode text colors and background handling for improved demo/hackathon quality:
+  - **#252**: Verified ThemeProvider toggle updates correctly (no code changes needed)
+  - **#251**: Added dark overlay for background images to ensure text contrast
+  - **Alert component**: Added dark-mode-aware accent colors
+  - **CodeBlock component**: Added dark mode syntax highlighting palette
+  - **useSafeTheme hook**: Added `useSafeColorMode` hook for safe color mode access
+
+- 115c658: Fix missing Lucide icons (Code2, Layout) and improve CodeBlock rendering for ASCII art diagrams
+
+  ### Icon Registry Fixes
+  - **Code2 icon**: Added direct import to lucideAllIcons.ts (was missing from barrel export)
+  - **Layout icon**: Added direct import to lucideAllIcons.ts (was missing from barrel export)
+
+  ### CodeBlock Improvements
+  - Better monospace font stack for proper ASCII art alignment
+  - Added font-variant-ligatures: none to prevent character transformation issues
+
+  ### Architecture Page Fixes
+  - Replaced problematic YAML/JSON code blocks with tabbed_content component
+  - Fixed overflow issues caused by ASCII art alignment problems
+
+- 199ca1c: Fix icon color prop to resolve theme tokens like 'accent' to CSS variables, enabling dark mode support
+- 46df0c5: fix(core): prevent duplicate TopAppBar rendering that caused a double dark-mode toggle icon
+- Updated dependencies [f365749]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [199ca1c]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+  - @stackwright/types@1.2.0
+  - @stackwright/themes@0.5.2
+
 ## 0.7.1-alpha.1
 
 ### Patch Changes

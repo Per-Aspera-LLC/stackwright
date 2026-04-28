@@ -1,5 +1,50 @@
 # launch-stackwright
 
+## 0.2.0
+
+### Minor Changes
+
+- 8f34fd6: Add new `launch-stackwright` package — an npx-compatible scaffolding tool for creating new Stackwright projects. Automatically sets up a fully configured Next.js + Stackwright project with the otter raft (AI agents) ready to build your site through conversation.
+
+  Includes:
+  - Project scaffolding with Next.js and Stackwright dependencies
+  - Pre-configured otter agent templates (foreman, page, theme, and brand)
+  - MCP server auto-configuration for Code Puppy
+  - Full AI-assisted development workflow out of the box
+
+  Usage: `npx launch-stackwright my-site`
+
+- 8f34fd6: Add scaffold hooks system for extensible post-scaffold processing. Pro packages can now register hooks at lifecycle points (preScaffold, preInstall, postInstall, postScaffold) to inject dependencies, configure MCP servers, and add custom setup.
+
+### Patch Changes
+
+- 8f34fd6: feat(otters): install @stackwright/otters as npm package instead of copying files
+
+  Following the "Otters as Packages" pattern established by @stackwright-pro/otters:
+  - Created new @stackwright/otters package with all 4 otter JSON files
+  - Updated CLI to add @stackwright/otters as dependency in generated package.json
+  - Updated launch-stackwright to generate .code-puppy.json pointing to node_modules
+  - Removed file copying logic from launch-stackwright
+
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [46df0c5]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+  - @stackwright/cli@0.8.0
+  - @stackwright/otters@0.2.0
+  - @stackwright/scaffold-core@0.3.0
+
 ## 0.2.0-alpha.10
 
 ### Patch Changes
