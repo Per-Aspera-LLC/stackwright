@@ -1,5 +1,29 @@
 # @stackwright/otters
 
+## 0.2.0
+
+### Minor Changes
+
+- 8f34fd6: feat(otters): install @stackwright/otters as npm package instead of copying files
+
+  Following the "Otters as Packages" pattern established by @stackwright-pro/otters:
+  - Created new @stackwright/otters package with all 4 otter JSON files
+  - Updated CLI to add @stackwright/otters as dependency in generated package.json
+  - Updated launch-stackwright to generate .code-puppy.json pointing to node_modules
+  - Removed file copying logic from launch-stackwright
+
+- 8f34fd6: Add postinstall script to install otters to ~/.code_puppy/agents/
+  - Created scripts/install-agents.js that copies agent JSON files to ~/.code_puppy/agents/
+  - Updated package.json with postinstall hook
+  - Updated README with installation instructions
+  - Fixed .code-puppy.json config (removed agents_path)
+  - Bumped version to 0.2.0-alpha.1
+
+### Patch Changes
+
+- 8f34fd6: fix(otters): unpin AI model versions to allow automatic model updates
+- 8f34fd6: Relocate otters to packages/otters/src/ directory for proper monorepo structure
+
 ## 0.2.0-alpha.4
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/build-scripts",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "Build-time scripts for Stackwright projects (prebuild image processing, YAML compilation)",
     "license": "MIT",
     "repository": {

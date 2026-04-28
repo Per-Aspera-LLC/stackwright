@@ -1,5 +1,119 @@
 # @stackwright/cli
 
+## 0.8.0
+
+### Minor Changes
+
+- 8f34fd6: Add `stackwright_compose_site` MCP tool and `stackwright compose` CLI command for atomic whole-site generation with cross-page semantic validation.
+
+  New capabilities:
+  - Validate and write site config + all pages in a single atomic operation
+  - Cross-page semantic checks: nav linkage, orphan pages, button hrefs, collection sources, duplicate titles, theme colors
+  - Errors block all writes; warnings are reported but don't block
+
+- 8f34fd6: Declarative collection entry pages with YAML-based layout templates.
+
+  Collections with `entryPage` config in `_collection.yaml` now automatically generate full page JSON during prebuild — zero custom React code required.
+
+  **Template system (`@stackwright/build-scripts`, `@stackwright/types`):**
+  - Define entry page layouts using the same `content_items` syntax as regular pages, with `{{fieldName}}` placeholders resolved against each entry's data
+  - Single `{{field}}` references preserve the raw value type (arrays, objects pass through)
+  - Inline interpolation: `"{{date}} · {{author}} · {{tags}}"` with auto array-to-comma conversion
+  - Smart null handling: missing fields cause their containing block to be omitted, so a single template works for entries with and without optional fields (e.g., cover images)
+  - Default template used when `template` key is absent (backward-compatible with `body`/`meta`/`tags` config)
+  - Path traversal protection on `basePath` and slug values
+
+  **CLI (`@stackwright/cli`):**
+  - New `stackwright collection list` command shows all collections with entry counts
+  - New `stackwright collection add <name>` command with `--entry-page`, `--base-path`, `--sort` flags
+  - Scaffold template updated: `[slug].tsx` → `[...slug].tsx` catch-all route supporting nested paths
+
+  **MCP (`@stackwright/mcp`):**
+  - New `stackwright_list_collections` MCP tool
+  - New `stackwright_create_collection` MCP tool with full parameter validation
+
+- 8f34fd6: feat: Add SBOM generation for supply chain transparency
+
+  Every Stackwright build now generates a Software Bill of Materials (SBOM) with:
+  - SPDX 2.3 format (US Government compliance)
+  - CycloneDX 1.5 format (OWASP tooling compatibility)
+  - Stackwright build manifest (internal format)
+
+  New CLI commands:
+  - `stackwright sbom generate` - Regenerate SBOM
+  - `stackwright sbom validate` - Validate SBOM schemas
+  - `stackwright sbom diff` - Compare SBOMs between builds
+
+  Use `--no-sbom` flag to skip generation if needed.
+
+- 8f34fd6: Add scaffold hooks system for extensible post-scaffold processing. Pro packages can now register hooks at lifecycle points (preScaffold, preInstall, postInstall, postScaffold) to inject dependencies, configure MCP servers, and add custom setup.
+- 8f34fd6: Add visual rendering tools to the MCP server — `stackwright_render_page`, `stackwright_render_diff`, `stackwright_render_yaml`, and `stackwright_check_dev_server`. These give AI agents a visual feedback loop: render any page to a screenshot, preview raw YAML before committing, capture before/after comparisons, and verify brand consistency.
+
+  Add `stackwright preview` CLI command for rendering pages to screenshot files. Requires Playwright (optional peer dependency).
+
+  Uses Playwright with browser instance pooling for sub-second re-renders after cold start.
+
+### Patch Changes
+
+- 46df0c5: feat(cli): add --content flag to `page add` for inline YAML (#188)
+
+  Agents can now create a page with full content in a single command instead of a two-step add + write sequence. Content is validated before writing; invalid YAML is rejected with field-level errors.
+
+- 46df0c5: fix(cli): --install flag now runs pnpm install before postInstall hooks
+- 8f34fd6: Fix scaffold smoke-test TypeError by excluding \_font-links.json from static page generation
+- 46df0c5: fix(cli): remove duplicate preInstall hook call from processTemplate
+
+  `processTemplate()` was calling `runScaffoldHooks('preInstall', ...)` internally,
+  then `scaffold.ts` called it again after `processTemplate` returned — running every
+  preInstall handler twice. Worse, the second call passed the original empty `{}` object
+  (not the built package.json), so hooks registered via `scaffold.ts` could never affect
+  the written file.
+
+  Fix: lifecycle orchestration now lives entirely in `scaffold.ts`. `buildPackageJson` is
+  exported so `scaffold.ts` can build the default package.json before running preInstall
+  hooks, then passes the already-hooks-modified object into `processTemplate` for writing.
+  `processTemplate` no longer calls hooks.
+
+  Fixes #351.
+
+- 8f34fd6: feat(otters): install @stackwright/otters as npm package instead of copying files
+
+  Following the "Otters as Packages" pattern established by @stackwright-pro/otters:
+  - Created new @stackwright/otters package with all 4 otter JSON files
+  - Updated CLI to add @stackwright/otters as dependency in generated package.json
+  - Updated launch-stackwright to generate .code-puppy.json pointing to node_modules
+  - Removed file copying logic from launch-stackwright
+
+- 8f34fd6: fix: scaffold uses bundled templates by default and includes \_document.tsx for dark mode support
+  - Flip template fetch to bundled-by-default (eliminates network dependency and 10-second timeout risk)
+  - Add `--online` flag (replaces `--offline`) for explicit GitHub template fetch
+  - Add `_document.tsx` to scaffold template for ColorModeScript / dark mode persistence
+  - Make `check-template-sync` CI job non-blocking (informational warning instead of hard failure)
+
+- 8f34fd6: fix: scaffold now pins @stackwright/\* deps to stable caret ranges instead of 'latest'
+- Updated dependencies [f365749]
+- Updated dependencies [46df0c5]
+- Updated dependencies [46df0c5]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [199ca1c]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [46df0c5]
+- Updated dependencies [db1ab10]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+- Updated dependencies [8f34fd6]
+  - @stackwright/types@1.2.0
+  - @stackwright/build-scripts@0.5.0
+  - @stackwright/themes@0.5.2
+  - @stackwright/sbom-generator@0.2.0
+  - @stackwright/scaffold-core@0.3.0
+
 ## 0.7.0
 
 ### Minor Changes
