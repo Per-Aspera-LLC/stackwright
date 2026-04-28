@@ -1,5 +1,30 @@
 # @stackwright/build-scripts
 
+## 0.6.0-alpha.0
+
+### Minor Changes
+
+- bdf7fe0: Add content format normalization (mapping-key YAML format → type-field format) to prebuild pipeline.
+  Plugin `contentItemSchemas` and `knownContentTypeKeys` are now applied during page validation.
+
+### Patch Changes
+
+- 68bdad5: Add configSchema field to PrebuildPlugin for plugin config validation
+- 83ba70c: fix(executePluginHook): preserve `this` binding when calling plugin lifecycle hooks
+
+  `executePluginHook` was extracting hook methods as unbound references
+  (`const hookFn = plugin[hook]`) and calling them as plain functions
+  (`hookFn(context)`). In strict-mode ES classes, this strips `this`,
+  causing any plugin that calls a private/instance method from `beforeBuild`
+  or `afterBuild` to throw `Cannot read properties of undefined`.
+
+  Fix: use `hookFn.call(plugin, context)` so the plugin instance is always
+  the receiver.
+
+- Updated dependencies [bdf7fe0]
+- Updated dependencies [68bdad5]
+  - @stackwright/types@1.3.0-alpha.0
+
 ## 0.5.0
 
 ### Minor Changes
