@@ -1,5 +1,13 @@
 # stackwright-docs
 
+## 0.1.3-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [fb3393e]
+  - @stackwright/core@0.8.1-alpha.2
+  - @stackwright/nextjs@0.5.0-alpha.2
+
 ## 0.1.3-alpha.1
 
 ### Patch Changes

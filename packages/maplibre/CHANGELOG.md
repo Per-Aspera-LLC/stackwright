@@ -1,5 +1,12 @@
 # @stackwright/maplibre
 
+## 2.0.1-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [fb3393e]
+  - @stackwright/core@0.8.1-alpha.2
+
 ## 2.0.1-alpha.1
 
 ### Patch Changes
