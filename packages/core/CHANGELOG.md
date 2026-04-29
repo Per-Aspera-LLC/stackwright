@@ -1,5 +1,53 @@
 # @stackwright/core
 
+## 0.8.1-alpha.2
+
+### Patch Changes
+
+- fb3393e: fix(core): bundle prismjs to eliminate bare ESM sub-path imports
+
+  `@stackwright/core`'s published ESM bundle contained bare imports such as
+  `import 'prismjs/components/prism-javascript'` (no `.js` extension). Because
+  `prismjs` is a legacy CJS package with no `exports` map, Node.js ESM strict
+  resolver could not find these paths and threw `ERR_MODULE_NOT_FOUND`.
+
+  Added `noExternal: ['prismjs']` to `tsup.config.ts` so that esbuild bundles
+  prismjs inline at build time. All language grammar paths are resolved to real
+  `.js` files before the bundle is published — no bare specifiers escape into
+  the output.
+
+## 0.8.1-alpha.1
+
+### Patch Changes
+
+- c036f5b: chore: consolidate dependabot dependency updates
+  - `lucide-react`: `^0.525.0` → `^1.8.0` (icons, ui-shadcn) — includes icon rename fixes for v1 API (`CheckCircle` → `CircleCheck`, `Code2`/`Layout` backward-compat aliases)
+  - `@swc/core`: `^1.15.18` → `^1.15.26` (core, nextjs)
+  - `jsdom`: `^28.1.0` → `^29.0.2` (maplibre)
+  - `react-dom`: `19.2.4` → `19.2.5` (pnpm.overrides)
+  - `prettier`: `^3.8.1` → `^3.8.3` (devDependencies)
+
+- 5ad5035: fix(core): prevent duplicate TopAppBar rendering that caused a double dark-mode toggle icon
+- Updated dependencies [bdf7fe0]
+- Updated dependencies [68bdad5]
+  - @stackwright/types@1.3.0-alpha.1
+
+## 0.8.1-alpha.0
+
+### Patch Changes
+
+- c036f5b: chore: consolidate dependabot dependency updates
+  - `lucide-react`: `^0.525.0` → `^1.8.0` (icons, ui-shadcn) — includes icon rename fixes for v1 API (`CheckCircle` → `CircleCheck`, `Code2`/`Layout` backward-compat aliases)
+  - `@swc/core`: `^1.15.18` → `^1.15.26` (core, nextjs)
+  - `jsdom`: `^28.1.0` → `^29.0.2` (maplibre)
+  - `react-dom`: `19.2.4` → `19.2.5` (pnpm.overrides)
+  - `prettier`: `^3.8.1` → `^3.8.3` (devDependencies)
+
+- 5ad5035: fix(core): prevent duplicate TopAppBar rendering that caused a double dark-mode toggle icon
+- Updated dependencies [bdf7fe0]
+- Updated dependencies [68bdad5]
+  - @stackwright/types@1.3.0-alpha.0
+
 ## 0.8.0
 
 ### Minor Changes

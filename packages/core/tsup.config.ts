@@ -9,6 +9,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   external: ['react', 'react-dom'],
+  noExternal: ['prismjs'],
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.js' : '.mjs',
