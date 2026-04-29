@@ -1,5 +1,17 @@
 # @stackwright/types
 
+## 1.3.0
+
+### Minor Changes
+
+- 265bf87: Add `contentItemSchemas` and `knownContentTypeKeys` to `PrebuildPlugin` interface.
+  Add `buildExtendedPageContentSchema()` function for merging OSS and plugin content schemas.
+  Add `ValidatePageContentOptions` to `validatePageContent()` for plugin-aware validation.
+
+### Patch Changes
+
+- 265bf87: Add configSchema field to PrebuildPlugin for plugin config validation
+
 ## 1.3.0-alpha.1
 
 ### Minor Changes
