@@ -38,7 +38,6 @@ jobs:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
-          provenance: true
 
       - run: pnpm install --frozen-lockfile
       - name: Ensure Changeset prerelease mode is entered
@@ -71,13 +70,20 @@ jobs:
           git push origin dev
 
       - name: Publish prereleases with tag 'alpha'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           for dir in packages/*/; do
             if [ -d "$dir/dist" ]; then
               cd "$dir"
               PKG_NAME=$(node -p "require('./package.json').name")
-              echo "Publishing $PKG_NAME..."
-              npm publish --provenance --access public --tag alpha || echo "Skipped $PKG_NAME (may already exist)"
+              PKG_VERSION=$(node -p "require('./package.json').version")
+              echo "Publishing $PKG_NAME@$PKG_VERSION (alpha)..."
+              if npm view "${PKG_NAME}@${PKG_VERSION}" > /dev/null 2>&1; then
+                echo "↳ Already published — skipping"
+              else
+                npm publish --access public --tag alpha
+              fi
               cd - > /dev/null
             fi
           done
