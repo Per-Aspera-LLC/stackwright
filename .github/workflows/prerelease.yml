@@ -14,7 +14,11 @@ permissions:
 jobs:
   prerelease:
     runs-on: ubuntu-latest
-    if: "${{ !startsWith(github.event.head_commit.message, 'chore: bump prerelease versions [skip ci]') }}"
+    if: >-
+      ${{
+        github.event.pull_request.merged == true &&
+        !startsWith(github.event.pull_request.title, 'chore: bump prerelease versions')
+      }}
     steps:
       - name: Generate PerAsperaCI token
         id: app-token
