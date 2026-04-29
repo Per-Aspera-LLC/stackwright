@@ -21,5 +21,16 @@
     "@stackwright/types": "1.2.0",
     "@stackwright/ui-shadcn": "0.1.1"
   },
-  "changesets": []
+  "changesets": [
+    "add-plugin-content-schema-extension",
+    "add-pro-content-normalization",
+    "dependabot-batch-updates",
+    "feat-188-page-add-content-flag",
+    "feat-243-security-headers",
+    "fix-352-install-flag-actually-installs",
+    "fix-plugin-config-schema-242",
+    "fix-plugin-this-binding",
+    "fix-preinstall-double-run",
+    "grumpy-paws-create"
+  ]
 }
