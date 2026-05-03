@@ -1,5 +1,12 @@
 # @stackwright/core
 
+## 0.8.2-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [4f71be4]
+  - @stackwright/types@1.4.0-alpha.0
+
 ## 0.8.1
 
 ### Patch Changes

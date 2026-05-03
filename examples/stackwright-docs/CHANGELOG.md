@@ -1,5 +1,12 @@
 # stackwright-docs
 
+## 0.1.4-alpha.0
+
+### Patch Changes
+
+- @stackwright/core@0.8.2-alpha.0
+- @stackwright/nextjs@0.5.1-alpha.0
+
 ## 0.1.3
 
 ### Patch Changes

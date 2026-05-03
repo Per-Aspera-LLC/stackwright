@@ -32,6 +32,7 @@
     "fix-plugin-this-binding",
     "fix-preinstall-double-run",
     "fix-prismjs-esm-bundle",
-    "grumpy-paws-create"
+    "grumpy-paws-create",
+    "prebuild-plugin-warnings"
   ]
 }
