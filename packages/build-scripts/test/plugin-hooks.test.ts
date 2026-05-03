@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
@@ -99,5 +100,134 @@ describe('plugin hook execution', () => {
     await expect(runPrebuild({ projectRoot, plugins: [plugin] })).rejects.toThrow(
       'Plugin "failing-plugin" failed during beforeBuild: something went wrong internally'
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Helpers for content-type tests
+// ---------------------------------------------------------------------------
+
+function writePageContent(projectRoot: string, slug: string | null, yaml: string): void {
+  const dir = slug ? path.join(projectRoot, 'pages', slug) : path.join(projectRoot, 'pages');
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'content.yml'), yaml);
+}
+
+// ---------------------------------------------------------------------------
+// Content type warnings and unknownContentTypes option
+// ---------------------------------------------------------------------------
+
+describe('content type warnings and unknownContentTypes option', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('Gap 1: plugin-declared types trigger a warning', async () => {
+    const projectRoot = makeTempProject();
+    const plugin = {
+      name: 'pro-content',
+      knownContentTypeKeys: ['custom_widget'] as const,
+      contentItemSchemas: [z.object({ type: z.literal('custom_widget') }).passthrough()],
+    };
+    writePageContent(
+      projectRoot,
+      null,
+      `content:
+  content_items:
+    - type: custom_widget
+      label: test-widget
+`
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await runPrebuild({ projectRoot, plugins: [plugin] });
+
+    const warnCalls = warnSpy.mock.calls.map((args) => String(args[0]));
+    expect(warnCalls.some((msg) => msg.includes('custom_widget'))).toBe(true);
+    expect(warnCalls.some((msg) => msg.includes('registerContentType'))).toBe(true);
+  });
+
+  it('Gap 1: core types do NOT trigger the plugin warning', async () => {
+    const projectRoot = makeTempProject();
+    const plugin = {
+      name: 'pro-content',
+      knownContentTypeKeys: ['custom_widget'] as const,
+      contentItemSchemas: [z.object({ type: z.literal('custom_widget') }).passthrough()],
+    };
+    writePageContent(
+      projectRoot,
+      null,
+      `content:
+  content_items:
+    - type: text_block
+      label: test-block
+      textBlocks: []
+`
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await runPrebuild({ projectRoot, plugins: [plugin] });
+
+    const warnCalls = warnSpy.mock.calls.map((args) => String(args[0]));
+    expect(warnCalls.some((msg) => msg.includes('registerContentType'))).toBe(false);
+  });
+
+  it('Gap 2: unknownContentTypes "warn" logs but does not throw', async () => {
+    const projectRoot = makeTempProject();
+    writePageContent(
+      projectRoot,
+      null,
+      `content:
+  content_items:
+    - type: totally_unknown_xyz
+      label: bad-widget
+`
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await expect(runPrebuild({ projectRoot, unknownContentTypes: 'warn' })).resolves.not.toThrow();
+
+    const warnCalls = warnSpy.mock.calls.map((args) => String(args[0]));
+    expect(warnCalls.some((msg) => msg.includes('totally_unknown_xyz'))).toBe(true);
+  });
+
+  it('Gap 2: unknownContentTypes "ignore" does not throw and does not warn', async () => {
+    const projectRoot = makeTempProject();
+    writePageContent(
+      projectRoot,
+      null,
+      `content:
+  content_items:
+    - type: totally_unknown_xyz
+      label: bad-widget
+`
+    );
+
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await expect(
+      runPrebuild({ projectRoot, unknownContentTypes: 'ignore' })
+    ).resolves.not.toThrow();
+
+    const warnCalls = warnSpy.mock.calls.map((args) => String(args[0]));
+    expect(warnCalls.some((msg) => msg.includes('totally_unknown_xyz'))).toBe(false);
+  });
+
+  it('Gap 2: default behavior ("error") still throws', async () => {
+    const projectRoot = makeTempProject();
+    writePageContent(
+      projectRoot,
+      null,
+      `content:
+  content_items:
+    - type: totally_unknown_xyz
+      label: bad-widget
+`
+    );
+
+    await expect(runPrebuild({ projectRoot })).rejects.toThrow('totally_unknown_xyz');
   });
 });
