@@ -448,6 +448,22 @@ function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
 // -- Content type validation ------------------------------------------------
 // NOTE: Unknown content type checking is now handled by validatePageContent()
 
+/**
+ * Recursively walk any JS value and collect all string values of fields named `type`.
+ * Used to identify which content types a page actually uses (for plugin-type warnings).
+ */
+function collectContentTypes(obj: unknown, result: Set<string> = new Set()): Set<string> {
+  if (!obj || typeof obj !== 'object') return result;
+  if (Array.isArray(obj)) {
+    for (const item of obj) collectContentTypes(item, result);
+    return result;
+  }
+  const record = obj as Record<string, unknown>;
+  if (typeof record.type === 'string') result.add(record.type);
+  for (const value of Object.values(record)) collectContentTypes(value, result);
+  return result;
+}
+
 // -- Collections ------------------------------------------------------------
 
 /** Read and validate a _collection.yaml config, or return defaults. */
@@ -997,6 +1013,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   const projectRoot =
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
   const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+  const unknownContentTypes =
+    typeof options === 'object' && options !== null
+      ? (options.unknownContentTypes ?? 'error')
+      : 'error';
 
   // Collect extra content schemas and known type keys from all plugins
   const extraContentSchemas = plugins.flatMap((p) => p.contentItemSchemas ?? []);
@@ -1120,7 +1140,27 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
             `  ${e.fieldPath}: ${e.hint}${e.suggestion ? ` (did you mean "${e.suggestion}"?)` : ''}`
         ),
       ].join('\n');
-      throw new Error(output);
+      if (unknownContentTypes === 'error') {
+        throw new Error(output);
+      } else if (unknownContentTypes === 'warn') {
+        console.warn(`  ⚠  ${output}`);
+      }
+      // 'ignore': silently continue
+    }
+
+    // Gap 1: warn when plugin-declared types are used in this page
+    if (pageValidation.valid && pluginKnownTypes.length > 0) {
+      const usedTypes = collectContentTypes(normalizedContent);
+      const pluginTypesUsed = [...usedTypes].filter((t) => pluginKnownTypes.includes(t));
+      if (pluginTypesUsed.length > 0) {
+        const declaringPlugins = plugins
+          .filter((p) => (p.knownContentTypeKeys ?? []).some((k) => pluginTypesUsed.includes(k)))
+          .map((p) => p.name);
+        console.warn(
+          `  ⚠  ${label}: uses ${pluginTypesUsed.length} plugin-declared type(s) [${declaringPlugins.join(', ')}]: ${pluginTypesUsed.join(', ')}\n` +
+            `     Ensure registerContentType() is called in your app for each of these types.`
+        );
+      }
     }
 
     const slugDir = slug ?? '_root';

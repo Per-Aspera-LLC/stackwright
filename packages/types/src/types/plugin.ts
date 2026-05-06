@@ -130,4 +130,17 @@ export interface PrebuildOptions {
 
   /** Plugins to run during prebuild */
   plugins?: PrebuildPlugin[];
+
+  /**
+   * How to handle unknown or invalid content type errors during page validation.
+   *
+   * - `'error'` (default): throw and abort the build. Correct for CI/production.
+   * - `'warn'`: log a warning and continue. Useful during development or for
+   *   demo projects where content types may be ahead of their implementations.
+   * - `'ignore'`: silently skip content validation errors and continue.
+   *
+   * Note: this option does not affect site config (stackwright.yml) validation,
+   * which always fails hard on invalid config.
+   */
+  unknownContentTypes?: 'error' | 'warn' | 'ignore';
 }
