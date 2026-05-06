@@ -109,14 +109,22 @@ jobs:
       - name: Back-merge into dev
         if: steps.check.outputs.skip != 'true'
         run: |
+          git fetch origin dev
           git checkout dev
           git pull origin dev
-          # -X theirs: main's graduated versions win over dev's stale alphas
-          git merge main -X theirs --no-edit -m "chore: back-merge main after release [skip ci]"
-          # Re-enter prerelease mode so the next dev push produces alphas
+          # Rebase dev's unique commits onto main for clean, linear history.
+          # Using rebase (instead of merge) prevents phantom commits from
+          # accumulating in dev's ancestry — which previously caused dev→main
+          # PRs to show dozens of already-released commits.
+          #
+          # -X ours: when conflicts arise (e.g. version numbers in package.json),
+          # prefer main's graduated stable versions over dev's stale alpha versions.
+          git rebase origin/main -X ours
+          # Re-enter prerelease mode so the next dev push produces alphas.
           if [ ! -f ".changeset/pre.json" ]; then
             pnpm changeset pre enter alpha
             git add .changeset/pre.json
             git commit -m "chore: re-enter prerelease mode after back-merge [skip ci]"
           fi
-          git push origin dev
+          # Force push is required after a rebase to rewrite dev's remote history.
+          git push origin dev --force-with-lease
