@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/maplibre",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "MapLibre GL adapter for Stackwright maps (free tier, no API keys required)",
   "license": "MIT",
   "repository": {
