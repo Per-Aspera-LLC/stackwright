@@ -10,6 +10,7 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
+  noExternal: [/^@stackwright\//],
   sourcemap: false,
   clean: true,
   outExtension({ format }) {
