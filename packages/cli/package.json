@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/cli",
-  "version": "0.8.3",
+  "version": "0.8.4-alpha.0",
   "description": "CLI for Stackwright framework",
   "license": "MIT",
   "repository": {

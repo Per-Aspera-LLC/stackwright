@@ -1,5 +1,32 @@
 # @stackwright/cli
 
+## 0.8.4-alpha.0
+
+### Patch Changes
+
+- f756476: Bundle internal `@stackwright/*` workspace dependencies into the CLI binary via tsup `noExternal`. This fixes `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing `@stackwright/cli` via `pnpm dlx` outside a monorepo. Also adds a `prepublishOnly` guard to catch any future `workspace:*` leakage before publish.
+- 5cfa88e: fix(cli): update stale scaffold template package versions
+
+  `buildPackageJson()` in `template-processor.ts` was pinning scaffolded
+  projects to package versions that were 4+ releases behind:
+  - `@stackwright/core`: `^0.7.0` → `^0.8.0`
+  - `@stackwright/nextjs`: `^0.3.1` → `^0.5.0`
+  - `@stackwright/icons`: `^0.3.0` → `^0.5.0`
+  - `@stackwright/build-scripts`: `^0.4.0` → `^0.7.0` ← **critical**
+  - `@stackwright/ui-shadcn`: `^0.1.0` → `^0.1.2`
+  - `@stackwright/otters`: `^0.2.0-alpha.0` → `^0.2.0`
+
+  The `build-scripts` version was the critical failure: the plugin API
+  (`PrebuildPlugin`, `beforeBuild`, `contentItemSchemas`) was introduced in
+  0.5.0, but scaffolded projects installed 0.4.0 — a version that has no
+  plugin system at all. This caused Pro plugin hooks to silently fail or
+  crash in freshly scaffolded projects.
+
+  Also adds `scripts/sync-versions.mjs` — a Node ESM utility that reads
+  workspace `package.json` versions and rewrites the VERSIONS constant
+  automatically. Run `node scripts/sync-versions.mjs` before cutting releases
+  to prevent version drift.
+
 ## 0.8.3
 
 ### Patch Changes
