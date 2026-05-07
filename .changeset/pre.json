@@ -21,5 +21,10 @@
     "@stackwright/types": "1.3.0",
     "@stackwright/ui-shadcn": "0.1.2"
   },
-  "changesets": []
+  "changesets": [
+    "fix-cli-bundle-workspace-deps",
+    "fix-core-dts-zod-compat",
+    "fix-scaffold-template-versions",
+    "fix-types-prebuild-plugin-zod-compat"
+  ]
 }
