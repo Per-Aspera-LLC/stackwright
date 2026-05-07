@@ -1,4 +1,4 @@
-import { SiteConfig } from '../../../types/src/types/siteConfig';
+import type { SiteConfig } from '@stackwright/types';
 
 /**
  * Default site configuration used across Stackwright

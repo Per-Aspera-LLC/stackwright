@@ -1,10 +1,10 @@
 import { ComponentType } from 'react';
-import { z } from 'zod';
+import type { ZodSchema } from './zod-compat';
 import { registerComponent, deregisterComponent } from './componentRegistry';
 
 export interface ContentTypeEntry {
   key: string;
-  schema: z.ZodTypeAny;
+  schema: ZodSchema;
   component: ComponentType<any>;
 }
 
@@ -30,7 +30,7 @@ const customContentTypes = new Map<string, ContentTypeEntry>();
  */
 export function registerContentType(
   key: string,
-  schema: z.ZodTypeAny,
+  schema: ZodSchema,
   component: ComponentType<any>
 ): void {
   customContentTypes.set(key, { key, schema, component });
@@ -50,7 +50,7 @@ export function getRegisteredContentTypes(): ContentTypeEntry[] {
  * Return the Zod schema for a specific custom content type key, or undefined
  * if the key is not a registered custom type.
  */
-export function getContentTypeSchema(key: string): z.ZodTypeAny | undefined {
+export function getContentTypeSchema(key: string): ZodSchema | undefined {
   return customContentTypes.get(key)?.schema;
 }
 
