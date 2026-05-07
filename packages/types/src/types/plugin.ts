@@ -28,6 +28,25 @@ export interface ZodLike {
 }
 
 /**
+ * Minimal structural interface used in place of z.ZodTypeAny / z.ZodSchema
+ * in the PrebuildPlugin public API.
+ *
+ * Using a structural interface prevents zod-version-specific internal types
+ * from bleeding into the published .d.ts. Any real Zod schema satisfies this
+ * via duck-typing, so existing implementations are unaffected.
+ */
+interface ZodLike {
+  safeParse(data: unknown):
+    | { success: true }
+    | {
+        success: false;
+        error: {
+          issues: Array<{ path: (string | number)[]; message: string }>;
+        };
+      };
+}
+
+/**
  * Plugin context provided to plugin hooks
  */
 export interface PrebuildPluginContext {
