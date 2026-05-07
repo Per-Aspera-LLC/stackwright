@@ -10,5 +10,7 @@
  * @see https://github.com/Per-Aspera-LLC/stackwright/issues — "fix core d.ts against zod@4"
  */
 export interface ZodSchema {
-  safeParse(data: unknown): { success: boolean; error?: { issues: unknown[] } };
+  safeParse(data: unknown):
+    | { success: true }
+    | { success: false; error: { issues: unknown[] } };
 }
