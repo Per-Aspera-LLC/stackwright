@@ -19,7 +19,14 @@ import { z } from 'zod';
  * via duck-typing, so existing implementations are unaffected.
  */
 interface ZodLike {
-  safeParse(data: unknown): { success: boolean; error?: unknown };
+  safeParse(data: unknown):
+    | { success: true }
+    | {
+        success: false;
+        error: {
+          issues: Array<{ path: (string | number)[]; message: string }>;
+        };
+      };
 }
 
 /**
