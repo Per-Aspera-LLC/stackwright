@@ -35,13 +35,13 @@ export interface ZodLike {
  * from bleeding into the published .d.ts. Any real Zod schema satisfies this
  * via duck-typing, so existing implementations are unaffected.
  */
-interface ZodLike {
+export interface ZodLike {
   safeParse(data: unknown):
     | { success: true }
     | {
         success: false;
         error: {
-          issues: Array<{ path: (string | number)[]; message: string }>;
+          issues: Array<{ path: PropertyKey[]; message: string }>;
         };
       };
 }
