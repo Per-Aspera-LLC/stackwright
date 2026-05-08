@@ -271,9 +271,6 @@ importers:
 
   packages/core:
     dependencies:
-      '@stackwright/collections':
-        specifier: workspace:*
-        version: link:../collections
       '@stackwright/themes':
         specifier: workspace:*
         version: link:../themes
@@ -296,6 +293,9 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
+      '@stackwright/collections':
+        specifier: workspace:*
+        version: link:../collections
       '@swc/core':
         specifier: ^1.15.26
         version: 1.15.26
