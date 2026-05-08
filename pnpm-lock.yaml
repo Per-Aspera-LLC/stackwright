@@ -271,9 +271,6 @@ importers:
 
   packages/core:
     dependencies:
-      '@stackwright/collections':
-        specifier: workspace:*
-        version: link:../collections
       '@stackwright/themes':
         specifier: workspace:*
         version: link:../themes
