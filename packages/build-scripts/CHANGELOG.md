@@ -1,5 +1,13 @@
 # @stackwright/build-scripts
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [8616cd5]
+- Updated dependencies [8616cd5]
+  - @stackwright/types@1.4.1
+
 ## 0.7.1-alpha.1
 
 ### Patch Changes
