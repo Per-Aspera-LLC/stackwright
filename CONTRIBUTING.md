@@ -216,6 +216,8 @@ pnpm test:core
 
 **CI enforces linting and formatting. Run these before every push:**
 
+**If you changed any `package.json`:** run `pnpm install` from the repo root and stage the updated `pnpm-lock.yaml` alongside your changes. CI runs with `--frozen-lockfile` and will fail if the lockfile is out of sync with `package.json`.
+
 ```bash
 pnpm format          # Auto-fix Prettier formatting
 pnpm lint            # Check ESLint (warnings are fine, errors are not)
