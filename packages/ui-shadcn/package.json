@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/ui-shadcn",
-  "version": "0.1.2",
+  "version": "0.1.3-alpha.0",
   "description": "shadcn/ui + Tailwind CSS UI adapter for Stackwright",
   "license": "MIT",
   "repository": {
