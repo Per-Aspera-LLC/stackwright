@@ -23,6 +23,7 @@
 import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
+import { z } from 'zod';
 import {
   siteConfigSchema,
   validatePageContent,
@@ -1019,7 +1020,9 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
       : 'error';
 
   // Collect extra content schemas and known type keys from all plugins
-  const extraContentSchemas = plugins.flatMap((p) => p.contentItemSchemas ?? []);
+  // Cast from ZodLike[] to ZodTypeAny[] — plugins always supply real Zod schemas;
+  // ZodLike is used only in the public API surface to avoid d.ts version coupling.
+  const extraContentSchemas = plugins.flatMap((p) => p.contentItemSchemas ?? []) as z.ZodTypeAny[];
   const pluginKnownTypes = plugins.flatMap((p) => p.knownContentTypeKeys ?? []);
 
   const pagesDir = path.join(projectRoot, 'pages');

@@ -8,7 +8,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', '@stackwright/types', '@stackwright/themes', '@stackwright/collections'],
   noExternal: ['prismjs'],
   outExtension({ format }) {
     return {

@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+import { runPrebuild } from '@stackwright/build-scripts';
 import { outputResult, outputError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
@@ -14,12 +15,6 @@ export interface PrebuildResult {
 }
 
 export function runPrebuildCommand(projectRoot = process.cwd()): PrebuildResult {
-  // Import here to avoid triggering the auto-invoke guard at module load time.
-  // The guard `if (require.main === module)` in prebuild.ts prevents auto-run,
-  // but we keep the import lazy for clarity.
-  const { runPrebuild } = require('@stackwright/build-scripts') as {
-    runPrebuild: (root?: string) => void;
-  };
   runPrebuild(projectRoot);
   return { success: true, processed: -1, images: -1 };
 }

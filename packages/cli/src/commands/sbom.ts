@@ -1,6 +1,12 @@
 import { Command } from 'commander';
 import path from 'path';
 import fs from 'fs';
+import {
+  createSBOM,
+  validateSPDX,
+  validateCycloneDX,
+  validateBuildManifest,
+} from '@stackwright/sbom-generator';
 import { outputResult, outputError } from '../utils/json-output';
 
 /**
@@ -32,8 +38,6 @@ export interface SBOMGenerateResult {
 
 async function generateSBOM(options: SBOMGenerateOptions = {}): Promise<SBOMGenerateResult> {
   const projectRoot = options.projectRoot ?? process.cwd();
-
-  const { createSBOM } = await import('@stackwright/sbom-generator');
 
   const formats = (options.formats as ('spdx' | 'cyclonedx' | 'build-manifest')[]) ?? [
     'spdx',
@@ -78,9 +82,6 @@ export interface SBOMValidateResult {
 }
 
 async function validateSBOM(options: SBOMValidateOptions): Promise<SBOMValidateResult> {
-  const { validateSPDX, validateCycloneDX, validateBuildManifest } =
-    await import('@stackwright/sbom-generator');
-
   const inputPath = path.resolve(options.inputFile);
 
   if (!fs.existsSync(inputPath)) {
@@ -139,9 +140,7 @@ export interface SBOMDiffResult {
   changed: string[];
 }
 
-async function diffSBOM(_options: SBOMDiffOptions): Promise<SBOMDiffResult> {
-  void (await import('@stackwright/sbom-generator'));
-
+async function diffSBOM(options: SBOMDiffOptions): Promise<SBOMDiffResult> {
   const oldPath = path.resolve(options.oldFile);
   const newPath = path.resolve(options.newFile);
 

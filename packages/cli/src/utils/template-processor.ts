@@ -223,13 +223,13 @@ async function collectFiles(dir: string, base: string = ''): Promise<string[]> {
 export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean = false): object {
   const VERSIONS = {
     tailwindcss: '^4.1.11',
-    // Stackwright packages — pinned to current stable for reproducibility
-    swCore: '^0.7.0',
-    swNextjs: '^0.3.1',
-    swIcons: '^0.3.0',
-    swBuildScripts: '^0.4.0',
+    // Stackwright packages — keep in sync with workspace via scripts/sync-versions.mjs
+    swCore: '^0.8.0',
+    swNextjs: '^0.5.0',
+    swIcons: '^0.5.0',
+    swBuildScripts: '^0.7.0',
     swUiShadcn: '^0.1.0',
-    swOtters: '^0.2.0-alpha.0',
+    swOtters: '^0.2.0',
     // Third-party
     jsYaml: '^4.1.1',
     next: '^16.1.6',

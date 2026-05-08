@@ -29,7 +29,7 @@ overrides:
   next: '>=16.1.7'
   hono: '>=4.12.14'
   '@hono/node-server': '>=1.19.10'
-  basic-ftp: '>=5.3.0'
+  basic-ftp: '>=5.3.1'
   express-rate-limit: '>=8.2.2'
   uuid: '>=14.0.0'
 
@@ -176,6 +176,9 @@ importers:
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.1
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/js-yaml':
         specifier: ^4.0
@@ -198,21 +201,6 @@ importers:
       '@inquirer/prompts':
         specifier: ^8.3.0
         version: 8.4.1(@types/node@24.12.2)
-      '@stackwright/build-scripts':
-        specifier: workspace:*
-        version: link:../build-scripts
-      '@stackwright/sbom-generator':
-        specifier: workspace:*
-        version: link:../sbom-generator
-      '@stackwright/scaffold-core':
-        specifier: workspace:*
-        version: link:../scaffold-core
-      '@stackwright/themes':
-        specifier: workspace:*
-        version: link:../themes
-      '@stackwright/types':
-        specifier: workspace:*
-        version: link:../types
       chalk:
         specifier: ^5.6.2
         version: 5.6.2
@@ -232,6 +220,21 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
+      '@stackwright/build-scripts':
+        specifier: workspace:*
+        version: link:../build-scripts
+      '@stackwright/sbom-generator':
+        specifier: workspace:*
+        version: link:../sbom-generator
+      '@stackwright/scaffold-core':
+        specifier: workspace:*
+        version: link:../scaffold-core
+      '@stackwright/themes':
+        specifier: workspace:*
+        version: link:../themes
+      '@stackwright/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/fs-extra':
         specifier: ^11.0
         version: 11.0.4
@@ -3286,8 +3289,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  basic-ftp@5.3.0:
-    resolution: {integrity: sha512-5K9eNNn7ywHPsYnFwjKgYH8Hf8B5emh7JKcPaVjjrMJFQQwGpwowEnZNEtHs7DfR7hCZsmaK3VA4HUK0YarT+w==}
+  basic-ftp@6.0.1:
+    resolution: {integrity: sha512-3ilxa3n4276wGQp/ImRAuz4ALdsj/2Wd3FqoZBZlajDYnByCZ0JMb4+26Rde0wGXIbM0G2HWSfr/Fi8b21KX8g==}
     engines: {node: '>=10.0.0'}
 
   better-path-resolve@1.0.0:
@@ -8504,7 +8507,7 @@ snapshots:
 
   baseline-browser-mapping@2.10.18: {}
 
-  basic-ftp@5.3.0: {}
+  basic-ftp@6.0.1: {}
 
   better-path-resolve@1.0.0:
     dependencies:
@@ -9489,7 +9492,7 @@ snapshots:
 
   get-uri@6.0.5:
     dependencies:
-      basic-ftp: 5.3.0
+      basic-ftp: 6.0.1
       data-uri-to-buffer: 6.0.2
       debug: 4.4.3
     transitivePeerDependencies:

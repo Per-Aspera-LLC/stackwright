@@ -10,6 +10,16 @@ export default defineConfig({
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
+  noExternal: [/^@stackwright\//],
+  // CLI is Node.js-only. Force the `require` condition so CJS-only workspace
+  // packages (e.g. @stackwright/build-scripts, which has no `import` export)
+  // resolve correctly during the ESM format pass as well as the CJS pass.
+  esbuildOptions(options) {
+    if (!options.conditions) options.conditions = [];
+    if (!options.conditions.includes('require')) {
+      options.conditions.unshift('require');
+    }
+  },
   sourcemap: false,
   clean: true,
   outExtension({ format }) {

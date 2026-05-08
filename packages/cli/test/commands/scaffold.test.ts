@@ -207,7 +207,7 @@ describe('scaffold — dependency mode', () => {
     const pkg = readJson(path.join(targetDir, 'package.json'));
     const deps = pkg.dependencies as Record<string, string>;
     expect(deps['@stackwright/core']).not.toBe('workspace:*');
-    expect(deps['@stackwright/core']).toBe('^0.7.0');
+    expect(deps['@stackwright/core']).toBe('^0.8.0');
   });
 });
 

@@ -8,7 +8,24 @@
  * TypeScript types from OpenAPI specs during prebuild.
  */
 
-import { z } from 'zod';
+/**
+ * Minimal structural interface used in place of z.ZodTypeAny / z.ZodSchema
+ * in the PrebuildPlugin public API.
+ *
+ * Using a structural interface prevents zod-version-specific internal types
+ * from bleeding into the published .d.ts. Any real Zod schema satisfies this
+ * via duck-typing, so existing implementations are unaffected.
+ */
+export interface ZodLike {
+  safeParse(data: unknown):
+    | { success: true }
+    | {
+        success: false;
+        error: {
+          issues: Array<{ path: PropertyKey[]; message: string }>;
+        };
+      };
+}
 
 /**
  * Plugin context provided to plugin hooks
@@ -59,7 +76,7 @@ export interface PrebuildPlugin {
    * };
    * ```
    */
-  configSchema?: z.ZodSchema;
+  configSchema?: ZodLike;
 
   /**
    * Additional Zod schemas for content items provided by this plugin.
@@ -80,7 +97,7 @@ export interface PrebuildPlugin {
    * };
    * ```
    */
-  contentItemSchemas?: z.ZodTypeAny[];
+  contentItemSchemas?: ZodLike[];
 
   /**
    * Additional content type key strings recognized by this plugin.

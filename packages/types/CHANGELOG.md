@@ -1,5 +1,31 @@
 # @stackwright/types
 
+## 1.4.1-alpha.1
+
+### Patch Changes
+
+- 21ed937: Export `ZodLike` from `@stackwright/types` so plugin authors can reference it by name without index-access workarounds. Also widens `ZodLike.issues[].path` from `(string | number)[]` to `PropertyKey[]` to match Zod v4's actual `$ZodIssue.path` type, fixing a nominal TypeScript incompatibility where real Zod schemas did not satisfy `ZodLike` at the type level.
+
+## 1.4.1-alpha.0
+
+### Patch Changes
+
+- 5cfa88e: fix(types): remove zod internals from PrebuildPlugin public interface
+
+  `PrebuildPlugin.configSchema` was typed as `z.ZodSchema` and
+  `contentItemSchemas` as `z.ZodTypeAny[]`. These zod-version-specific
+  types bled into the published `.d.ts`, causing TypeScript errors in Pro
+  packages that implemented `PrebuildPlugin` when their installed zod version
+  differed from what `@stackwright/types` was built with.
+
+  Both fields now use a local structural `ZodLike` interface
+  (`{ safeParse(data: unknown): { success: boolean; error?: unknown } }`)
+  which any real Zod schema satisfies via duck-typing. Existing plugin
+  implementations are unaffected.
+
+  This is the same fix applied to `@stackwright/core`'s `ContentTypeEntry`
+  in the companion changeset.
+
 ## 1.4.0
 
 ### Minor Changes
