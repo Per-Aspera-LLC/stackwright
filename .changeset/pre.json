@@ -25,6 +25,7 @@
     "fix-cli-bundle-workspace-deps",
     "fix-core-dts-zod-compat",
     "fix-scaffold-template-versions",
-    "fix-types-prebuild-plugin-zod-compat"
+    "fix-types-prebuild-plugin-zod-compat",
+    "zodlike-export-path-fix"
   ]
 }
