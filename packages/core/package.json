@@ -48,6 +48,7 @@
         "zod": "^4.3.6"
     },
     "devDependencies": {
+        "@stackwright/collections": "workspace:*",
         "@stackwright/types": "workspace:*",
         "@swc/core": "^1.15.26",
         "@testing-library/jest-dom": "^6.6",
