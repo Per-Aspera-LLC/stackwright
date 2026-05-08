@@ -1,5 +1,11 @@
 # @stackwright/maplibre
 
+## 2.0.3-alpha.1
+
+### Patch Changes
+
+- @stackwright/core@0.8.3-alpha.1
+
 ## 2.0.3-alpha.0
 
 ### Patch Changes
