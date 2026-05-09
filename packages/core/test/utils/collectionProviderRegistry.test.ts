@@ -4,7 +4,7 @@ import {
   getCollectionProvider,
 } from '../../src/utils/collectionProviderRegistry';
 import { clearCollectionProvider } from '../../src/utils/collectionProviderRegistry';
-import type { CollectionProvider } from '@stackwright/collections';
+import type { CollectionProvider } from '@stackwright/types';
 
 function makeMockProvider(overrides: Partial<CollectionProvider> = {}): CollectionProvider {
   return {
