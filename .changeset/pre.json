@@ -22,6 +22,7 @@
     "@stackwright/ui-shadcn": "0.1.2"
   },
   "changesets": [
+    "collection-provider-interfaces-to-types",
     "fix-cli-bundle-workspace-deps",
     "fix-core-dts-zod-compat",
     "fix-scaffold-template-versions",
