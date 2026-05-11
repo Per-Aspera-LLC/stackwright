@@ -356,6 +356,10 @@ importers:
         version: 13.1.0
 
   packages/hooks-registry:
+    dependencies:
+      '@stackwright/types':
+        specifier: workspace:*
+        version: link:../types
     devDependencies:
       '@types/node':
         specifier: ^24.1.0
