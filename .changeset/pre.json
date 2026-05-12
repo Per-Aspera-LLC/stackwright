@@ -27,6 +27,7 @@
     "fix-core-dts-zod-compat",
     "fix-scaffold-template-versions",
     "fix-types-prebuild-plugin-zod-compat",
+    "scaffold-hook-interfaces-to-types",
     "workspace-publish-guards",
     "zodlike-export-path-fix"
   ]
