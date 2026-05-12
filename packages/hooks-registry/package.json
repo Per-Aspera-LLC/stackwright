@@ -20,6 +20,9 @@
     "files": [
         "dist"
     ],
+    "dependencies": {
+        "@stackwright/types": "workspace:*"
+    },
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
