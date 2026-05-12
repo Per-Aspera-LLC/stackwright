@@ -1,5 +1,41 @@
 # @stackwright/core
 
+## 0.8.4-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [b9a482b]
+  - @stackwright/types@1.5.0-alpha.2
+
+## 0.8.4-alpha.1
+
+### Patch Changes
+
+- 496aebb: Move `CollectionProvider`, `CollectionEntry`, `CollectionListOptions`, and
+  `CollectionListResult` interface contracts from `@stackwright/collections` into
+  `@stackwright/types`.
+
+  `@stackwright/collections` re-exports all four types from `@stackwright/types`
+  so existing imports are fully backwards-compatible — no consumer changes required.
+
+  This makes the interface contract accessible to Pro packages and other consumers
+  without requiring a dependency on any implementing package.
+
+- Updated dependencies [496aebb]
+  - @stackwright/types@1.5.0-alpha.1
+
+## 0.8.4-alpha.0
+
+### Patch Changes
+
+- c18b6a1: Add `prepublishOnly` workspace protocol guard to all publishable packages to prevent accidentally publishing with unresolved `workspace:*` specifiers.
+
+  Also removes a stale `@stackwright/collections` dependency from `@stackwright/core` (never imported, caused `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing the published package), and fixes `@stackwright/maplibre` peer dependency on `@stackwright/core` from `workspace:*` to `>=0.8.0`.
+
+- Updated dependencies [c18b6a1]
+  - @stackwright/themes@0.5.3-alpha.0
+  - @stackwright/types@1.4.2-alpha.0
+
 ## 0.8.3
 
 ### Patch Changes

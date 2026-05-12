@@ -1,6 +1,6 @@
 {
   "name": "stackwright-docs",
-  "version": "0.1.5",
+  "version": "0.1.6-alpha.2",
   "private": true,
   "scripts": {
     "prebuild": "stackwright-prebuild",
@@ -32,11 +32,11 @@
     "@playwright/browser-chromium": "^1.58.2",
     "@stackwright/build-scripts": "workspace:*",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^24.10.13",
+    "@types/node": "^25.6.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.2",
-    "eslint-config-next": "^16.2.2",
+    "eslint-config-next": "^16.2.6",
     "playwright": "^1.58.2",
     "typescript": "^5.9.3"
   },

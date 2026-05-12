@@ -1,4 +1,4 @@
-import type { CollectionProvider } from '@stackwright/collections';
+import type { CollectionProvider } from '@stackwright/types';
 
 let provider: CollectionProvider | null = null;
 

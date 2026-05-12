@@ -7,6 +7,8 @@ export * from './navigation';
 export * from './layout';
 export * from './enums';
 export * from './collection';
+export * from './collection-provider';
+export * from './scaffold-hook';
 export * from './plugin';
 export * from './secrets';
 export * from './secret-detection';

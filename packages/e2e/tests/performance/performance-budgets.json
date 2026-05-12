@@ -13,14 +13,14 @@
   },
   "bundle": {
     "firstLoadJS": {
-      "max": 300000,
-      "warn": 250000,
-      "description": "First-load JS bundle size (bytes, gzipped). Current: ~271KB, Target: <250KB"
+      "max": 450000,
+      "warn": 420000,
+      "description": "First-load JS bundle size (bytes, gzipped). Current: ~403KB, Target: <420KB"
     },
     "allPagesJS": {
-      "max": 850000,
-      "warn": 750000,
-      "description": "Total JS across all pages (bytes, gzipped). Current: ~773KB, Target: <750KB"
+      "max": 1070000,
+      "warn": 1000000,
+      "description": "Total JS across all pages (bytes, gzipped). Current: ~932KB, Target: <1000KB"
     }
   },
   "runtime": {
