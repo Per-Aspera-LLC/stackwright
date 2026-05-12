@@ -49,6 +49,10 @@ Commit early and often at logical checkpoints.
 
 ## Commands
 
+> **⚠️ Always use `date` for the current date.**
+> Never guess or hard-code a date in documentation, commit messages, changelogs, or coordination files.
+> Run `date` (or `date -I` for `YYYY-MM-DD` format) in the terminal and use the value it returns.
+
 ```bash
 # Install dependencies
 pnpm install
