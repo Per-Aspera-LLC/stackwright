@@ -1,5 +1,15 @@
 # stackwright-docs
 
+## 0.1.6-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [adb13ae]
+  - @stackwright/ui-shadcn@0.1.3-alpha.1
+  - @stackwright/core@0.8.4-alpha.3
+  - @stackwright/nextjs@0.5.3-alpha.3
+  - @stackwright/icons@0.5.2-alpha.1
+
 ## 0.1.6-alpha.2
 
 ### Patch Changes

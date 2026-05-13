@@ -1,5 +1,13 @@
 # @stackwright/maplibre
 
+## 2.0.4-alpha.1
+
+### Patch Changes
+
+- adb13ae: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
+- Updated dependencies [adb13ae]
+  - @stackwright/core@0.8.4-alpha.3
+
 ## 2.0.4-alpha.0
 
 ### Patch Changes

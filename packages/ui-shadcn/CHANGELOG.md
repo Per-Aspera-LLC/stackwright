@@ -1,5 +1,11 @@
 # @stackwright/ui-shadcn
 
+## 0.1.3-alpha.1
+
+### Patch Changes
+
+- adb13ae: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
+
 ## 0.1.3-alpha.0
 
 ### Patch Changes
