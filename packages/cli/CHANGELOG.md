@@ -1,5 +1,46 @@
 # @stackwright/cli
 
+## 0.8.5
+
+### Patch Changes
+
+- d4a06ff: Bundle internal `@stackwright/*` workspace dependencies into the CLI binary via tsup `noExternal`. This fixes `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing `@stackwright/cli` via `pnpm dlx` outside a monorepo. Also adds a `prepublishOnly` guard to catch any future `workspace:*` leakage before publish.
+- a276762: Fix js-yaml version override conflict in pnpm overrides that caused `yaml.safeLoad is removed` errors when running `changeset pre exit` in CI. The global `js-yaml: >=4.1.1` override was stomping the scoped `read-yaml-file>js-yaml: ^3` override, forcing js-yaml v4 into read-yaml-file which doesn't support it.
+- d4a06ff: fix(cli): update stale scaffold template package versions
+
+  `buildPackageJson()` in `template-processor.ts` was pinning scaffolded
+  projects to package versions that were 4+ releases behind:
+  - `@stackwright/core`: `^0.7.0` → `^0.8.0`
+  - `@stackwright/nextjs`: `^0.3.1` → `^0.5.0`
+  - `@stackwright/icons`: `^0.3.0` → `^0.5.0`
+  - `@stackwright/build-scripts`: `^0.4.0` → `^0.7.0` ← **critical**
+  - `@stackwright/ui-shadcn`: `^0.1.0` → `^0.1.2`
+  - `@stackwright/otters`: `^0.2.0-alpha.0` → `^0.2.0`
+
+  The `build-scripts` version was the critical failure: the plugin API
+  (`PrebuildPlugin`, `beforeBuild`, `contentItemSchemas`) was introduced in
+  0.5.0, but scaffolded projects installed 0.4.0 — a version that has no
+  plugin system at all. This caused Pro plugin hooks to silently fail or
+  crash in freshly scaffolded projects.
+
+  Also adds `scripts/sync-versions.mjs` — a Node ESM utility that reads
+  workspace `package.json` versions and rewrites the VERSIONS constant
+  automatically. Run `node scripts/sync-versions.mjs` before cutting releases
+  to prevent version drift.
+
+- e6b3459: feat(cli): generate-agent-docs now emits an interface contracts table
+
+  A new auto-generated section in AGENTS.md documents the TypeScript interface
+  contracts defined in `@stackwright/types`:
+  - CollectionProvider, CollectionEntry, CollectionListOptions, CollectionListResult
+  - ScaffoldHookContext, ScaffoldHook, HookHandler, ScaffoldHookType
+
+  The section is delimited by `<!-- stackwright:interface-table:start/end -->` markers
+  and updated by `pnpm stackwright -- generate-agent-docs` alongside the existing
+  content-type-table. This completes Phase 1 step 8 of the types-hierarchy-refactor.
+
+- f1637a6: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
+
 ## 0.8.5-alpha.1
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # launch-stackwright
 
+## 0.2.5
+
+### Patch Changes
+
+- f1637a6: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
+- d4a06ff: Add `prepublishOnly` workspace protocol guard to all publishable packages to prevent accidentally publishing with unresolved `workspace:*` specifiers.
+
+  Also removes a stale `@stackwright/collections` dependency from `@stackwright/core` (never imported, caused `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing the published package), and fixes `@stackwright/maplibre` peer dependency on `@stackwright/core` from `workspace:*` to `>=0.8.0`.
+
+- Updated dependencies [d4a06ff]
+- Updated dependencies [a276762]
+- Updated dependencies [d4a06ff]
+- Updated dependencies [e6b3459]
+- Updated dependencies [e6b3459]
+- Updated dependencies [f1637a6]
+- Updated dependencies [d4a06ff]
+  - @stackwright/cli@0.8.5
+  - @stackwright/scaffold-core@0.3.1
+  - @stackwright/otters@0.2.1
+
 ## 0.2.5-alpha.3
 
 ### Patch Changes

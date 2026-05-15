@@ -1,5 +1,60 @@
 # @stackwright/types
 
+## 1.5.0
+
+### Minor Changes
+
+- d4a06ff: Move `CollectionProvider`, `CollectionEntry`, `CollectionListOptions`, and
+  `CollectionListResult` interface contracts from `@stackwright/collections` into
+  `@stackwright/types`.
+
+  `@stackwright/collections` re-exports all four types from `@stackwright/types`
+  so existing imports are fully backwards-compatible — no consumer changes required.
+
+  This makes the interface contract accessible to Pro packages and other consumers
+  without requiring a dependency on any implementing package.
+
+### Patch Changes
+
+- d4a06ff: fix(types): remove zod internals from PrebuildPlugin public interface
+
+  `PrebuildPlugin.configSchema` was typed as `z.ZodSchema` and
+  `contentItemSchemas` as `z.ZodTypeAny[]`. These zod-version-specific
+  types bled into the published `.d.ts`, causing TypeScript errors in Pro
+  packages that implemented `PrebuildPlugin` when their installed zod version
+  differed from what `@stackwright/types` was built with.
+
+  Both fields now use a local structural `ZodLike` interface
+  (`{ safeParse(data: unknown): { success: boolean; error?: unknown } }`)
+  which any real Zod schema satisfies via duck-typing. Existing plugin
+  implementations are unaffected.
+
+  This is the same fix applied to `@stackwright/core`'s `ContentTypeEntry`
+  in the companion changeset.
+
+- f1637a6: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
+- d4a06ff: fix(types): move scaffold hook interfaces from hooks-registry to types
+
+  Moves `ScaffoldHookType`, `ScaffoldHook`, `ScaffoldHookContext`, and the new
+  `HookHandler` type alias into `@stackwright/types` — the canonical home for
+  interface contracts in the OSS stack.
+
+  `@stackwright/hooks-registry` re-exports all four types unchanged, so existing
+  imports from `hooks-registry` or `scaffold-core` continue to work without any
+  consumer changes required.
+
+  This eliminates the last remaining case where a framework contract was defined
+  in an implementing package rather than in `@stackwright/types`.
+
+- d4a06ff: Add `prepublishOnly` workspace protocol guard to all publishable packages to prevent accidentally publishing with unresolved `workspace:*` specifiers.
+
+  Also removes a stale `@stackwright/collections` dependency from `@stackwright/core` (never imported, caused `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing the published package), and fixes `@stackwright/maplibre` peer dependency on `@stackwright/core` from `workspace:*` to `>=0.8.0`.
+
+- d4a06ff: Export `ZodLike` from `@stackwright/types` so plugin authors can reference it by name without index-access workarounds. Also widens `ZodLike.issues[].path` from `(string | number)[]` to `PropertyKey[]` to match Zod v4's actual `$ZodIssue.path` type, fixing a nominal TypeScript incompatibility where real Zod schemas did not satisfy `ZodLike` at the type level.
+- Updated dependencies [f1637a6]
+- Updated dependencies [d4a06ff]
+  - @stackwright/themes@0.5.3
+
 ## 1.5.0-alpha.3
 
 ### Patch Changes

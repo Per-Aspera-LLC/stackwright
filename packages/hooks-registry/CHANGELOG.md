@@ -1,5 +1,46 @@
 # @stackwright/hooks-registry
 
+## 0.1.1
+
+### Patch Changes
+
+- e6b3459: fix(scaffold-core): export HookHandler type from hooks-registry and scaffold-core
+
+  `HookHandler` is the canonical type alias for scaffold hook handler functions,
+  defined in `@stackwright/types`. It was re-exported by `hooks-registry/src/hooks.ts`
+  but not forwarded through `index.ts`, making it unavailable via the public package
+  import paths.
+
+  Both `@stackwright/hooks-registry` and `@stackwright/scaffold-core` now re-export
+  `HookHandler` alongside the other scaffold hook types. This completes Phase 1 step 4
+  of the types-hierarchy-refactor.
+
+- f1637a6: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
+- d4a06ff: fix(types): move scaffold hook interfaces from hooks-registry to types
+
+  Moves `ScaffoldHookType`, `ScaffoldHook`, `ScaffoldHookContext`, and the new
+  `HookHandler` type alias into `@stackwright/types` — the canonical home for
+  interface contracts in the OSS stack.
+
+  `@stackwright/hooks-registry` re-exports all four types unchanged, so existing
+  imports from `hooks-registry` or `scaffold-core` continue to work without any
+  consumer changes required.
+
+  This eliminates the last remaining case where a framework contract was defined
+  in an implementing package rather than in `@stackwright/types`.
+
+- d4a06ff: Add `prepublishOnly` workspace protocol guard to all publishable packages to prevent accidentally publishing with unresolved `workspace:*` specifiers.
+
+  Also removes a stale `@stackwright/collections` dependency from `@stackwright/core` (never imported, caused `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing the published package), and fixes `@stackwright/maplibre` peer dependency on `@stackwright/core` from `workspace:*` to `>=0.8.0`.
+
+- Updated dependencies [d4a06ff]
+- Updated dependencies [d4a06ff]
+- Updated dependencies [f1637a6]
+- Updated dependencies [d4a06ff]
+- Updated dependencies [d4a06ff]
+- Updated dependencies [d4a06ff]
+  - @stackwright/types@1.5.0
+
 ## 0.1.1-alpha.3
 
 ### Patch Changes
