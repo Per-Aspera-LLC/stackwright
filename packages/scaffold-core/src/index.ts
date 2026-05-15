@@ -11,6 +11,7 @@ export type {
   ScaffoldHook,
   ScaffoldHookType,
   ScaffoldHookContext,
+  HookHandler,
 } from '@stackwright/hooks-registry';
 
 // Re-export all registry functions

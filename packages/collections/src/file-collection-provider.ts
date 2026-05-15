@@ -5,7 +5,7 @@ import type {
   CollectionEntry,
   CollectionListOptions,
   CollectionListResult,
-} from './types';
+} from '@stackwright/types';
 
 /**
  * File-backed CollectionProvider.
