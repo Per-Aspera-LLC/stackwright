@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/cli",
-  "version": "0.8.4",
+  "version": "0.8.5-alpha.0",
   "description": "CLI for Stackwright framework",
   "license": "MIT",
   "repository": {
@@ -28,11 +28,10 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "node -e \"const p=require('./package.json');const fields=[...Object.values(p.dependencies||{}),...Object.values(p.peerDependencies||{})];const bad=fields.filter(v=>String(v).includes('workspace:'));if(bad.length){console.error('ERR: workspace: specifiers found in publishable dep fields:',bad);process.exit(1)}\""
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@inquirer/prompts": "^8.3.0",
+    "@inquirer/prompts": "^8.4.3",
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
     "fs-extra": "^11.3",
@@ -57,7 +56,6 @@
     "@types/js-yaml": "^4.0",
     "@types/node": "^25.6",
     "tsup": "^8.5",
-    "typescript": "^5.0",
     "vitest": "^4.0.18"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/themes",
-  "version": "0.5.3-alpha.0",
+  "version": "0.5.3-alpha.1",
   "description": "YAML-configurable theming with dark mode, CSS custom properties, and cookie-based persistence",
   "license": "MIT",
   "repository": {
@@ -25,8 +25,7 @@
     "dev": "tsup --watch",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "prepublishOnly": "node -e \"const p=require('./package.json');const fields=[...Object.values(p.dependencies||{}),...Object.values(p.peerDependencies||{})];const bad=fields.filter(v=>String(v).includes('workspace:'));if(bad.length){console.error('ERR: workspace: specifiers found in publishable dep fields:',bad);process.exit(1)}\""
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "js-yaml": "^4",
@@ -42,7 +41,6 @@
     "react": "^19",
     "react-dom": "^19",
     "tsup": "^8",
-    "typescript": "^5",
     "vitest": "^4"
   },
   "peerDependencies": {

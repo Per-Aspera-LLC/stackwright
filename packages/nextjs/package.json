@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.5.3-alpha.2",
+    "version": "0.5.3-alpha.3",
     "description": "Next.js implementations for Stackwright components",
     "license": "MIT",
     "repository": {
@@ -25,7 +25,7 @@
         "dev": "tsup --watch",
         "test": "vitest run",
         "test:run": "vitest run",
-        "prepublishOnly": "npm run build && node -e \"const p=require('./package.json');const fields=[...Object.values(p.dependencies||{}),...Object.values(p.peerDependencies||{})];const bad=fields.filter(v=>String(v).includes('workspace:'));if(bad.length){console.error('ERR: workspace: specifiers found in publishable dep fields:',bad);process.exit(1)}\"",
+        "prepublishOnly": "npm run build",
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
@@ -46,7 +46,6 @@
         "react": "^19",
         "react-dom": "^19",
         "tsup": "^8.5.1",
-        "typescript": "^6.0.3",
         "vitest": "^4.0.18"
     },
     "peerDependencies": {

@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/core",
-    "version": "0.8.4-alpha.2",
+    "version": "0.8.4-alpha.3",
     "description": "Core framework for building applications from YAML configuration",
     "license": "MIT",
     "repository": {
@@ -36,7 +36,7 @@
         "test": "vitest",
         "test:run": "vitest run",
         "test:coverage": "vitest run --coverage",
-        "prepublishOnly": "npm run build && node -e \"const p=require('./package.json');const fields=[...Object.values(p.dependencies||{}),...Object.values(p.peerDependencies||{})];const bad=fields.filter(v=>String(v).includes('workspace:'));if(bad.length){console.error('ERR: workspace: specifiers found in publishable dep fields:',bad);process.exit(1)}\""
+        "prepublishOnly": "npm run build"
     },
     "dependencies": {
         "@stackwright/themes": "workspace:*",
@@ -62,7 +62,6 @@
         "react": "^19",
         "react-dom": "^19",
         "tsup": "^8.5",
-        "typescript": "^5.8",
         "vitest": "^4.0.18"
     },
     "peerDependencies": {

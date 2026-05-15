@@ -1,6 +1,6 @@
 {
   "name": "stackwright-docs",
-  "version": "0.1.6-alpha.2",
+  "version": "0.1.6-alpha.3",
   "private": true,
   "scripts": {
     "prebuild": "stackwright-prebuild",
@@ -26,7 +26,7 @@
     "next": "^16.2.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "tailwind-merge": "^3.5.0"
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@playwright/browser-chromium": "^1.58.2",

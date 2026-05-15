@@ -1,5 +1,13 @@
 # @stackwright/hooks-registry
 
+## 0.1.1-alpha.2
+
+### Patch Changes
+
+- adb13ae: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
+- Updated dependencies [adb13ae]
+  - @stackwright/types@1.5.0-alpha.3
+
 ## 0.1.1-alpha.1
 
 ### Patch Changes

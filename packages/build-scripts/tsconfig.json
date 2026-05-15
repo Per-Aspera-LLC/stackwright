@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es2022",
-        "module": "commonjs",
+        "module": "esnext",
         "lib": ["es2022"],
         "outDir": "./dist",
         "strict": true,
@@ -9,7 +9,9 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
-        "moduleResolution": "node"
+        "moduleResolution": "bundler",
+        "ignoreDeprecations": "6.0",
+        "types": ["node"]
     },
     "include": ["src/**/*"],
     "exclude": ["node_modules", "dist"]
