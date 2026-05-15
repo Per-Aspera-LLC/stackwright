@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.1-alpha.3
+
+### Patch Changes
+
+- e6b3459: fix(scaffold-core): export HookHandler type from hooks-registry and scaffold-core
+
+  `HookHandler` is the canonical type alias for scaffold hook handler functions,
+  defined in `@stackwright/types`. It was re-exported by `hooks-registry/src/hooks.ts`
+  but not forwarded through `index.ts`, making it unavailable via the public package
+  import paths.
+
+  Both `@stackwright/hooks-registry` and `@stackwright/scaffold-core` now re-export
+  `HookHandler` alongside the other scaffold hook types. This completes Phase 1 step 4
+  of the types-hierarchy-refactor.
+
+- Updated dependencies [e6b3459]
+  - @stackwright/hooks-registry@0.1.1-alpha.3
+
 ## 0.3.1-alpha.2
 
 ### Patch Changes

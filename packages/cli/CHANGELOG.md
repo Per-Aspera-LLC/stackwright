@@ -1,5 +1,21 @@
 # @stackwright/cli
 
+## 0.8.5-alpha.1
+
+### Patch Changes
+
+- 182a4da: Fix js-yaml version override conflict in pnpm overrides that caused `yaml.safeLoad is removed` errors when running `changeset pre exit` in CI. The global `js-yaml: >=4.1.1` override was stomping the scoped `read-yaml-file>js-yaml: ^3` override, forcing js-yaml v4 into read-yaml-file which doesn't support it.
+- e6b3459: feat(cli): generate-agent-docs now emits an interface contracts table
+
+  A new auto-generated section in AGENTS.md documents the TypeScript interface
+  contracts defined in `@stackwright/types`:
+  - CollectionProvider, CollectionEntry, CollectionListOptions, CollectionListResult
+  - ScaffoldHookContext, ScaffoldHook, HookHandler, ScaffoldHookType
+
+  The section is delimited by `<!-- stackwright:interface-table:start/end -->` markers
+  and updated by `pnpm stackwright -- generate-agent-docs` alongside the existing
+  content-type-table. This completes Phase 1 step 8 of the types-hierarchy-refactor.
+
 ## 0.8.5-alpha.0
 
 ### Patch Changes
