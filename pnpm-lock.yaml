@@ -23,16 +23,18 @@ overrides:
   path-to-regexp: '>=8.4.0'
   diff: '>=4.0.4'
   tmp: '>=0.2.4'
-  undici: ^7.0.0
+  undici: '>=7.24.0'
   tar: '>=6.2.1'
   flatted: '>=3.4.2'
   next: '>=16.2.5'
-  hono: '>=4.12.14'
-  '@hono/node-server': '>=1.19.10'
+  hono: '>=4.12.18'
+  '@hono/node-server': '>=1.19.13'
   basic-ftp: '>=5.3.1'
   express-rate-limit: '>=8.2.2'
   uuid: '>=14.0.0'
   fast-uri: '>=3.1.2'
+  js-yaml: '>=4.1.1'
+  postcss: '>=8.5.10'
 
 importers:
 
@@ -120,7 +122,7 @@ importers:
         specifier: ^7.1.0
         version: 7.3.0
       js-yaml:
-        specifier: ^4.1.1
+        specifier: '>=4.1.1'
         version: 4.1.1
       lucide-react:
         specifier: ^1.8.0
@@ -178,7 +180,7 @@ importers:
         specifier: workspace:*
         version: link:../types
       js-yaml:
-        specifier: ^4.1.0
+        specifier: '>=4.1.1'
         version: 4.1.1
       zod:
         specifier: ^4.3.6
@@ -212,7 +214,7 @@ importers:
         specifier: ^11.3
         version: 11.3.4
       js-yaml:
-        specifier: ^4.1.0
+        specifier: '>=4.1.1'
         version: 4.1.1
       playwright:
         specifier: ^1.52.0
@@ -280,7 +282,7 @@ importers:
         specifier: ^7.1.0
         version: 7.3.0
       js-yaml:
-        specifier: ^4.1.0
+        specifier: '>=4.1.1'
         version: 4.1.1
       prismjs:
         specifier: ^1.30.0
@@ -517,7 +519,7 @@ importers:
         specifier: workspace:*
         version: link:../types
       js-yaml:
-        specifier: ^4.1.0
+        specifier: '>=4.1.1'
         version: 4.1.1
     devDependencies:
       '@swc/core':
@@ -562,7 +564,7 @@ importers:
   packages/sbom-generator:
     dependencies:
       js-yaml:
-        specifier: ^4.1.0
+        specifier: '>=4.1.1'
         version: 4.1.1
       zod:
         specifier: ^4.3.6
@@ -600,7 +602,7 @@ importers:
   packages/themes:
     dependencies:
       js-yaml:
-        specifier: ^4
+        specifier: '>=4.1.1'
         version: 4.1.1
       zod:
         specifier: ^4.3.6
@@ -643,7 +645,7 @@ importers:
         specifier: workspace:*
         version: link:../themes
       js-yaml:
-        specifier: ^4.1.0
+        specifier: '>=4.1.1'
         version: 4.1.1
       zod:
         specifier: ^4.3.6
@@ -1229,7 +1231,7 @@ packages:
     resolution: {integrity: sha512-TsQLe4i2gvoTtrHje625ngThGBySOgSK3Xo2XRYOdqGN1teR8+I7vchQC46uLJi8OF62YTYA3AhSpumtkhsaKQ==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
-      hono: '>=4.12.14'
+      hono: '>=4.12.18'
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -3224,9 +3226,6 @@ packages:
   any-promise@1.3.0:
     resolution: {integrity: sha512-7UvmKalWRt1wgjL1RrGxoSJW/0QZFIegpeGvZG9kjp8vrRu55XTHbwnqq2GpXm9uLbcuhxm3IqX9OB4MZR1b2A==}
 
-  argparse@1.0.10:
-    resolution: {integrity: sha512-o5Roy6tNG4SL/FOkCAN6RzjiakZS25RLYFrcMttJqbdd8BWrnA+fGz57iN5Pb06pvBGvl5gQ0B48dJlslXvoTg==}
-
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
 
@@ -4273,8 +4272,8 @@ packages:
   hermes-parser@0.25.1:
     resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
 
-  hono@4.12.14:
-    resolution: {integrity: sha512-am5zfg3yu6sqn5yjKBNqhnTX7Cv+m00ox+7jbaKkrLMRJ4rAdldd1xPd/JzbBWspqaQv6RSTrgFN95EsfhC+7w==}
+  hono@4.12.18:
+    resolution: {integrity: sha512-RWzP96k/yv0PQfyXnWjs6zot20TqfpfsNXhOnev8d1InAxubW93L11/oNUc3tQqn2G0bSdAOBpX+2uDFHV7kdQ==}
     engines: {node: '>=16.9.0'}
 
   html-encoding-sniffer@6.0.0:
@@ -4570,10 +4569,6 @@ packages:
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
-
-  js-yaml@3.14.2:
-    resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
-    hasBin: true
 
   js-yaml@4.1.1:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
@@ -4928,11 +4923,6 @@ packages:
   mz@2.7.0:
     resolution: {integrity: sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q==}
 
-  nanoid@3.3.11:
-    resolution: {integrity: sha512-N8SpfPUnUp1bK+PMYW8qSWdl9U+wwNWI4QKxOYDy9JAro3WMX7p2OeVRF9v+347pnakNevPmiHhNmZ2HbFA76w==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
-
   nanoid@3.3.12:
     resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -5180,7 +5170,7 @@ packages:
     engines: {node: '>= 18'}
     peerDependencies:
       jiti: '>=1.21.0'
-      postcss: '>=8.0.9'
+      postcss: '>=8.5.10'
       tsx: ^4.8.1
       yaml: ^2.4.2
     peerDependenciesMeta:
@@ -5192,10 +5182,6 @@ packages:
         optional: true
       yaml:
         optional: true
-
-  postcss@8.4.31:
-    resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
-    engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.14:
     resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==}
@@ -5585,9 +5571,6 @@ packages:
     resolution: {integrity: sha512-NzNVhJDYpwceVVii8/Hu6DKfD2G+NrQHlS/V/qgv763EYudVwEcMQNxd2lh+0VrUByXN/oJkl5grOhYWvQUYiw==}
     engines: {node: '>=0.10.0'}
 
-  sprintf-js@1.0.3:
-    resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
-
   stable-hash@0.0.5:
     resolution: {integrity: sha512-+L3ccpzibovGXFK+Ap/f8LOS0ahMrHTf3xu7mMLSpEGU0EO9ucaysSylKo9eRDFNhWve/y275iPmIZ4z39a9iA==}
 
@@ -5824,7 +5807,7 @@ packages:
     peerDependencies:
       '@microsoft/api-extractor': ^7.36.0
       '@swc/core': ^1
-      postcss: ^8.4.12
+      postcss: '>=8.5.10'
       typescript: ^6
     peerDependenciesMeta:
       '@microsoft/api-extractor':
@@ -6781,9 +6764,9 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@hono/node-server@1.19.13(hono@4.12.14)':
+  '@hono/node-server@1.19.13(hono@4.12.18)':
     dependencies:
-      hono: 4.12.14
+      hono: 4.12.18
 
   '@humanfs/core@0.19.1': {}
 
@@ -7110,7 +7093,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.29.0(zod@4.3.6)':
     dependencies:
-      '@hono/node-server': 1.19.13(hono@4.12.14)
+      '@hono/node-server': 1.19.13(hono@4.12.18)
       ajv: 8.18.0
       ajv-formats: 3.0.1(ajv@8.18.0)
       content-type: 1.0.5
@@ -7120,7 +7103,7 @@ snapshots:
       eventsource-parser: 3.0.6
       express: 5.2.1
       express-rate-limit: 8.3.2(express@5.2.1)
-      hono: 4.12.14
+      hono: 4.12.18
       jose: 6.2.2
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.1
@@ -8645,10 +8628,6 @@ snapshots:
 
   any-promise@1.3.0: {}
 
-  argparse@1.0.10:
-    dependencies:
-      sprintf-js: 1.0.3
-
   argparse@2.0.1: {}
 
   aria-query@5.3.0:
@@ -9885,7 +9864,7 @@ snapshots:
     dependencies:
       hermes-estree: 0.25.1
 
-  hono@4.12.14: {}
+  hono@4.12.18: {}
 
   html-encoding-sniffer@6.0.0:
     dependencies:
@@ -10163,11 +10142,6 @@ snapshots:
   js-tokens@10.0.0: {}
 
   js-tokens@4.0.0: {}
-
-  js-yaml@3.14.2:
-    dependencies:
-      argparse: 1.0.10
-      esprima: 4.0.1
 
   js-yaml@4.1.1:
     dependencies:
@@ -10536,8 +10510,6 @@ snapshots:
       object-assign: 4.1.1
       thenify-all: 1.6.0
 
-  nanoid@3.3.11: {}
-
   nanoid@3.3.12: {}
 
   napi-postinstall@0.3.4: {}
@@ -10554,7 +10526,7 @@ snapshots:
       '@swc/helpers': 0.5.15
       baseline-browser-mapping: 2.10.18
       caniuse-lite: 1.0.30001787
-      postcss: 8.4.31
+      postcss: 8.5.14
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.6)
@@ -10792,12 +10764,6 @@ snapshots:
       tsx: 4.21.0
       yaml: 2.8.3
 
-  postcss@8.4.31:
-    dependencies:
-      nanoid: 3.3.11
-      picocolors: 1.1.1
-      source-map-js: 1.2.1
-
   postcss@8.5.14:
     dependencies:
       nanoid: 3.3.12
@@ -10931,7 +10897,7 @@ snapshots:
   read-yaml-file@1.1.0:
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.2
+      js-yaml: 4.1.1
       pify: 4.0.1
       strip-bom: 3.0.0
 
@@ -11319,8 +11285,6 @@ snapshots:
   split-string@3.1.0:
     dependencies:
       extend-shallow: 3.0.2
-
-  sprintf-js@1.0.3: {}
 
   stable-hash@0.0.5: {}
 
