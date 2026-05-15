@@ -11,8 +11,9 @@
  * - Chromium (desktop): Full test coverage including visual regression
  * - Firefox (desktop): Functional tests only
  * - WebKit (desktop): Functional tests only (Safari engine)
- * - Mobile Chrome (375x667): Functional tests, typical Android viewport
- * - Mobile Safari (375x812): Functional tests, iPhone X dimensions
+ * - Mobile (CI):    mobile-chrome (375x667) + mobile-safari (375x812)
+ * - Mobile (local): mobile-firefox only — avoids extra browser installs,
+ *                   still catches the most cross-browser mobile edge cases
  */
 import { defineConfig } from '@playwright/test';
 import path from 'path';
@@ -40,6 +41,8 @@ if (!site) {
     `Unknown TEST_SITE="${TEST_SITE}". Valid: ${Object.keys(SITE_CONFIG).join(', ')}`
   );
 }
+
+const isCI = !!process.env.CI;
 
 export default defineConfig({
   testDir: './tests',
@@ -75,35 +78,53 @@ export default defineConfig({
       testIgnore: ['**/*.visual.spec.ts', '**/*.bench.ts'],
     },
 
-    // Mobile viewports
-    {
-      name: 'mobile-chrome',
-      use: {
-        browserName: 'chromium',
-        viewport: { width: 375, height: 667 },
-        deviceScaleFactor: 2,
-        isMobile: true,
-        hasTouch: true,
-        userAgent:
-          'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-      },
-      // Skip visual regression and benchmarks on mobile (can add mobile-specific tests later)
-      testIgnore: ['**/*.visual.spec.ts', '**/*.bench.ts'],
-    },
-    {
-      name: 'mobile-safari',
-      use: {
-        browserName: 'webkit',
-        viewport: { width: 375, height: 812 }, // iPhone X dimensions
-        deviceScaleFactor: 3,
-        isMobile: true,
-        hasTouch: true,
-        userAgent:
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
-      },
-      // Skip visual regression and benchmarks on mobile (can add mobile-specific tests later)
-      testIgnore: ['**/*.visual.spec.ts', '**/*.bench.ts'],
-    },
+    // Mobile viewports — matrix differs between CI and local dev
+    ...(isCI
+      ? [
+          {
+            name: 'mobile-chrome',
+            use: {
+              browserName: 'chromium',
+              viewport: { width: 375, height: 667 },
+              deviceScaleFactor: 2,
+              isMobile: true,
+              hasTouch: true,
+              userAgent:
+                'Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+            },
+            // Skip visual regression and benchmarks on mobile (can add mobile-specific tests later)
+            testIgnore: ['**/*.visual.spec.ts', '**/*.bench.ts'],
+          },
+          {
+            name: 'mobile-safari',
+            use: {
+              browserName: 'webkit',
+              viewport: { width: 375, height: 812 }, // iPhone X dimensions
+              deviceScaleFactor: 3,
+              isMobile: true,
+              hasTouch: true,
+              userAgent:
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
+            },
+            // Skip visual regression and benchmarks on mobile (can add mobile-specific tests later)
+            testIgnore: ['**/*.visual.spec.ts', '**/*.bench.ts'],
+          },
+        ]
+      : [
+          {
+            name: 'mobile-firefox',
+            use: {
+              browserName: 'firefox',
+              viewport: { width: 375, height: 667 },
+              deviceScaleFactor: 2,
+              isMobile: true,
+              hasTouch: true,
+              userAgent: 'Mozilla/5.0 (Android 11; Mobile; rv:120.0) Gecko/120.0 Firefox/120.0',
+            },
+            // Skip visual regression and benchmarks on mobile (can add mobile-specific tests later)
+            testIgnore: ['**/*.visual.spec.ts', '**/*.bench.ts'],
+          },
+        ]),
   ],
   webServer: process.env.PERF_NO_SERVER
     ? undefined
