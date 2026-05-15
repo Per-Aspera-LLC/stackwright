@@ -24,6 +24,7 @@
   "changesets": [
     "collection-provider-interfaces-to-types",
     "collections-types-cleanup",
+    "fix-back-merge-pre-json-conflict",
     "fix-cli-bundle-workspace-deps",
     "fix-core-dts-zod-compat",
     "fix-js-yaml-override-conflict",

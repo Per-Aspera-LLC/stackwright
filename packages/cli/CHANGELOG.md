@@ -1,5 +1,11 @@
 # @stackwright/cli
 
+## 0.8.5-alpha.2
+
+### Patch Changes
+
+- 11bfe0f: Fix back-merge into dev failing with a modify/delete conflict on `.changeset/pre.json` during rebase. The release workflow deletes this file via `changeset pre exit`, but dev's alpha-bump commits still reference it. The rebase now explicitly resolves the conflict by accepting main's deletion and continuing.
+
 ## 0.8.5-alpha.1
 
 ### Patch Changes
