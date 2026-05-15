@@ -6,7 +6,7 @@
  */
 
 // Types re-export
-export type { ScaffoldHook, ScaffoldHookType, ScaffoldHookContext } from './hooks';
+export type { ScaffoldHook, ScaffoldHookType, ScaffoldHookContext, HookHandler } from './hooks';
 
 // Registry functions
 export {

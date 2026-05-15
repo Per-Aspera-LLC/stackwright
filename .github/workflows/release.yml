@@ -18,14 +18,12 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    # Use startsWith (not contains) to check ONLY the commit title for [skip ci].
-    # Squash merges embed individual commit messages in the body, and automated
-    # commits (prerelease bumps, etc.) include [skip ci] — which would incorrectly
-    # suppress the release workflow if we used contains() on the full body.
+    # startsWith guards against the release workflow re-triggering on its own
+    # version bump commit. Must stay in sync with the commit message below.
     if: >-
       ${{ github.event_name == 'workflow_dispatch' ||
         (github.event_name == 'push' &&
-         !startsWith(github.event.head_commit.message, 'chore: version packages for release [skip ci]')) }}
+         !startsWith(github.event.head_commit.message, 'chore: version packages for release')) }}
     steps:
       - name: Generate PerAsperaCI token
         id: app-token
@@ -120,7 +118,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "chore: version packages for release [skip ci]" || echo "No changes to commit"
+          git commit -m "chore: version packages for release" || echo "No changes to commit"
           git push origin main
 
       - name: Back-merge into dev
@@ -141,7 +139,7 @@ jobs:
           if [ ! -f ".changeset/pre.json" ]; then
             pnpm changeset pre enter alpha
             git add .changeset/pre.json
-            git commit -m "chore: re-enter prerelease mode after back-merge [skip ci]"
+            git commit -m "chore: re-enter prerelease mode after back-merge"
           fi
           # Force push is required after a rebase to rewrite dev's remote history.
           git push origin dev --force-with-lease

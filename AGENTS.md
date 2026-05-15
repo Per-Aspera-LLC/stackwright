@@ -116,6 +116,29 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
 <!-- stackwright:content-type-table:end -->
 
+### Interface Contracts
+
+**AGENTS: This table is auto-generated from `@stackwright/types`. Run `pnpm stackwright -- generate-agent-docs` to regenerate. Do NOT edit the content between the markers manually.**
+
+<!-- stackwright:interface-table:start -->
+All interface contracts are defined in `@stackwright/types` and re-exported from `@stackwright/collections`, `@stackwright/hooks-registry`, and `@stackwright/scaffold-core` for backward compatibility.
+
+| Interface / Type | Kind | Fields / Signature |
+|---|---|---|
+| `CollectionProvider` | interface | `list(collection, opts?)` (Promise<CollectionListResult>), `get(collection, slug)` (Promise<CollectionEntry | null>), `collections()` (Promise<string[]>) |
+| `CollectionEntry` | interface | `slug` (string), `[key: string]` (unknown) |
+| `CollectionListOptions` | interface | `limit`? (number), `offset`? (number), `sort`? (string), `filter`? (Record<string, unknown>) |
+| `CollectionListResult` | interface | `entries` (CollectionEntry[]), `total` (number) |
+| `ScaffoldHookContext` | interface | `targetDir` (string), `projectName` (string), `siteTitle` (string), `themeId` (string), `packageJson` (Record<string, unknown>), `dependencyMode` ('workspace' | 'standalone'), `codePuppyConfig`? (Record<string, unknown>), `pages`? (string[]), `install`? (boolean), `[key: string]`? (unknown) |
+| `ScaffoldHook` | interface | `type` (ScaffoldHookType), `name` (string), `handler` (HookHandler), `priority`? (number), `critical`? (boolean) |
+| `HookHandler` | type | `(context: ScaffoldHookContext)` (Promise<void> | void) |
+| `ScaffoldHookType` | type | `values` ('preScaffold' | 'preInstall' | 'postInstall' | 'postScaffold') |
+
+**Import paths (all equivalent):**
+- `CollectionProvider` — `@stackwright/types` · `@stackwright/collections`
+- `ScaffoldHookContext`, `ScaffoldHook`, `HookHandler`, `ScaffoldHookType` — `@stackwright/types` · `@stackwright/hooks-registry` · `@stackwright/scaffold-core`
+<!-- stackwright:interface-table:end -->
+
 ### Dark Mode & Color Preferences
 
 Stackwright has first-class dark mode and cookie-based preference persistence:
