@@ -134,13 +134,19 @@ jobs:
           #
           # -X ours: when conflicts arise (e.g. version numbers in package.json),
           # prefer main's graduated stable versions over dev's stale alpha versions.
-          git rebase origin/main -X ours || {
-            # Expected modify/delete conflict on .changeset/pre.json:
-            # release deleted it via `changeset pre exit`, but dev's alpha-bump
-            # commit still referenced it. Accept main's deletion and continue.
-            git rm -f .changeset/pre.json 2>/dev/null || true
-            GIT_EDITOR=true git rebase --continue
-          }
+          git rebase origin/main -X ours || true
+          while [ -d ".git/rebase-merge" ]; do
+            if git status --porcelain | grep -q "pre.json"; then
+              # Expected: pre.json was deleted by `changeset pre exit` on main,
+              # but dev's alpha-bump commits still modified it. Accept the deletion.
+              git rm -f .changeset/pre.json 2>/dev/null || true
+              GIT_EDITOR=true git rebase --continue || true
+            else
+              echo "Unexpected rebase conflict — aborting"
+              git rebase --abort
+              exit 1
+            fi
+          done
           # Re-enter prerelease mode so the next dev push produces alphas.
           if [ ! -f ".changeset/pre.json" ]; then
             pnpm changeset pre enter alpha
