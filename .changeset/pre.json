@@ -22,19 +22,8 @@
     "@stackwright/ui-shadcn": "0.1.2"
   },
   "changesets": [
-    "collection-provider-interfaces-to-types",
-    "collections-types-cleanup",
+    "fix-back-merge-loop",
     "fix-back-merge-pre-json-conflict",
-    "fix-cli-bundle-workspace-deps",
-    "fix-core-dts-zod-compat",
-    "fix-js-yaml-override-conflict",
-    "fix-scaffold-template-versions",
-    "fix-types-prebuild-plugin-zod-compat",
-    "generate-agent-docs-interfaces",
-    "hookhandler-reexport",
-    "remove-workspace-prepublish-guard",
-    "scaffold-hook-interfaces-to-types",
-    "workspace-publish-guards",
-    "zodlike-export-path-fix"
+    "fix-js-yaml-override-conflict"
   ]
 }
