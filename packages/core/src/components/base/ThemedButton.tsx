@@ -1,7 +1,7 @@
 import React from 'react';
 import { ButtonContent } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
-import { getHoverColor, resolveColor } from '../../utils/colorUtils';
+import { getHoverColor, resolveColor, getBetterTextColor } from '../../utils/colorUtils';
 import { Media } from '../media/Media';
 
 interface ThemedButtonProps {
@@ -40,7 +40,9 @@ export function ThemedButton({ button, className }: ThemedButtonProps) {
     : theme.colors.primary;
   const buttonTextColor = button.textColor
     ? resolveColor(button.textColor, theme.colors)
-    : theme.colors.text;
+    : button.variant === undefined || button.variant === 'contained'
+      ? getBetterTextColor('#FFFFFF', '#1A1A1A', buttonColor)
+      : theme.colors.text;
   const hoverColor = getHoverColor(buttonColor);
   const buttonSize = button.variantSize || 'medium';
 
