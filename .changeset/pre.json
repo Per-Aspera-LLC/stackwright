@@ -21,5 +21,9 @@
     "@stackwright/types": "1.5.0",
     "@stackwright/ui-shadcn": "0.1.3"
   },
-  "changesets": []
+  "changesets": [
+    "fix-back-merge-loop",
+    "fix-back-merge-pre-json-conflict",
+    "fix-js-yaml-override-conflict"
+  ]
 }
