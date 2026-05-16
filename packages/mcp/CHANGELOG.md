@@ -14,6 +14,13 @@
 - Updated dependencies [11bfe0f]
   - @stackwright/cli@0.8.5-alpha.2
 
+## 0.4.5-alpha.5
+
+### Patch Changes
+
+- Updated dependencies [11bfe0f]
+  - @stackwright/cli@0.8.5-alpha.2
+
 ## 0.4.5-alpha.4
 
 ### Patch Changes
