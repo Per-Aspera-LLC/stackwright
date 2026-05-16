@@ -1,7 +1,5 @@
 # @stackwright/collections
 
-## 0.1.1
-
 ## 0.1.1-alpha.4
 
 ### Patch Changes
