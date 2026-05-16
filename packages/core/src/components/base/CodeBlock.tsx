@@ -66,6 +66,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
           </div>
         )}
         <pre
+          tabIndex={0}
           style={{
             margin: 0,
             padding: theme.spacing.md,
