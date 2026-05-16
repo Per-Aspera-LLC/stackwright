@@ -54,6 +54,53 @@ export default function DefaultPageLayout(pageContent: PageContent) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: 'auto',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+          zIndex: 9999,
+        }}
+        onFocus={(e) => {
+          Object.assign(e.currentTarget.style, {
+            left: '50%',
+            transform: 'translateX(-50%)',
+            top: '1rem',
+            width: 'auto',
+            height: 'auto',
+            overflow: 'visible',
+            padding: '0.5rem 1.25rem',
+            backgroundColor: '#000',
+            color: '#fff',
+            borderRadius: '4px',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+            fontSize: '0.875rem',
+          });
+        }}
+        onBlur={(e) => {
+          Object.assign(e.currentTarget.style, {
+            left: '-9999px',
+            top: 'auto',
+            width: '1px',
+            height: '1px',
+            overflow: 'hidden',
+            transform: '',
+            padding: '',
+            backgroundColor: '',
+            color: '',
+            borderRadius: '',
+            fontWeight: '',
+            fontSize: '',
+          });
+        }}
+      >
+        Skip to main content
+      </a>
       {resolvedSidebar && (
         <NavSidebar
           navigationItems={resolvedSidebar.navigation}
@@ -65,6 +112,7 @@ export default function DefaultPageLayout(pageContent: PageContent) {
         />
       )}
       <main
+        id="main-content"
         style={{
           flex: 1,
           minWidth: 0,

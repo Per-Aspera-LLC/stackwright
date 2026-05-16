@@ -74,7 +74,7 @@ export function Timeline(content: TimelineContent) {
                   boxShadow: getThemeShadow(theme, 'md'),
                 }}
               >
-                <h4
+                <h3
                   style={{
                     color: theme.colors.primary,
                     fontWeight: 'bold',
@@ -83,7 +83,7 @@ export function Timeline(content: TimelineContent) {
                   }}
                 >
                   {item.year}
-                </h4>
+                </h3>
                 <p style={{ color: theme.colors.text, margin: 0 }}>{item.event}</p>
               </div>
             </div>
