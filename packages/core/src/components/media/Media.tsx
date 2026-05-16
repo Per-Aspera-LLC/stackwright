@@ -129,47 +129,65 @@ const renderImageMedia = (content: MediaItem) => {
 };
 
 const renderVideoMedia = (content: VideoMediaItem) => {
+  const accessibleLabel = content.alt || content.label || 'Video';
   return (
     <MediaContainer height={content.height} width={content.width} style={content.style}>
-      <video
-        src={content.src}
-        poster={content.poster}
-        autoPlay={content.autoplay ?? false}
-        loop={content.loop ?? false}
-        muted={content.muted ?? true}
-        controls={content.controls ?? true}
-        preload={content.preload ?? 'metadata'}
-        playsInline
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: content.style === 'overflow' ? 'cover' : 'contain',
-        }}
+      {/* role="group" gives the browser a clear focus boundary around native
+          video controls so Tab can exit the shadow-DOM control strip cleanly. */}
+      <div
+        role="group"
+        aria-label={accessibleLabel}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
       >
-        {content.sources?.map((s) => (
-          <source key={s.src} src={s.src} type={s.type} />
-        ))}
-      </video>
+        <video
+          aria-label={accessibleLabel}
+          src={content.src}
+          poster={content.poster}
+          autoPlay={content.autoplay ?? false}
+          loop={content.loop ?? false}
+          muted={content.muted ?? true}
+          controls={content.controls ?? true}
+          preload={content.preload ?? 'metadata'}
+          playsInline
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: content.style === 'overflow' ? 'cover' : 'contain',
+          }}
+        >
+          {content.sources?.map((s) => (
+            <source key={s.src} src={s.src} type={s.type} />
+          ))}
+        </video>
+      </div>
     </MediaContainer>
   );
 };
 
 /** Renders a basic <video> when only base MediaItem fields are available (heuristic path). */
 const renderHeuristicVideo = (content: MediaItem) => {
+  const accessibleLabel = content.alt || content.label || 'Video';
   return (
     <MediaContainer height={content.height} width={content.width} style={content.style}>
-      <video
-        src={content.src}
-        muted
-        controls
-        preload="metadata"
-        playsInline
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: content.style === 'overflow' ? 'cover' : 'contain',
-        }}
-      />
+      <div
+        role="group"
+        aria-label={accessibleLabel}
+        style={{ position: 'relative', width: '100%', height: '100%' }}
+      >
+        <video
+          aria-label={accessibleLabel}
+          src={content.src}
+          muted
+          controls
+          preload="metadata"
+          playsInline
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: content.style === 'overflow' ? 'cover' : 'contain',
+          }}
+        />
+      </div>
     </MediaContainer>
   );
 };
