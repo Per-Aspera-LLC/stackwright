@@ -1,26 +1,11 @@
 # @stackwright/mcp
 
-## 0.4.5
+## 0.4.5-alpha.5
 
 ### Patch Changes
 
-- f1637a6: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
-- d4a06ff: Add `prepublishOnly` workspace protocol guard to all publishable packages to prevent accidentally publishing with unresolved `workspace:*` specifiers.
-
-  Also removes a stale `@stackwright/collections` dependency from `@stackwright/core` (never imported, caused `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing the published package), and fixes `@stackwright/maplibre` peer dependency on `@stackwright/core` from `workspace:*` to `>=0.8.0`.
-
-- Updated dependencies [d4a06ff]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [a276762]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [e6b3459]
-- Updated dependencies [f1637a6]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [d4a06ff]
-  - @stackwright/types@1.5.0
-  - @stackwright/cli@0.8.5
+- Updated dependencies [11bfe0f]
+  - @stackwright/cli@0.8.5-alpha.2
 
 ## 0.4.5-alpha.4
 

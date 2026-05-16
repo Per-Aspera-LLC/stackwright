@@ -1,42 +1,5 @@
 # @stackwright/collections
 
-## 0.1.1
-
-### Patch Changes
-
-- d4a06ff: Move `CollectionProvider`, `CollectionEntry`, `CollectionListOptions`, and
-  `CollectionListResult` interface contracts from `@stackwright/collections` into
-  `@stackwright/types`.
-
-  `@stackwright/collections` re-exports all four types from `@stackwright/types`
-  so existing imports are fully backwards-compatible — no consumer changes required.
-
-  This makes the interface contract accessible to Pro packages and other consumers
-  without requiring a dependency on any implementing package.
-
-- e6b3459: chore(collections): remove duplicate CollectionProvider definitions
-
-  `file-collection-provider.ts` now imports `CollectionProvider`, `CollectionEntry`,
-  `CollectionListOptions`, and `CollectionListResult` directly from `@stackwright/types`
-  rather than from the local `./types` file.
-
-  `types.ts` is converted to a re-export shim so any unexpected downstream imports
-  remain backward-compatible. This completes the Phase 1 cleanup from the
-  types-hierarchy-refactor.
-
-- f1637a6: Remove `prepublishOnly` workspace: specifier guard that conflicted with `pnpm publish`'s automatic `workspace:*` → semver resolution. The guard checked the local `package.json` for `workspace:*` entries and rejected them, but `pnpm publish` rewrites those specifiers inside the tarball at publish time without modifying the local file — so the guard always produced false positives and blocked all publishes.
-- d4a06ff: Add `prepublishOnly` workspace protocol guard to all publishable packages to prevent accidentally publishing with unresolved `workspace:*` specifiers.
-
-  Also removes a stale `@stackwright/collections` dependency from `@stackwright/core` (never imported, caused `ERR_PNPM_WORKSPACE_PKG_NOT_FOUND` when installing the published package), and fixes `@stackwright/maplibre` peer dependency on `@stackwright/core` from `workspace:*` to `>=0.8.0`.
-
-- Updated dependencies [d4a06ff]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [f1637a6]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [d4a06ff]
-- Updated dependencies [d4a06ff]
-  - @stackwright/types@1.5.0
-
 ## 0.1.1-alpha.4
 
 ### Patch Changes
