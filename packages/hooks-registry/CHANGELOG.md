@@ -1,5 +1,7 @@
 # @stackwright/hooks-registry
 
+## 0.1.1
+
 ## 0.1.1-alpha.3
 
 ### Patch Changes

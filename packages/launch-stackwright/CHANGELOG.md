@@ -1,5 +1,15 @@
 # launch-stackwright
 
+## 0.2.5
+
+### Patch Changes
+
+- Updated dependencies [03f6f4d]
+- Updated dependencies [03f6f4d]
+- Updated dependencies [03f6f4d]
+  - @stackwright/cli@0.8.5
+  - @stackwright/scaffold-core@0.3.1
+
 ## 0.2.5-alpha.5
 
 ### Patch Changes
