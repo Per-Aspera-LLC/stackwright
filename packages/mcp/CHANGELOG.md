@@ -1,5 +1,13 @@
 # @stackwright/mcp
 
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [c9daf18]
+- Updated dependencies [c9daf18]
+  - @stackwright/cli@0.8.5
+
 ## 0.4.5-alpha.5
 
 ### Patch Changes
