@@ -1,5 +1,18 @@
 # stackwright-docs
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [d4a06ff]
+- Updated dependencies [d4a06ff]
+- Updated dependencies [f1637a6]
+- Updated dependencies [d4a06ff]
+  - @stackwright/core@0.8.4
+  - @stackwright/ui-shadcn@0.1.3
+  - @stackwright/nextjs@0.5.3
+  - @stackwright/icons@0.5.2
+
 ## 0.1.6-alpha.3
 
 ### Patch Changes
