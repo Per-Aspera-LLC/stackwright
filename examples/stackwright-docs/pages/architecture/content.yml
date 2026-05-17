@@ -298,7 +298,7 @@ content:
         height: 40
         label: auditable-icon
       heading: Auditable Surface Area
-      description: Security review reduces to reviewing the component library — a fixed, bounded codebase. Not thousands of YAML files.
+      description: Security review reduces to reviewing the component library — a fixed, bounded codebase. Not thousands of YAML files. SBOMs are generated automatically on every build in SPDX 2.3, CycloneDX 1.5, and Stackwright Build Manifest formats.
     - icon:
         type: icon
         src: Bot
