@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { FeatureList } from '../../src/components/base/FeatureList';
 import { TestimonialGrid } from '../../src/components/base/TestimonialGrid';
@@ -62,7 +62,7 @@ describe('TestimonialGrid', () => {
 });
 
 describe('Faq', () => {
-  it('renders FAQ items as details/summary elements', () => {
+  it('renders FAQ items as an accessible accordion', () => {
     render(
       <Faq
         label="faq"
@@ -74,9 +74,13 @@ describe('Faq', () => {
       />
     );
     expect(screen.getByText('FAQ')).toBeInTheDocument();
-    expect(screen.getByText('What is this?')).toBeInTheDocument();
+    // Question triggers are visible in collapsed state
+    expect(screen.getByRole('button', { name: 'What is this?' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Is it free?' })).toBeInTheDocument();
+    // Answer is hidden until the user expands the accordion item
+    const trigger = screen.getByRole('button', { name: 'What is this?' });
+    fireEvent.click(trigger);
     expect(screen.getByText('A framework.')).toBeInTheDocument();
-    expect(screen.getByText('Is it free?')).toBeInTheDocument();
   });
 });
 
