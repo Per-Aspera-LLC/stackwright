@@ -84,6 +84,53 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
         color: theme.colors.text,
       }}
     >
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: 'auto',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+          zIndex: 9999,
+        }}
+        onFocus={(e) => {
+          Object.assign(e.currentTarget.style, {
+            left: '50%',
+            transform: 'translateX(-50%)',
+            top: '1rem',
+            width: 'auto',
+            height: 'auto',
+            overflow: 'visible',
+            padding: '0.5rem 1.25rem',
+            backgroundColor: '#000',
+            color: '#fff',
+            borderRadius: '4px',
+            textDecoration: 'none',
+            fontWeight: 'bold',
+            fontSize: '0.875rem',
+          });
+        }}
+        onBlur={(e) => {
+          Object.assign(e.currentTarget.style, {
+            left: '-9999px',
+            top: 'auto',
+            width: '1px',
+            height: '1px',
+            overflow: 'hidden',
+            transform: '',
+            padding: '',
+            backgroundColor: '',
+            color: '',
+            borderRadius: '',
+            fontWeight: '',
+            fontSize: '',
+          });
+        }}
+      >
+        Skip to main content
+      </a>
       <TopAppBar
         title={config.appBar.titleText}
         logo={config.appBar.logo}
@@ -105,7 +152,7 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
           />
         )}
 
-        <main style={{ flex: 1, minWidth: 0, backgroundColor }}>
+        <main id="main-content" style={{ flex: 1, minWidth: 0, backgroundColor }}>
           {renderContent(pageContent, { contentItemsOnly: true })}
         </main>
       </div>

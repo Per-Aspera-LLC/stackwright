@@ -77,7 +77,7 @@ customTheme:
     text: "#FFFFFF"
     textSecondary: "#B0BEC5"
   darkColors:
-    primary: "#D97706"   # Amber 600 - darker for dark mode
+    primary: "#92400e"   # Amber 800 — WCAG AA compliant on light dark-mode backgrounds (~5.8:1 on #F5F5F5)
     secondary: "#0288D1"
     accent: "#F59E0B"   # Amber 500
     background: "#FDFDFD"

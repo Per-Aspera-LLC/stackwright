@@ -3,6 +3,7 @@ import { CodeBlockContent } from '@stackwright/types';
 import { useSafeTheme, useSafeColorMode } from '../../hooks/useSafeTheme';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { highlightCode, getTokenColor, HighlightToken } from '../../utils/prismHighlighter';
+import { hexToRgb, getLuminance } from '../../utils/colorUtils';
 
 /**
  * Split a flat token list into per-line groups so each line can be
@@ -25,7 +26,9 @@ function splitTokensByLine(tokens: HighlightToken[]): HighlightToken[][] {
 export function CodeBlock({ code, language, lineNumbers = false, background }: CodeBlockContent) {
   const theme = useSafeTheme();
   const resolvedColorMode = useSafeColorMode();
-  const isDark = resolvedColorMode === 'dark';
+  const surfaceRgb = hexToRgb(theme.colors.surface);
+  const surfaceLuminance = surfaceRgb ? getLuminance(surfaceRgb.r, surfaceRgb.g, surfaceRgb.b) : 0;
+  const isDarkSurface = surfaceLuminance < 0.179;
 
   const tokens = highlightCode(code.trimEnd(), language);
   const tokenLines = splitTokensByLine(tokens);
@@ -66,6 +69,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
           </div>
         )}
         <pre
+          tabIndex={0}
           style={{
             margin: 0,
             padding: theme.spacing.md,
@@ -99,7 +103,7 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
               <span>
                 {lineTokens.length > 0
                   ? lineTokens.map((t, j) => {
-                      const color = getTokenColor(t.type, isDark);
+                      const color = getTokenColor(t.type, isDarkSurface);
                       return color ? (
                         <span key={j} style={{ color }}>
                           {t.content}
