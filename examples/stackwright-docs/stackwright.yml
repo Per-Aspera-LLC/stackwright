@@ -3,15 +3,15 @@ meta:
   description: "YAML is the syntax. The schema is the safety net. AI writes the code. From API spec to working Next.js app in hours — safe by construction."
 
 appBar:
-  titleText: "Stackwright"
+  titleText: ""
   backgroundColor: "primary"
   textColor: "#1A1A2E"   # Dark navy for readability on yellow
   colorModeToggle: true
   logo:
     type: image
-    src: ./stackwright-logo.png
+    src: ./stackwright-alt.png
     height: 40
-    width: 40
+    width: 90
 
 navigation:
   - label: "🦦 Home"
