@@ -18,7 +18,7 @@ pnpm build
 Run the example app to verify everything works:
 
 ```bash
-pnpm dev:hellostackwright
+pnpm dev:hellostackwright   # starts examples/stackwright-docs/
 ```
 
 ## Pre-commit Hooks
@@ -173,7 +173,7 @@ pnpm build:mcp
 pnpm dev
 
 # Run the example application
-pnpm dev:hellostackwright
+pnpm dev:hellostackwright   # starts examples/stackwright-docs/
 
 # Run CLI commands (from monorepo root — note the --)
 pnpm stackwright -- --help
@@ -181,7 +181,7 @@ pnpm stackwright -- types
 pnpm stackwright -- info
 
 # Generate JSON schemas from Zod schemas
-cd packages/types && pnpm generate-schemas
+pnpm generate-schemas
 ```
 
 ## Turborepo (Optional)
@@ -190,10 +190,10 @@ Stackwright includes Turborepo for faster incremental builds. It is installed au
 
 ```bash
 # Use turbo for faster builds (recommended)
-ppm turbo:build
+pnpm turbo:build
 
 # See what will be built without running
-pnpm turbo:run build --dry-run
+pnpm exec turbo run build --dry-run
 ```
 
 Turborepo caches build outputs locally. Use `turbo run build --force` to bypass cache.
@@ -210,7 +210,7 @@ pnpm test
 pnpm test:core
 ```
 
-**E2E tests** (`pnpm test:e2e`): Playwright tests in `packages/e2e/` that verify the full YAML → prebuild → Next.js build → browser pipeline against `examples/hellostackwrightnext/`. When adding new content types, add example usage in the example app so E2E smoke tests cover them. The E2E tests check that every page renders content, has no error boundaries, produces no critical console errors, and that all nav links resolve.
+**E2E tests** (`pnpm test:e2e`): Playwright tests in `packages/e2e/` that verify the full YAML → prebuild → Next.js build → browser pipeline against `examples/stackwright-docs/`. When adding new content types, add example usage in the example app so E2E smoke tests cover them. The E2E tests check that every page renders content, has no error boundaries, produces no critical console errors, and that all nav links resolve.
 
 ## Pre-Push Checklist
 
@@ -262,7 +262,7 @@ Versioning and publishing are **fully automated**. When `dev` is merged to `main
 1. Run `pnpm stackwright -- generate-agent-docs` to regenerate AGENTS.md tables in both `/AGENTS.md` and `examples/stackwright-docs/AGENTS.md`
 2. Regenerate JSON schemas: `cd packages/types && pnpm generate-schemas`
 3. Update or add unit tests in `packages/core/test/` for the affected component
-4. Verify E2E tests still pass (`pnpm test:e2e`) — add example usage in `examples/hellostackwrightnext/` for new content types so E2E coverage includes them
+4. Verify E2E tests still pass (`pnpm test:e2e`) — add example usage in `examples/stackwright-docs/` for new content types so E2E coverage includes them
 
 The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the tables are out of sync.
 

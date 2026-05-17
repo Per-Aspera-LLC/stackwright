@@ -22,7 +22,7 @@ git clone https://github.com/Per-Aspera-LLC/stackwright.git
 cd stackwright
 pnpm install
 pnpm build
-pnpm dev:hellostackwright
+pnpm dev:hellostackwright   # starts examples/stackwright-docs/
 ```
 
 > **Tip:** Stackwright uses Turborepo for incremental builds. Use `pnpm turbo:build` for faster builds with caching.
@@ -270,18 +270,14 @@ Every Stackwright site comes with fuzzy full-text search out of the box. Press *
 
 The search index is generated at build time during prebuild — no external services required.
 
-### Adding Search to Your Site
+### Search Configuration
 
-The SearchModal is automatically included in the page layout. To customize the keyboard shortcut or trigger:
+Search is automatically included in every page that uses `DynamicPage` — no setup required. To customize the keyboard shortcut or placeholder text, add a `search` block to your `stackwright.yml`:
 
-```tsx
-// In your _app.tsx or layout
-import { SearchModal } from '@stackwright/core';
-
-<>
-  <YourApp />
-  <SearchModal shortcut="Cmd+K" placeholder="Search..." />
-</>
+```yaml
+search:
+  shortcut: "k"          # Key used with Cmd/Ctrl (default: "k")
+  placeholder: "Search..." # Input placeholder text
 ```
 
 ## Safe by Construction
@@ -324,7 +320,7 @@ function renderContent(item: ContentItem) {
 }
 ```
 
-For `@stackwright-pro/openapi`:
+For `@stackwright-pro/openapi` (Stackwright Pro — not included in this OSS release):
 
 | Protection | What It Prevents |
 |------------|-----------------|
@@ -358,7 +354,7 @@ For information about securing plugins and extensions, see [docs/PLUGIN_SECURITY
 
 ## Examples
 
-See `examples/hellostackwrightnext/` for a complete working site demonstrating all content types, the theme system, co-located images, and the full prebuild pipeline.
+See `examples/stackwright-docs/` for a complete working site demonstrating the theme system, co-located images, collections, and the full prebuild pipeline. Start it with `pnpm dev:hellostackwright`.
 
 ## Contributing
 

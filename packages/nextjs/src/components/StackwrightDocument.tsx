@@ -1,4 +1,5 @@
 import React from 'react';
+import path from 'path';
 import { Html, Head, Main, NextScript } from 'next/document';
 import { ColorModeScript } from '@stackwright/themes';
 
@@ -21,9 +22,11 @@ interface FontLinksData {
  */
 function getFontLinks(): FontLink[] {
   try {
-    // In Next.js, public files are served from the root, so stackwright-content
-    // is at /stackwright-content/_font-links.json
-    const fontLinksData = require('/stackwright-content/_font-links.json') as FontLinksData;
+    // Resolve relative to the project root — the prebuild writes this file to
+    // public/stackwright-content/_font-links.json
+    const fontLinksData = require(
+      path.join(process.cwd(), 'public', 'stackwright-content', '_font-links.json')
+    ) as FontLinksData;
     return fontLinksData?.links ?? [];
   } catch {
     // File doesn't exist or is invalid - backward compatibility
