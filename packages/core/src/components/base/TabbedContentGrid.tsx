@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { TabbedContent, ContentItem } from '@stackwright/types';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
@@ -8,6 +8,43 @@ import { useSafeTheme } from '../../hooks/useSafeTheme';
 export function TabbedContentGrid(content: TabbedContent) {
   const theme = useSafeTheme();
   const [value, setValue] = useState(0);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  /**
+   * Roving tabindex keyboard handler for the tablist.
+   * ArrowRight/Left: cycle through tabs and activate.
+   * Home/End: jump to first/last tab.
+   * This satisfies WCAG 2.1.1 (Keyboard) and the WAI-ARIA Tabs pattern.
+   */
+  const handleTabListKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const tabCount = content.tabs.length;
+      if (tabCount === 0) return;
+
+      let next: number | null = null;
+      switch (e.key) {
+        case 'ArrowRight':
+          next = (value + 1) % tabCount;
+          break;
+        case 'ArrowLeft':
+          next = (value - 1 + tabCount) % tabCount;
+          break;
+        case 'Home':
+          next = 0;
+          break;
+        case 'End':
+          next = tabCount - 1;
+          break;
+        default:
+          return;
+      }
+
+      e.preventDefault();
+      setValue(next);
+      tabRefs.current[next]?.focus();
+    },
+    [value, content.tabs.length]
+  );
 
   return (
     <div
@@ -46,6 +83,8 @@ export function TabbedContentGrid(content: TabbedContent) {
         >
           <div
             role="tablist"
+            aria-label={content.heading?.text ?? 'Tabs'}
+            onKeyDown={handleTabListKeyDown}
             style={{
               display: 'flex',
               justifyContent: 'center',
@@ -61,10 +100,14 @@ export function TabbedContentGrid(content: TabbedContent) {
               return (
                 <button
                   key={index}
+                  ref={(el) => {
+                    tabRefs.current[index] = el;
+                  }}
                   role="tab"
                   id={`tab-${index}`}
                   aria-controls={`tabpanel-${index}`}
                   aria-selected={isActive}
+                  tabIndex={isActive ? 0 : -1}
                   onClick={() => setValue(index)}
                   style={{
                     padding: `${theme.spacing.xs} ${theme.spacing.md}`,

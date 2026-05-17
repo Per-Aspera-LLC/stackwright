@@ -25,7 +25,7 @@ export async function generateSchemas() {
 
   await fs.writeJSON(path.join(outputDir, 'theme-schema.json'), themeSchema, { spaces: 2 });
 
-  await fs.writeJSON(path.join(outputDir, 'site-config-schema.json'), siteSchema, { spaces: 2 });
+  await fs.writeJSON(path.join(outputDir, 'siteconfig-schema.json'), siteSchema, { spaces: 2 });
 
   console.log('✅ Generated schemas in schemas/');
 }
