@@ -8,6 +8,8 @@ Stackwright is a typed DSL that compiles YAML content files into production-read
 
 Because the YAML schema defines a bounded set of expressible behaviors, every application built on Stackwright is **verifiably safe by construction**. You don't audit individual apps — you audit the platform. Then every app built on it inherits those guarantees.
 
+AI coding tools amplify whatever architectural decisions are already in place — good ones and bad ones equally. They're reliable at fixing syntax errors and equally reliable at propagating bad structural choices across an entire codebase at scale. Without a constrained framework, the quality floor on AI-generated code is effectively set by the least-experienced person on the team, and that floor gets re-negotiated from scratch on every project. Stackwright embeds expert judgment into the schema itself. The quality floor is set once, at the framework level, and every project built on it inherits it.
+
 ## Why Stackwright?
 
 - **Safe by construction**: The constrained YAML grammar can only express pre-approved behaviors. AI-generated content passes through Zod schema validation at build time and runtime — invalid states are rejected before they reach the browser
@@ -17,6 +19,9 @@ Because the YAML schema defines a bounded set of expressible behaviors, every ap
 - **Own everything**: The output is a standard Next.js app in a git repo you control. Git is the CMS — version history, branching, PR review, and rollback come free
 - **No lock-in**: Any React developer can open the project and extend it immediately. The escape hatch is a feature, not a compromise
 - **Graduate naturally**: Begin with YAML-driven pages, add custom React components alongside them as you grow — no migration, no rewrite
+
+## Quick Start
+
 ```bash
 git clone https://github.com/Per-Aspera-LLC/stackwright.git
 cd stackwright
@@ -26,6 +31,16 @@ pnpm dev:hellostackwright
 ```
 
 > **Tip:** Stackwright uses Turborepo for incremental builds. Use `pnpm turbo:build` for faster builds with caching.
+
+## Who Is This For?
+
+**Teams building with AI agents**: You want AI-generated content to be reviewable, validated, and safe — not arbitrary code that could do anything. The MCP server gives agents a typed interface; Zod validation rejects anything that doesn't conform at build time. The worst an AI agent can produce is a build failure, not a security incident.
+
+**Regulated-environment teams** (government, defense, healthcare, finance): You need auditability built in from the start, not layered on afterward. The Zod schemas define what is expressible — audit them once, and every application built on the platform inherits those guarantees. SBOMs are generated automatically on every build.
+
+**Non-technical stakeholders**: You can contribute content, launch pages, and iterate on designs by describing what you want to an AI agent — no developer required for content changes, no CMS login, no deployment pipeline to understand.
+
+**Engineering teams without a dedicated architect on every project**: Structural judgment is embedded in the schema. The framework rejects invalid states before they reach the browser. You don't need a senior architect reviewing every AI-generated output if the schema already encodes what valid output looks like.
 
 ## How It Works
 
@@ -286,6 +301,8 @@ import { SearchModal } from '@stackwright/core';
 
 ## Safe by Construction
 
+> The schema is the security policy. Every application built on Stackwright inherits the same guarantees — you audit the schema once, not each app individually.
+
 Stackwright's security model is called **Safe by Construction**.
 
 The mechanism is **The Bounded Contract**: a strict Zod schema defines exactly what is expressible. Every generated application **inherits** those guarantees — we call this **Verified Inheritance**. The schema is the parent class; every app is a derived type with the same safety properties.
@@ -344,13 +361,43 @@ For `@stackwright-pro/openapi`:
 | Malformed API data | Zod validates responses at runtime |
 | Schema drift | Generated TypeScript types stay in sync with Zod schemas |
 
+### SBOM Generation
+
+Stackwright automatically generates a Software Bill of Materials (SBOM) during every build in three formats:
+
+- **SPDX 2.3** — the NIST-recommended format for federal procurement
+- **CycloneDX 1.5** — widely supported in enterprise toolchains
+- **Stackwright Build Manifest** — a framework-level summary including schema versions, content type registry, and build metadata
+
+Output goes to `.stackwright/sbom/`. CLI commands:
+
+```bash
+pnpm stackwright -- sbom generate   # Regenerate SBOM
+pnpm stackwright -- sbom validate   # Validate SBOM schemas
+pnpm stackwright -- sbom diff       # Compare two builds
+```
+
+This supports CISA Secure by Design requirements and government/enterprise provenance tracking. Because the schema constrains what components can appear in a Stackwright application, the SBOM surface is well-bounded by construction.
+
+### Regulated Environments
+
+Because Stackwright constrains what is expressible at the schema level, a compliance reviewer can audit the Zod schemas once — not each application individually. Every app built on the platform is structurally identical in its safety properties. We call this **Verified Inheritance**: the schema is the parent type; every application is a derived type that inherits the same guarantees.
+
+This is architecturally different from scanning code after the fact. Post-hoc scanning tells you what a specific build contained at a point in time. Stackwright's model is a structural guarantee: invalid states are rejected before they reach the runtime, on every build, for every application on the platform.
+
+Practical implications for regulated environments:
+
+- A compliance reviewer audits the Zod schemas once — not App A, App B, and App C separately
+- New applications start compliant by construction, not by review
+- SBOM generation (see [SBOM Generation](#sbom-generation) above) provides dependency provenance on every build without manual intervention
+
+The constrained schema model is the core architectural decision — it wasn't added for compliance. Compliance is a consequence of a design that was always primarily about correctness.
+
 ### What This Doesn't Cover
 
 Stackwright constrains the YAML layer and generated clients. Custom React components (written outside the YAML layer) are standard Next.js — they're your code, and security responsibility is yours. The framework makes it easy to stay inside the safe path; it doesn't prevent you from stepping outside it.
 
 **Bottom line**: You audit the Zod schemas once. Every app built on the platform inherits those guarantees. This is "verifiable safe" — not "we scanned it and it looks okay."
-
-> **Why this matters for government and enterprise**: You audit the schema once. Every application built on Stackwright inherits those guarantees. This isn't "we scanned it afterward" — it's mathematical proof that invalid inputs cannot reach the runtime.
 
 ### Plugin Security
 
