@@ -811,6 +811,8 @@ Common issues and fixes:
 
 See `packages/e2e/TESTING_INFRASTRUCTURE.md` for detailed accessibility guide.
 
+> **CI browser scope:** In CI, the accessibility workflow runs **Chromium only** (Firefox/WebKit binaries are not installed in that job, by design). `Executable doesn't exist` errors for Firefox/WebKit in the a11y job logs are expected — not an infra gap. The job is non-blocking (`|| true`) so a11y issues are visible without blocking merges. To run a11y tests against all browsers locally, first run `pnpm --filter @stackwright/e2e exec playwright install` to install all binaries.
+
 ---
 
 ## Cross-Browser Testing
@@ -826,6 +828,8 @@ E2E tests run on multiple browsers and viewports in CI.
 | WebKit (Safari) | Desktop (1280×720), Mobile (375×667) | Ubuntu |
 
 **Total**: 6 test runs per PR (3 browsers × 2 viewports)
+
+> **Note:** This matrix is for the main E2E suite. The **accessibility tests** (`tests/a11y/`) run **Chromium only** in CI — see below.
 
 ### Running Cross-Browser Tests Locally
 

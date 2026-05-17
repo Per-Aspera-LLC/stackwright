@@ -36,13 +36,13 @@ async function hasFocusIndicator(element: Locator): Promise<boolean> {
   });
 
   // Check if any focus indicator is present
-  const hasOutline = styles.outlineStyle !== 'none' && 
-                     styles.outlineWidth !== '0px' &&
-                     parseFloat(styles.outlineWidth) > 0;
-  
-  const hasBoxShadow = styles.boxShadow !== 'none' && 
-                        !styles.boxShadow.includes('0px 0px 0px');
-  
+  const hasOutline =
+    styles.outlineStyle !== 'none' &&
+    styles.outlineWidth !== '0px' &&
+    parseFloat(styles.outlineWidth) > 0;
+
+  const hasBoxShadow = styles.boxShadow !== 'none' && !styles.boxShadow.includes('0px 0px 0px');
+
   return hasOutline || hasBoxShadow;
 }
 
@@ -101,7 +101,7 @@ for (const { path: pagePath, name } of PAGES) {
 
       // Get all interactive elements
       const interactiveElements = await getInteractiveElements(page);
-      
+
       if (interactiveElements.length === 0) {
         console.warn(`⚠️  No interactive elements found on ${name}`);
         return; // Skip test if no interactive elements
@@ -114,14 +114,14 @@ for (const { path: pagePath, name } of PAGES) {
       for (let i = 0; i < maxTabs; i++) {
         await page.keyboard.press('Tab');
         const focused = await getFocusedElement(page);
-        const tagName = await focused.evaluate(el => {
+        const tagName = await focused.evaluate((el) => {
           if (!el) return 'none';
           const tag = el.tagName.toLowerCase();
           const role = el.getAttribute('role');
           const type = el.getAttribute('type');
           return role ? `${tag}[role=${role}]` : type ? `${tag}[type=${type}]` : tag;
         });
-        
+
         focusedElements.push(tagName);
 
         // If we've cycled back to the start or hit body/html, we're done
@@ -131,13 +131,14 @@ for (const { path: pagePath, name } of PAGES) {
       }
 
       // Should have focused on at least some interactive elements
-      const interactiveTags = focusedElements.filter(tag => 
-        tag.startsWith('a') || 
-        tag.startsWith('button') || 
-        tag.startsWith('input') ||
-        tag.startsWith('select') ||
-        tag.startsWith('textarea') ||
-        tag.includes('[role=')
+      const interactiveTags = focusedElements.filter(
+        (tag) =>
+          tag.startsWith('a') ||
+          tag.startsWith('button') ||
+          tag.startsWith('input') ||
+          tag.startsWith('select') ||
+          tag.startsWith('textarea') ||
+          tag.includes('[role=')
       );
 
       expect(
@@ -155,31 +156,28 @@ for (const { path: pagePath, name } of PAGES) {
       await page.keyboard.press('Tab');
       await page.keyboard.press('Tab');
       await page.keyboard.press('Tab');
-      
+
       const forwardElement = await getFocusedElement(page);
-      const forwardTag = await forwardElement.evaluate(el => el?.tagName);
+      const forwardTag = await forwardElement.evaluate((el) => el?.tagName);
 
       // Tab backward
       await page.keyboard.press('Shift+Tab');
-      
+
       const backwardElement = await getFocusedElement(page);
-      const backwardTag = await backwardElement.evaluate(el => el?.tagName);
+      const backwardTag = await backwardElement.evaluate((el) => el?.tagName);
 
       // Should have moved to a different element
-      const forwardHtml = await forwardElement.evaluate(el => el?.outerHTML.substring(0, 100));
-      const backwardHtml = await backwardElement.evaluate(el => el?.outerHTML.substring(0, 100));
-      
-      expect(
-        forwardHtml !== backwardHtml,
-        'Shift+Tab should move focus backward'
-      ).toBe(true);
+      const forwardHtml = await forwardElement.evaluate((el) => el?.outerHTML.substring(0, 100));
+      const backwardHtml = await backwardElement.evaluate((el) => el?.outerHTML.substring(0, 100));
+
+      expect(forwardHtml !== backwardHtml, 'Shift+Tab should move focus backward').toBe(true);
     });
 
     test('Focus indicators are visible on all interactive elements', async ({ page }) => {
       await page.goto(pagePath, { waitUntil: 'networkidle' });
 
       const interactiveElements = await getInteractiveElements(page);
-      
+
       if (interactiveElements.length === 0) {
         console.warn(`⚠️  No interactive elements found on ${name}`);
         return;
@@ -195,25 +193,29 @@ for (const { path: pagePath, name } of PAGES) {
       for (const element of elementsToTest) {
         // Focus the element
         await element.focus();
-        
+
         // Wait a bit for focus styles to apply
         await page.waitForTimeout(50);
 
         // Check for focus indicator
         const hasIndicator = await hasFocusIndicator(element);
-        
+
         if (hasIndicator) {
           elementsWithFocusIndicator++;
         } else {
-          const tag = await element.evaluate(el => 
-            `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${el.className ? '.' + el.className.split(' ')[0] : ''}`
+          const tag = await element.evaluate(
+            (el) =>
+              `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}${el.className ? '.' + el.className.split(' ')[0] : ''}`
           );
           elementsMissingIndicator.push(tag);
         }
       }
 
       if (elementsMissingIndicator.length > 0) {
-        console.warn(`⚠️  ${name}: ${elementsMissingIndicator.length} elements missing focus indicators:`, elementsMissingIndicator);
+        console.warn(
+          `⚠️  ${name}: ${elementsMissingIndicator.length} elements missing focus indicators:`,
+          elementsMissingIndicator
+        );
       }
 
       // At least 70% of interactive elements should have visible focus indicators
@@ -223,14 +225,16 @@ for (const { path: pagePath, name } of PAGES) {
         `At least 70% of interactive elements should have visible focus indicators on ${name}`
       ).toBeGreaterThanOrEqual(70);
 
-      console.log(`✅ ${name}: ${elementsWithFocusIndicator}/${elementsToTest.length} elements have focus indicators (${percentage.toFixed(1)}%)`);
+      console.log(
+        `✅ ${name}: ${elementsWithFocusIndicator}/${elementsToTest.length} elements have focus indicators (${percentage.toFixed(1)}%)`
+      );
     });
 
     test('No keyboard traps exist on the page', async ({ page }) => {
       await page.goto(pagePath, { waitUntil: 'networkidle' });
 
       const interactiveElements = await getInteractiveElements(page);
-      
+
       if (interactiveElements.length === 0) {
         return; // Skip if no interactive elements
       }
@@ -244,7 +248,17 @@ for (const { path: pagePath, name } of PAGES) {
       for (let i = 0; i < maxTabs; i++) {
         await page.keyboard.press('Tab');
         const focused = await getFocusedElement(page);
-        const elementId = await focused.evaluate(el => {
+
+        // Native video/audio controls live in shadow DOM — document.activeElement
+        // always reports the media element itself while Tab moves through its
+        // internal controls, which falsely triggers the stuck-element detector.
+        const isNativeMedia = await focused.evaluate((el) => {
+          const tag = (el as HTMLElement).tagName;
+          return tag === 'VIDEO' || tag === 'AUDIO';
+        });
+        if (isNativeMedia) continue;
+
+        const elementId = await focused.evaluate((el) => {
           if (!el) return 'none';
           return el.outerHTML.substring(0, 100);
         });
@@ -254,7 +268,7 @@ for (const { path: pagePath, name } of PAGES) {
         // Check if we're stuck on the same element for 3+ tabs
         if (focusHistory.length >= 4) {
           const lastFour = focusHistory.slice(-4);
-          if (lastFour.every(id => id === lastFour[0])) {
+          if (lastFour.every((id) => id === lastFour[0])) {
             trapDetected = true;
             trapElement = elementId;
             break;
@@ -277,7 +291,7 @@ for (const { path: pagePath, name } of PAGES) {
       const inputs = await page.locator('input, select, textarea').all();
 
       const allElements = [...buttons, ...links, ...inputs];
-      
+
       if (allElements.length === 0) {
         console.warn(`⚠️  No interactive elements found on ${name}`);
         return;
@@ -295,28 +309,34 @@ for (const { path: pagePath, name } of PAGES) {
         try {
           await element.focus();
           await page.waitForTimeout(50);
-          
+
           const focused = await getFocusedElement(page);
-          const isFocused = await focused.evaluate((el, targetEl) => el === targetEl, await element.elementHandle());
-          
+          const isFocused = await focused.evaluate(
+            (el, targetEl) => el === targetEl,
+            await element.elementHandle()
+          );
+
           if (isFocused) {
             reachableCount++;
           } else {
-            const tag = await element.evaluate(el => 
-              `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}`
+            const tag = await element.evaluate(
+              (el) => `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}`
             );
             unreachableElements.push(tag);
           }
         } catch (e) {
-          const tag = await element.evaluate(el => 
-            `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}`
+          const tag = await element.evaluate(
+            (el) => `${el.tagName.toLowerCase()}${el.id ? '#' + el.id : ''}`
           );
           unreachableElements.push(tag);
         }
       }
 
       if (unreachableElements.length > 0) {
-        console.warn(`⚠️  ${name}: ${unreachableElements.length} elements not keyboard-reachable:`, unreachableElements);
+        console.warn(
+          `⚠️  ${name}: ${unreachableElements.length} elements not keyboard-reachable:`,
+          unreachableElements
+        );
       }
 
       // At least 90% should be reachable
@@ -326,7 +346,9 @@ for (const { path: pagePath, name } of PAGES) {
         `At least 90% of interactive elements should be keyboard-reachable on ${name}`
       ).toBeGreaterThanOrEqual(90);
 
-      console.log(`✅ ${name}: ${reachableCount}/${sample.length} interactive elements are keyboard-reachable (${percentage.toFixed(1)}%)`);
+      console.log(
+        `✅ ${name}: ${reachableCount}/${sample.length} interactive elements are keyboard-reachable (${percentage.toFixed(1)}%)`
+      );
     });
 
     test('Enter key activates focused buttons and links', async ({ page }) => {
@@ -347,11 +369,11 @@ for (const { path: pagePath, name } of PAGES) {
       }
 
       const button = visibleButtons[0];
-      
+
       // Focus and activate with Enter
       await button.focus();
       await page.keyboard.press('Enter');
-      
+
       // Small delay to allow any click handlers to execute
       await page.waitForTimeout(100);
 
@@ -378,11 +400,11 @@ for (const { path: pagePath, name } of PAGES) {
       }
 
       const button = visibleButtons[0];
-      
+
       // Focus and activate with Space
       await button.focus();
       await page.keyboard.press('Space');
-      
+
       // Small delay to allow any click handlers to execute
       await page.waitForTimeout(100);
 
@@ -399,24 +421,26 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
     // Press Tab to potentially reveal skip link
     await page.keyboard.press('Tab');
-    
+
     // Look for skip link (common patterns)
-    const skipLink = page.locator('a[href="#main"], a[href="#content"], a[href="#main-content"]').first();
-    
+    const skipLink = page
+      .locator('a[href="#main"], a[href="#content"], a[href="#main-content"]')
+      .first();
+
     if (await skipLink.isVisible()) {
       // Activate the skip link
       await skipLink.focus();
       await page.keyboard.press('Enter');
-      
+
       // Check that focus moved to main content
       const focused = await getFocusedElement(page);
-      const focusedId = await focused.evaluate(el => el?.id || '');
-      
+      const focusedId = await focused.evaluate((el) => el?.id || '');
+
       expect(
-        ['main', 'content', 'main-content'].some(id => focusedId.includes(id)),
+        ['main', 'content', 'main-content'].some((id) => focusedId.includes(id)),
         'Skip link should move focus to main content area'
       ).toBe(true);
-      
+
       console.log('✅ Skip link is functional');
     } else {
       console.warn('⚠️  No skip link found - consider adding one for better accessibility');
@@ -427,8 +451,10 @@ test.describe('Site-wide Keyboard Navigation', () => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
     // Look for any button that might open a modal/dialog
-    const modalTriggers = await page.locator('[aria-haspopup="dialog"], [data-modal], button:has-text("Open")').all();
-    
+    const modalTriggers = await page
+      .locator('[aria-haspopup="dialog"], [data-modal], button:has-text("Open")')
+      .all();
+
     if (modalTriggers.length === 0) {
       console.warn('⚠️  No modal triggers found to test');
       return;
@@ -441,7 +467,7 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
     // Look for modal/dialog
     const modal = page.locator('[role="dialog"], [role="alertdialog"], .modal').first();
-    
+
     if (await modal.isVisible()) {
       // Press Escape to close
       await page.keyboard.press('Escape');
@@ -450,7 +476,7 @@ test.describe('Site-wide Keyboard Navigation', () => {
       // Modal should be closed
       const stillVisible = await modal.isVisible().catch(() => false);
       expect(stillVisible, 'Modal should close when Escape is pressed').toBe(false);
-      
+
       console.log('✅ Modal closes with Escape key');
     } else {
       console.warn('⚠️  No modal appeared after clicking trigger');
@@ -461,15 +487,17 @@ test.describe('Site-wide Keyboard Navigation', () => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
     // Look for dropdown/menu triggers
-    const menuTriggers = await page.locator('[aria-haspopup="menu"], [role="button"][aria-expanded]').all();
-    
+    const menuTriggers = await page
+      .locator('[aria-haspopup="menu"], [role="button"][aria-expanded]')
+      .all();
+
     if (menuTriggers.length === 0) {
       console.warn('⚠️  No dropdown menus found to test');
       return;
     }
 
     const trigger = menuTriggers[0];
-    
+
     // Focus and activate with keyboard
     await trigger.focus();
     await page.keyboard.press('Enter');
@@ -477,10 +505,10 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
     // Menu should be open - press Arrow Down to navigate
     await page.keyboard.press('ArrowDown');
-    
+
     const focused = await getFocusedElement(page);
-    const focusedRole = await focused.evaluate(el => el?.getAttribute('role'));
-    
+    const focusedRole = await focused.evaluate((el) => el?.getAttribute('role'));
+
     // Should have focused on a menu item
     expect(
       focusedRole === 'menuitem' || focusedRole === 'option',
@@ -496,7 +524,7 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
     // Look for tab elements
     const tabs = await page.locator('[role="tab"]').all();
-    
+
     if (tabs.length < 2) {
       console.warn('⚠️  No tab interface found to test');
       return;
@@ -508,18 +536,15 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
     // Get the aria-selected state
     const firstSelected = await tabs[0].getAttribute('aria-selected');
-    
+
     // Press ArrowRight to move to next tab
     await page.keyboard.press('ArrowRight');
     await page.waitForTimeout(100);
 
     // Check if the second tab is now selected
     const secondSelected = await tabs[1].getAttribute('aria-selected');
-    
-    expect(
-      secondSelected,
-      'Arrow keys should switch between tabs'
-    ).toBe('true');
+
+    expect(secondSelected, 'Arrow keys should switch between tabs').toBe('true');
 
     console.log('✅ Tab panels are keyboard navigable with arrow keys');
   });
@@ -534,8 +559,8 @@ test.describe('Site-wide Keyboard Navigation', () => {
     for (let i = 0; i < maxTabs; i++) {
       await page.keyboard.press('Tab');
       const focused = await getFocusedElement(page);
-      
-      const isVisible = await focused.evaluate(el => {
+
+      const isVisible = await focused.evaluate((el) => {
         if (!el || el === document.body || el === document.documentElement) return true;
         const rect = el.getBoundingClientRect();
         const style = window.getComputedStyle(el);
@@ -553,10 +578,7 @@ test.describe('Site-wide Keyboard Navigation', () => {
       }
     }
 
-    expect(
-      hiddenFocusCount,
-      'Focus should never land on hidden elements'
-    ).toBe(0);
+    expect(hiddenFocusCount, 'Focus should never land on hidden elements').toBe(0);
 
     console.log('✅ Focus never lands on hidden elements');
   });
@@ -566,10 +588,11 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
     // Get all elements in DOM order
     const domOrder = await page.evaluate(() => {
-      const interactiveSelector = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+      const interactiveSelector =
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
       const elements = Array.from(document.querySelectorAll(interactiveSelector));
       return elements
-        .filter(el => {
+        .filter((el) => {
           const style = window.getComputedStyle(el);
           return style.display !== 'none' && style.visibility !== 'hidden';
         })
@@ -583,12 +606,11 @@ test.describe('Site-wide Keyboard Navigation', () => {
 
     // Elements with tabindex="0" or no tabindex should generally appear in DOM order
     // Elements with tabindex > 0 are discouraged (anti-pattern)
-    const positiveTabindexElements = domOrder.filter(el => el.tabindex > 0);
-    
-    expect(
-      positiveTabindexElements.length,
-      'Should avoid using tabindex > 0 (anti-pattern)'
-    ).toBe(0);
+    const positiveTabindexElements = domOrder.filter((el) => el.tabindex > 0);
+
+    expect(positiveTabindexElements.length, 'Should avoid using tabindex > 0 (anti-pattern)').toBe(
+      0
+    );
 
     console.log('✅ Tab order follows logical DOM order');
   });
@@ -601,7 +623,7 @@ test.describe('Common Component Keyboard Support', () => {
 
     // Look for carousel controls
     const carousel = page.locator('[role="region"][aria-label*="carousel" i]').first();
-    
+
     if (!(await carousel.isVisible().catch(() => false))) {
       console.warn('⚠️  No carousel found to test');
       return;
@@ -609,17 +631,25 @@ test.describe('Common Component Keyboard Support', () => {
 
     // Look for next/previous buttons
     const nextButton = page.locator('button[aria-label*="next" i]').first();
-    const prevButton = page.locator('button[aria-label*="previous" i], button[aria-label*="prev" i]').first();
+    const prevButton = page
+      .locator('button[aria-label*="previous" i], button[aria-label*="prev" i]')
+      .first();
 
     if (await nextButton.isVisible()) {
       await nextButton.focus();
       await page.keyboard.press('Enter');
       await page.waitForTimeout(300);
-      
+
       console.log('✅ Carousel can be navigated with keyboard');
       expect(true).toBe(true);
     } else {
-      console.warn('⚠️  Carousel found but no keyboard-accessible controls');
+      // ArrowButton only renders when there are more items than fit at the
+      // current viewport width (scrollAndButtonsEnabled in the component).
+      // When all slides are visible, no navigation buttons are shown —
+      // this is correct, intentional behavior, not a missing-control bug.
+      console.log(
+        'ℹ️  Carousel: all items visible at this viewport — navigation buttons correctly omitted'
+      );
     }
   });
 
@@ -628,8 +658,10 @@ test.describe('Common Component Keyboard Support', () => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
     // Look for accordion elements
-    const accordionButtons = await page.locator('button[aria-expanded], [role="button"][aria-expanded]').all();
-    
+    const accordionButtons = await page
+      .locator('button[aria-expanded], [role="button"][aria-expanded]')
+      .all();
+
     if (accordionButtons.length === 0) {
       console.warn('⚠️  No accordion found to test');
       return;
@@ -637,18 +669,15 @@ test.describe('Common Component Keyboard Support', () => {
 
     const button = accordionButtons[0];
     const initialState = await button.getAttribute('aria-expanded');
-    
+
     // Toggle with keyboard
     await button.focus();
     await page.keyboard.press('Enter');
     await page.waitForTimeout(200);
-    
+
     const newState = await button.getAttribute('aria-expanded');
-    
-    expect(
-      newState !== initialState,
-      'Accordion should toggle when Enter is pressed'
-    ).toBe(true);
+
+    expect(newState !== initialState, 'Accordion should toggle when Enter is pressed').toBe(true);
 
     console.log('✅ Accordion is keyboard operable');
   });

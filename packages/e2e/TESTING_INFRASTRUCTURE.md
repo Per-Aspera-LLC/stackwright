@@ -405,6 +405,20 @@ pnpm --filter @stackwright/e2e exec playwright test a11y/keyboard-navigation.spe
 pnpm --filter @stackwright/e2e exec playwright test tests/a11y/
 ```
 
+#### CI Browser Scope
+
+> **By design:** The accessibility CI workflow runs **Chromium only** — Firefox, WebKit, and Mobile Safari browser binaries are intentionally not installed in the a11y job. This keeps the job fast (no ~200MB browser downloads) while still catching the vast majority of WCAG issues, which are framework-level rather than browser-specific.
+>
+> If you see `browserType.launch: Executable doesn't exist` errors for Firefox or WebKit in the a11y job logs, **this is expected** — not an infrastructure gap.
+>
+> The a11y job is also **non-blocking** (`|| true`) — it reports issues without failing the pipeline, giving us visibility without blocking merges on a11y-in-progress work.
+>
+> To run a11y tests against all browsers locally:
+> ```bash
+> pnpm --filter @stackwright/e2e exec playwright install   # installs all browsers
+> pnpm --filter @stackwright/e2e exec playwright test tests/a11y/
+> ```
+
 ---
 
 ### Performance Benchmarks
@@ -593,6 +607,7 @@ All tests run automatically in GitHub Actions on every PR.
 | `coverage.yml` | Push to PR | Coverage report | ❌ No |
 | `visual-regression.yml` | Push to PR | Visual tests | ✅ Yes |
 | `e2e.yml` | Push to PR | Full E2E suite | ✅ Yes |
+| `accessibility.yml` | Push to PR | WCAG + keyboard (Chromium only, non-blocking) | ❌ No |
 
 ### Test Matrix
 
@@ -603,6 +618,8 @@ E2E tests run on multiple browsers and OSes:
 - **Viewports**: Desktop (1280x720), Mobile (375x667)
 
 **Total**: 6 test runs per PR (3 browsers × 2 viewports)
+
+> **Note:** The above matrix applies to the main E2E suite (`e2e.yml`). The **accessibility workflow** (`accessibility.yml`) runs **Chromium only** by design — see [Accessibility Testing → CI Browser Scope](#ci-browser-scope) for details.
 
 ### CI Performance
 
