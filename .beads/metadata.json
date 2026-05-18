@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "stackwright",
+  "project_id": "5bb02149-de84-4af3-ada5-7e9ad8f00e7a"
+}
