@@ -54,7 +54,7 @@ content:
             src: ShieldCheck
             height: 48
           heading: "Safe by Construction"
-          description: "Zod schemas enforce correctness at build time and runtime. Invalid states are rejected before reaching the browser."
+          description: "Zod schemas enforce correctness at build time and runtime. Invalid states are rejected before reaching the browser. SBOMs are generated automatically on every build."
         - icon:
             type: icon
             src: Zap
@@ -80,6 +80,22 @@ content:
           heading: "MCP Integration"
           description: "20+ tools via Model Context Protocol. AI agents create pages, validate schemas, render previews, and open PRs."
       background: surface
+
+    - type: text_block
+      label: who-is-this-for
+      heading:
+        text: "Who Is This For?"
+        textSize: h2
+      textBlocks:
+        - text: "**Teams building with AI agents** — You want AI-generated content to be reviewable, validated, and safe. The MCP server gives agents a typed interface; Zod validation rejects anything that doesn't conform at build time. The worst an AI agent can produce is a build failure, not a security incident."
+          textSize: body1
+        - text: "**Regulated-environment teams** (government, defense, healthcare, finance) — You need auditability built in from the start, not layered on afterward. Audit the Zod schemas once; every application on the platform inherits those guarantees. SBOMs are generated automatically on every build."
+          textSize: body1
+        - text: "**Non-technical stakeholders** — Contribute content, launch pages, and iterate on designs by describing what you want to an AI agent. No developer required for content changes."
+          textSize: body1
+        - text: "**Engineering teams without a dedicated architect on every project** — Structural judgment is embedded in the schema. The framework rejects invalid states before they reach the browser."
+          textSize: body1
+      background: background
 
     # 3. Quick Install
     - type: main
