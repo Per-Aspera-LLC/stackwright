@@ -111,3 +111,27 @@ export function resolveColor(colorValue: string, themeColors: Record<string, str
   }
   return themeColors[colorValue] || colorValue;
 }
+
+/**
+ * Returns the candidate color with the highest contrast ratio against
+ * the given background color. Falls back to the first candidate if the
+ * array is empty or all candidates are invalid hex strings.
+ *
+ * Unlike getBetterTextColor (which only compares two options), this
+ * function accepts any number of candidates — useful when you want to
+ * include absolute fallbacks like '#ffffff' and '#000000' alongside
+ * theme-specific text colors to guarantee WCAG AA compliance.
+ */
+export function getHighContrastTextColor(backgroundColor: string, candidates: string[]): string {
+  if (candidates.length === 0) return '#000000';
+  let best = candidates[0];
+  let bestRatio = 0;
+  for (const candidate of candidates) {
+    const ratio = getContrastRatio(candidate, backgroundColor);
+    if (ratio > bestRatio) {
+      bestRatio = ratio;
+      best = candidate;
+    }
+  }
+  return best;
+}

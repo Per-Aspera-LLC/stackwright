@@ -5,6 +5,7 @@ import {
   getBetterTextColor,
   getHoverColor,
   resolveColor,
+  getHighContrastTextColor,
 } from '../../src/utils/colorUtils';
 
 describe('getContrastRatio', () => {
@@ -153,5 +154,48 @@ describe('resolveColor', () => {
     expect(resolveColor(123 as unknown as string, themeColors)).toBe('transparent');
     expect(consoleSpy).toHaveBeenCalled();
     consoleSpy.mockRestore();
+  });
+});
+
+describe('getHighContrastTextColor', () => {
+  it('returns black over mid-grey on a light background', () => {
+    // #000000 has much higher contrast on white than #888888
+    const result = getHighContrastTextColor('#ffffff', ['#888888', '#000000']);
+    expect(result).toBe('#000000');
+  });
+
+  it('returns white over mid-grey on a dark background', () => {
+    // #ffffff has much higher contrast on near-black than #888888
+    const result = getHighContrastTextColor('#1a1a2e', ['#888888', '#ffffff']);
+    expect(result).toBe('#ffffff');
+  });
+
+  it('picks the best from four candidates including theme colors', () => {
+    // On a mid-blue background, black and white both have good contrast;
+    // white should win as it has higher contrast on #1565c0
+    const result = getHighContrastTextColor('#1565c0', [
+      '#1f2937', // dark theme text
+      '#6b7280', // secondary theme text
+      '#ffffff',
+      '#000000',
+    ]);
+    // white (#ffffff) should have higher contrast on a dark blue than black
+    expect(result).toBe('#ffffff');
+  });
+
+  it('returns the single candidate when only one is provided', () => {
+    const result = getHighContrastTextColor('#ffffff', ['#ff0000']);
+    expect(result).toBe('#ff0000');
+  });
+
+  it('returns #000000 fallback for an empty candidates array', () => {
+    const result = getHighContrastTextColor('#ffffff', []);
+    expect(result).toBe('#000000');
+  });
+
+  it('returns the best valid candidate even when some are invalid hex', () => {
+    // 'notacolor' will return getContrastRatio of 1 (invalid), so '#000000' wins
+    const result = getHighContrastTextColor('#ffffff', ['notacolor', '#000000']);
+    expect(result).toBe('#000000');
   });
 });

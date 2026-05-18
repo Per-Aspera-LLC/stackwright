@@ -56,12 +56,16 @@ sidebar:
 
 footer:
   backgroundColor: "primary"
-  textColor: "text"
+  textColor: "#1A1A2E"
   links:
     - label: "🦦 Built with StackWright 🦦"
       href: "https://github.com/Per-Aspera-LLC/stackwright"
     - label: "Source for this Site"
       href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/stackwright-docs"
+    - label: "Terms"
+      href: "/terms-and-conditions"
+    - label: "Privacy Policy"
+      href: "/privacy-policy"
 
 customTheme:
   id: "stackwright-docs"
