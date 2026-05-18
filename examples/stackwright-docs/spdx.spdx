@@ -1,11 +1,11 @@
 SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
-SPDXID: SPDXRef-DOCUMENT-4daafef0
-DocumentName: stackwright-docs@0.1.6-alpha.3
-DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-05-15T14:03:57.117Z
+SPDXID: SPDXRef-DOCUMENT-2772c13f
+DocumentName: stackwright-docs@0.1.6
+DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-05-18T16:22:20.091Z
 
 CreationInfo:
-  Created: 2026-05-15T14:03:57.117Z
+  Created: 2026-05-18T16:22:20.091Z
   Creator: Tool: @stackwright/sbom-generator
   Creator: Tool-Version: 0.0.0
 
@@ -123,13 +123,13 @@ ExternalRef: PACKAGE-MANAGER purl pkg:npm/react-dom@19.2.4
 
 PackageName: tailwind-merge
 SPDXID: SPDXRef-Package-tailwind-merge
-PackageVersion: 3.5.0
+PackageVersion: 3.6.0
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: 039d2e92d475e4268b1babe22545c8cc507d46e9fc09aacaa75ee5925b885a10
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@3.5.0
+PackageChecksum: SHA256: 084c7514e672a9283e7a4bf1c162bf248d481e0aac75ffe397d8763082a57852
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@3.6.0
 
-Relationship: SPDXRef-DOCUMENT-4daafef0 DESCRIBES SPDXRef-Package-clsx
+Relationship: SPDXRef-DOCUMENT-2772c13f DESCRIBES SPDXRef-Package-clsx
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-accordion
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-slot
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-tabs

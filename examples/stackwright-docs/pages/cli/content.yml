@@ -1,7 +1,7 @@
 content:
   meta:
-    title: "CLI Reference | Stackwright"
-    description: "All Stackwright CLI commands — scaffolding, page management, validation, rendering, and builds."
+    title: "CLI Reference | StackWright"
+    description: "All StackWright CLI commands — scaffolding, page management, validation, rendering, and builds."
   content_items:
     # Hero
     - type: main
@@ -21,7 +21,7 @@ content:
         text: "Installation"
         textSize: h2
       textBlocks:
-        - text: "Stackwright CLI comes bundled with @stackwright/cli. If you scaffolded with launch-stackwright, it's already installed."
+        - text: "StackWright CLI comes bundled with @StackWright/cli. If you scaffolded with launch-StackWright, it's already installed."
           textSize: body1
       background: surface
 
@@ -30,11 +30,11 @@ content:
       language: bash
       lineNumbers: false
       code: |
-        # Already installed via launch-stackwright
-        npx launch-stackwright my-site
+        # Already installed via launch-StackWright
+        npx launch-StackWright my-site
 
         # Or add to an existing project
-        pnpm add @stackwright/cli
+        pnpm add @StackWright/cli
       background: surface
 
     # Page Commands
@@ -44,7 +44,7 @@ content:
         text: "Page Commands"
         textSize: h2
       textBlocks:
-        - text: "Create, list, and manage pages in your Stackwright site."
+        - text: "Create, list, and manage pages in your StackWright site."
           textSize: body1
       background: background
 
@@ -54,13 +54,13 @@ content:
       lineNumbers: false
       code: |
         # Add a new page
-        pnpm stackwright page add about --heading "About Us"
+        pnpm StackWright page add about --heading "About Us"
 
         # List all pages
-        pnpm stackwright page list
+        pnpm StackWright page list
 
         # Remove a page
-        pnpm stackwright page remove about
+        pnpm StackWright page remove about
       background: background
 
     # Validate Commands
@@ -80,10 +80,10 @@ content:
       lineNumbers: false
       code: |
         # Validate all pages
-        pnpm stackwright validate
+        pnpm StackWright validate
 
         # Validate a specific page
-        pnpm stackwright validate pages/about/content.yml
+        pnpm StackWright validate pages/about/content.yml
       background: surface
 
     # Theme Commands
@@ -93,7 +93,7 @@ content:
         text: "Theme Management"
         textSize: h2
       textBlocks:
-        - text: "Preview and switch between themes. Custom themes are defined in stackwright.yml."
+        - text: "Preview and switch between themes. Custom themes are defined in StackWright.yml."
           textSize: body1
       background: background
 
@@ -103,10 +103,10 @@ content:
       lineNumbers: false
       code: |
         # List available themes
-        pnpm stackwright theme list
+        pnpm StackWright theme list
 
         # Preview a theme
-        pnpm stackwright theme preview my-theme
+        pnpm StackWright theme preview my-theme
       background: background
 
     # Render Commands
@@ -126,10 +126,10 @@ content:
       lineNumbers: false
       code: |
         # Render a specific page
-        pnpm stackwright render /about --width 1280 --height 720
+        pnpm StackWright render /about --width 1280 --height 720
 
         # Render all pages
-        pnpm stackwright render --all
+        pnpm StackWright render --all
       background: surface
 
     # Build Commands
@@ -163,7 +163,7 @@ content:
       label: mcp-note
       variant: tip
       title: "MCP Server"
-      body: "The Stackwright MCP server exposes CLI commands as tools. AI agents call validate, render, and page-add through the protocol — no terminal needed."
+      body: "The StackWright MCP server exposes CLI commands as tools. AI agents call validate, render, and page-add through the protocol — no terminal needed."
       background: surface
 
     # Quick Reference

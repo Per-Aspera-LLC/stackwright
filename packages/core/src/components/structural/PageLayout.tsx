@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import TopAppBar from './TopAppBar';
 import { PageContent, SiteConfig, PageSidebar } from '@stackwright/types';
 import BottomAppBar from './BottomAppBar';
@@ -71,11 +71,26 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
   const config = siteConfig || defaultSiteConfig;
   const backgroundColor = theme.colors.background;
 
+  const layoutRef = useRef<HTMLDivElement>(null);
+  const [topBarHeight, setTopBarHeight] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !layoutRef.current) return;
+    const header = layoutRef.current.querySelector('header');
+    if (!header) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setTopBarHeight(entry.contentRect.height);
+    });
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, []);
+
   // Resolve sidebar: page-level override > site-level default
   const resolvedSidebar = resolveSidebarConfig(pageContent.content.navSidebar, config.sidebar);
 
   return (
     <div
+      ref={layoutRef}
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -149,15 +164,19 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
             mobileBreakpoint={resolvedSidebar.mobileBreakpoint}
             backgroundColor={resolvedSidebar.backgroundColor}
             textColor={resolvedSidebar.textColor}
+            topOffset={topBarHeight}
           />
         )}
 
-        <main id="main-content" style={{ flex: 1, minWidth: 0, backgroundColor }}>
-          {renderContent(pageContent, { contentItemsOnly: true })}
-        </main>
-      </div>
+        {/* Content column: main grows to fill space, footer sits at the bottom */}
+        <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+          <main id="main-content" style={{ flex: 1, backgroundColor }}>
+            {renderContent(pageContent, { contentItemsOnly: true })}
+          </main>
 
-      <BottomAppBar footer={config.footer} />
+          <BottomAppBar footer={config.footer} />
+        </div>
+      </div>
 
       {/* Search Modal - Cmd+K to open */}
       <SearchModal placeholder={config.search?.placeholder} shortcut={config.search?.shortcut} />

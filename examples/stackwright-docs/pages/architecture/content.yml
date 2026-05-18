@@ -1,38 +1,7 @@
 content:
-  navSidebar:
-    navigation:
-      - label: "📖 Documentation"
-        href: /getting-started
-        children:
-          - label: "🚀 Getting Started"
-            href: /getting-started
-          - label: "📦 Content Types"
-            href: /content-types
-          - label: "🏗️ Architecture"
-            href: /architecture
-          - label: "⌨️ CLI Reference"
-            href: /cli
-      - label: "🤖 AI Agents"
-        href: /otter-raft
-        children:
-          - label: "🤖 Otter Raft"
-            href: /otter-raft
-          - label: "🔐 Pro"
-            href: /pro
-      - label: "📜 Legal"
-        href: /acknowledgements
-        children:
-          - label: "🙏 Acknowledgements"
-            href: /acknowledgements
-          - label: "🔒 Privacy Policy"
-            href: /privacy-policy
-          - label: "📝 Terms of Service"
-            href: /terms-of-service
-      - label: "🧪 Showcase"
-        href: /showcase
   meta:
-    title: Architecture | Stackwright
-    description: How Stackwright compiles YAML into production Next.js apps. Technical deep-dive.
+    title: Architecture | StackWright
+    description: How StackWright compiles YAML into production Next.js apps. Technical deep-dive.
   content_items:
   - type: main
     label: hero
@@ -40,7 +9,7 @@ content:
       text: Architecture 🏗️
       textSize: h1
     textBlocks:
-    - text: Stackwright is a typed DSL that compiles YAML into production-ready Next.js applications.
+    - text: StackWright is a typed DSL that compiles YAML into production-ready Next.js applications.
       textSize: h3
     - text: Visual rendering + constrained grammar + AI iteration = non-technical people building enterprise apps that are safe by construction.
       textSize: body1
@@ -51,21 +20,21 @@ content:
       text: The Big Picture
       textSize: h2
     textBlocks:
-    - text: 'Stackwright transforms your intent into a working app through a predictable pipeline:'
+    - text: 'StackWright transforms your intent into a working app through a predictable pipeline:'
       textSize: body1
     background: background
   - type: code_block
     label: big-picture-diagram
     language: text
     lineNumbers: false
-    code: "┌─────────────────────────────────────────────────────────────────────────┐\n│                         STACKWRIGHT PIPELINE                            │\n└─────────────────────────────────────────────────────────────────────────┘\n┌──────────┐      ┌──────────┐      ┌──────────┐      ┌──────────┐\n│  YOUR    │      │PREBUILD  │      │  JSON    │      │ NEXT.js  │\n│  YAMl    │ ───▶ │          │ ───▶ │  DATA    │ ───▶ │          │\n│  FILES   │      │ compiles │      │  (static)│      │  SSG     │\n└──────────┘      └──────────┘      └──────────┘      └────┬─────┘\n                                                              │\n                                                              ▼\n                    ┌──────────────────────────────────────────────────────────┐\n                    │                        OUTPUT                           │\n                    │  ┌──────────┐   ┌──────────┐   ┌──────────┐             │\n                    │  │  Static  │   │ Theme    │   │ Typed    │             │\n                    │  │  HTML    │ + │ CSS      │ + │ React    │ = \U0001F680 Fast   │\n                    │  └──────────┘   └──────────┘   └──────────┘   Web Apps   │\n                    └──────────────────────────────────────────────────────────┘"
+    code: "┌─────────────────────────────────────────────────────────────────────────┐\n│                         StackWright PIPELINE                            │\n└─────────────────────────────────────────────────────────────────────────┘\n┌──────────┐      ┌──────────┐      ┌──────────┐      ┌──────────┐\n│  YOUR    │      │PREBUILD  │      │  JSON    │      │ NEXT.js  │\n│  YAMl    │ ───▶ │          │ ───▶ │  DATA    │ ───▶ │          │\n│  FILES   │      │ compiles │      │  (static)│      │  SSG     │\n└──────────┘      └──────────┘      └──────────┘      └────┬─────┘\n                                                              │\n                                                              ▼\n                    ┌──────────────────────────────────────────────────────────┐\n                    │                        OUTPUT                           │\n                    │  ┌──────────┐   ┌──────────┐   ┌──────────┐             │\n                    │  │  Static  │   │ Theme    │   │ Typed    │             │\n                    │  │  HTML    │ + │ CSS      │ + │ React    │ = \U0001F680 Fast   │\n                    │  └──────────┘   └──────────┘   └──────────┘   Web Apps   │\n                    └──────────────────────────────────────────────────────────┘"
   - type: text_block
     label: flow-heading
     heading:
       text: Data Flow
       textSize: h2
     textBlocks:
-    - text: 'Here''s what happens when you build a Stackwright site:'
+    - text: 'Here''s what happens when you build a StackWright site:'
       textSize: body1
     background: background
   - type: code_block
@@ -137,7 +106,7 @@ content:
     label: no-runtime-fs
     variant: info
     title: No Runtime Filesystem
-    body: The JSON is pre-generated at build time. Next.js serves static files — no fs.readFile at runtime. This makes Stackwright apps compatible with edge functions, CDN hosting, and serverless environments.
+    body: The JSON is pre-generated at build time. Next.js serves static files — no fs.readFile at runtime. This makes StackWright apps compatible with edge functions, CDN hosting, and serverless environments.
     background: surface
   - type: text_block
     label: packages-heading
@@ -145,7 +114,7 @@ content:
       text: Package Architecture
       textSize: h2
     textBlocks:
-    - text: 'Stackwright is a pnpm monorepo with 10 packages. Here''s how they relate:'
+    - text: 'StackWright is a pnpm monorepo with 10 packages. Here''s how they relate:'
       textSize: body1
     background: background
   - type: code_block
@@ -166,7 +135,7 @@ content:
     label: file-structure-tree
     language: text
     lineNumbers: false
-    code: "stackwright/\n├── packages/\n│   ├── core/                    # YAML→React engine\n│   │   └── src/\n│   │       ├── components/      # React components\n│   │       │   ├── base/        # Content types\n│   │       │   ├── structural/  # Layout (PageLayout, NavSidebar)\n│   │       │   ├── narrative/   # Carousel, Timeline\n│   │       │   └── content/     # Map, etc.\n│   │       ├── config/         # Default config\n│   │       └── utils/          # Registries, renderers\n│   │\n│   ├── types/                  # Zod schemas, TypeScript types\n│   │   └── src/\n│   │       ├── types/          # Content schemas\n│   │       └── schemas/         # JSON schemas\n│   │\n│   ├── nextjs/                 # Next.js adapter\n│   │   └── src/components/     # NextImage, NextLink, etc.\n│   │\n│   ├── themes/                 # Theme system\n│   │   └── src/ThemesProvider.tsx\n│   │\n│   ├── build-scripts/          # Prebuild pipeline\n│   │   └── src/\n│   │       ├── prebuild.ts     # Main entry\n│   │       └── ...             # Transformers\n│   │\n│   ├── cli/                    # Developer CLI\n│   │   └── src/commands/       # init, validate, etc.\n│   │\n│   ├── mcp/                    # MCP server\n│   │   └── src/tools/           # AI authoring tools\n│   │\n│   ├── icons/                  # Icon registry\n│   │   └── src/registry.ts\n│   │\n│   └── ui-shadcn/              # Radix + Tailwind\n│       └── src/components/\n│\n└── examples/\n    └── stackwright-docs/        # This documentation site\n        ├── pages/              # YAML page files\n        │   ├── index/\n        │   ├── getting-started/\n        │   ├── content-types/\n        │   └── ...\n        ├── stackwright.yml     # Theme config\n        └── public/\n            └── images/         # Co-located images"
+    code: "StackWright/\n├── packages/\n│   ├── core/                    # YAML→React engine\n│   │   └── src/\n│   │       ├── components/      # React components\n│   │       │   ├── base/        # Content types\n│   │       │   ├── structural/  # Layout (PageLayout, NavSidebar)\n│   │       │   ├── narrative/   # Carousel, Timeline\n│   │       │   └── content/     # Map, etc.\n│   │       ├── config/         # Default config\n│   │       └── utils/          # Registries, renderers\n│   │\n│   ├── types/                  # Zod schemas, TypeScript types\n│   │   └── src/\n│   │       ├── types/          # Content schemas\n│   │       └── schemas/         # JSON schemas\n│   │\n│   ├── nextjs/                 # Next.js adapter\n│   │   └── src/components/     # NextImage, NextLink, etc.\n│   │\n│   ├── themes/                 # Theme system\n│   │   └── src/ThemesProvider.tsx\n│   │\n│   ├── build-scripts/          # Prebuild pipeline\n│   │   └── src/\n│   │       ├── prebuild.ts     # Main entry\n│   │       └── ...             # Transformers\n│   │\n│   ├── cli/                    # Developer CLI\n│   │   └── src/commands/       # init, validate, etc.\n│   │\n│   ├── mcp/                    # MCP server\n│   │   └── src/tools/           # AI authoring tools\n│   │\n│   ├── icons/                  # Icon registry\n│   │   └── src/registry.ts\n│   │\n│   └── ui-shadcn/              # Radix + Tailwind\n│       └── src/components/\n│\n└── examples/\n    └── StackWright-docs/        # This documentation site\n        ├── pages/              # YAML page files\n        │   ├── index/\n        │   ├── getting-started/\n        │   ├── content-types/\n        │   └── ...\n        ├── StackWright.yml     # Theme config\n        └── public/\n            └── images/         # Co-located images"
   - type: text_block
     label: package-details-heading
     heading:
@@ -187,7 +156,7 @@ content:
         height: 40
         label: core-icon
       heading: '@stackwright/core'
-      description: '**The engine.** YAML→React compilation, component registry, content rendering, hooks, utilities. Exports: `renderContent()`, `stackwrightRegistry`, `registerComponent()`.'
+      description: '**The engine.** YAML→React compilation, component registry, content rendering, hooks, utilities. Exports: `renderContent()`, `StackWrightRegistry`, `registerComponent()`.'
     - icon:
         type: icon
         src: Layers
@@ -201,14 +170,14 @@ content:
         height: 40
         label: nextjs-icon
       heading: '@stackwright/nextjs'
-      description: '**The adapter.** Next.js-specific components: `StackwrightImage`, `StackwrightLink`, `createStackwrightNextConfig()`. Handles App Router and Pages Router.'
+      description: '**The adapter.** Next.js-specific components: `StackWrightImage`, `StackWrightLink`, `createStackWrightNextConfig()`. Handles App Router and Pages Router.'
     - icon:
         type: icon
         src: Palette
         height: 40
         label: themes-icon
       heading: '@stackwright/themes'
-      description: '**The skin.** CSS custom properties theming, `ThemeProvider`, `ColorModeScript` for dark mode. Your stackwright.yml colors become CSS variables.'
+      description: '**The skin.** CSS custom properties theming, `ThemeProvider`, `ColorModeScript` for dark mode. Your StackWright.yml colors become CSS variables.'
     - icon:
         type: icon
         src: Hammer
@@ -222,7 +191,7 @@ content:
         height: 40
         label: cli-icon
       heading: '@stackwright/cli'
-      description: '**The CLI.** `npx launch-stackwright`, `stackwright validate`, `stackwright preview`. Developer interface for scaffolding and testing.'
+      description: '**The CLI.** `npx launch-StackWright`, `StackWright validate`, `StackWright preview`. Developer interface for scaffolding and testing.'
     - icon:
         type: icon
         src: Bot
@@ -270,7 +239,7 @@ content:
       text: Safe by Construction
       textSize: h2
     textBlocks:
-    - text: 'Stackwright''s constrained grammar creates a fundamentally different security posture:'
+    - text: 'StackWright''s constrained grammar creates a fundamentally different security posture:'
       textSize: body1
     background: background
   - type: feature_list
@@ -298,7 +267,7 @@ content:
         height: 40
         label: auditable-icon
       heading: Auditable Surface Area
-      description: Security review reduces to reviewing the component library — a fixed, bounded codebase. Not thousands of YAML files. SBOMs are generated automatically on every build in SPDX 2.3, CycloneDX 1.5, and Stackwright Build Manifest formats.
+      description: Security review reduces to reviewing the component library — a fixed, bounded codebase. Not thousands of YAML files. SBOMs are generated automatically on every build in SPDX 2.3, CycloneDX 1.5, and StackWright Build Manifest formats.
     - icon:
         type: icon
         src: Bot
@@ -312,7 +281,7 @@ content:
       text: Common Extension Points
       textSize: h2
     textBlocks:
-    - text: 'Stackwright apps are standard Next.js apps. Extend freely:'
+    - text: 'StackWright apps are standard Next.js apps. Extend freely:'
       textSize: body1
     background: background
   - type: grid

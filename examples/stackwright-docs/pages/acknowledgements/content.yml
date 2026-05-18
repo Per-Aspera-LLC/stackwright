@@ -1,7 +1,7 @@
 content:
   meta:
-    title: "Acknowledgements | Stackwright"
-    description: "Thank you to the humans and AI agents who built Stackwright."
+    title: "Acknowledgements | StackWright"
+    description: "Thank you to the humans and AI agents who built StackWright."
 
   content_items:
     # ─────────────────────────────────────────────────────────
@@ -13,7 +13,7 @@ content:
         text: "Acknowledgements 🙏"
         textSize: h1
       textBlocks:
-        - text: "Stackwright is built by humans, powered by AI, and shaped by open source."
+        - text: "StackWright is built by humans, powered by AI, and shaped by open source."
           textSize: h3
         - text: "This page thanks the contributors — silicon and carbon alike — who made it possible."
           textSize: body1
@@ -28,7 +28,7 @@ content:
         text: "Code Puppy 🐶"
         textSize: h2
       textBlocks:
-        - text: "The AI coding agent that built Stackwright. Every package, every component, every test — code-puppy wrote the code that writes your code."
+        - text: "The AI coding agent that built StackWright. Every package, every component, every test — code-puppy wrote the code that writes your code."
           textSize: body1
       background: background
 
@@ -36,7 +36,7 @@ content:
       label: code-puppy-origin
       variant: note
       title: "A Sassy Little Puppy"
-      body: "Code Puppy was created by Marcus Paffenberger in response to AI coding tools removing access to models and raising prices. It's privacy-first, sarcastic, and thoroughly unimpressed with enterprise software. It coded Stackwright out of spite for expensive IDEs."
+      body: "Code Puppy was created by Michael Pfaffenberger (https://github.com/mpfaffenberger) in response to AI coding tools removing access to models and raising prices. It's privacy-first, sarcastic, and thoroughly unimpressed with expensive IDEs."
       background: surface
 
     - type: feature_list
@@ -106,7 +106,7 @@ content:
       code: |
         # Try Code Puppy yourself
         uvx code-puppy
-        
+
         # Or install permanently
         pip install code-puppy
 
@@ -130,26 +130,11 @@ content:
           href: "https://code-puppy.dev"
       background: background
 
-    # ─────────────────────────────────────────────────────────
-    # CLAUDE SECTION
-    # ─────────────────────────────────────────────────────────
-    - type: text_block
-      label: claude-heading
-      heading:
-        text: "Claude (Anthropic) 🤖"
-        textSize: h2
-      textBlocks:
-        - text: "Code Puppy is powered by Claude. The reasoning, generation, and architectural decisions that make Stackwright work — all catalyzed by Anthropic's model."
-          textSize: body1
-        - text: "We chose Claude for its ability to understand complex codebases, maintain context across long conversations, and produce production-ready code — not rough drafts."
-          textSize: body1
-      background: background
-
     - type: alert
       label: anthropic-note
       variant: info
       title: "Privacy Matters"
-      body: "Both Stackwright and Code Puppy are committed to privacy. Your prompts are never logged, your code is never shared, and you can run everything locally if you prefer."
+      body: "Both StackWright and Code Puppy are committed to privacy. Your prompts are never logged, your code is never shared, and you can run everything locally if you prefer."
       background: surface
 
     # ─────────────────────────────────────────────────────────
@@ -184,7 +169,7 @@ content:
           ],
           "tools": [
             "list_files",
-            "read_file", 
+            "read_file",
             "create_file",
             "agent_share_your_reasoning"
           ]
@@ -206,7 +191,7 @@ content:
         text: "Open Source Dependencies"
         textSize: h2
       textBlocks:
-        - text: "Stackwright stands on the shoulders of giants:"
+        - text: "StackWright stands on the shoulders of giants:"
           textSize: body1
       background: background
 
@@ -269,7 +254,7 @@ content:
       label: gratitude
       variant: success
       title: "Thank You"
-      body: "To every maintainer, contributor, and user of these projects — thank you for making the open source ecosystem what it is. Stackwright is just one small flower in a vast garden."
+      body: "To every maintainer, contributor, and user of these projects — thank you for making the open source ecosystem what it is. StackWright is just one small flower in a vast garden."
       background: surface
 
     # ─────────────────────────────────────────────────────────
@@ -281,9 +266,9 @@ content:
         text: "Per Aspera Sapientia"
         textSize: h2
       textBlocks:
-        - text: "\"Through hardships to wisdom.\" — The motto of Per Aspera LLC."
+        - text: "\"Through hardships to wisdom.\" — The motto of Per Aspera Sapientia LLC."
           textSize: body1
-        - text: "Stackwright was built because the founder got tired of enterprise software that was expensive, opaque, and disrespectful of users. We built something that respects your time, your privacy, and your intelligence."
+        - text: "StackWright encodes software architecture and security experiences earned the hard way into a framework."
           textSize: body1
         - text: "The AI coding tools existed. We just made them work together. The hard part wasn't the code — it was the vision of what could be."
           textSize: body1
@@ -298,7 +283,7 @@ content:
         text: "Thank you for reading"
         textSize: h3
       textBlocks:
-        - text: "Built with ❤️ by Per Aspera LLC. Powered by code-puppy. Made possible by open source."
+        - text: "Built with ❤️ by Per Aspera Sapientia LLC. Powered by code-puppy. Made possible by open source."
           textSize: body1
       buttons:
         - text: "Back to Home"

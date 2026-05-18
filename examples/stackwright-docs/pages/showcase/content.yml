@@ -1,7 +1,7 @@
 content:
   meta:
-    title: "Component Showcase | Stackwright"
-    description: "Every Stackwright content type rendered on the dark-mode-first docs theme."
+    title: "Component Showcase | StackWright"
+    description: "Every StackWright content type rendered on the dark-mode-first docs theme."
   content_items:
     # 1. Main (hero-style, graphic right)
     - type: main
@@ -10,13 +10,13 @@ content:
         text: "Component Showcase"
         textSize: h1
       textBlocks:
-        - text: "Every content type in the Stackwright schema, rendered on the docs theme. Used for visual regression and accessibility testing."
+        - text: "Every content type in the StackWright schema, rendered on the docs theme. Used for visual regression and accessibility testing."
           textSize: body1
       buttons:
         - text: "View Source"
           textSize: button
           variant: outlined
-          href: https://github.com/Per-Aspera-LLC/stackwright
+          href: https://github.com/Per-Aspera-LLC/StackWright
       background: background
       color: text
 
@@ -111,7 +111,7 @@ content:
         - type: text_block
           label: "Overview"
           textBlocks:
-            - text: "Stackwright uses YAML as the authoring format. Content is validated by Zod schemas and rendered as React components."
+            - text: "StackWright uses YAML as the authoring format. Content is validated by Zod schemas and rendered as React components."
               textSize: body1
         - type: text_block
           label: "Architecture"
@@ -139,7 +139,7 @@ content:
                 text: "Hello World"
                 textSize: h1
               textBlocks:
-                - text: "My first Stackwright page."
+                - text: "My first StackWright page."
                   textSize: body1
       background: surface
 
@@ -182,7 +182,7 @@ content:
         textSize: h2
       columns: 3
       items:
-        - quote: "Stackwright turned our hackathon into a shipping machine."
+        - quote: "StackWright turned our hackathon into a shipping machine."
           name: "Demo Author A"
           role: "Developer"
         - quote: "The Otter Raft built our entire site through conversation."
@@ -200,7 +200,7 @@ content:
         text: "FAQ Demo"
         textSize: h2
       items:
-        - question: "What is Stackwright?"
+        - question: "What is StackWright?"
           answer: "A YAML-driven React application framework that enables rapid development of professional websites."
         - question: "Do I need to know React?"
           answer: "No. You write YAML, the framework handles rendering. But you can extend with custom React components."
@@ -299,9 +299,9 @@ content:
       heading:
         text: "Contact Form Demo"
         textSize: h2
-      description: "Get in touch with the Stackwright team."
-      email: "hello@stackwright.dev"
-      email_subject: "Stackwright Inquiry"
+      description: "Get in touch with the StackWright team."
+      email: "hello@email.ai"
+      email_subject: "StackWright Inquiry"
       phone: "+1 (555) 123-4567"
       address: "123 Framework Lane, Open Source City"
       button_text: "Send Email"

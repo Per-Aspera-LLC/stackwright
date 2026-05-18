@@ -36,7 +36,8 @@ for (const { path: pagePath, name } of PAGES) {
       expect(body.trim().length).toBeGreaterThan(0);
 
       // At least one heading should be present on every page
-      const headings = page.locator('h1, h2, h3');
+      // h1:not(:empty) skips the intentionally-empty TopAppBar h1 (wordmark mode)
+      const headings = page.locator('h1:not(:empty), h2, h3');
       await expect(headings.first()).toBeVisible();
     });
 

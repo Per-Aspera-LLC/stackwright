@@ -58,6 +58,19 @@ export {
   getCollectionProvider,
 } from './utils/collectionProviderRegistry';
 
+// Color utilities
+export {
+  hexToRgb,
+  getLuminance,
+  getContrastRatio,
+  isReadable,
+  getBetterTextColor,
+  getHoverColor,
+  hexToRgba,
+  resolveColor,
+  getHighContrastTextColor,
+} from './utils/colorUtils';
+
 // Cookie & consent utilities
 export { getCookie, setCookie, removeCookie } from './utils/cookies';
 export type { CookieOptions } from './utils/cookies';
