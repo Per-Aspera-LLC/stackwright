@@ -10,17 +10,17 @@ appBar:
   logo:
     type: image
     src: ./stackwright-alt.png
-    height: 40
-    width: 90
+    height: 60
+    width: 180
 
 navigation:
-  - label: "🦦"
+  - label: "Home"
     href: "/"
-#  - label: "🚀 Getting Started"
-#    href: "/getting-started"
+  - label: "Getting Started"
+    href: "/getting-started"
 #  - label: "⌨️ CLI"
 #    href: "/cli"
-  - label: "🤖 Otter Raft"
+  - label: "🦦 Raft"
     href: "/otter-raft"
 
 # Search configuration (Cmd+K to open)
