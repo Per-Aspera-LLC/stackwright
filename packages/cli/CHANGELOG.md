@@ -1,5 +1,13 @@
 # @stackwright/cli
 
+## 0.8.6
+
+### Patch Changes
+
+- e2f4e15: Upgrade the back-merge rebase conflict handler from a one-shot block to a loop. Dev can accumulate multiple alpha-bump commits that all modified `.changeset/pre.json` — the previous one-shot `||{ }` only resolved the first conflict. The loop now runs until all pre.json conflicts are resolved or an unexpected conflict is encountered.
+- c2392b8: Fix back-merge into dev failing with a modify/delete conflict on `.changeset/pre.json` during rebase. The release workflow deletes this file via `changeset pre exit`, but dev's alpha-bump commits still reference it. The rebase now explicitly resolves the conflict by accepting main's deletion and continuing.
+- f132e20: Fix js-yaml version override conflict in pnpm overrides that caused `yaml.safeLoad is removed` errors when running `changeset pre exit` in CI. The global `js-yaml: >=4.1.1` override was stomping the scoped `read-yaml-file>js-yaml: ^3` override, forcing js-yaml v4 into read-yaml-file which doesn't support it.
+
 ## 0.8.6-alpha.0
 
 ### Patch Changes

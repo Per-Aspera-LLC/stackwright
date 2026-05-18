@@ -1,5 +1,14 @@
 # launch-stackwright
 
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [e2f4e15]
+- Updated dependencies [c2392b8]
+- Updated dependencies [f132e20]
+  - @stackwright/cli@0.8.6
+
 ## 0.2.6-alpha.0
 
 ### Patch Changes
