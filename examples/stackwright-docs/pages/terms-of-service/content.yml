@@ -14,7 +14,7 @@ content:
       text: Acceptance of Terms
       textSize: h2
     textBlocks:
-    - text: By accessing or using Stackwright, you agree to be bound by these Terms of Service. If you do not agree, please
+    - text: By accessing or using StackWright, you agree to be bound by these Terms of Service. If you do not agree, please
         do not use this software or site.
       textSize: body1
   - type: main
@@ -23,7 +23,7 @@ content:
       text: License
       textSize: h2
     textBlocks:
-    - text: Stackwright is open-source software. Your use of the framework source code is governed by the license found in
+    - text: StackWright is open-source software. Your use of the framework source code is governed by the license found in
         the project repository. These terms apply to your use of this website and any hosted services.
       textSize: body1
   - type: main
@@ -43,7 +43,7 @@ content:
       text: Disclaimer of Warranties
       textSize: h2
     textBlocks:
-    - text: Stackwright is provided "as is" without warranty of any kind, express or implied. We make no guarantees regarding
+    - text: StackWright is provided "as is" without warranty of any kind, express or implied. We make no guarantees regarding
         availability, accuracy, or fitness for a particular purpose.
       textSize: body1
   - type: main
@@ -52,8 +52,8 @@ content:
       text: Limitation of Liability
       textSize: h2
     textBlocks:
-    - text: To the fullest extent permitted by law, Per Aspera LLC shall not be liable for any indirect, incidental, special,
-        or consequential damages arising from your use of Stackwright.
+    - text: To the fullest extent permitted by law, Per Aspera Sapientia LLC shall not be liable for any indirect, incidental, special,
+        or consequential damages arising from your use of StackWright.
       textSize: body1
   - type: main
     label: tos-changes
@@ -76,4 +76,4 @@ content:
     - text: Open an Issue on GitHub
       textSize: body1
       variant: outlined
-      href: https://github.com/Per-Aspera-LLC/stackwright/issues
+      href: https://github.com/Per-Aspera-LLC/StackWright/issues

@@ -1,7 +1,7 @@
 content:
   meta:
-    title: "Stackwright — YAML is the syntax. The schema is the safety net. AI writes the code."
-    description: "From API spec to working Next.js app in hours. Stackwright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
+    title: "StackWright — YAML is the syntax. The schema is the safety net. AI writes the code."
+    description: "From API spec to working Next.js app in hours. StackWright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
 
 
   content_items:
@@ -12,7 +12,7 @@ content:
         text: "YAML is the syntax. The schema is the safety net. AI writes the code."
         textSize: h1
       textBlocks:
-        - text: "From API spec to working Next.js app in hours. Stackwright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
+        - text: "From API spec to working Next.js app in hours. StackWright is a typed DSL where AI agents write YAML, the schema enforces safety, and the output is a production-ready React app you own."
           textSize: body1
       buttons:
         - text: "Get Started"
@@ -23,11 +23,11 @@ content:
         - text: "View on GitHub"
           textSize: button
           variant: outlined
-          href: https://github.com/Per-Aspera-LLC/stackwright
+          href: https://github.com/Per-Aspera-LLC/StackWright
       media:
         type: image
         src: ./stackwright-digital.png
-        alt: Stackwright Logo
+        alt: StackWright Logo
         label: hero-logo
         height: 280
         width: 280
@@ -35,11 +35,11 @@ content:
       background: background
       color: text
 
-    # 2. Features Grid — "Why Stackwright"
+    # 2. Features Grid — "Why StackWright"
     - type: feature_list
       label: features
       heading:
-        text: "Why Stackwright"
+        text: "Why StackWright"
         textSize: h2
       columns: 3
       items:
@@ -104,7 +104,7 @@ content:
         text: "Get Started in 60 Seconds"
         textSize: h2
       textBlocks:
-        - text: "Install Stackwright and launch your first site. The Otter Raft is ready to build."
+        - text: "Install StackWright and launch your first site. The Otter Raft is ready to build."
           textSize: body1
       background: background
       color: text
@@ -151,7 +151,7 @@ content:
                 text: "Hello World"
                 textSize: h1
               textBlocks:
-                - text: "My first Stackwright page."
+                - text: "My first StackWright page."
                   textSize: body1
               buttons:
                 - text: "Learn More"
@@ -168,7 +168,7 @@ content:
         text: "Ready to Build?"
         textSize: h2
       textBlocks:
-        - text: "Stackwright turns structured YAML into production-ready Next.js apps. Start with the CLI, bring your team, and ship something real."
+        - text: "StackWright turns structured YAML into production-ready Next.js apps. Start with the CLI, bring your team, and ship something real."
           textSize: body1
       buttons:
         - text: "Get Started"

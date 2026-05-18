@@ -1,7 +1,7 @@
 content:
   meta:
-    title: "The Otter Raft | Stackwright"
-    description: "Four AI agents that build Stackwright sites through conversation. Watch them build their own documentation site!"
+    title: "The Otter Raft | StackWright"
+    description: "Four AI agents that build StackWright sites through conversation. Watch them build their own documentation site!"
 
   content_items:
     # ─────────────────────────────────────────────────────────
@@ -13,7 +13,7 @@ content:
         text: "The Otter Raft 🦦"
         textSize: h1
       textBlocks:
-        - text: "Four AI agents that build Stackwright sites through conversation."
+        - text: "Four AI agents that build StackWright sites through conversation."
           textSize: h3
         - text: "Brand → Theme → Pages — each otter handles one step. The Foreman coordinates the pipeline."
           textSize: body1
@@ -25,7 +25,7 @@ content:
     - type: video
       label: demo-video
       src: "./otter-raft-demo.mp4"
-      alt: "Watch the Otter Raft build the stackwright-docs site from conversation"
+      alt: "Watch the Otter Raft build the StackWright-docs site from conversation"
       height: 480
       width: "100%"
       style: contained
@@ -39,7 +39,7 @@ content:
       label: video-note
       variant: note
       title: "🎬 Watch the Otters Build Their Own Docs"
-      body: "The video above shows the Otter Raft working on the stackwright-docs site, which was built from scratch. Brand discovery → Theme design → Page generation → Deploy. No YAML expertise required."
+      body: "The video above shows the Otter Raft working on the StackWright-docs site, which was built from scratch. Brand discovery → Theme design → Page generation → Deploy. No YAML expertise required."
       background: surface
 
     # ─────────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ content:
             height: 48
             label: theme-icon
           heading: "🦦🌈 Theme Otter"
-          description: "Translates brand briefs into Stackwright themes. Colors, typography, spacing, dark mode. Writes stackwright.yml configuration."
+          description: "Translates brand briefs into StackWright themes. Colors, typography, spacing, dark mode. Writes StackWright.yml configuration."
         - icon:
             type: icon
             src: FileText
@@ -126,7 +126,7 @@ content:
               language: yaml
               lineNumbers: false
               code: |
-                # stackwright.yml (Theme Otter)
+                # StackWright.yml (Theme Otter)
 
                 customTheme:
                   colors:
@@ -166,7 +166,7 @@ content:
       label: success-story
       variant: success
       title: "🦦 Built Their Own Docs"
-      body: "The stackwright-docs site you're reading right now was built by the Otter Raft. Brand discovery → Theme design → 7 pages → Deployed. Total time: 4 hours of AI conversation. The YAML files are in the repo — you can read exactly what the otters wrote."
+      body: "The StackWright-docs site you're reading right now was built by the Otter Raft. Brand discovery → Theme design → 7 pages → Deployed. Total time: 4 hours of AI conversation. The YAML files are in the repo — you can read exactly what the otters wrote."
       background: surface
 
     # ─────────────────────────────────────────────────────────
@@ -190,7 +190,7 @@ content:
         - year: "Step 2"
           event: "Brand Otter asks questions. Voice? Tone? Primary CTA? Emotional target? Writes BRAND_BRIEF.md."
         - year: "Step 3"
-          event: "Theme Otter reads the brand brief. Picks colors, typography, spacing. Writes stackwright.yml."
+          event: "Theme Otter reads the brand brief. Picks colors, typography, spacing. Writes StackWright.yml."
         - year: "Step 4"
           event: "Page Otter reads the brand brief and theme. Writes page YAML files. Validates and renders screenshots."
         - year: "Step 5"
@@ -206,7 +206,7 @@ content:
         text: "How to Use"
         textSize: h2
       textBlocks:
-        - text: "The Otter Raft is built into launch-stackwright. After scaffolding, the agent configs are in .stackwright/otters/."
+        - text: "The Otter Raft is built into launch-StackWright. After scaffolding, the agent configs are in .StackWright/otters/."
           textSize: body1
         - text: "Use with Code Puppy or any MCP-compatible AI client."
           textSize: body1
@@ -218,15 +218,15 @@ content:
       lineNumbers: false
       code: |
         # Scaffold a new project (includes Otter Raft)
-        npx launch-stackwright my-site
+        npx launch-StackWright my-site
         cd my-site
 
         # The Otter Raft configs are in:
-        .stackwright/otters/
-        ├── stackwright-brand-otter.json
-        ├── stackwright-theme-otter.json
-        ├── stackwright-page-otter.json
-        └── stackwright-foreman-otter.json
+        .StackWright/otters/
+        ├── StackWright-brand-otter.json
+        ├── StackWright-theme-otter.json
+        ├── StackWright-page-otter.json
+        └── StackWright-foreman-otter.json
 
         # Use with Code Puppy:
         # The otter configs are auto-loaded
@@ -235,7 +235,7 @@ content:
       label: mcp-tip
       variant: tip
       title: "MCP Integration"
-      body: "The Otter Raft works best with Code Puppy or Claude Code. Each otter is an agent config that gets loaded into your AI assistant. They use the Stackwright MCP server for validation, rendering, and file operations."
+      body: "The Otter Raft works best with Code Puppy or Claude Code. Each otter is an agent config that gets loaded into your AI assistant. They use the StackWright MCP server for validation, rendering, and file operations."
       background: background
 
     # ─────────────────────────────────────────────────────────
@@ -276,7 +276,7 @@ content:
                 text: "Traditional Way"
                 textSize: h3
               textBlocks:
-                - text: "❌ Read Stackwright docs"
+                - text: "❌ Read StackWright docs"
                   textSize: body2
                 - text: "❌ Learn YAML syntax"
                   textSize: body2
@@ -322,7 +322,7 @@ content:
         text: "Ready to build?"
         textSize: h2
       textBlocks:
-        - text: "Install Stackwright and the Otter Raft will guide you through brand discovery, theme generation, and page composition."
+        - text: "Install StackWright and the Otter Raft will guide you through brand discovery, theme generation, and page composition."
           textSize: body1
       buttons:
         - text: "Get Started"

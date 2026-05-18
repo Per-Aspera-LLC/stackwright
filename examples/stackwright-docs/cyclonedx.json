@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-05-15T14:03:57.118Z",
+    "timestamp": "2026-05-18T16:22:20.092Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -14,8 +14,8 @@
     "component": {
       "type": "application",
       "name": "stackwright-docs",
-      "version": "0.1.6-alpha.3",
-      "purl": "pkg:npm/stackwright-docs@0.1.6-alpha.3"
+      "version": "0.1.6",
+      "purl": "pkg:npm/stackwright-docs@0.1.6"
     }
   },
   "components": [
@@ -288,13 +288,13 @@
     {
       "type": "library",
       "name": "tailwind-merge",
-      "version": "3.5.0",
-      "purl": "pkg:npm/tailwind-merge@3.5.0",
+      "version": "3.6.0",
+      "purl": "pkg:npm/tailwind-merge@3.6.0",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "039d2e92d475e4268b1babe22545c8cc507d46e9fc09aacaa75ee5925b885a10"
+          "content": "084c7514e672a9283e7a4bf1c162bf248d481e0aac75ffe397d8763082a57852"
         }
       ],
       "externalReferences": [
@@ -307,7 +307,7 @@
   ],
   "dependencies": [
     {
-      "ref": "pkg:npm/stackwright-docs@0.1.6-alpha.3",
+      "ref": "pkg:npm/stackwright-docs@0.1.6",
       "dependsOn": [
         "@radix-ui/react-accordion",
         "@radix-ui/react-slot",

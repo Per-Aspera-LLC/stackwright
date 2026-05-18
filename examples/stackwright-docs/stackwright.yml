@@ -14,12 +14,12 @@ appBar:
     width: 90
 
 navigation:
-  - label: "🦦 Home"
+  - label: "🦦"
     href: "/"
-  - label: "🚀 Getting Started"
-    href: "/getting-started"
-  - label: "⌨️ CLI"
-    href: "/cli"
+#  - label: "🚀 Getting Started"
+#    href: "/getting-started"
+#  - label: "⌨️ CLI"
+#    href: "/cli"
   - label: "🤖 Otter Raft"
     href: "/otter-raft"
 
@@ -57,9 +57,8 @@ sidebar:
 footer:
   backgroundColor: "primary"
   textColor: "text"
-  copyright: "Built with Stackwright 🦦"
   links:
-    - label: "GitHub"
+    - label: "🦦 Built with StackWright 🦦"
       href: "https://github.com/Per-Aspera-LLC/stackwright"
     - label: "Source for this Site"
       href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/stackwright-docs"
@@ -77,7 +76,7 @@ customTheme:
     text: "#FFFFFF"
     textSecondary: "#B0BEC5"
   darkColors:
-    primary: "#92400e"   # Amber 800 — WCAG AA compliant on light dark-mode backgrounds (~5.8:1 on #F5F5F5)
+    primary: "#FCC03E"   # Safety Yellow
     secondary: "#0288D1"
     accent: "#F59E0B"   # Amber 500
     background: "#FDFDFD"
