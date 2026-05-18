@@ -1,6 +1,6 @@
 content:
   meta:
-    title: "Content Types | Stackwright"
+    title: "Content Types | StackWright"
     description: "18 content types for building pages. Each is a YAML block with required and optional fields."
   content_items:
     - type: main

@@ -1,16 +1,16 @@
 content:
   meta:
-    title: "Pro | Stackwright"
-    description: "OpenAPI integration, CMS backends, and enterprise features for Stackwright."
+    title: "Pro | StackWright"
+    description: "OpenAPI integration, CMS backends, and enterprise features for StackWright."
 
   content_items:
     - type: main
       label: hero
       heading:
-        text: "Stackwright Pro 🔐"
+        text: "StackWright Pro 🔐"
         textSize: h1
       textBlocks:
-        - text: "Pro packages extend Stackwright into paid territory — third-party integrations, OpenAPI tooling, and enterprise features."
+        - text: "Pro packages extend StackWright into paid territory — third-party integrations, OpenAPI tooling, and enterprise features."
           textSize: h3
         - text: "The OSS monorepo defines interfaces; Pro ships implementations. Clean separation by design."
           textSize: body1
@@ -31,18 +31,11 @@ content:
           description: "Turn any OpenAPI spec into typed Zod schemas, CollectionProviders, and API clients. 'Here is an API spec' → 'Here is a working app' in hours."
         - icon:
             type: icon
-            src: Database
-            height: 48
-            label: cms-icon
-          heading: "CMS Backends"
-          description: "Contentful, Sanity, Shopify, Airtable, Notion — each as a CollectionProvider. Switching backends is a one-line change. No YAML changes needed."
-        - icon:
-            type: icon
             src: Shield
             height: 48
             label: security-icon
           heading: "Enterprise Ready"
-          description: "RBAC, secrets management, CSP headers, audit logging. Built for government and defense requirements."
+          description: "PKI/CAC and OIDC authentication meeting CISA Secure by Design requirements. SBOM generation in SPDX 2.3 and CycloneDX 1.5 formats with active CVE checking. Built for government and defense procurement requirements."
         - icon:
             type: icon
             src: Map
@@ -59,11 +52,11 @@ content:
         text: "OSS + Pro: Clean Separation"
         textSize: h2
       textBlocks:
-        - text: "**Stackwright OSS** defines the interfaces, rendering engine, and file-backed implementations. It's the grammar — what you write."
+        - text: "**StackWright OSS** defines the interfaces, rendering engine, and file-backed implementations. It's the grammar — what you write."
           textSize: body1
-        - text: "**Stackwright Pro** ships implementations too specialized, too maintenance-intensive, or too commercially sensitive for open source. It's the dictionary — what things mean."
+        - text: "**StackWright Pro** ships implementations too specialized, too maintenance-intensive, or too commercially sensitive for open source. It's the dictionary — what things mean."
           textSize: body1
-        - text: "Your app never takes a hard dependency on Pro. Register a Pro provider the same way you register any Stackwright provider. Removing Pro degrades gracefully to OSS fallbacks."
+        - text: "Your app never takes a hard dependency on Pro. Register a Pro provider the same way you register any StackWright provider. Removing Pro degrades gracefully to OSS fallbacks."
           textSize: body1
       background: background
 
@@ -73,20 +66,20 @@ content:
       lineNumbers: false
       code: |
         # One command to scaffold Pro app
-        npx launch-stackwright-pro my-app --spec ./api.yaml --yes
+        npx launch-StackWright-pro my-app --spec ./api.yaml --yes
 
         # Or add Pro to existing project
-        pnpm add @stackwright-pro/openapi @stackwright-pro/auth
+        pnpm add @StackWright-pro/openapi @StackWright-pro/auth
 
         # Register in your app
-        import { registerOpenAPIProvider } from '@stackwright-pro/openapi';
+        import { registerOpenAPIProvider } from '@StackWright-pro/openapi';
         registerOpenAPIProvider({ spec: './api.yaml' });
 
     - type: alert
       label: hackathon-tip
       variant: tip
       title: "Hackathon Teams"
-      body: "Stackwright Pro is built for your use case. Bring an OpenAPI spec, leave with a working app with RBAC, type-safe API clients, and mock auth for dev. See the Pro repo QUICKSTART.md for step-by-step."
+      body: "StackWright Pro is built for your use case. Bring an OpenAPI spec, leave with a working app with RBAC, type-safe API clients, and mock auth for dev. See the Pro repo QUICKSTART.md for step-by-step."
       background: surface
 
     - type: main
@@ -101,10 +94,10 @@ content:
         - text: "View Pro Repo"
           textSize: button
           variant: contained
-          href: "https://github.com/Per-Aspera-LLC/stackwright-pro"
+          href: "https://github.com/Per-Aspera-LLC/StackWright-pro"
           bgColor: accent
         - text: "Read the Vision"
           textSize: button
           variant: outlined
-          href: "https://github.com/Per-Aspera-LLC/stackwright-pro/blob/main/VISION.md"
+          href: "https://github.com/Per-Aspera-LLC/StackWright-pro/blob/main/VISION.md"
       background: background

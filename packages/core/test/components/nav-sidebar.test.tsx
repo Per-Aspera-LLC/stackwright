@@ -255,6 +255,20 @@ describe('NavSidebar', () => {
       const nav = screen.getByRole('navigation');
       expect(nav).toHaveStyle({ width: '300px' });
     });
+
+    it('applies topOffset to sticky top position', () => {
+      render(<NavSidebar navigationItems={mockNavItems} topOffset={64} />);
+
+      const nav = screen.getByRole('navigation');
+      expect(nav).toHaveStyle({ top: '64px' });
+    });
+
+    it('defaults top to 0 when topOffset is not provided', () => {
+      render(<NavSidebar navigationItems={mockNavItems} />);
+
+      const nav = screen.getByRole('navigation');
+      expect(nav).toHaveStyle({ top: '0px' });
+    });
   });
 
   describe('Accessibility', () => {

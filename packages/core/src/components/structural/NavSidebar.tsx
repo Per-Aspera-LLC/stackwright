@@ -37,6 +37,7 @@ export interface NavSidebarProps {
   backgroundColor?: string;
   textColor?: string;
   onCollapseToggle?: (collapsed: boolean) => void;
+  topOffset?: number;
 }
 
 interface NavItemProps {
@@ -261,6 +262,7 @@ export default function NavSidebar({
   backgroundColor,
   textColor,
   onCollapseToggle,
+  topOffset,
 }: NavSidebarProps) {
   const theme = useSafeTheme();
   const [internalCollapsed, setInternalCollapsed] = useState(false);
@@ -396,9 +398,9 @@ export default function NavSidebar({
         aria-label="Main navigation"
         style={{
           position: isMobile ? 'fixed' : 'sticky',
-          top: 0,
+          top: isMobile ? 0 : (topOffset ?? 0),
           left: 0,
-          height: '100vh',
+          height: isMobile ? '100vh' : `calc(100vh - ${topOffset ?? 0}px)`,
           width: isMobile ? 280 : effectiveWidth,
           backgroundColor: bgColor,
           boxShadow: getThemeShadow(theme, 'md'),

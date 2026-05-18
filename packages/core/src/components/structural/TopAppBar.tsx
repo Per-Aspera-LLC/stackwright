@@ -199,6 +199,9 @@ export default function TopAppBar({
 
         <div style={{ flexGrow: 1 }} />
 
+        {/* Mobile: toggle appears LEFT of hamburger */}
+        {colorModeToggle && isSmDown && <ColorModeToggle textColor={headerTextColor} />}
+
         {menuItems &&
           menuItems.length > 0 &&
           (isSmDown ? (
@@ -231,8 +234,10 @@ export default function TopAppBar({
             </div>
           ))}
 
-        {/* Show standalone toggle only when: no menu items exist, OR on desktop */}
-        {colorModeToggle && (!menuItems || menuItems.length === 0 || !isSmDown) && (
+        {/* Desktop: toggle appears RIGHT of nav links (original position) */}
+        {colorModeToggle && !isSmDown && <ColorModeToggle textColor={headerTextColor} />}
+
+        {colorModeToggle && (!menuItems || menuItems.length === 0) && (
           <ColorModeToggle textColor={headerTextColor} />
         )}
       </nav>
