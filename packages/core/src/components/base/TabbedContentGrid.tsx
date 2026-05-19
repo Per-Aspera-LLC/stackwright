@@ -46,6 +46,29 @@ export function TabbedContentGrid(content: TabbedContent) {
         >
           <div
             role="tablist"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                const next = (value + 1) % content.tabs.length;
+                setValue(next);
+                (document.getElementById(`tab-${next}`) as HTMLElement)?.focus();
+              } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prev = (value - 1 + content.tabs.length) % content.tabs.length;
+                setValue(prev);
+                (document.getElementById(`tab-${prev}`) as HTMLElement)?.focus();
+              } else if (e.key === 'Home') {
+                e.preventDefault();
+                setValue(0);
+                (document.getElementById('tab-0') as HTMLElement)?.focus();
+              } else if (e.key === 'End') {
+                e.preventDefault();
+                const last = content.tabs.length - 1;
+                setValue(last);
+                (document.getElementById(`tab-${last}`) as HTMLElement)?.focus();
+              }
+            }}
             style={{
               display: 'flex',
               justifyContent: 'center',

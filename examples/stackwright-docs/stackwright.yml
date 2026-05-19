@@ -80,9 +80,9 @@ customTheme:
     text: "#FFFFFF"
     textSecondary: "#B0BEC5"
   darkColors:
-    primary: "#FCC03E"   # Safety Yellow
+    primary: "#92400E"   # Amber-800 — WCAG AA on white (was #FCC03E Safety Yellow)
     secondary: "#0288D1"
-    accent: "#F59E0B"   # Amber 500
+    accent: "#B45309"    # Amber-700 — WCAG AA on white (was #F59E0B)
     background: "#FDFDFD"
     surface: "#F5F5F5"
     text: "#1A1A2E"
