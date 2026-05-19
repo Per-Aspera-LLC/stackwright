@@ -12,6 +12,7 @@ import { registerGenerateAgentDocs } from './commands/generate-agent-docs';
 import { registerGitOps } from './commands/git-ops';
 import { registerBoard } from './commands/board';
 import { registerCollection } from './commands/collection';
+import { registerIntegration } from './commands/integration';
 import { registerCompose } from './commands/compose';
 import { registerPreview } from './commands/preview';
 import { registerSBOM } from './commands/sbom';
@@ -39,6 +40,7 @@ async function main(): Promise<void> {
   registerGitOps(program);
   registerBoard(program);
   registerCollection(program);
+  registerIntegration(program);
   registerCompose(program);
   registerPreview(program);
   registerSBOM(program);
