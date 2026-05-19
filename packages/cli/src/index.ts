@@ -17,6 +17,7 @@ export { generateAgentDocs } from './commands/generate-agent-docs';
 export { stageChanges, openPr } from './commands/git-ops';
 export { getBoard, parseBoard } from './commands/board';
 export { listCollections, addCollection, resolveContentDir } from './commands/collection';
+export { listIntegrations, getIntegration, addIntegration } from './commands/integration';
 export { composeSite } from './commands/compose';
 export { preview } from './commands/preview';
 export { validateSiteComposition } from './utils/site-validator';
@@ -55,6 +56,12 @@ export type {
   CollectionListResult,
   AddCollectionResult,
 } from './commands/collection';
+export type {
+  IntegrationEntry,
+  ListIntegrationsResult,
+  GetIntegrationResult,
+  AddIntegrationResult,
+} from './commands/integration';
 export type { ComposeSiteResult, ComposeSiteOptions } from './commands/compose';
 export type { PreviewResult, PreviewOptions } from './commands/preview';
 export type {
