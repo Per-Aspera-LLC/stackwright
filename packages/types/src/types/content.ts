@@ -166,7 +166,7 @@ export const mapLayerTypeSchema = z.enum(['polyline', 'polygon', 'geojson']);
 
 export const mapLayerSchema = z.object({
   type: mapLayerTypeSchema,
-  data: z.any(),
+  data: z.unknown(),
   style: z
     .object({
       color: z.string().optional(),

@@ -79,7 +79,7 @@ export type { ConsentCategory, ConsentState } from './utils/consent';
 
 // Map adapter system
 export * from './map';
-export { Map } from './components/content/Map';
+// Map is exported via './components/base' (already covered by export * from './components/base' above)
 export type {
   MapMarker,
   MapLayer,

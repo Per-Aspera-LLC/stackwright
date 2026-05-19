@@ -32,12 +32,13 @@ export function checkForPlaintextSecret(value: string, fieldName: string): strin
 
   const entropy = estimateEntropy(value);
 
-  // High entropy (>4.5 bits/char) = looks like real secret
-  // Low entropy (<3.5 bits/char) = looks like plaintext
-  if (entropy < 3.5) {
+  // Low-to-moderate entropy (<3.8 bits/char) = likely a human-readable plaintext
+  // password or hardcoded secret (e.g. 'password123', 'mysecret').
+  // Higher entropy (≥3.8 bits/char) = looks sufficiently random; not flagged.
+  if (entropy < 3.8) {
     return (
-      `SECURITY WARNING: "${fieldName}" appears to contain plaintext secrets. ` +
-      `Use environment variable references like $API_TOKEN instead.`
+      `SECURITY WARNING: "${fieldName}" appears to be a low-entropy plaintext value that looks like a hardcoded password or secret. ` +
+      `Use an environment variable reference like $API_TOKEN instead.`
     );
   }
 
