@@ -14,6 +14,7 @@ export { ContactFormStub } from './ContactFormStub';
 export { Alert } from './Alert';
 export { LayoutGrid } from './LayoutGrid';
 export { CollectionList } from './CollectionList';
+export { Map } from './Map';
 export { UnknownContentType } from './UnknownContentType';
 
 export * from './Menu';

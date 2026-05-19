@@ -1,6 +1,32 @@
 import React from 'react';
 import { getMapProvider } from '../../map/map-registry.js';
-import type { MapConfig, StackwrightMapProps } from '../../map/map-provider.js';
+import type { MapConfig } from '../../map/map-provider.js';
+import type { MapContent } from '@stackwright/types';
+
+/**
+ * Props for the Map content component.
+ *
+ * We accept flat YAML fields (spread from the content renderer) rather than
+ * a pre-assembled `config` object. The `config: MapConfig` shape lives on
+ * MapProviderProps — that's the adapter contract. This component bridges
+ * the two: it reads flat schema fields and assembles the config before
+ * handing off to the registered MapProvider.
+ *
+ * `type` is omitted from MapContent and re-added as optional string so we
+ * can absorb the runtime value without TypeScript complaining — the content
+ * renderer spreads `{ type: 'map', ... }` and we don't want that reaching
+ * the DOM via `...rest`.
+ */
+type MapProps = Omit<MapContent, 'type'> & {
+  /** Absorbed at runtime from content renderer spread — not passed to DOM. */
+  type?: string;
+  /** Optional CSS class name for the wrapper div. */
+  className?: string;
+  /** Optional additional inline styles for the wrapper div. */
+  style?: React.CSSProperties;
+  /** Accessibility label. */
+  'aria-label'?: string;
+};
 
 /**
  * Map — Content component for rendering interactive maps.
@@ -37,13 +63,23 @@ import type { MapConfig, StackwrightMapProps } from '../../map/map-provider.js';
  * The Map component is SSR-safe. Map providers should use `useEffect`
  * or `dynamic(() => import(), { ssr: false })` for client-only rendering.
  *
- * @param props - Map configuration and styling props
+ * @param props - Flat YAML schema fields for map configuration and styling
  */
-export function Map(props: StackwrightMapProps & { config: MapConfig }): React.ReactElement {
+export function Map(props: MapProps): React.ReactElement {
   const MapProvider = getMapProvider();
 
   const {
-    config,
+    // MapConfig fields — assembled into config object below
+    center,
+    zoom,
+    markers,
+    layers,
+    view,
+    terrain,
+    // BaseContent fields — absorbed so they don't reach the DOM via ...rest
+    label: _label,
+    type: _type,
+    // Display props
     height = '500px',
     width = '100%',
     color,
@@ -53,7 +89,17 @@ export function Map(props: StackwrightMapProps & { config: MapConfig }): React.R
     ...rest
   } = props;
 
-  // Responsive wrapper styles
+  // Assemble the provider-facing config from flat schema fields
+  const config: MapConfig = {
+    center,
+    zoom,
+    markers,
+    layers,
+    view,
+    terrain,
+  };
+
+  // Responsive wrapper — inline styles only (no Tailwind in core)
   const wrapperStyle: React.CSSProperties = {
     width,
     height,

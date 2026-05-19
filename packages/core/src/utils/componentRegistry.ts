@@ -17,7 +17,7 @@ import {
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
-import { Map } from '../components/content/Map';
+import { Map } from '../components/base/Map';
 import NavSidebar from '../components/structural/NavSidebar';
 import {
   getStackwrightImage,
