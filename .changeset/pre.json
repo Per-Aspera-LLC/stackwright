@@ -23,6 +23,7 @@
   },
   "changesets": [
     "feat-integration-management",
-    "fix-a11y-cluster"
+    "fix-a11y-cluster",
+    "fix-map-component-api"
   ]
 }
