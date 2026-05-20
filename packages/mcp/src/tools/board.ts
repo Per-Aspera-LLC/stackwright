@@ -5,13 +5,13 @@ import { getBoard } from '@stackwright/cli';
 export function registerBoardTools(server: McpServer): void {
   server.tool(
     'stackwright_get_board',
-    'Get the priority-tiered product board from GitHub Issues. Returns open issues organized by priority:now / priority:next / priority:later / priority:vision labels.',
+    'Get the priority-tiered product board from .beads/issues.jsonl. Returns open issues organized by priority: now (p1) / next (p2) / later (p3) / vision (p4).',
     {
       cwd: z
         .string()
         .optional()
         .describe(
-          'Working directory (must be inside a git repo with a GitHub remote). Defaults to process.cwd().'
+          'Working directory to search for .beads/issues.jsonl (walks up from cwd). Defaults to process.cwd().'
         ),
     },
     async ({ cwd }) => {
@@ -27,14 +27,13 @@ export function registerBoardTools(server: McpServer): void {
       const sections = tiers.map(({ label, emoji, issues }) => {
         if (issues.length === 0) return `${emoji} ${label}\n  (none)`;
         const lines = issues.map(
-          (i) =>
-            `  #${i.number}  ${i.title}${i.assignees.length > 0 ? ` (${i.assignees.join(', ')})` : ''}`
+          (i) => `  ${i.id}${i.issueType ? ` [${i.issueType}]` : ''}  ${i.title}`
         );
         return `${emoji} ${label}\n${lines.join('\n')}`;
       });
 
       if (board.unlabeled.length > 0) {
-        const lines = board.unlabeled.map((i) => `  #${i.number}  ${i.title}`);
+        const lines = board.unlabeled.map((i) => `  ${i.id}  ${i.title}`);
         sections.push(`⚪ UNLABELED\n${lines.join('\n')}`);
       }
 

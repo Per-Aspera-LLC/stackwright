@@ -50,7 +50,7 @@ export type {
   OpenPrResult,
   OpenPrOptions,
 } from './commands/git-ops';
-export type { BoardResult, BoardIssue, GhIssueRaw } from './commands/board';
+export type { BoardResult, BoardIssue, BeadsIssue } from './commands/board';
 export type {
   CollectionSummary,
   CollectionListResult,
