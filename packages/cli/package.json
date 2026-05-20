@@ -39,9 +39,13 @@
     "zod": "^4.3.6"
   },
   "peerDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "playwright": "^1.52.0"
   },
   "peerDependenciesMeta": {
+    "@axe-core/playwright": {
+      "optional": true
+    },
     "playwright": {
       "optional": true
     }
