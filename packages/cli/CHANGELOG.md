@@ -1,5 +1,13 @@
 # @stackwright/cli
 
+## 0.9.0-alpha.1
+
+### Minor Changes
+
+- 34d95c8: Replace GitHub Issues board with beads-native implementation. The `stackwright board` CLI command and `stackwright_get_board` MCP tool now read from `.beads/issues.jsonl` instead of calling the `gh` CLI. No GitHub authentication or `gh` CLI required.
+
+  **Breaking change in `@stackwright/cli` public types**: `GhIssueRaw` is removed (replaced by `BeadsIssue`); `BoardIssue.number` is now `BoardIssue.id: string`; `BoardIssue.labels` and `BoardIssue.assignees` are removed; `BoardIssue.issueType` is added.
+
 ## 0.9.0-alpha.0
 
 ### Minor Changes

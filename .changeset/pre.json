@@ -24,6 +24,7 @@
   "changesets": [
     "feat-integration-management",
     "fix-a11y-cluster",
-    "fix-map-component-api"
+    "fix-map-component-api",
+    "refactor-board-beads-native"
   ]
 }
