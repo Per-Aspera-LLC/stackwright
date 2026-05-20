@@ -20,6 +20,7 @@ export { listCollections, addCollection, resolveContentDir } from './commands/co
 export { listIntegrations, getIntegration, addIntegration } from './commands/integration';
 export { composeSite } from './commands/compose';
 export { preview } from './commands/preview';
+export { testA11y } from './commands/a11y';
 export { validateSiteComposition } from './utils/site-validator';
 export { detectProject, resolvePagesDir } from './utils/project-detector';
 
@@ -64,6 +65,13 @@ export type {
 } from './commands/integration';
 export type { ComposeSiteResult, ComposeSiteOptions } from './commands/compose';
 export type { PreviewResult, PreviewOptions } from './commands/preview';
+export type { TestA11yOptions, A11yAuditResult } from './commands/a11y';
+export type {
+  A11yViolation,
+  A11yPageResult,
+  A11yRunnerOptions,
+  A11yColorMode,
+} from './utils/a11y-runner';
 export type {
   ValidateSiteCompositionResult,
   ValidateSiteCompositionOptions,
