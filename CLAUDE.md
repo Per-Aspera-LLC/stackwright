@@ -86,7 +86,7 @@ pnpm dev:hellostackwright
 pnpm stackwright -- --help
 pnpm stackwright -- types
 pnpm stackwright -- info
-# View the priority-tiered product board (queries GitHub Issues)
+# View the priority-tiered product board (reads .beads/issues.jsonl)
 pnpm stackwright -- board
 
 # Preview a page as a screenshot (requires a running dev server + Playwright)

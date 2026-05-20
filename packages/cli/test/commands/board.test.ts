@@ -1,27 +1,20 @@
 import { describe, it, expect } from 'vitest';
-import { parseBoard, GhIssueRaw } from '../../src/commands/board';
+import { parseBoard, BeadsIssue } from '../../src/commands/board';
 
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
 
-function makeIssue(overrides: Partial<GhIssueRaw> = {}): GhIssueRaw {
+function makeIssue(overrides: Partial<BeadsIssue> = {}): BeadsIssue {
   return {
-    number: 1,
+    _type: 'issue',
+    id: 'stackwright-abc',
     title: 'Test issue',
-    labels: [],
-    assignees: [],
-    updatedAt: '2026-03-12T00:00:00Z',
+    status: 'open',
+    priority: 1,
+    updated_at: '2026-03-12T00:00:00Z',
     ...overrides,
   };
-}
-
-function label(name: string): { name: string } {
-  return { name };
-}
-
-function assignee(login: string): { login: string } {
-  return { login };
 }
 
 // ---------------------------------------------------------------------------
@@ -39,96 +32,87 @@ describe('parseBoard', () => {
   });
 
   it('sorts issues into the correct priority tier', () => {
-    const issues: GhIssueRaw[] = [
-      makeIssue({ number: 1, title: 'Urgent fix', labels: [label('priority:now')] }),
-      makeIssue({ number: 2, title: 'Next up', labels: [label('priority:next')] }),
-      makeIssue({ number: 3, title: 'Someday', labels: [label('priority:later')] }),
-      makeIssue({ number: 4, title: 'Dream big', labels: [label('priority:vision')] }),
+    const issues: BeadsIssue[] = [
+      makeIssue({ id: 'stackwright-001', title: 'Urgent fix', priority: 1 }),
+      makeIssue({ id: 'stackwright-002', title: 'Next up', priority: 2 }),
+      makeIssue({ id: 'stackwright-003', title: 'Someday', priority: 3 }),
+      makeIssue({ id: 'stackwright-004', title: 'Dream big', priority: 4 }),
     ];
 
     const result = parseBoard(issues);
     expect(result.now).toHaveLength(1);
-    expect(result.now[0].number).toBe(1);
+    expect(result.now[0].id).toBe('stackwright-001');
     expect(result.next).toHaveLength(1);
-    expect(result.next[0].number).toBe(2);
+    expect(result.next[0].id).toBe('stackwright-002');
     expect(result.later).toHaveLength(1);
-    expect(result.later[0].number).toBe(3);
+    expect(result.later[0].id).toBe('stackwright-003');
     expect(result.vision).toHaveLength(1);
-    expect(result.vision[0].number).toBe(4);
+    expect(result.vision[0].id).toBe('stackwright-004');
     expect(result.unlabeled).toHaveLength(0);
   });
 
-  it('puts issues without a priority label into unlabeled', () => {
-    const issues: GhIssueRaw[] = [
-      makeIssue({ number: 10, title: 'No label', labels: [] }),
-      makeIssue({ number: 11, title: 'Other label', labels: [label('enhancement')] }),
+  it('puts issues with unknown priority into unlabeled', () => {
+    const issues: BeadsIssue[] = [
+      makeIssue({ id: 'stackwright-005', title: 'Unknown priority', priority: 99 }),
     ];
 
     const result = parseBoard(issues);
-    expect(result.unlabeled).toHaveLength(2);
-    expect(result.unlabeled[0].number).toBe(10);
-    expect(result.unlabeled[1].number).toBe(11);
+    expect(result.unlabeled).toHaveLength(1);
+    expect(result.unlabeled[0].id).toBe('stackwright-005');
+    expect(result.now).toHaveLength(0);
   });
 
-  it('handles issues with multiple labels including a priority label', () => {
-    const issues: GhIssueRaw[] = [
-      makeIssue({
-        number: 42,
-        title: 'Labeled both ways',
-        labels: [label('enhancement'), label('priority:now'), label('bug')],
-      }),
+  it('excludes closed issues from all tiers', () => {
+    const issues: BeadsIssue[] = [
+      makeIssue({ id: 'stackwright-006', priority: 1, status: 'closed' }),
+      makeIssue({ id: 'stackwright-007', priority: 2, status: 'closed' }),
+      makeIssue({ id: 'stackwright-008', priority: 1, status: 'open' }),
     ];
 
     const result = parseBoard(issues);
     expect(result.now).toHaveLength(1);
-    expect(result.now[0].labels).toEqual(['enhancement', 'priority:now', 'bug']);
+    expect(result.now[0].id).toBe('stackwright-008');
+    expect(result.next).toHaveLength(0);
   });
 
-  it('flattens assignee objects to login strings', () => {
-    const issues: GhIssueRaw[] = [
-      makeIssue({
-        number: 7,
-        labels: [label('priority:next')],
-        assignees: [assignee('alice'), assignee('bob')],
-      }),
+  it('ignores entries with _type other than "issue"', () => {
+    const issues: BeadsIssue[] = [
+      makeIssue({ id: 'stackwright-009', _type: 'comment', priority: 1 }),
+      makeIssue({ id: 'stackwright-010', _type: 'issue', priority: 1 }),
     ];
 
     const result = parseBoard(issues);
-    expect(result.next[0].assignees).toEqual(['alice', 'bob']);
+    expect(result.now).toHaveLength(1);
+    expect(result.now[0].id).toBe('stackwright-010');
   });
 
-  it('preserves updatedAt timestamp', () => {
+  it('maps issue_type onto the BoardIssue.issueType field', () => {
+    const issues: BeadsIssue[] = [
+      makeIssue({ id: 'stackwright-011', priority: 2, issue_type: 'feature' }),
+    ];
+
+    const result = parseBoard(issues);
+    expect(result.next[0].issueType).toBe('feature');
+  });
+
+  it('preserves updatedAt from updated_at timestamp', () => {
     const ts = '2026-06-15T10:30:00Z';
-    const issues: GhIssueRaw[] = [
-      makeIssue({ number: 99, labels: [label('priority:later')], updatedAt: ts }),
+    const issues: BeadsIssue[] = [
+      makeIssue({ id: 'stackwright-012', priority: 3, updated_at: ts }),
     ];
 
     const result = parseBoard(issues);
     expect(result.later[0].updatedAt).toBe(ts);
   });
 
-  it('ignores unknown priority: prefixed labels', () => {
-    const issues: GhIssueRaw[] = [
-      makeIssue({
-        number: 50,
-        title: 'Unknown priority',
-        labels: [label('priority:critical')],
-      }),
-    ];
-
-    const result = parseBoard(issues);
-    expect(result.unlabeled).toHaveLength(1);
-    expect(result.now).toHaveLength(0);
-  });
-
   it('handles a mix of everything', () => {
-    const issues: GhIssueRaw[] = [
-      makeIssue({ number: 1, labels: [label('priority:now')] }),
-      makeIssue({ number: 2, labels: [label('priority:now')] }),
-      makeIssue({ number: 3, labels: [label('priority:next')] }),
-      makeIssue({ number: 4, labels: [] }),
-      makeIssue({ number: 5, labels: [label('priority:vision')] }),
-      makeIssue({ number: 6, labels: [label('bug')] }),
+    const issues: BeadsIssue[] = [
+      makeIssue({ id: 'stackwright-013', priority: 1 }),
+      makeIssue({ id: 'stackwright-014', priority: 1 }),
+      makeIssue({ id: 'stackwright-015', priority: 2 }),
+      makeIssue({ id: 'stackwright-016', priority: 1, status: 'closed' }),
+      makeIssue({ id: 'stackwright-017', priority: 4 }),
+      makeIssue({ id: 'stackwright-018', priority: 99 }),
     ];
 
     const result = parseBoard(issues);
@@ -136,6 +120,6 @@ describe('parseBoard', () => {
     expect(result.next).toHaveLength(1);
     expect(result.later).toHaveLength(0);
     expect(result.vision).toHaveLength(1);
-    expect(result.unlabeled).toHaveLength(2);
+    expect(result.unlabeled).toHaveLength(1);
   });
 });

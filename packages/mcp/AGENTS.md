@@ -22,7 +22,7 @@ The server communicates via stdio and implements the MCP SDK protocol.
 | `tools/content-types.ts` | Introspect content type schemas, list registered types, get field definitions |
 | `tools/pages.ts` | List pages, read page content, create/update pages |
 | `tools/site.ts` | Read/update site configuration |
-| `tools/board.ts` | `stackwright_get_board` — query the GitHub Issues product board |
+| `tools/board.ts` | `stackwright_get_board` — read the beads product board from `.beads/issues.jsonl` |
 | `tools/git-ops.ts` | Git workflow helpers (branch, commit, status) |
 | `tools/project.ts` | Project info, package versions, build status |
 | `tools/render.ts` | Visual rendering — screenshot pages, check dev server, capture before/after diffs |
