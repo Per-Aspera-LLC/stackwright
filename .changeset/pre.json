@@ -23,6 +23,7 @@
   },
   "changesets": [
     "feat-integration-management",
+    "feat-test-a11y-command",
     "fix-a11y-cluster",
     "fix-map-component-api",
     "refactor-board-beads-native"

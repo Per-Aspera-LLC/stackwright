@@ -1,5 +1,11 @@
 # @stackwright/cli
 
+## 0.9.0-alpha.2
+
+### Minor Changes
+
+- 8dbbe0b: Add `stackwright test:a11y` command for portable WCAG 2.1 AA accessibility auditing. Tests all pages (auto-discovered) in both light and dark modes using axe-core + Playwright. Also exposes `stackwright_test_a11y` MCP tool for Otter agent integration.
+
 ## 0.9.0-alpha.1
 
 ### Minor Changes
