@@ -79,13 +79,22 @@ async function setColorMode(page: any, mode: A11yColorMode, baseUrl: string): Pr
   await page.reload({ waitUntil: 'networkidle' });
 
   // Verify the mode took effect; apply directly if not
-  const applied = await page.evaluate((targetMode: string) => {
-    const html = document.documentElement;
+  // NOTE: Use (globalThis as Record<string, unknown>)['document'] instead of
+  // bare `document` — the CLI tsconfig has no lib:dom, so the DTS build
+  // rejects DOM globals even inside page.evaluate() callbacks.
+  const applied = await page.evaluate((targetMode: string): boolean => {
+    const doc = (globalThis as Record<string, unknown>)['document'] as {
+      documentElement: {
+        classList: { contains: (c: string) => boolean; toggle: (c: string, v: boolean) => void };
+        dataset: Record<string, string>;
+      };
+    };
+    const html = doc.documentElement;
     const current =
-      html.classList.contains('dark') || html.dataset.theme === 'dark' ? 'dark' : 'light';
+      html.classList.contains('dark') || html.dataset['theme'] === 'dark' ? 'dark' : 'light';
     if (current !== targetMode) {
       html.classList.toggle('dark', targetMode === 'dark');
-      html.dataset.theme = targetMode;
+      html.dataset['theme'] = targetMode;
       return false;
     }
     return true;
