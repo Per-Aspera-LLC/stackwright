@@ -10,6 +10,7 @@ import { registerCollectionTools } from './tools/collections.js';
 import { registerIntegrationTools } from './tools/integrations.js';
 import { registerComposeTools } from './tools/compose.js';
 import { registerRenderTools, closeBrowser } from './tools/render.js';
+import { registerA11yTools } from './tools/a11y.js';
 import { version } from '../package.json';
 
 const server = new McpServer({
@@ -27,6 +28,7 @@ registerCollectionTools(server);
 registerIntegrationTools(server);
 registerComposeTools(server);
 registerRenderTools(server);
+registerA11yTools(server);
 
 // Clean up Playwright browser on exit
 process.on('SIGINT', async () => {

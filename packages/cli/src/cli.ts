@@ -16,6 +16,7 @@ import { registerIntegration } from './commands/integration';
 import { registerCompose } from './commands/compose';
 import { registerPreview } from './commands/preview';
 import { registerSBOM } from './commands/sbom';
+import { registerTestA11y } from './commands/a11y';
 
 const { version } = require('../package.json') as { version: string };
 
@@ -44,6 +45,7 @@ async function main(): Promise<void> {
   registerCompose(program);
   registerPreview(program);
   registerSBOM(program);
+  registerTestA11y(program);
 
   // Pre-parse to extract global options (including --plugin-dir) before full dispatch.
   // parseOptions() does NOT dispatch commands — it only extracts options.
