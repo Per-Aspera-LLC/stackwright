@@ -31,6 +31,7 @@ import {
   VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
   resolveEnvVarsDeep,
   buildExtendedPageContentSchema,
+  checkForPlaintextSecret,
 } from '@stackwright/types';
 import type {
   CollectionConfig,
@@ -1007,6 +1008,42 @@ async function executePlugins(
   }
 }
 
+/**
+ * Audit integration auth fields for plaintext secrets before env var resolution.
+ *
+ * Must be called on the raw (pre-resolution) config so that $VAR references
+ * are still present and correctly skipped by checkForPlaintextSecret.
+ *
+ * Checks: auth.token (bearer), auth.value (apiKey), auth.password (basic auth).
+ */
+function auditIntegrationAuthSecrets(config: unknown): void {
+  if (!config || typeof config !== 'object') return;
+  const { integrations } = config as Record<string, unknown>;
+  if (!Array.isArray(integrations)) return;
+
+  for (const integration of integrations) {
+    if (!integration || typeof integration !== 'object') continue;
+    const { name, auth } = integration as Record<string, unknown>;
+    if (!auth || typeof auth !== 'object') continue;
+
+    const integrationLabel = typeof name === 'string' ? name : '(unnamed)';
+    const authObj = auth as Record<string, unknown>;
+
+    for (const field of ['token', 'value', 'password'] as const) {
+      const fieldValue = authObj[field];
+      if (typeof fieldValue !== 'string') continue;
+
+      const warning = checkForPlaintextSecret(
+        fieldValue,
+        `integrations[${integrationLabel}].auth.${field}`
+      );
+      if (warning) {
+        console.warn(`  ${warning}`);
+      }
+    }
+  }
+}
+
 // -- Main -------------------------------------------------------------------
 
 export async function runPrebuild(options?: string | PrebuildOptions): Promise<void> {
@@ -1061,6 +1098,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   }
 
   const processedConfig = processSiteConfig(rawConfig, projectRoot, imagesDir);
+
+  // Audit integration auth fields for plaintext secrets BEFORE env var resolution
+  // so that $VAR_NAME references are still raw and correctly skipped.
+  auditIntegrationAuthSecrets(processedConfig);
 
   // Resolve environment variable references in integrations
   const configWithEnvResolved = applyEnvVarResolution(processedConfig);

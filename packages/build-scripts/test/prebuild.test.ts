@@ -400,3 +400,90 @@ describe('runPrebuild — video file co-location', () => {
     warnSpy.mockRestore();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Integration auth secret auditing
+// ---------------------------------------------------------------------------
+
+describe('auditIntegrationAuthSecrets (via runPrebuild)', () => {
+  let tmpDir: string;
+  let warnSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sw-secret-audit-'));
+    warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+    warnSpy.mockRestore();
+  });
+
+  function writeMinimalSite(extraYaml: string): void {
+    fs.mkdirSync(path.join(tmpDir, 'pages'), { recursive: true });
+    fs.writeFileSync(
+      path.join(tmpDir, 'stackwright.yml'),
+      `
+title: Test Site
+navigation: []
+appBar:
+  titleText: Test
+${extraYaml}
+`.trimStart()
+    );
+    fs.writeFileSync(
+      path.join(tmpDir, 'pages', 'content.yml'),
+      `
+content:
+  content_items:
+    - type: text_block
+      label: test
+      textBlocks:
+        - text: Hello
+          textSize: body1
+`.trimStart()
+    );
+  }
+
+  it('emits a SECURITY WARNING when a high-entropy token is hardcoded in auth.token', async () => {
+    writeMinimalSite(`
+integrations:
+  - type: openapi
+    name: my-api
+    spec: ./api.yaml
+    auth:
+      type: bearer
+      token: "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6MTcwMDAwMDAwMH0"
+`);
+    await runPrebuild({ projectRoot: tmpDir, unknownContentTypes: 'warn' });
+
+    const warnCalls = warnSpy.mock.calls.map((c) => c.join(' '));
+    const securityWarning = warnCalls.find((msg) => msg.includes('SECURITY WARNING'));
+    expect(securityWarning).toBeDefined();
+    expect(securityWarning).toContain('my-api');
+    expect(securityWarning).toContain('auth.token');
+  });
+
+  it('does NOT emit a SECURITY WARNING when auth.token is an env var reference', async () => {
+    writeMinimalSite(`
+integrations:
+  - type: openapi
+    name: my-api
+    spec: ./api.yaml
+    auth:
+      type: bearer
+      token: "$MY_API_TOKEN"
+`);
+    // Provide the env var so applyEnvVarResolution does not throw
+    process.env.MY_API_TOKEN = 'resolved-value';
+    try {
+      await runPrebuild({ projectRoot: tmpDir, unknownContentTypes: 'warn' });
+    } finally {
+      delete process.env.MY_API_TOKEN;
+    }
+
+    const warnCalls = warnSpy.mock.calls.map((c) => c.join(' '));
+    const securityWarning = warnCalls.find((msg) => msg.includes('SECURITY WARNING'));
+    expect(securityWarning).toBeUndefined();
+  });
+});

@@ -232,15 +232,40 @@ describe('Entropy Detection', () => {
       const result = checkForPlaintextSecret('password123', 'token');
       expect(result).toContain('SECURITY WARNING');
       expect(result).toContain('token');
+      expect(result).toContain('low-entropy');
     });
 
     it('should return null for short strings', () => {
       expect(checkForPlaintextSecret('short', 'token')).toBe(null);
     });
 
-    it('should return null for high entropy random strings', () => {
+    it('should return null for mid-range entropy strings (safe zone 3.8–4.5)', () => {
+      // 'aK8#mP2$vL5@nQ9' has 15 unique chars → entropy ≈ log2(15) ≈ 3.91 bits/char
+      // That's in the safe band between 3.8 and 4.5 — should not be flagged.
       const result = checkForPlaintextSecret('aK8#mP2$vL5@nQ9', 'token');
       expect(result).toBe(null);
+    });
+
+    it('should return a warning for a high-entropy cryptographic token (JWT-like)', () => {
+      // A fake base64url JWT header+payload — very high entropy, > 4.5 bits/char
+      const fakeJwt = 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6MTcwMDAwMDAwMH0';
+      const result = checkForPlaintextSecret(fakeJwt, 'auth.token');
+      expect(result).not.toBeNull();
+      expect(result).toContain('SECURITY WARNING');
+      expect(result).toContain('auth.token');
+      expect(result).toContain('high-entropy');
+    });
+
+    it('should produce distinct warning messages for low vs high entropy', () => {
+      const lowResult = checkForPlaintextSecret('password123', 'token');
+      const highResult = checkForPlaintextSecret(
+        'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ1c2VyLTEyMyIsImV4cCI6MTcwMDAwMDAwMH0',
+        'token'
+      );
+      expect(lowResult).toContain('low-entropy');
+      expect(lowResult).not.toContain('cryptographic token');
+      expect(highResult).toContain('cryptographic token');
+      expect(highResult).not.toContain('low-entropy');
     });
   });
 });
