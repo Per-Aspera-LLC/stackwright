@@ -8,19 +8,19 @@ Next.js adapter layer for Stackwright. Provides framework-specific implementatio
 
 ## What This Package Provides
 
-| Export | Router | Purpose |
-|--------|--------|---------|
-| `registerNextJSComponents()` | Both | Registers all Next.js adapter components into the `stackwrightRegistry` |
-| `NextStackwrightImage` | Both | Next.js `Image` wrapper with blur placeholders and responsive sizing |
-| `NextStackwrightLink` | Both | Next.js `Link` wrapper for client-side navigation |
-| `NextStackwrightRouter` / `NextStackwrightRoute` | App Router | Next.js App Router routing integration (uses `next/navigation`) |
-| `StackwrightLayout` | **App Router** | Root layout component — includes `ColorModeScript` + font links. Use in `app/layout.tsx`. |
-| `generateStackwrightStaticParams` | **App Router** | Generates static params for all pages. Use as `generateStaticParams` in `app/[...slug]/page.tsx`. |
-| `getStackwrightPageData` | **App Router** | Reads page JSON from prebuild output. Use in Server Component page files. |
-| `getStackwrightSiteConfig` | **App Router** | Reads site config JSON from prebuild output. |
-| `StackwrightDocument` | ~~Pages Router~~ **Deprecated** | Drop-in `_document.tsx` — use `StackwrightLayout` instead. |
-| `NextStackwrightHead` | ~~Pages Router~~ **Deprecated** | SEO via `next/head` — use the Metadata API instead. |
-| `createStackwrightNextConfig()` | Both | Next.js config helper |
+| Export | Import path | Router | Purpose |
+|--------|------------|--------|---------|
+| `registerNextJSComponents()` | `@stackwright/nextjs` | Both | Registers all Next.js adapter components into the `stackwrightRegistry` |
+| `NextStackwrightImage` | `@stackwright/nextjs` | Both | Next.js `Image` wrapper with blur placeholders and responsive sizing |
+| `NextStackwrightLink` | `@stackwright/nextjs` | Both | Next.js `Link` wrapper for client-side navigation |
+| `NextStackwrightRouter` / `NextStackwrightRoute` | `@stackwright/nextjs` | App Router | Next.js App Router routing integration (uses `next/navigation`) |
+| `StackwrightLayout` | **`@stackwright/nextjs/server`** | **App Router** | Root layout component — includes `ColorModeScript` + font links. Use in `app/layout.tsx`. |
+| `generateStackwrightStaticParams` | **`@stackwright/nextjs/server`** | **App Router** | Generates static params for all pages. Use as `generateStaticParams` in `app/[...slug]/page.tsx`. |
+| `getStackwrightPageData` | **`@stackwright/nextjs/server`** | **App Router** | Reads page JSON from prebuild output. Use in Server Component page files. |
+| `getStackwrightSiteConfig` | **`@stackwright/nextjs/server`** | **App Router** | Reads site config JSON from prebuild output. |
+| `StackwrightDocument` | `@stackwright/nextjs` | ~~Pages Router~~ **Deprecated** | Drop-in `_document.tsx` — use `StackwrightLayout` instead. |
+| `NextStackwrightHead` | `@stackwright/nextjs` | ~~Pages Router~~ **Deprecated** | SEO via `next/head` — use the Metadata API instead. |
+| `createStackwrightNextConfig()` | `@stackwright/nextjs` | Both | Next.js config helper |
 
 ---
 
@@ -46,10 +46,12 @@ In App Router, wrap this in a `'use client'` component or call it from a client 
 
 ## App Router Setup (Recommended)
 
+> **Import path:** Server-only exports (`StackwrightLayout`, static generation helpers) must be imported from `@stackwright/nextjs/server`, not from `@stackwright/nextjs`. The `/server` entry is excluded from browser bundles by bundlers.
+
 ### `app/layout.tsx`
 
 ```typescript
-import { StackwrightLayout } from '@stackwright/nextjs';
+import { StackwrightLayout } from '@stackwright/nextjs/server';
 import { registerNextJSComponents } from '@stackwright/nextjs';
 import { registerDefaultIcons } from '@stackwright/icons';
 import { registerShadcnComponents } from '@stackwright/ui-shadcn';
@@ -71,7 +73,7 @@ import { DynamicPage } from '@stackwright/core';
 import {
   generateStackwrightStaticParams,
   getStackwrightPageData,
-} from '@stackwright/nextjs';
+} from '@stackwright/nextjs/server';
 import { notFound } from 'next/navigation';
 
 export const generateStaticParams = generateStackwrightStaticParams;
@@ -87,7 +89,7 @@ export default async function Page({ params }: { params: { slug: string[] } }) {
 
 ```typescript
 import { DynamicPage } from '@stackwright/core';
-import { getStackwrightPageData } from '@stackwright/nextjs';
+import { getStackwrightPageData } from '@stackwright/nextjs/server';
 import { notFound } from 'next/navigation';
 
 export default async function HomePage() {

@@ -17,16 +17,6 @@ export {
   type SecurityHeader,
 } from './config/security';
 
-// App Router components
-export { StackwrightLayout } from './components/StackwrightLayout';
-
-// App Router static generation helpers (replaces getStaticProps/getStaticPaths)
-export {
-  generateStackwrightStaticParams,
-  getStackwrightPageData,
-  getStackwrightSiteConfig,
-} from './static-generation';
-
 import { NextStackwrightImage } from './components/NextStackwrightImage';
 import { NextStackwrightLink } from './components/NextStackwrightLink';
 import { NextStackwrightRouter, NextStackwrightRoute } from './components/NextStackwrightRouter';

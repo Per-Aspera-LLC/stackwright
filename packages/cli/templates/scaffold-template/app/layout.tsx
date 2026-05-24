@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { StackwrightLayout } from '@stackwright/nextjs';
+import { StackwrightLayout } from '@stackwright/nextjs/server';
 import { Providers } from './_components/providers';
 
 export const metadata: Metadata = {

@@ -1,4 +1,7 @@
-import { generateStackwrightStaticParams, getStackwrightPageData } from '@stackwright/nextjs';
+import {
+  generateStackwrightStaticParams,
+  getStackwrightPageData,
+} from '@stackwright/nextjs/server';
 import { notFound } from 'next/navigation';
 import { StackwrightPageClient } from '../_components/page-client';
 
