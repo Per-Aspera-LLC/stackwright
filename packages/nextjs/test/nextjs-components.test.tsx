@@ -22,6 +22,19 @@ vi.mock('next/link', () => ({
 }));
 
 let mockPathname = '/';
+// next/navigation mock — used by NextStackwrightRoute (App Router)
+vi.mock('next/navigation', () => ({
+  usePathname: () => mockPathname,
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    refresh: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    prefetch: vi.fn(),
+  }),
+}));
+// next/router mock — retained for any remaining Pages Router consumers
 vi.mock('next/router', () => ({
   useRouter: () => ({
     pathname: mockPathname,

@@ -54,6 +54,11 @@ function getFontLinks(): FontLink[] {
  * }
  * ```
  */
+/**
+ * @deprecated Use `StackwrightLayout` from `@stackwright/nextjs` instead.
+ * `StackwrightDocument` is a Pages Router `_document.tsx` component.
+ * For App Router, use `StackwrightLayout` in your `app/layout.tsx`.
+ */
 export function StackwrightDocument({ lang = 'en' }: { lang?: string }) {
   const fontLinks = getFontLinks();
 

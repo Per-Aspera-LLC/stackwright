@@ -109,10 +109,19 @@ describe('scaffold output — file structure', () => {
   });
 
   it('creates Next.js template files', () => {
+    // Shared (App Router + Pages Router)
     expect(fs.existsSync(path.join(targetDir, 'next.config.js'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'pages', '_app.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'pages', '[...slug].tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'pages', 'index.ts'))).toBe(true);
+    // App Router structure
+    expect(fs.existsSync(path.join(targetDir, 'app', 'layout.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', 'page.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', '[...slug]', 'page.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', '_components', 'providers.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', '_components', 'page-client.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', 'not-found.tsx'))).toBe(true);
+    // Pages Router files must NOT exist (removed in App Router template)
+    expect(fs.existsSync(path.join(targetDir, 'pages', '_app.tsx'))).toBe(false);
+    expect(fs.existsSync(path.join(targetDir, 'pages', '[...slug].tsx'))).toBe(false);
+    expect(fs.existsSync(path.join(targetDir, 'pages', 'index.ts'))).toBe(false);
   });
 
   it('removes template repo README.md', () => {

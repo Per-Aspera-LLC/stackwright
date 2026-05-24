@@ -30,7 +30,7 @@ See the [Otter Raft documentation](./packages/otters/README.md) for how to use t
 
 - **Framework Architecture**: To understand the big picture, read:
   - `packages/core/src/index.ts`: Core framework initialization
-  - `packages/nextjs/src/components/NextDocument.tsx`: Next.js integration
+  - `packages/nextjs/src/components/StackwrightLayout.tsx`: App Router root layout (App Router) or `StackwrightDocument.tsx` (Pages Router, deprecated)
   - `packages/themes/src/ThemesProvider.tsx`: Theme provider for theme handling
 - **Developer Workflows**
   - Build: Run `pnpm build` from the project root
@@ -47,7 +47,7 @@ See the [Otter Raft documentation](./packages/otters/README.md) for how to use t
 ### Component Registration
 
 The `stackwrightRegistry` is a singleton that must be populated before rendering. In Next.js apps:
-- Call `registerNextJSComponents()` from `@stackwright/nextjs` in `pages/_app.tsx` (Pages Router) or `app/layout.tsx` (App Router)
+- Call `registerNextJSComponents()` from `@stackwright/nextjs` in `app/layout.tsx` (App Router — via a `'use client'` Providers component; see `@stackwright/nextjs` AGENTS.md for the correct pattern) or `pages/_app.tsx` (Pages Router — deprecated)
 - Call `registerDefaultIcons()` from `@stackwright/icons` in the same location
 - Do **not** rely on module import side effects for registration — it must be explicit
 

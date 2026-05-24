@@ -359,7 +359,7 @@ Add these hooks to the example app's `package.json` (already done in `stackwrigh
 
 ### Component Registration
 
-`registerNextJSComponents()` from `@stackwright/nextjs` must be called explicitly before rendering — it registers Next.js Image, Link, Router, and Route adapters into the `stackwrightRegistry`. The registration call should live in `pages/_app.tsx` (Pages Router) or `app/layout.tsx` (App Router). Do not rely on module import side effects to trigger registration.
+`registerNextJSComponents()` from `@stackwright/nextjs` must be called explicitly before rendering — it registers Next.js Image, Link, Router, and Route adapters into the `stackwrightRegistry`. The registration call should live in `app/layout.tsx` (App Router — via a `'use client'` Providers component; see `@stackwright/nextjs` AGENTS.md for the correct pattern) or `pages/_app.tsx` (Pages Router — deprecated). Do not rely on module import side effects to trigger registration.
 
 ### Debug Logging
 

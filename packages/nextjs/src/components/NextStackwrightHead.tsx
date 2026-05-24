@@ -13,6 +13,10 @@ interface NextStackwrightHeadProps {
  * Next.js adapter for Stackwright's Head component.
  * Renders SEO meta tags via next/head. Only emits tags for fields that are set
  * -- no empty <meta> tags, no placeholder content.
+ *
+ * @deprecated Use the Next.js Metadata API instead.
+ * In App Router, export `metadata` or `generateMetadata` from your page/layout files.
+ * See: https://nextjs.org/docs/app/api-reference/functions/generate-metadata
  */
 export function NextStackwrightHead({
   title,
