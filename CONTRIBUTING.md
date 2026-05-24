@@ -184,6 +184,8 @@ pnpm stackwright -- info
 cd packages/types && pnpm generate-schemas
 ```
 
+> **Note — `@stackwright/ui-shadcn` has a CSS build step:** Unlike other packages, `@stackwright/ui-shadcn` runs both `tsup` (JS/TS) and `tailwindcss` (CSS) during its build. Running `pnpm build` from the repo root covers both. If you run a selective build (e.g. `pnpm build --filter @stackwright/core`) that excludes `ui-shadcn`, `dist/styles.css` will be absent and any app importing `@stackwright/ui-shadcn/styles.css` will fail with `Module not found`. Fix: `pnpm --filter @stackwright/ui-shadcn build`.
+
 ## Turborepo (Optional)
 
 Stackwright includes Turborepo for faster incremental builds. It is installed automatically but usage is optional.
