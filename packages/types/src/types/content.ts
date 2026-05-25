@@ -42,12 +42,16 @@ export const mainContentSchema = baseContentSchema.extend({
 export const timelineItemSchema = z.object({
   year: z.string(),
   event: z.string(),
+  yearColor: z.string().optional(), // overrides theme.colors.primary for the year label
+  cardBackground: z.string().optional(), // overrides theme.colors.surface for the card
+  dotColor: z.string().optional(), // overrides theme.colors.primary for the timeline dot
 });
 
 export const timelineContentSchema = baseContentSchema.extend({
   type: z.literal('timeline'),
   heading: textBlockSchema.optional(),
   items: z.array(timelineItemSchema),
+  layout: z.enum(['vertical', 'horizontal']).optional(), // default: 'vertical'
 });
 
 export const iconGridContentSchema = baseContentSchema.extend({

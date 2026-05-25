@@ -786,6 +786,15 @@
                   },
                   "event": {
                     "type": "string"
+                  },
+                  "yearColor": {
+                    "type": "string"
+                  },
+                  "cardBackground": {
+                    "type": "string"
+                  },
+                  "dotColor": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -794,6 +803,13 @@
                 ],
                 "additionalProperties": false
               }
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "vertical",
+                "horizontal"
+              ]
             }
           },
           "required": [
