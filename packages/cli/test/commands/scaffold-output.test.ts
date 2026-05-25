@@ -372,7 +372,7 @@ describe('scaffold output — package.json', () => {
 
     const pkg = readJson(path.join(targetDir, 'package.json'));
     const scripts = pkg.scripts as Record<string, string>;
-    expect(scripts.dev).toBe('next dev');
+    expect(scripts.dev).toBe('concurrently "next dev" "stackwright-prebuild --watch"');
     expect(scripts.build).toBe('next build');
     expect(scripts.prebuild).toBe('stackwright-prebuild');
     expect(scripts.predev).toBe('stackwright-prebuild');
@@ -401,6 +401,7 @@ describe('scaffold output — package.json', () => {
     const pkg = readJson(path.join(targetDir, 'package.json'));
     const devDeps = pkg.devDependencies as Record<string, string>;
     expect(devDeps['@stackwright/build-scripts']).toBeDefined();
+    expect(devDeps['concurrently']).toBeDefined();
     expect(devDeps['typescript']).toBeDefined();
   });
 

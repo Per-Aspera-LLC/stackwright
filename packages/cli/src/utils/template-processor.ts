@@ -231,6 +231,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
     swUiShadcn: '^0.1.0',
     swOtters: '^0.2.0',
     // Third-party
+    concurrently: '^9.1.0',
     jsYaml: '^4.1.1',
     next: '^16.1.6',
     react: '^19.2.4',
@@ -251,7 +252,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
     scripts: {
       prebuild: 'stackwright-prebuild',
       predev: 'stackwright-prebuild',
-      dev: 'next dev',
+      dev: 'concurrently "next dev" "stackwright-prebuild --watch"',
       build: 'next build',
       start: 'next start',
       lint: 'next lint',
@@ -270,6 +271,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
     },
     devDependencies: {
       '@stackwright/build-scripts': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swBuildScripts,
+      concurrently: VERSIONS.concurrently,
       '@types/js-yaml': VERSIONS.typesJsYaml,
       '@types/node': VERSIONS.typesNode,
       '@types/react': VERSIONS.typesReact,
