@@ -17,6 +17,7 @@ import { registerCompose } from './commands/compose';
 import { registerPreview } from './commands/preview';
 import { registerSBOM } from './commands/sbom';
 import { registerTestA11y } from './commands/a11y';
+import { registerInit } from './commands/init';
 
 const { version } = require('../package.json') as { version: string };
 
@@ -30,6 +31,7 @@ async function main(): Promise<void> {
     .option('--plugin-dir <path>', 'Load additional commands from a plugin directory');
 
   // Register built-in commands
+  registerInit(program);
   registerScaffold(program);
   registerPage(program);
   registerSite(program);

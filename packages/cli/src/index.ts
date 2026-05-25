@@ -6,6 +6,7 @@ export type { PluginRegistrar } from './types';
 export { outputResult, outputError } from './utils/json-output';
 
 // Pure command functions — callable as a library without spawning a subprocess
+export { init } from './commands/init';
 export { scaffold } from './commands/scaffold';
 export { listPages, addPage, validatePages, readPage, writePage } from './commands/page';
 export { validateSite, readSiteConfig, writeSiteConfig } from './commands/site';
@@ -25,6 +26,7 @@ export { validateSiteComposition } from './utils/site-validator';
 export { detectProject, resolvePagesDir } from './utils/project-detector';
 
 // Result types
+export type { InitResult } from './commands/init';
 export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
 export type {
   PageSummary,
