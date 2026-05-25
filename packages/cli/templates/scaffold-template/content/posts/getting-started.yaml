@@ -1,0 +1,31 @@
+title: Getting Started with Collections
+date: "2025-01-20"
+excerpt: Learn how to use Stackwright collections to build blogs, docs, and more.
+tags:
+  - tutorial
+  - collections
+body: |
+  # Getting Started with Collections
+
+  Stackwright collections let you manage structured content (blog posts, docs, products)
+  as simple YAML files.
+
+  ## Creating a collection
+
+  Run: `stackwright collection add posts`
+
+  ## Displaying a collection
+
+  Add a `collection_list` content item to any page:
+
+  ```yaml
+  - type: collection_list
+    label: blog-posts
+    source: posts
+    layout: cards
+    card:
+      title: title
+      subtitle: excerpt
+      meta: date
+      tags: tags
+  ```
