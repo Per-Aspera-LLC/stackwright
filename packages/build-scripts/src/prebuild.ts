@@ -229,6 +229,44 @@ export function generateGoogleFontsUrl(fonts: string[]): string {
   return `https://fonts.googleapis.com/css2?${familyParams}&display=swap`;
 }
 
+export interface FontLink {
+  rel: string;
+  href: string;
+  crossorigin?: boolean;
+}
+
+/**
+ * Extract all Google Font names from a site config's customTheme typography settings.
+ * Returns deduplicated array of font names suitable for loading from Google Fonts.
+ */
+export function getAllGoogleFontNames(siteConfig: unknown): string[] {
+  const config = siteConfig as Record<string, unknown>;
+  const customTheme = config?.customTheme as Record<string, unknown> | undefined;
+  if (!customTheme) return [];
+  const typography = customTheme?.typography as Record<string, unknown> | undefined;
+  if (!typography) return [];
+  const fontFamily = typography?.fontFamily as Record<string, string> | undefined;
+  if (!fontFamily) return [];
+
+  const primaryFonts = extractGoogleFontNames(fontFamily?.primary ?? '');
+  const secondaryFonts = extractGoogleFontNames(fontFamily?.secondary ?? '');
+  return [...new Set([...primaryFonts, ...secondaryFonts])];
+}
+
+/**
+ * Build external Google Fonts link tags from an already-extracted font names list.
+ * Private helper shared by generateFontLinkTags and the bundle-strategy fallback.
+ */
+function generateFontLinkTags_external(fonts: string[]): FontLink[] {
+  if (fonts.length === 0) return [];
+  const fontsUrl = generateGoogleFontsUrl(fonts);
+  if (!fontsUrl) return [];
+  return [
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: true },
+    { rel: 'stylesheet', href: fontsUrl },
+  ];
+}
+
 /**
  * Generate link tag objects from a site config for Google Fonts.
  *
@@ -237,62 +275,101 @@ export function generateGoogleFontsUrl(fonts: string[]): string {
  *   - A stylesheet link to Google Fonts CSS
  *
  * Reads from customTheme.typography.fontFamily.primary and .secondary
+ * Uses the "external" strategy (CDN links at runtime).
  */
-export interface FontLink {
-  rel: string;
-  href: string;
-  crossorigin?: boolean;
+export function generateFontLinkTags(siteConfig: unknown): FontLink[] {
+  return generateFontLinkTags_external(getAllGoogleFontNames(siteConfig));
 }
 
-export function generateFontLinkTags(siteConfig: unknown): FontLink[] {
-  const config = siteConfig as Record<string, unknown>;
-  const customTheme = config?.customTheme as Record<string, unknown> | undefined;
+/**
+ * Download Google Fonts and bundle them locally for runtime-independence.
+ *
+ * Strategy: "bundle"
+ * - Fetches Google Fonts CSS using a modern browser User-Agent (required to receive woff2)
+ * - Parses the CSS to extract woff2 file URLs
+ * - Downloads each woff2 file to public/fonts/
+ * - Rewrites the CSS @font-face src: URLs to /fonts/<filename>
+ * - Writes the rewritten CSS to public/fonts/fonts.css
+ * - Returns a single local stylesheet link
+ *
+ * Requires Node 18+ for native fetch.
+ */
+export async function downloadAndBundleFonts(
+  fonts: string[],
+  publicDir: string
+): Promise<FontLink[]> {
+  if (fonts.length === 0) return [];
 
-  if (!customTheme) {
-    return [];
+  const fontsDir = path.join(publicDir, 'fonts');
+  fs.mkdirSync(fontsDir, { recursive: true });
+
+  const fontsUrl = generateGoogleFontsUrl(fonts);
+  if (!fontsUrl) return [];
+
+  // Fetch the Google Fonts CSS — must use a modern UA or we get ttf instead of woff2
+  const UA =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+  let css: string;
+  try {
+    const response = await fetch(fontsUrl, { headers: { 'User-Agent': UA } });
+    if (!response.ok) {
+      console.warn(
+        `  WARNING: Failed to fetch Google Fonts CSS (HTTP ${response.status}). Falling back to external links.`
+      );
+      return generateFontLinkTags_external(fonts);
+    }
+    css = await response.text();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `  WARNING: Could not reach Google Fonts (${msg}). Falling back to external links.`
+    );
+    return generateFontLinkTags_external(fonts);
   }
 
-  const typography = customTheme?.typography as Record<string, unknown> | undefined;
-  if (!typography) {
-    return [];
+  // Extract woff2 URLs from the CSS
+  // Google Fonts CSS format: url(https://fonts.gstatic.com/s/.../xxx.woff2) format('woff2')
+  const woff2UrlRegex = /url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/g;
+  const woff2Urls: string[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = woff2UrlRegex.exec(css)) !== null) {
+    if (match[1]) woff2Urls.push(match[1]);
   }
 
-  const fontFamily = typography?.fontFamily as Record<string, string> | undefined;
-  if (!fontFamily) {
-    return [];
+  // Download each woff2 and rewrite the CSS
+  let rewrittenCss = css;
+  for (const woff2Url of woff2Urls) {
+    // Derive a stable local filename from the URL path
+    const urlPath = new URL(woff2Url).pathname;
+    const segments = urlPath.split('/').filter(Boolean);
+    // Use last 2 path segments joined with '-' for a readable name: e.g., "roboto-v47-latin-regular.woff2"
+    const localFilename = segments.slice(-2).join('-');
+    const localFilePath = path.join(fontsDir, localFilename);
+
+    try {
+      const fontResponse = await fetch(woff2Url);
+      if (!fontResponse.ok) {
+        console.warn(
+          `  WARNING: Failed to download font: ${woff2Url} (HTTP ${fontResponse.status})`
+        );
+        continue;
+      }
+      const fontBuffer = Buffer.from(await fontResponse.arrayBuffer());
+      fs.writeFileSync(localFilePath, fontBuffer);
+      // Rewrite the URL in the CSS to point to the local path
+      rewrittenCss = rewrittenCss.replace(woff2Url, `/fonts/${localFilename}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`  WARNING: Failed to download font ${localFilename}: ${msg}`);
+    }
   }
 
-  // Extract fonts from primary and secondary
-  const primaryFonts = extractGoogleFontNames(fontFamily?.primary ?? '');
-  const secondaryFonts = extractGoogleFontNames(fontFamily?.secondary ?? '');
+  // Write the patched CSS file
+  fs.writeFileSync(path.join(fontsDir, 'fonts.css'), rewrittenCss, 'utf8');
+  console.log(`  ✓ Bundled ${woff2Urls.length} font file(s) to public/fonts/`);
 
-  // Combine and deduplicate
-  const allFonts = [...new Set([...primaryFonts, ...secondaryFonts])];
-
-  if (allFonts.length === 0) {
-    return [];
-  }
-
-  // Generate Google Fonts URL
-  const fontsUrl = generateGoogleFontsUrl(allFonts);
-
-  if (!fontsUrl) {
-    return [];
-  }
-
-  return [
-    // Preconnect for performance
-    {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com',
-      crossorigin: true,
-    },
-    // The actual stylesheet
-    {
-      rel: 'stylesheet',
-      href: fontsUrl,
-    },
-  ];
+  return [{ rel: 'stylesheet', href: '/fonts/fonts.css' }];
 }
 
 // -- Helpers ----------------------------------------------------------------
@@ -1122,8 +1199,34 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   );
   console.log('  OK _site.json');
 
-  // 1b. Generate and write font links for Google Fonts
-  const fontLinks = generateFontLinkTags(configWithEnvResolved);
+  // 1b. Generate and write font links (strategy: external | bundle | local)
+  const fontsConfig = (configWithEnvResolved as Record<string, unknown>).fonts as
+    | { strategy?: string; local_path?: string }
+    | undefined;
+  const fontStrategy = fontsConfig?.strategy ?? 'external';
+
+  let fontLinks: FontLink[] = [];
+  if (fontStrategy === 'bundle') {
+    const allFonts = getAllGoogleFontNames(configWithEnvResolved);
+    if (allFonts.length > 0) {
+      console.log(`  Bundling fonts locally (strategy: bundle)...`);
+      fontLinks = await downloadAndBundleFonts(allFonts, publicDir);
+    }
+  } else if (fontStrategy === 'local') {
+    const localPath = fontsConfig?.local_path;
+    if (localPath) {
+      fontLinks = [{ rel: 'stylesheet', href: localPath }];
+      console.log(`  Using local fonts (strategy: local): ${localPath}`);
+    } else {
+      console.warn(
+        '  WARNING: fonts.strategy is "local" but local_path is not set. No fonts will be loaded.'
+      );
+    }
+  } else {
+    // 'external' — default, current behavior
+    fontLinks = generateFontLinkTags(configWithEnvResolved);
+  }
+
   if (fontLinks.length > 0) {
     fs.writeFileSync(
       path.join(contentOutDir, '_font-links.json'),
