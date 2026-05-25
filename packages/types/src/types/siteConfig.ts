@@ -116,6 +116,41 @@ export const searchConfigSchema = z.object({
   shortcut: z.string().default('k'),
 });
 
+/**
+ * Font loading strategy configuration.
+ *
+ * Controls how web fonts are loaded in generated sites:
+ * - `external` (default): Links to Google Fonts CDN at runtime. Suitable for
+ *   public-internet sites where CDN performance is desirable.
+ * - `bundle`: Downloads font files from Google Fonts at build time and serves
+ *   them from `public/fonts/`. No outbound font requests at runtime.
+ * - `local`: Uses pre-provided font files. Set `local_path` to a CSS file that
+ *   declares `@font-face` rules. Required for air-gapped build AND deploy environments.
+ *
+ * @example
+ * ```yaml
+ * fonts:
+ *   strategy: bundle          # download at build time, serve locally
+ * ```
+ *
+ * @example
+ * ```yaml
+ * fonts:
+ *   strategy: local
+ *   local_path: /fonts/fonts.css   # your pre-provided @font-face CSS
+ * ```
+ */
+export const fontsConfigSchema = z
+  .object({
+    strategy: z.enum(['external', 'bundle', 'local']).default('external'),
+    /** Path to a local CSS file declaring @font-face rules. Required when strategy is "local". */
+    local_path: z.string().optional(),
+  })
+  .refine((v) => v.strategy !== 'local' || !!v.local_path, {
+    message: 'local_path is required when strategy is "local"',
+    path: ['local_path'],
+  });
+
 export const siteConfigSchema = z.object({
   title: z.string(),
   meta: siteMetaSchema.optional(),
@@ -131,6 +166,8 @@ export const siteConfigSchema = z.object({
   sidebar: sidebarConfigSchema.optional(),
   /** Optional search configuration. When present, a search modal will be available via Cmd+K. */
   search: searchConfigSchema.optional(),
+  /** Optional font loading strategy configuration. Controls how web fonts are loaded. */
+  fonts: fontsConfigSchema.optional(),
 });
 
 export type SiteMeta = z.infer<typeof siteMetaSchema>;
@@ -140,4 +177,5 @@ export type FooterConfig = z.infer<typeof footerConfigSchema>;
 export type IntegrationConfig = z.infer<typeof integrationConfigSchema>;
 export type SidebarConfig = z.infer<typeof sidebarConfigSchema>;
 export type SearchConfig = z.infer<typeof searchConfigSchema>;
+export type FontsConfig = z.infer<typeof fontsConfigSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
