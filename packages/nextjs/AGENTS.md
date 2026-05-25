@@ -10,7 +10,9 @@ Next.js adapter layer for Stackwright. Provides framework-specific implementatio
 
 | Export | Import path | Router | Purpose |
 |--------|------------|--------|---------|
-| `registerNextJSComponents()` | `@stackwright/nextjs` | Both | Registers all Next.js adapter components into the `stackwrightRegistry` |
+| `registerAppRouterComponents()` | **`@stackwright/nextjs/app-router`** | **App Router** | Registers Image, Link, Router, Route (no `next/head`) — use in `app/_components/providers.tsx` |
+| `registerNextJSComponents()` | `@stackwright/nextjs` | Pages Router | Registers all Next.js adapter components including deprecated Head |
+| `appRouterComponents` | **`@stackwright/nextjs/app-router`** | **App Router** | Named component map (Image, Link, Router, Route) |
 | `NextStackwrightImage` | `@stackwright/nextjs` | Both | Next.js `Image` wrapper with blur placeholders and responsive sizing |
 | `NextStackwrightLink` | `@stackwright/nextjs` | Both | Next.js `Link` wrapper for client-side navigation |
 | `NextStackwrightRouter` / `NextStackwrightRoute` | `@stackwright/nextjs` | App Router | Next.js App Router routing integration (uses `next/navigation`) |
@@ -26,21 +28,35 @@ Next.js adapter layer for Stackwright. Provides framework-specific implementatio
 
 ## Registration (Required)
 
-`registerNextJSComponents()` **must** be called explicitly before rendering — do not rely on import side effects:
+**App Router:** Use `registerAppRouterComponents` from `@stackwright/nextjs/app-router`. This omits `next/head` (Pages Router API) and avoids Turbopack bundling issues.
 
 ```typescript
-// app/layout.tsx (App Router) or pages/_app.tsx (Pages Router — deprecated)
-import { registerNextJSComponents } from '@stackwright/nextjs';
+// app/_components/providers.tsx (App Router)
+'use client';
+import { registerAppRouterComponents } from '@stackwright/nextjs/app-router';
 import { registerDefaultIcons } from '@stackwright/icons';
 import { registerShadcnComponents } from '@stackwright/ui-shadcn';
 import '@stackwright/ui-shadcn/styles.css';
 
-registerNextJSComponents();
+registerAppRouterComponents();
 registerDefaultIcons();
 registerShadcnComponents();
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <>{children}</>;
+}
 ```
 
-In App Router, wrap this in a `'use client'` component or call it from a client boundary since the registry uses client-side state.
+**Pages Router (deprecated):** Use `registerNextJSComponents` from `@stackwright/nextjs`:
+
+```typescript
+// pages/_app.tsx (Pages Router — deprecated)
+import { registerNextJSComponents } from '@stackwright/nextjs';
+import { registerDefaultIcons } from '@stackwright/icons';
+
+registerNextJSComponents();
+registerDefaultIcons();
+```
 
 ---
 
@@ -52,19 +68,14 @@ In App Router, wrap this in a `'use client'` component or call it from a client 
 
 ```typescript
 import { StackwrightLayout } from '@stackwright/nextjs/server';
-import { registerNextJSComponents } from '@stackwright/nextjs';
-import { registerDefaultIcons } from '@stackwright/icons';
-import { registerShadcnComponents } from '@stackwright/ui-shadcn';
-import '@stackwright/ui-shadcn/styles.css';
-
-registerNextJSComponents();
-registerDefaultIcons();
-registerShadcnComponents();
+import { Providers } from './_components/providers';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <StackwrightLayout>{children}</StackwrightLayout>;
+  return <StackwrightLayout><Providers>{children}</Providers></StackwrightLayout>;
 }
 ```
+
+And `app/_components/providers.tsx` (see Registration section above).
 
 ### `app/[...slug]/page.tsx`
 

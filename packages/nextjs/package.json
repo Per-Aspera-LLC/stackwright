@@ -20,6 +20,11 @@
             "types": "./dist/server.d.ts",
             "import": "./dist/server.mjs",
             "require": "./dist/server.js"
+        },
+        "./app-router": {
+            "types": "./dist/app-router.d.ts",
+            "import": "./dist/app-router.mjs",
+            "require": "./dist/app-router.js"
         }
     },
     "files": [

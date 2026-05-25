@@ -62,6 +62,7 @@ import {
 import { createStackwrightNextConfig } from '../src/config/NextStackwrightConfig';
 import { NextStackwrightHead } from '../src/components/NextStackwrightHead';
 import { registerNextJSComponents } from '../src/index';
+import { registerAppRouterComponents } from '../src/app-router';
 import { stackwrightRegistry } from '@stackwright/core';
 
 // ---------------------------------------------------------------------------
@@ -406,5 +407,36 @@ describe('registerNextJSComponents', () => {
     expect(all.Router).toBe(NextStackwrightRouter);
     expect(all.Route).toBe(NextStackwrightRoute);
     expect((all as any).Head).toBe(NextStackwrightHead);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// registerAppRouterComponents — App Router safe registration (no next/head)
+// ---------------------------------------------------------------------------
+
+describe('registerAppRouterComponents', () => {
+  beforeEach(() => {
+    stackwrightRegistry.clear();
+  });
+
+  it('registers Image, Link, Router, Route but NOT Head', () => {
+    registerAppRouterComponents();
+
+    expect(stackwrightRegistry.isRegistered('Image')).toBe(true);
+    expect(stackwrightRegistry.isRegistered('Link')).toBe(true);
+    expect(stackwrightRegistry.isRegistered('Router')).toBe(true);
+    expect(stackwrightRegistry.isRegistered('Route')).toBe(true);
+    // Head is intentionally excluded to avoid next/head Turbopack bundling issues
+    expect(stackwrightRegistry.isRegistered('Head' as any)).toBe(false);
+  });
+
+  it('registered Image is NextStackwrightImage', () => {
+    registerAppRouterComponents();
+    expect(stackwrightRegistry.get('Image')).toBe(NextStackwrightImage);
+  });
+
+  it('registered Link is NextStackwrightLink', () => {
+    registerAppRouterComponents();
+    expect(stackwrightRegistry.get('Link')).toBe(NextStackwrightLink);
   });
 });
