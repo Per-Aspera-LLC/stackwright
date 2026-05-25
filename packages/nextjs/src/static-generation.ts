@@ -56,7 +56,7 @@ export function generateStackwrightStaticParams(): Array<{ slug: string[] }> {
  * export default async function Page({ params }: { params: { slug: string[] } }) {
  *   const pageData = await getStackwrightPageData(params.slug);
  *   if (!pageData) notFound();
- *   return <DynamicPage content={pageData} />;
+ *   return <DynamicPage pageContent={pageData} />;
  * }
  * ```
  */
