@@ -153,6 +153,33 @@ export const textBlockContentSchema = baseContentSchema.extend({
 });
 
 // ---------------------------------------------------------------------------
+// Form content type (replaces contact_form_stub for interactive use cases)
+// ---------------------------------------------------------------------------
+
+export const formFieldTypeSchema = z.enum(['text', 'email', 'textarea', 'select', 'checkbox']);
+
+export const formFieldSchema = z.object({
+  name: z.string(),
+  type: formFieldTypeSchema,
+  label: z.string().optional(), // display label (defaults to name if omitted)
+  placeholder: z.string().optional(),
+  required: z.boolean().optional(),
+  options: z.array(z.string()).optional(), // for select fields only
+  defaultValue: z.string().optional(),
+});
+
+export const formContentSchema = baseContentSchema.extend({
+  type: z.literal('form'),
+  heading: textBlockSchema.optional(),
+  description: z.string().optional(),
+  fields: z.array(formFieldSchema),
+  action: z.string(), // form action URL (e.g. Formspree endpoint)
+  method: z.enum(['GET', 'POST']).optional(), // default: 'POST'
+  submit_text: z.string().optional(), // default: 'Submit'
+  success_message: z.string().optional(), // shown after successful submission
+});
+
+// ---------------------------------------------------------------------------
 // Map content type
 // ---------------------------------------------------------------------------
 
@@ -233,6 +260,9 @@ export type AlertVariant = z.infer<typeof alertVariantSchema>;
 export type AlertContent = z.infer<typeof alertContentSchema>;
 export type ContactFormStubContent = z.infer<typeof contactFormStubContentSchema>;
 export type TextBlockContent = z.infer<typeof textBlockContentSchema>;
+export type FormFieldType = z.infer<typeof formFieldTypeSchema>;
+export type FormField = z.infer<typeof formFieldSchema>;
+export type FormContent = z.infer<typeof formContentSchema>;
 export type MapMarker = z.infer<typeof mapMarkerSchema>;
 export type MapLayerType = z.infer<typeof mapLayerTypeSchema>;
 export type MapLayer = z.infer<typeof mapLayerSchema>;
@@ -304,6 +334,7 @@ export type ContentItem =
   | AlertContent
   | ContactFormStubContent
   | TextBlockContent
+  | FormContent
   | GridContent
   | CollectionListContent
   | VideoContent
@@ -361,6 +392,7 @@ export const contentItemSchema: z.ZodType<ContentItem> = z.lazy(() =>
     pricingTableContentSchema,
     alertContentSchema,
     contactFormStubContentSchema,
+    formContentSchema,
     textBlockContentSchema,
     gridContentSchema,
     collectionListContentSchema,
@@ -387,6 +419,7 @@ export const KNOWN_CONTENT_TYPE_KEYS = [
   'pricing_table',
   'alert',
   'contact_form_stub',
+  'form',
   'text_block',
   'grid',
   'collection_list',

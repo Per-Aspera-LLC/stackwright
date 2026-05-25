@@ -11,6 +11,7 @@ export { TestimonialGrid } from './TestimonialGrid';
 export { Faq } from './Faq';
 export { PricingTable } from './PricingTable';
 export { ContactFormStub } from './ContactFormStub';
+export { Form } from './Form';
 export { Alert } from './Alert';
 export { LayoutGrid } from './LayoutGrid';
 export { CollectionList } from './CollectionList';

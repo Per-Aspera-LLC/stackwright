@@ -94,6 +94,7 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `pricing_table` | `label` (string), `plans` (object[]) | `color` (string), `background` (string), `heading` (TextBlock) |
 | `alert` | `label` (string), `variant` (`info` | `warning` | `success` | `danger` | `note` | `tip`), `body` (string) | `color` (string), `background` (string), `title` (string) |
 | `contact_form_stub` | `label` (string), `email` (string) | `color` (string), `background` (string), `heading` (TextBlock), `description` (string), `email_subject` (string), `phone` (string), `address` (string), `button_text` (string) |
+| `form` | `label` (string), `fields` (FormField[]), `action` (string) | `color` (string), `background` (string), `heading` (TextBlock), `description` (string), `method` (`GET` \| `POST`), `submit_text` (string), `success_message` (string) |
 | `text_block` | `label` (string), `textBlocks` (TextBlock[]) | `color` (string), `background` (string), `heading` (TextBlock), `buttons` (ButtonContent[]) |
 | `grid` | `label` (string), `columns` (GridColumn[]) | `color` (string), `background` (string), `heading` (TextBlock), `gap` (string), `stackBelow` (number) |
 | `collection_list` | `label` (string), `source` (string), `layout` (default), `card` (object) | `columns` (number), `limit` (number), `hrefPrefix` (string), `heading` (TextBlock), `background` (string), `color` (string) |
@@ -110,7 +111,8 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 | `ImageContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("image"), `aspect_ratio`? (number) |
 | `IconContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("icon"), `size`? (number | TypographyVariant) |
 | `CarouselItem` | `title` (string), `text` (string), `media` (MediaItem), `background`? (string) |
-| `TimelineItem` | `year` (string), `event` (string) |
+| `TimelineItem` | `year` (string), `event` (string), `yearColor`? (string), `cardBackground`? (string), `dotColor`? (string) |
+| `FormField` | `name` (string), `type` (`text` \| `email` \| `textarea` \| `select` \| `checkbox`), `label`? (string), `placeholder`? (string), `required`? (boolean), `options`? (string[]), `defaultValue`? (string) |
 | `GridColumn` | `width`? (number), `content_items` (object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object | object[]) |
 
 **TypographyVariant values:** `h1` `h2` `h3` `h4` `h5` `h6` `subtitle1` `subtitle2` `body1` `body2` `caption` `button` `overline`
