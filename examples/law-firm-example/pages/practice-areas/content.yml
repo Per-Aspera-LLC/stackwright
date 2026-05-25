@@ -1,0 +1,87 @@
+content:
+  meta:
+    title: "Practice Areas | Meridian Law Group"
+    description: "Business law, estate planning, and personal injury representation in Portland, OR. Expert attorneys for every legal challenge."
+  content_items:
+    - type: main
+      label: "practice-hero"
+      heading:
+        text: "Our Practice Areas"
+        textSize: "h1"
+      textBlocks:
+        - text: "Three core practice areas. One firm you can trust."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: tabbed_content
+      label: "practice-tabs"
+      heading:
+        text: "How We Help"
+        textSize: "h2"
+      tabs:
+        - label: "Business Law"
+          content_items:
+            - type: text_block
+              label: "business-law-detail"
+              heading:
+                text: "Business Law"
+                textSize: "h3"
+              textBlocks:
+                - text: "From startup formation to corporate transactions, we protect businesses at every stage. Our business law team handles entity formation, contract drafting and review, mergers and acquisitions, commercial real estate, and regulatory compliance."
+                  textSize: "body1"
+              buttons:
+                - text: "Schedule Business Law Consultation"
+                  variant: "contained"
+                  href: "/contact"
+                  bgColor: "accent"
+                  textSize: "button"
+        - label: "Estate Planning"
+          content_items:
+            - type: text_block
+              label: "estate-planning-detail"
+              heading:
+                text: "Estate Planning & Probate"
+                textSize: "h3"
+              textBlocks:
+                - text: "A proper estate plan protects your family and ensures your wishes are honored. We handle wills, living trusts, powers of attorney, healthcare directives, and guide families through the probate process with compassion and efficiency."
+                  textSize: "body1"
+              buttons:
+                - text: "Schedule Estate Planning Consultation"
+                  variant: "contained"
+                  href: "/contact"
+                  bgColor: "accent"
+                  textSize: "button"
+        - label: "Personal Injury"
+          content_items:
+            - type: text_block
+              label: "personal-injury-detail"
+              heading:
+                text: "Personal Injury"
+                textSize: "h3"
+              textBlocks:
+                - text: "When someone else's negligence changes your life, you deserve strong representation. We handle car accidents, trucking accidents, workplace injuries, slip and fall cases, and wrongful death claims. We work on contingency — you pay nothing unless we win."
+                  textSize: "body1"
+              buttons:
+                - text: "Get a Free Case Review"
+                  variant: "contained"
+                  href: "/contact"
+                  bgColor: "accent"
+                  textSize: "button"
+      background: "background"
+
+    - type: faq
+      label: "legal-faq"
+      heading:
+        text: "Common Questions"
+        textSize: "h2"
+      items:
+        - question: "How much does a consultation cost?"
+          answer: "Initial consultations are complimentary for personal injury cases. Business law and estate planning consultations are billed at $150 for the first hour, which is credited toward your matter if you retain us."
+        - question: "How long will my case take?"
+          answer: "It depends on the matter. Simple wills can be completed in 2-3 weeks. Business formations take 1-2 weeks. Litigation timelines vary widely — we'll give you a realistic estimate at your consultation."
+        - question: "Do I need an attorney for estate planning?"
+          answer: "Online services exist, but they can miss Oregon-specific requirements and family circumstances that could invalidate your documents. A qualified attorney ensures your plan works when your family needs it most."
+        - question: "What if I can't afford an attorney?"
+          answer: "Personal injury cases are handled on contingency — no upfront cost. For other matters, we offer payment plans. Call us to discuss your situation."
+      background: "surface"

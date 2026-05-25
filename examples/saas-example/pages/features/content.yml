@@ -1,0 +1,130 @@
+content:
+  meta:
+    title: "Features | Synapse Analytics"
+    description: "Explore Synapse Analytics features: journey mapping, multi-touch attribution, real-time dashboards, integrations, and team collaboration tools."
+  content_items:
+    - type: main
+      label: "features-hero"
+      heading:
+        text: "Built for Modern Marketing Teams"
+        textSize: "h1"
+      textBlocks:
+        - text: "Every feature designed to answer the question your team actually asks: Where are customers coming from, and where are we losing them?"
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: tabbed_content
+      label: "feature-categories"
+      heading:
+        text: "Explore Features"
+        textSize: "h2"
+      tabs:
+        - label: "Journey Analytics"
+          content_items:
+            - type: text_block
+              label: "journey-details"
+              heading:
+                text: "See the Full Path, Not Just the Last Click"
+                textSize: "h3"
+              textBlocks:
+                - text: "Synapse maps every step of your customer journey — from first ad impression to closed deal. Identify your highest-converting paths and the exact steps where customers drop off. Filter by segment, cohort, channel, or campaign."
+                  textSize: "body1"
+                - text: "Includes: Sankey journey diagrams, funnel analysis, cohort retention, path explorer, and drop-off attribution."
+                  textSize: "body2"
+              buttons:
+                - text: "Start Free Trial"
+                  variant: "contained"
+                  href: "/contact"
+                  bgColor: "accent"
+                  textSize: "button"
+        - label: "Attribution"
+          content_items:
+            - type: text_block
+              label: "attribution-details"
+              heading:
+                text: "Attribution That Reflects Reality"
+                textSize: "h3"
+              textBlocks:
+                - text: "Choose the attribution model that matches your business: first-touch, last-touch, linear, time-decay, or data-driven. Compare models side by side. Integrate revenue data from Salesforce or Stripe to see true ROI by channel."
+                  textSize: "body1"
+              buttons:
+                - text: "See Attribution Demo"
+                  variant: "contained"
+                  href: "/contact"
+                  bgColor: "accent"
+                  textSize: "button"
+        - label: "Integrations"
+          content_items:
+            - type: text_block
+              label: "integrations-details"
+              heading:
+                text: "Connects to Everything Your Stack Already Uses"
+                textSize: "h3"
+              textBlocks:
+                - text: "Synapse connects to 40+ data sources via native integrations. Your data stays in your warehouse — we never copy it. Works with Segment, Snowflake, BigQuery, Redshift, Salesforce, HubSpot, Stripe, Google Ads, Meta Ads, and more."
+                  textSize: "body1"
+              buttons:
+                - text: "See All Integrations"
+                  variant: "contained"
+                  href: "/contact"
+                  bgColor: "accent"
+                  textSize: "button"
+      background: "background"
+
+    - type: icon_grid
+      label: "all-features-grid"
+      heading:
+        text: "Complete Feature List"
+        textSize: "h2"
+      icons:
+        - label: "Journey Mapping"
+          src: "TrendingUp"
+          type: icon
+          alt: "Journey Mapping"
+        - label: "Attribution Models"
+          src: "PieChart"
+          type: icon
+          alt: "Attribution Models"
+        - label: "Real-Time Dashboards"
+          src: "Activity"
+          type: icon
+          alt: "Real-Time Dashboards"
+        - label: "40+ Integrations"
+          src: "Database"
+          type: icon
+          alt: "Integrations"
+        - label: "Team Workspaces"
+          src: "Users"
+          type: icon
+          alt: "Team Collaboration"
+        - label: "Alerting"
+          src: "Bell"
+          type: icon
+          alt: "Alerts"
+        - label: "Cohort Analysis"
+          src: "BarChart2"
+          type: icon
+          alt: "Cohort Analysis"
+        - label: "Data Security"
+          src: "Lock"
+          type: icon
+          alt: "Security"
+      background: "surface"
+
+    - type: main
+      label: "features-cta"
+      heading:
+        text: "See It in Action"
+        textSize: "h2"
+      textBlocks:
+        - text: "14-day free trial. No credit card. Full access to all features."
+          textSize: "body1"
+      buttons:
+        - text: "Start Free Trial"
+          variant: "contained"
+          href: "/contact"
+          bgColor: "accent"
+          textSize: "button"
+      background: "primary"
+      color: "surface"

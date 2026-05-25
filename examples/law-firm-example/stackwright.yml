@@ -1,0 +1,57 @@
+title: "Meridian Law Group"
+meta:
+  description: "Full-service law firm serving Portland businesses and families since 1987. Trusted counsel. Proven results."
+
+appBar:
+  titleText: "Meridian Law Group"
+  backgroundColor: "primary"
+  textColor: "#FFFFFF"
+  colorModeToggle: true
+
+navigation:
+  - label: "Home"
+    href: "/"
+  - label: "About"
+    href: "/about"
+  - label: "Practice Areas"
+    href: "/practice-areas"
+  - label: "Contact"
+    href: "/contact"
+
+footer:
+  backgroundColor: "primary"
+  textColor: "#FFFFFF"
+  links:
+    - label: "© 2024 Meridian Law Group"
+      href: "/"
+    - label: "Privacy Policy"
+      href: "/privacy"
+    - label: "Schedule a Consultation"
+      href: "/contact"
+
+customTheme:
+  id: "meridian-law"
+  name: "Meridian Law"
+  description: "Professional law firm theme — navy authority with gold accents"
+  colors:
+    primary: "#1A2C4E"
+    secondary: "#2C4A7C"
+    accent: "#C9A84C"
+    background: "#FAFAF8"
+    surface: "#FFFFFF"
+    text: "#1A1A1A"
+    textSecondary: "#5C5C5C"
+  darkColors:
+    primary: "#2C4A7C"
+    secondary: "#1A2C4E"
+    accent: "#D4AF65"
+    background: "#0F1B2D"
+    surface: "#1A2C4E"
+    text: "#F5F5F0"
+    textSecondary: "#A0A8B8"
+  typography:
+    fontFamily:
+      primary: "Lora"
+      secondary: "Inter"
+  spacing:
+    unit: 8

@@ -1,0 +1,130 @@
+content:
+  meta:
+    title: "Menu | Ember Kitchen Portland"
+    description: "Seasonal wood-fire menu at Ember Kitchen. Farm-to-table starters, wood-fire mains, house desserts, and natural wine list. Changes weekly."
+  content_items:
+    - type: main
+      label: "menu-hero"
+      heading:
+        text: "The Menu"
+        textSize: "h1"
+      textBlocks:
+        - text: "Our menu changes weekly with the seasons. What follows is a representative selection — tonight's menu is always posted at the host stand."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: alert
+      label: "seasonal-note"
+      variant: "info"
+      title: "Seasonal Menu"
+      body: "Items change weekly. For tonight's specific menu or to ask about allergens and dietary needs, please call us at (503) 555-0187."
+
+    - type: tabbed_content
+      label: "menu-sections"
+      heading:
+        text: "What We're Cooking"
+        textSize: "h2"
+      tabs:
+        - label: "Starters"
+          content_items:
+            - type: feature_list
+              label: "starters-list"
+              columns: 2
+              items:
+                - label: "Fire-Roasted Beet Salad — $14"
+                  description: "Roasted golden and red beets, whipped chèvre, candied hazelnuts, sherry vinaigrette. Beets from Sauvie Island Farms."
+                  icon:
+                    type: icon
+                    src: "Leaf"
+                - label: "Wood-Fire Bread — $9"
+                  description: "Miche baked in the wood oven, cultured butter, house-smoked salt. Baked fresh daily."
+                  icon:
+                    type: icon
+                    src: "Flame"
+                - label: "Smoked Chicken Liver Pâté — $13"
+                  description: "Applewood-smoked livers, pickled shallots, whole-grain mustard, grilled bread. An Ember classic."
+                  icon:
+                    type: icon
+                    src: "Award"
+                - label: "Roasted Seasonal Vegetables — $12"
+                  description: "Whatever's arriving from our farms this week, fire-roasted with good olive oil and herbs. Always vegan."
+                  icon:
+                    type: icon
+                    src: "Leaf"
+        - label: "Mains"
+          content_items:
+            - type: feature_list
+              label: "mains-list"
+              columns: 2
+              items:
+                - label: "Wood-Fire Half Chicken — $32"
+                  description: "Heritage breed chicken from Deck Family Farm, spatchcocked and roasted over oak. Herb jus, roasted fingerlings."
+                  icon:
+                    type: icon
+                    src: "Flame"
+                - label: "Smoked Pork Shoulder — $28"
+                  description: "12-hour smoke over cherry wood. Served with braised greens, pickled jalapeños, corn tortillas."
+                  icon:
+                    type: icon
+                    src: "Clock"
+                - label: "Wood-Grilled Salmon — $36"
+                  description: "Wild-caught Chinook from the Columbia River. Charred over alder, served with summer bean succotash."
+                  icon:
+                    type: icon
+                    src: "Award"
+                - label: "Fire-Roasted Mushroom Risotto — $26"
+                  description: "Seasonal foraged mushrooms, Koda Farms Kokuho Rose rice, aged Pecorino. Vegetarian."
+                  icon:
+                    type: icon
+                    src: "Leaf"
+        - label: "Desserts"
+          content_items:
+            - type: feature_list
+              label: "desserts-list"
+              columns: 2
+              items:
+                - label: "Wood-Oven Skillet Cookie — $10"
+                  description: "Chocolate chip cookie baked to order in cast iron, served warm with Tillamook vanilla ice cream."
+                  icon:
+                    type: icon
+                    src: "Flame"
+                - label: "Seasonal Fruit Crisp — $9"
+                  description: "Whatever fruit is ripest, baked with an oat and brown butter topping. Crème fraîche on the side."
+                  icon:
+                    type: icon
+                    src: "Leaf"
+        - label: "Drinks"
+          content_items:
+            - type: text_block
+              label: "drinks-description"
+              heading:
+                text: "Bar & Wine"
+                textSize: "h3"
+              textBlocks:
+                - text: "We pour a focused list of natural and low-intervention wines, rotating craft beers from local Oregon breweries, and a seasonal cocktail menu built around wood-fire spirits and house-made syrups. Non-alcoholic options made with care — not an afterthought."
+                  textSize: "body1"
+              buttons:
+                - text: "Reserve a Table"
+                  variant: "contained"
+                  href: "/reservations"
+                  bgColor: "accent"
+                  textSize: "button"
+      background: "background"
+
+    - type: main
+      label: "menu-cta"
+      heading:
+        text: "Ready for Dinner?"
+        textSize: "h2"
+      textBlocks:
+        - text: "Reservations fill up on weekends — book ahead. Walk-ins always welcome at the bar."
+          textSize: "body1"
+      buttons:
+        - text: "Make a Reservation"
+          variant: "contained"
+          href: "/reservations"
+          bgColor: "accent"
+          textSize: "button"
+      background: "primary"
+      color: "surface"
