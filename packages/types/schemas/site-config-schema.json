@@ -531,6 +531,21 @@
         "shortcut"
       ],
       "additionalProperties": false
+    },
+    "fonts": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "$ref": "#/definitions/__schema14"
+        },
+        "local_path": {
+          "$ref": "#/definitions/__schema15"
+        }
+      },
+      "required": [
+        "strategy"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -901,6 +916,18 @@
       "type": "string",
       "minLength": 1,
       "description": "Token value or env var reference ($TOKEN). Use $VAR_NAME format for env var references."
+    },
+    "__schema14": {
+      "default": "external",
+      "type": "string",
+      "enum": [
+        "external",
+        "bundle",
+        "local"
+      ]
+    },
+    "__schema15": {
+      "type": "string"
     }
   }
 }
