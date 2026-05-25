@@ -22,6 +22,9 @@
     "@stackwright/ui-shadcn": "0.1.3"
   },
   "changesets": [
+    "app-router-scaffold",
+    "app-router-support",
+    "docs-otters-examples",
     "feat-integration-management",
     "feat-test-a11y-command",
     "fix-a11y-cluster",
