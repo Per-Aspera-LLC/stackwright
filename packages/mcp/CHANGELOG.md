@@ -1,5 +1,13 @@
 # @stackwright/mcp
 
+## 0.5.0-alpha.5
+
+### Patch Changes
+
+- Updated dependencies [af4a166]
+  - @stackwright/types@1.6.0-alpha.1
+  - @stackwright/cli@0.9.0-alpha.3
+
 ## 0.5.0-alpha.4
 
 ### Patch Changes

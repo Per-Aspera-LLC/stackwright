@@ -1,5 +1,16 @@
 # @stackwright/build-scripts
 
+## 0.8.0-alpha.1
+
+### Minor Changes
+
+- af4a166: Add font loading strategy (bundle/local) to prebuild: bundle downloads fonts at build time, local uses pre-provided files for air-gapped environments
+
+### Patch Changes
+
+- Updated dependencies [af4a166]
+  - @stackwright/types@1.6.0-alpha.1
+
 ## 0.7.3-alpha.0
 
 ### Patch Changes

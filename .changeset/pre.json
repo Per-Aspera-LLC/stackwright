@@ -25,6 +25,8 @@
     "app-router-scaffold",
     "app-router-support",
     "docs-otters-examples",
+    "feat-build-scripts-font-strategies",
+    "feat-fonts-config-schema",
     "feat-integration-management",
     "feat-test-a11y-command",
     "fix-a11y-cluster",

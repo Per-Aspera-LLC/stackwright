@@ -45,7 +45,7 @@
     "vitest": "^4"
   },
   "peerDependencies": {
-    "@stackwright/core": ">=0.8.6-alpha.1",
+    "@stackwright/core": ">=0.8.6-alpha.2",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   }

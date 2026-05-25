@@ -1,5 +1,11 @@
 # @stackwright/types
 
+## 1.6.0-alpha.1
+
+### Minor Changes
+
+- af4a166: Add fonts config schema with strategy (external | bundle | local) for configurable font loading
+
 ## 1.5.1-alpha.0
 
 ### Patch Changes
