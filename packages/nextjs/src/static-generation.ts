@@ -6,7 +6,12 @@ const CONTENT_DIR = path.join(process.cwd(), 'public', 'stackwright-content');
 /**
  * Reserved filenames that are NOT page slugs.
  */
-const RESERVED_FILES = new Set(['_site.json', '_root.json', '_font-links.json']);
+const RESERVED_FILES = new Set([
+  '_site.json',
+  '_root.json',
+  '_font-links.json',
+  'search-index.json',
+]);
 
 /**
  * Generate static params for all Stackwright slug pages.
@@ -56,7 +61,7 @@ export function generateStackwrightStaticParams(): Array<{ slug: string[] }> {
  * export default async function Page({ params }: { params: { slug: string[] } }) {
  *   const pageData = await getStackwrightPageData(params.slug);
  *   if (!pageData) notFound();
- *   return <DynamicPage content={pageData} />;
+ *   return <DynamicPage pageContent={pageData} />;
  * }
  * ```
  */

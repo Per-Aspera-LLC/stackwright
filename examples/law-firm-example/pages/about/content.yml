@@ -1,0 +1,81 @@
+content:
+  meta:
+    title: "About Meridian Law Group | Portland, OR"
+    description: "Learn about Meridian Law Group's 35-year history serving Portland businesses and families. Meet our attorneys and discover our values."
+  content_items:
+    - type: main
+      label: "about-hero"
+      heading:
+        text: "Portland's Law Firm Since 1987"
+        textSize: "h1"
+      textBlocks:
+        - text: "Meridian Law Group was founded on a simple belief: every client deserves the same caliber of legal representation, regardless of the size of their case."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: timeline
+      label: "firm-history"
+      heading:
+        text: "Our History"
+        textSize: "h2"
+      items:
+        - year: "1987"
+          event: "Thomas Meridian founds Meridian Law Group with two attorneys in downtown Portland"
+        - year: "1995"
+          event: "Expanded to a full-service firm with business, estate, and family law practices"
+        - year: "2003"
+          event: "Added personal injury division — now representing over 200 injury clients annually"
+        - year: "2012"
+          event: "Moved to current offices at One Pacific Square — 15 attorneys, 30 staff"
+        - year: "2022"
+          event: "Celebrating 35 years and 2,000+ clients served in the Portland community"
+
+    - type: icon_grid
+      label: "firm-values"
+      heading:
+        text: "Our Values"
+        textSize: "h2"
+      icons:
+        - label: "Integrity"
+          src: "Shield"
+          type: icon
+          alt: "Shield icon representing integrity"
+        - label: "Excellence"
+          src: "Award"
+          type: icon
+          alt: "Award icon representing excellence"
+        - label: "Accessibility"
+          src: "Phone"
+          type: icon
+          alt: "Phone icon representing accessibility"
+        - label: "Community"
+          src: "Heart"
+          type: icon
+          alt: "Heart icon representing community"
+        - label: "Clarity"
+          src: "FileText"
+          type: icon
+          alt: "Document icon representing clarity"
+        - label: "Results"
+          src: "CheckCircle"
+          type: icon
+          alt: "Checkmark icon representing results"
+      background: "background"
+
+    - type: main
+      label: "join-cta"
+      heading:
+        text: "Let's Talk About Your Legal Needs"
+        textSize: "h2"
+      textBlocks:
+        - text: "Whether you're a business owner, planning your estate, or navigating an injury claim — our attorneys are ready to listen."
+          textSize: "body1"
+      buttons:
+        - text: "Schedule a Consultation"
+          variant: "contained"
+          href: "/contact"
+          bgColor: "accent"
+          textSize: "button"
+      background: "primary"
+      color: "surface"

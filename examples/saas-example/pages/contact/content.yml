@@ -1,0 +1,49 @@
+content:
+  meta:
+    title: "Contact Synapse Analytics | Start Free Trial or Talk to Sales"
+    description: "Start your 14-day free trial, request a demo, or talk to our sales team. No credit card required."
+  content_items:
+    - type: main
+      label: "contact-hero"
+      heading:
+        text: "Let's Talk"
+        textSize: "h1"
+      textBlocks:
+        - text: "Start a free trial, request a demo, or ask us anything. We respond within one business day."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: contact_form_stub
+      label: "contact-form"
+      heading:
+        text: "Get in Touch"
+        textSize: "h2"
+      email: "hello@synapse.example.com"
+      description: "Tell us about your team, your current analytics setup, and what you're trying to understand. We'll tailor the conversation to what matters most."
+      button_text: "Send Message"
+      email_subject: "Synapse Analytics Inquiry"
+
+    - type: feature_list
+      label: "contact-options"
+      heading:
+        text: "Ways to Connect"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Start Free Trial"
+          description: "14 days, full access, no credit card. Up and running in under an hour."
+          icon:
+            type: icon
+            src: "Zap"
+        - label: "Request a Demo"
+          description: "30-minute live walkthrough with a product specialist. See your use case in action."
+          icon:
+            type: icon
+            src: "Play"
+        - label: "Talk to Sales"
+          description: "For teams needing custom pricing, security review, or enterprise contracts."
+          icon:
+            type: icon
+            src: "Users"
+      background: "background"

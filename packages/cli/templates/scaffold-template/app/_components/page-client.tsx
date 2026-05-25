@@ -9,5 +9,5 @@ import { DynamicPage } from '@stackwright/core';
  * sits on the client side of that boundary so the registry is available when rendering.
  */
 export function StackwrightPageClient({ content }: { content: unknown }) {
-  return <DynamicPage content={content as any} />;
+  return <DynamicPage pageContent={content as any} />;
 }

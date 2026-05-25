@@ -1,0 +1,89 @@
+content:
+  meta:
+    title: "Pricing | Synapse Analytics"
+    description: "Simple, transparent pricing for Synapse Analytics. Start free. Plans from $199/month. No per-seat pricing. Cancel anytime."
+  content_items:
+    - type: main
+      label: "pricing-hero"
+      heading:
+        text: "Simple Pricing. No Surprises."
+        textSize: "h1"
+      textBlocks:
+        - text: "Start with a 14-day free trial. No credit card required. Choose a plan when you're ready."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: pricing_table
+      label: "plans"
+      heading:
+        text: "Choose Your Plan"
+        textSize: "h2"
+      plans:
+        - name: "Starter"
+          price: "$199"
+          period: "per month"
+          description: "For growing teams getting started with journey analytics"
+          features:
+            - "Up to 500K monthly events"
+            - "5 data source integrations"
+            - "Journey mapping & funnels"
+            - "Last-touch attribution"
+            - "3 team members"
+            - "Email support"
+          cta:
+            text: "Start Free Trial"
+            href: "/contact"
+            variant: "outlined"
+        - name: "Growth"
+          price: "$599"
+          period: "per month"
+          description: "For established teams ready for advanced attribution"
+          features:
+            - "Up to 5M monthly events"
+            - "Unlimited integrations"
+            - "All attribution models"
+            - "Real-time dashboards"
+            - "15 team members"
+            - "Slack + email support"
+            - "Custom alerts"
+          cta:
+            text: "Start Free Trial"
+            href: "/contact"
+            variant: "contained"
+          highlighted: true
+        - name: "Enterprise"
+          price: "Custom"
+          period: ""
+          description: "For high-volume teams with advanced security needs"
+          features:
+            - "Unlimited events"
+            - "SSO & SAML"
+            - "Custom data retention"
+            - "Dedicated success manager"
+            - "Unlimited team members"
+            - "SLA guarantee"
+            - "On-premise option"
+          cta:
+            text: "Talk to Sales"
+            href: "/contact"
+            variant: "outlined"
+      background: "background"
+
+    - type: faq
+      label: "pricing-faq"
+      heading:
+        text: "Pricing Questions"
+        textSize: "h2"
+      items:
+        - question: "What counts as an event?"
+          answer: "An event is any user action tracked in your analytics — page views, clicks, form submissions, purchases. We count raw events before any filtering or transformation."
+        - question: "Can I switch plans?"
+          answer: "Yes, anytime. Upgrades take effect immediately and are prorated. Downgrades take effect at the next billing cycle."
+        - question: "Is there a free trial?"
+          answer: "Yes. Every plan starts with a 14-day free trial with full access. No credit card required."
+        - question: "Do you offer annual pricing?"
+          answer: "Yes — annual plans are 20% less than monthly pricing. Contact our sales team to set up an annual contract."
+        - question: "What happens to my data if I cancel?"
+          answer: "You have 30 days after cancellation to export all your data. We then permanently delete it from our systems."
+      background: "surface"
