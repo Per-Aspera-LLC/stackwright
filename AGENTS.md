@@ -72,6 +72,66 @@ Images can be placed alongside their page YAML files in `content/pages/`. Use `.
 ```
 Without these hooks, co-located images will not be found at runtime.
 
+### Internationalization (i18n)
+
+Stackwright supports multi-locale sites via locale-suffix content files and locale-aware prebuild output.
+
+**Enable i18n in `stackwright.yml`:**
+```yaml
+locales:
+  default: en
+  supported:
+    - en
+    - fr
+    - de
+```
+
+**Page content files — full replacement, not merge:**
+```
+pages/
+  about/
+    content.yml        # default locale (en)
+    content.fr.yml     # French — entirely replaces content.yml for /fr/about
+    content.de.yml     # German
+```
+- `content.<locale>.yml` must be a complete, valid page YAML — it is NOT merged with `content.yml`
+- A locale file can be omitted for any page; the default locale is served silently as fallback
+
+**Locale site configs** (nav, appBar, footer in another language):
+- Place `stackwright.fr.yml` alongside `stackwright.yml` in the project root
+- The prebuild outputs `public/stackwright-content/_site.fr.json` automatically
+- Only fields that differ need overriding — but the file must still be a complete valid `siteConfigSchema` doc
+
+**Prebuild output structure:**
+```
+public/stackwright-content/
+  _site.json          # default locale site config
+  _site.fr.json       # French site config (from stackwright.fr.yml)
+  _root.json          # default locale root page
+  about.json          # default locale /about
+  fr/
+    _root.json        # French root page
+    about.json        # French /fr/about
+```
+
+**URL structure:** `/fr/about` serves French content; `/about` serves the default locale.
+
+**Fallback:** If `content.fr.yml` does not exist for a page, `getStackwrightPageData` falls back to `content.yml` silently — no 404, no warning.
+
+**Static params:** `generateStackwrightStaticParams()` recursively walks the content dir and returns both `{ slug: ['about'] }` and `{ slug: ['fr', 'about'] }` automatically.
+
+**Helper utilities** (from `@stackwright/nextjs`):
+- `getStackwrightSiteLocales()` — reads `locales.supported` from `_site.json`; defaults to `['en']`
+- `parseLocaleFromSlug(slug, supportedLocales)` — strips locale prefix from `params.slug`:
+  - `['fr', 'about']` → `{ locale: 'fr', pageSlug: ['about'] }`
+  - `['about']` → `{ locale: 'en', pageSlug: ['about'] }` (default locale)
+- `getStackwrightPageData(pageSlug, locale)` — reads the locale-specific JSON, falls back silently
+
+**MCP tool updates:**
+- `stackwright_write_page` — accepts optional `locale` param; writes `content.<locale>.yml`; full schema validation applied
+- `stackwright_get_page` — accepts optional `locale` param; falls back to default with a note if locale file absent
+- `stackwright_list_pages` — shows available locales per page: `  /about  —  About Us  [en, fr]`
+
 ### Content Type Reference
 
 **AGENTS: This table is auto-generated from the live Zod schemas. Run `pnpm stackwright -- generate-agent-docs` to regenerate. Do NOT edit the content between the markers manually.**

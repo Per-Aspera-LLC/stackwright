@@ -1,0 +1,148 @@
+content:
+  meta:
+    title: "Synapse Analytics | Customer Journey Analytics Without the SQL"
+    description: "See your entire customer journey across all channels in one place. Connect Segment, Snowflake, or any data source in under an hour. 14-day free trial."
+  content_items:
+    - type: main
+      label: "hero"
+      heading:
+        text: "Chaque point de contact. Une seule image."
+        textSize: "h1"
+      textBlocks:
+        - text: "Analytique du parcours client qui connecte vos données cloisonnées — sans SQL. Visualisez l'attribution, les abandons et les chemins de conversion sur tous vos canaux en moins d'une heure."
+          textSize: "h4"
+      buttons:
+        - text: "Start Free Trial"
+          variant: "contained"
+          href: "/contact"
+          bgColor: "accent"
+          textSize: "button"
+        - text: "See a Demo"
+          variant: "outlined"
+          href: "/features"
+          textSize: "button"
+      background: "primary"
+      color: "surface"
+
+    - type: feature_list
+      label: "social-proof-numbers"
+      heading:
+        text: "Trusted by Growth Teams"
+        textSize: "h2"
+      columns: 4
+      items:
+        - label: "500+ Companies"
+          description: "From Series A startups to public enterprises"
+          icon:
+            type: icon
+            src: "Globe"
+        - label: "<1 Hour Setup"
+          description: "Connect your first data source and see results"
+          icon:
+            type: icon
+            src: "Zap"
+        - label: "No SQL Required"
+          description: "Point-and-click journey analysis for everyone"
+          icon:
+            type: icon
+            src: "Activity"
+        - label: "14-Day Free Trial"
+          description: "Full access, no credit card, cancel anytime"
+          icon:
+            type: icon
+            src: "CheckCircle"
+      background: "background"
+
+    - type: feature_list
+      label: "core-features"
+      heading:
+        text: "Everything Your Team Needs"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Journey Mapping"
+          description: "Visualize every customer path from first touch to conversion. Identify drop-off points and optimize the moments that matter."
+          icon:
+            type: icon
+            src: "TrendingUp"
+        - label: "Multi-Touch Attribution"
+          description: "Go beyond last-click. Understand which channels and campaigns actually drive revenue with configurable attribution models."
+          icon:
+            type: icon
+            src: "PieChart"
+        - label: "Real-Time Dashboards"
+          description: "Share live dashboards with stakeholders. No waiting for data refreshes — Synapse updates as events happen."
+          icon:
+            type: icon
+            src: "Activity"
+        - label: "Any Data Source"
+          description: "Connect Segment, Snowflake, BigQuery, Salesforce, HubSpot, and 40+ more. Your data stays in your warehouse."
+          icon:
+            type: icon
+            src: "Database"
+        - label: "Team Collaboration"
+          description: "Annotations, comments, and shared workspaces. Align your team around the same data — no more competing dashboards."
+          icon:
+            type: icon
+            src: "Users"
+        - label: "Alerts & Monitoring"
+          description: "Get notified when conversion rates drop, CAC spikes, or any metric crosses your threshold. Stay ahead of problems."
+          icon:
+            type: icon
+            src: "Bell"
+      background: "surface"
+
+    - type: testimonial_grid
+      label: "customer-quotes"
+      heading:
+        text: "What Growth Teams Say"
+        textSize: "h2"
+      columns: 3
+      items:
+        - quote: "We finally have one source of truth for attribution. Synapse connected our Segment data and Salesforce in 45 minutes. Game over for our spreadsheet reporting."
+          author: "Priya R."
+          role: "Head of Marketing Ops, Series B SaaS"
+        - quote: "I can now answer questions in a board meeting that used to take my data team two days. The journey view is exactly what we needed."
+          author: "Marcus D."
+          role: "VP Growth, E-commerce Platform"
+        - quote: "Our previous tool required SQL for everything. Synapse lets our whole marketing team explore data independently. Saves us 10 hours a week."
+          author: "Aisha T."
+          role: "Analytics Engineer, B2B Marketplace"
+      background: "background"
+
+    - type: main
+      label: "pricing-teaser"
+      heading:
+        text: "Simple, Transparent Pricing"
+        textSize: "h2"
+      textBlocks:
+        - text: "Start free. Scale as you grow. Plans from $199/month after trial. No per-seat pricing."
+          textSize: "h4"
+      buttons:
+        - text: "See All Plans"
+          variant: "contained"
+          href: "/pricing"
+          bgColor: "accent"
+          textSize: "button"
+      background: "primary"
+      color: "surface"
+
+    - type: main
+      label: "trial-cta"
+      heading:
+        text: "Ready to See Your Full Customer Journey?"
+        textSize: "h2"
+      textBlocks:
+        - text: "Join 500+ companies using Synapse to understand and optimize their customer journey. 14-day free trial. No credit card required."
+          textSize: "body1"
+      buttons:
+        - text: "Start Free Trial"
+          variant: "contained"
+          href: "/contact"
+          bgColor: "accent"
+          textSize: "button"
+        - text: "Talk to Sales"
+          variant: "outlined"
+          href: "/contact"
+          textSize: "button"
+      background: "surface"

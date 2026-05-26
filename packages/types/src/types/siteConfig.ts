@@ -151,6 +151,13 @@ export const fontsConfigSchema = z
     path: ['local_path'],
   });
 
+export const localesConfigSchema = z.object({
+  /** BCP 47 default locale tag, e.g. "en", "fr", "de". */
+  default: z.string().default('en'),
+  /** All supported locale tags including the default. */
+  supported: z.array(z.string()).min(1),
+});
+
 export const siteConfigSchema = z.object({
   title: z.string(),
   meta: siteMetaSchema.optional(),
@@ -168,6 +175,8 @@ export const siteConfigSchema = z.object({
   search: searchConfigSchema.optional(),
   /** Optional font loading strategy configuration. Controls how web fonts are loaded. */
   fonts: fontsConfigSchema.optional(),
+  /** Optional locale configuration for multi-language content support. */
+  locales: localesConfigSchema.optional(),
 });
 
 export type SiteMeta = z.infer<typeof siteMetaSchema>;
@@ -178,4 +187,5 @@ export type IntegrationConfig = z.infer<typeof integrationConfigSchema>;
 export type SidebarConfig = z.infer<typeof sidebarConfigSchema>;
 export type SearchConfig = z.infer<typeof searchConfigSchema>;
 export type FontsConfig = z.infer<typeof fontsConfigSchema>;
+export type LocalesConfig = z.infer<typeof localesConfigSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;

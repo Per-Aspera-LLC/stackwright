@@ -546,6 +546,27 @@
         "strategy"
       ],
       "additionalProperties": false
+    },
+    "locales": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "default": "en",
+          "type": "string"
+        },
+        "supported": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/__schema16"
+          }
+        }
+      },
+      "required": [
+        "default",
+        "supported"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -927,6 +948,9 @@
       ]
     },
     "__schema15": {
+      "type": "string"
+    },
+    "__schema16": {
       "type": "string"
     }
   }

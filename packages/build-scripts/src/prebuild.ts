@@ -502,10 +502,15 @@ interface ContentFile {
   slug: string | null;
   filePath: string;
   contentDir: string;
+  /** BCP 47 locale tag if this is a locale variant (e.g. "fr"), undefined for the default locale. */
+  locale?: string;
 }
 
+/** BCP 47 locale tag pattern: two lowercase letters, optionally followed by a hyphen and two uppercase letters (e.g. "fr", "en-US"). */
+const LOCALE_TAG_REGEX = /^[a-z]{2}(-[A-Z]{2})?$/;
+
 /** Recursively find all content.yml / content.yaml files under dir. */
-function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
+export function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
   const results: ContentFile[] = [];
   if (!fs.existsSync(dir)) return results;
 
@@ -519,6 +524,20 @@ function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
         filePath: path.join(dir, entry.name),
         contentDir: dir,
       });
+    } else {
+      // Discover locale variant files: content.<locale>.yml / content.<locale>.yaml
+      const localeMatch = entry.name.match(/^content\.([^.]+)\.(yml|yaml)$/);
+      if (localeMatch) {
+        const locale = localeMatch[1];
+        if (LOCALE_TAG_REGEX.test(locale)) {
+          results.push({
+            slug: baseSlug || null,
+            filePath: path.join(dir, entry.name),
+            contentDir: dir,
+            locale,
+          });
+        }
+      }
     }
   }
   return results;
@@ -1123,6 +1142,23 @@ function auditIntegrationAuthSecrets(config: unknown): void {
 
 // -- Main -------------------------------------------------------------------
 
+/** Find locale-specific site config files in projectRoot (e.g. stackwright.fr.yml → { locale: 'fr', filePath }) */
+function findLocaleConfigFiles(projectRoot: string): Array<{ locale: string; filePath: string }> {
+  const results: Array<{ locale: string; filePath: string }> = [];
+  if (!fs.existsSync(projectRoot)) return results;
+
+  for (const entry of fs.readdirSync(projectRoot, { withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    const localeMatch = entry.name.match(/^stackwright\.([^.]+)\.(yml|yaml)$/);
+    if (!localeMatch) continue;
+    const locale = localeMatch[1];
+    if (LOCALE_TAG_REGEX.test(locale)) {
+      results.push({ locale, filePath: path.join(projectRoot, entry.name) });
+    }
+  }
+  return results;
+}
+
 export async function runPrebuild(options?: string | PrebuildOptions): Promise<void> {
   // Backward compatibility: support old API with string parameter
   const projectRoot =
@@ -1199,7 +1235,31 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   );
   console.log('  OK _site.json');
 
-  // 1b. Generate and write font links (strategy: external | bundle | local)
+  // 1b. Process locale-specific site configs (stackwright.<locale>.yml / .yaml)
+  const localeConfigFiles = findLocaleConfigFiles(projectRoot);
+  for (const { locale, filePath: localeFilePath } of localeConfigFiles) {
+    const rawLocaleConfig = yaml.load(fs.readFileSync(localeFilePath, 'utf8'));
+    const localeValidation = siteConfigSchema.safeParse(rawLocaleConfig);
+    if (!localeValidation.success) {
+      const details = localeValidation.error.issues
+        .map((issue) => {
+          const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+          return `  ${field}: ${issue.message}`;
+        })
+        .join('\n');
+      console.warn(`  WARNING: stackwright.${locale}.yml is invalid — skipping:\n${details}`);
+      continue;
+    }
+    const processedLocaleConfig = processSiteConfig(rawLocaleConfig, projectRoot, imagesDir);
+    const localeConfigWithEnvResolved = applyEnvVarResolution(processedLocaleConfig);
+    fs.writeFileSync(
+      path.join(contentOutDir, `_site.${locale}.json`),
+      JSON.stringify(localeConfigWithEnvResolved, null, 2)
+    );
+    console.log(`  OK _site.${locale}.json`);
+  }
+
+  // 1c. Generate and write font links (strategy: external | bundle | local)
   const fontsConfig = (configWithEnvResolved as Record<string, unknown>).fonts as
     | { strategy?: string; local_path?: string }
     | undefined;
@@ -1267,7 +1327,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     console.warn('  WARNING: No content.yml files found in pages/');
   }
 
-  for (const { slug, filePath, contentDir } of contentFiles) {
+  for (const { slug, filePath, contentDir, locale } of contentFiles) {
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
 
@@ -1311,8 +1371,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     }
 
     const slugDir = slug ?? '_root';
-    const imageDestDir = path.join(imagesDir, slugDir);
-    const publicPrefix = `/images/${slugDir}`;
+    const imageDestDir = locale
+      ? path.join(imagesDir, locale, slugDir)
+      : path.join(imagesDir, slugDir);
+    const publicPrefix = locale ? `/images/${locale}/${slugDir}` : `/images/${slugDir}`;
 
     const processedContent = processPageContent(
       normalizedContent,
@@ -1326,10 +1388,12 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const expandedContent = injectCollectionEntries(processedContent, collectionIndexes);
 
     const outFile = slug ? `${slug}.json` : '_root.json';
-    const outPath = path.join(contentOutDir, outFile);
+    const outPath = path.join(contentOutDir, locale ?? '', outFile);
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     fs.writeFileSync(outPath, JSON.stringify(expandedContent, null, 2));
-    console.log(`  OK ${outFile}  (${label})`);
+    const logPath = locale ? `${locale}/${outFile}` : outFile;
+    const logLabel = locale ? `${label} [${locale}]` : label;
+    console.log(`  OK ${logPath}  (${logLabel})`);
   }
 
   // Warn about collisions between generated entry pages and manually-authored pages

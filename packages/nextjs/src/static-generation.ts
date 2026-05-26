@@ -6,13 +6,20 @@ const COLLECTIONS_DIR = path.join(CONTENT_DIR, 'collections');
 
 /**
  * Reserved filenames that are NOT page slugs.
+ * Note: _root.json is intentionally absent — locale subdirs need fr/_root.json → slug ['fr'].
  */
-const RESERVED_FILES = new Set([
-  '_site.json',
-  '_root.json',
-  '_font-links.json',
-  'search-index.json',
-]);
+const RESERVED_FILES = new Set(['_site.json', '_font-links.json', 'search-index.json']);
+
+/**
+ * Returns true for filenames that must never become page slugs:
+ * exact RESERVED_FILES members, and locale site configs (_site.fr.json, etc.).
+ */
+function isReservedFile(filename: string): boolean {
+  if (RESERVED_FILES.has(filename)) return true;
+  // Locale-specific site configs written by the prebuild: _site.<locale>.json
+  if (/^_site\..+\.json$/.test(filename)) return true;
+  return false;
+}
 
 /**
  * Generate static params for all Stackwright slug pages.
@@ -32,20 +39,39 @@ const RESERVED_FILES = new Set([
  *
  * Returns an array like `[{ slug: ['about'] }, { slug: ['getting-started'] }]`.
  */
+/**
+ * Recursively walk CONTENT_DIR collecting page slugs.
+ * - Skips the `collections/` directory (collection data, not pages)
+ * - Skips files matched by `isReservedFile()`
+ * - `_root.json` inside a locale subdir (e.g. fr/_root.json) yields { slug: ['fr'] }
+ * - Top-level `_root.json` (root page) is intentionally dropped (empty slug array filtered out)
+ */
+function walkContentDir(dir: string, prefix: string[]): Array<{ slug: string[] }> {
+  const results: Array<{ slug: string[] }> = [];
+  if (!fs.existsSync(dir)) return results;
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      if (entry.name === 'collections') continue;
+      results.push(...walkContentDir(path.join(dir, entry.name), [...prefix, entry.name]));
+    } else if (entry.isFile() && entry.name.endsWith('.json')) {
+      if (isReservedFile(entry.name)) continue;
+      if (entry.name === '_root.json') {
+        // Locale root page: fr/_root.json → { slug: ['fr'] }; top-level → skip
+        if (prefix.length > 0) results.push({ slug: prefix });
+      } else {
+        const slugPart = entry.name.replace(/\.json$/, '');
+        results.push({ slug: [...prefix, slugPart] });
+      }
+    }
+  }
+  return results;
+}
+
 export function generateStackwrightStaticParams(): Array<{ slug: string[] }> {
   try {
     if (!fs.existsSync(CONTENT_DIR)) return [];
-
-    const entries = fs.readdirSync(CONTENT_DIR, { withFileTypes: true });
-
-    return entries
-      .filter((entry) => entry.isFile() && entry.name.endsWith('.json'))
-      .filter((entry) => !RESERVED_FILES.has(entry.name))
-      .map((entry) => {
-        const slug = entry.name.replace(/\.json$/, '');
-        // Support nested slugs separated by '/' encoded as '__' or by directory structure
-        return { slug: slug.split('/').filter(Boolean) };
-      });
+    return walkContentDir(CONTENT_DIR, []);
   } catch {
     return [];
   }
@@ -67,15 +93,29 @@ export function generateStackwrightStaticParams(): Array<{ slug: string[] }> {
  * ```
  */
 export async function getStackwrightPageData(
-  slug: string | string[] | undefined
+  slug: string | string[] | undefined,
+  locale?: string
 ): Promise<unknown | null> {
-  // No slug = root page
-  let pageData: unknown;
-  if (!slug || (Array.isArray(slug) && slug.length === 0)) {
-    pageData = readJsonFile(path.join(CONTENT_DIR, '_root.json'));
-  } else {
+  const supportedLocales = getStackwrightSiteLocales();
+  const defaultLocale = supportedLocales[0] ?? 'en';
+
+  /** Build the absolute file path for a given optional subdir. */
+  const buildPath = (subdir?: string): string => {
+    const base = subdir ? path.join(CONTENT_DIR, subdir) : CONTENT_DIR;
+    if (!slug || (Array.isArray(slug) && slug.length === 0)) {
+      return path.join(base, '_root.json');
+    }
     const slugPath = Array.isArray(slug) ? slug.join('/') : slug;
-    pageData = readJsonFile(path.join(CONTENT_DIR, `${slugPath}.json`));
+    return path.join(base, `${slugPath}.json`);
+  };
+
+  let pageData: unknown;
+  if (locale && locale !== defaultLocale) {
+    // Try locale-specific file first; fall back silently to default locale
+    const localePath = buildPath(locale);
+    pageData = fs.existsSync(localePath) ? readJsonFile(localePath) : readJsonFile(buildPath());
+  } else {
+    pageData = readJsonFile(buildPath());
   }
 
   return pageData !== null ? injectCollectionEntries(pageData) : null;
@@ -157,6 +197,38 @@ function injectEntries(node: Record<string, unknown>): void {
  */
 export function getStackwrightSiteConfig(): unknown | null {
   return readJsonFile(path.join(CONTENT_DIR, '_site.json'));
+}
+
+/**
+ * Read the supported locales from the prebuild-generated _site.json.
+ * Returns the supported locale list, or ['en'] if not configured.
+ */
+export function getStackwrightSiteLocales(): string[] {
+  const site = getStackwrightSiteConfig() as Record<string, unknown> | null;
+  const locales = site?.locales as { default?: string; supported?: string[] } | undefined;
+  return locales?.supported ?? ['en'];
+}
+
+/**
+ * Given a slug array and a list of supported locales, determine if the first
+ * segment is a locale prefix. Returns the resolved locale and the page slug
+ * without the locale prefix.
+ *
+ * Examples (supported: ['en', 'fr']):
+ *   ['fr', 'about'] → { locale: 'fr', pageSlug: ['about'] }
+ *   ['about']       → { locale: 'en', pageSlug: ['about'] }  (default locale)
+ *   ['fr']          → { locale: 'fr', pageSlug: [] }          (locale root page)
+ */
+export function parseLocaleFromSlug(
+  slug: string | string[] | undefined,
+  supportedLocales: string[]
+): { locale: string; pageSlug: string[] } {
+  const segments = Array.isArray(slug) ? slug : slug ? [slug] : [];
+  const defaultLocale = supportedLocales[0] ?? 'en';
+  if (segments.length > 0 && supportedLocales.includes(segments[0]!)) {
+    return { locale: segments[0]!, pageSlug: segments.slice(1) };
+  }
+  return { locale: defaultLocale, pageSlug: segments };
 }
 
 function readJsonFile(filePath: string): unknown | null {

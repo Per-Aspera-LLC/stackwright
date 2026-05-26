@@ -1,4 +1,10 @@
 title: "Synapse Analytics"
+
+locales:
+  default: en
+  supported:
+    - en
+    - fr
 meta:
   description: "Customer journey analytics that connects your data sources to reveal every touchpoint. No SQL required. Start free."
 

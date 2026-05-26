@@ -204,9 +204,11 @@ describe('getStackwrightPageData', () => {
     const pageJson = JSON.stringify(makePageData([collectionListItem()]));
 
     mockReadFileSync
-      // First call: the page JSON
+      // First call: _site.json (getStackwrightSiteLocales — returns no locales config, defaults to ['en'])
+      .mockReturnValueOnce(JSON.stringify({}))
+      // Second call: the page JSON
       .mockReturnValueOnce(pageJson)
-      // Second call: the _index.json for the 'posts' collection
+      // Third call: the _index.json for the 'posts' collection
       .mockReturnValueOnce(JSON.stringify(SAMPLE_ENTRIES));
 
     const result = (await getStackwrightPageData(['some-page'])) as Record<string, unknown>;
