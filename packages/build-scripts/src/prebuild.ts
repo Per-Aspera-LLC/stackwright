@@ -1434,6 +1434,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
 
   // 5. Generate SBOM (unless --no-sbom flag is set)
   if (!process.argv.includes('--no-sbom')) {
+    const sbomStrict = process.argv.includes('--sbom-strict');
     try {
       const { createSBOM } = await import('@stackwright/sbom-generator');
       const sbom = await createSBOM({
@@ -1446,7 +1447,14 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
       await sbom.writeTo(projectRoot);
       console.log('\n  [OK] SBOM generated: .stackwright/sbom/');
     } catch (error) {
-      // SBOM generation failure should not fail the build
+      if (sbomStrict) {
+        throw new Error(
+          '[SBOM] Generation failed (--sbom-strict mode): ' +
+            (error as Error).message +
+            '\nRemove --sbom-strict or resolve the error to continue.'
+        );
+      }
+      // Non-strict: warn and continue
       console.warn('\n  [WARN] SBOM generation failed (non-critical): ' + (error as Error).message);
     }
   }
@@ -1458,9 +1466,14 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
 if (require.main === module) {
   const watchMode = process.argv.includes('--watch');
   const noSBOM = process.argv.includes('--no-sbom');
+  const sbomStrict = process.argv.includes('--sbom-strict');
 
   if (noSBOM) {
     console.log('[INFO] SBOM generation skipped (--no-sbom flag)');
+  }
+
+  if (sbomStrict) {
+    console.log('[INFO] SBOM strict mode enabled — build will fail if SBOM generation errors');
   }
 
   if (watchMode) {

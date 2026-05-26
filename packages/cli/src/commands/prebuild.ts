@@ -26,7 +26,13 @@ export function runPrebuildCommand(projectRoot = process.cwd()): PrebuildResult 
 export function registerPrebuild(program: Command): void {
   program
     .command('prebuild')
-    .description('Process YAML content and co-located images for Next.js')
+    .description(
+      'Process YAML content and co-located images for Next.js.\n' +
+        'Passthrough flags (read by @stackwright/build-scripts directly from process.argv):\n' +
+        '  --no-sbom      Skip SBOM generation\n' +
+        '  --sbom-strict  Hard-fail the build if SBOM generation errors (for regulated environments)\n' +
+        '  --watch        Watch YAML/image files and rebuild on change'
+    )
     .option('--json', 'Output machine-readable JSON')
     .action((opts: { json?: boolean }) => {
       const json = Boolean(opts.json);

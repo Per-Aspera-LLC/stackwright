@@ -136,6 +136,7 @@ The prebuild step reads these values and generates the appropriate `<link>` tags
 | `pricing_table` | Pricing plan comparison cards |
 | `alert` | Styled admonition/callout (info, warning, success, danger, note, tip) |
 | `contact_form_stub` | Contact information display with mailto link |
+| `form` | Full HTML form with fields, validation, and fetch submission — POST/GET to any endpoint |
 | `media` | Standalone image or media block |
 | `video` | Video player with multiple source support |
 | `grid` | Responsive multi-column grid layout |
@@ -233,6 +234,9 @@ stackwright preview /pricing --width 375 --height 667
 # Hot-reload during development (watches YAML and images)
 stackwright prebuild --watch
 
+# Hard-fail if SBOM generation errors (for regulated environments)
+stackwright prebuild --sbom-strict
+
 # Manage collections
 stackwright collection list
 stackwright collection add
@@ -242,7 +246,7 @@ stackwright site get
 stackwright site validate
 stackwright site write
 
-# View the product board (priority-tiered from GitHub Issues)
+# View the priority-tiered product board from .beads/issues.jsonl (powered by Beads: https://github.com/gastownhall/beads)
 stackwright board
 
 # Compose an entire site atomically
@@ -251,6 +255,17 @@ stackwright compose
 # Git workflow (for AI agent integration)
 stackwright git stage
 stackwright git open-pr
+
+# Add Stackwright to an existing Next.js project
+stackwright init [dir]
+
+# Run a WCAG 2.1 AA accessibility audit (requires pnpm dev + Playwright)
+stackwright test:a11y [slug]
+stackwright test:a11y --pages /,/about,/pricing --fail-on serious
+
+# Manage API integrations (OpenAPI, GraphQL, REST) in stackwright.yml
+stackwright integrations list
+stackwright integrations add --name my-api --type openapi --spec ./openapi.yaml
 ```
 
 ## Package Structure
@@ -268,6 +283,9 @@ stackwright git open-pr
 @stackwright/collections   — Data collection providers (file-based, extensible)
 @stackwright/maplibre      — MapLibre GL interactive map component
 launch-stackwright         — One-command project launcher with otter raft included 🦦
+@stackwright/hooks-registry   — Scaffold hook registry (preScaffold, postInstall, etc.)
+@stackwright/scaffold-core    — Core scaffold pipeline and hook runner
+@stackwright/e2e              — End-to-end Playwright test suite for the framework itself
 ```
 
 ## IDE Support
@@ -287,7 +305,7 @@ The search index is generated at build time during prebuild — no external serv
 
 ### Adding Search to Your Site
 
-The SearchModal is automatically included in the page layout. To customize the keyboard shortcut or trigger:
+The SearchModal is automatically included in the page layout. Note: this applies to `PageLayout` (the full layout with `TopAppBar` and `BottomAppBar`). If you are using `DefaultPageLayout` directly, you will need to render `<SearchModal />` yourself. To customize the keyboard shortcut or trigger:
 
 ```tsx
 // In your _app.tsx or layout
@@ -341,6 +359,8 @@ function renderContent(item: ContentItem) {
 }
 ```
 
+> **Note:** `@stackwright-pro/openapi` is a Pro tier package not included in this open-source repository. The protections listed below describe its security model for reference; they are not part of the standard Stackwright OSS release.
+
 For `@stackwright-pro/openapi`:
 
 | Protection | What It Prevents |
@@ -363,7 +383,7 @@ For `@stackwright-pro/openapi`:
 
 ### SBOM Generation
 
-Stackwright automatically generates a Software Bill of Materials (SBOM) during every build in three formats:
+Stackwright automatically generates a Software Bill of Materials (SBOM) during every `stackwright-prebuild` run (the `prebuild`/`predev` npm hook in your app's `package.json`). Pass `--no-sbom` to skip generation, or `--sbom-strict` to hard-fail the build if SBOM generation errors (recommended for regulated environments). Three formats are produced:
 
 - **SPDX 2.3** — the NIST-recommended format for federal procurement
 - **CycloneDX 1.5** — widely supported in enterprise toolchains

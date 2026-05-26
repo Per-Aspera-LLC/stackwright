@@ -22,9 +22,15 @@ interface SearchEntry {
 interface SearchModalProps {
   placeholder?: string;
   shortcut?: string;
+  /** Optional navigation handler. When provided, called instead of `window.location.href`. */
+  onNavigate?: (path: string) => void;
 }
 
-export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: SearchModalProps) {
+export function SearchModal({
+  placeholder = 'Search...',
+  shortcut = 'k',
+  onNavigate,
+}: SearchModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -36,10 +42,18 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Navigate to a path using window.location (works in all environments)
-  const navigateTo = useCallback((path: string) => {
-    window.location.href = path;
-  }, []);
+  // Navigate to a path — uses the injected handler when provided (e.g. Next.js router),
+  // falling back to window.location.href for non-Next.js environments.
+  const navigateTo = useCallback(
+    (path: string) => {
+      if (onNavigate) {
+        onNavigate(path);
+      } else {
+        window.location.href = path;
+      }
+    },
+    [onNavigate]
+  );
 
   // Debounce search query (300ms)
   useEffect(() => {
