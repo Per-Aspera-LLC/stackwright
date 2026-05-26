@@ -1,5 +1,11 @@
 # @stackwright/cli
 
+## 0.9.0-alpha.4
+
+### Minor Changes
+
+- 5df938e: feat(scaffold): run stackwright-prebuild --watch concurrently with next dev for YAML hot-rebuild
+
 ## 0.9.0-alpha.3
 
 ### Minor Changes

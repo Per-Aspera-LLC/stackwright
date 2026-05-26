@@ -28,6 +28,8 @@
     "feat-build-scripts-font-strategies",
     "feat-fonts-config-schema",
     "feat-integration-management",
+    "feat-mcp-prebuild-render",
+    "feat-scaffold-prebuild-watch",
     "feat-test-a11y-command",
     "fix-a11y-cluster",
     "fix-map-component-api",

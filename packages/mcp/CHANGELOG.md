@@ -1,5 +1,13 @@
 # @stackwright/mcp
 
+## 0.5.0-alpha.6
+
+### Patch Changes
+
+- 2b85093: feat(mcp): auto-trigger prebuild before render in all four render tools. Replaces the fragile 2-second sleep in `stackwright_render_yaml` with an explicit `runPrebuild()` call so co-located images are always processed. Adds optional `projectRoot` param to `stackwright_render_page` and `stackwright_render_diff` for the same benefit.
+- Updated dependencies [5df938e]
+  - @stackwright/cli@0.9.0-alpha.4
+
 ## 0.5.0-alpha.5
 
 ### Patch Changes
