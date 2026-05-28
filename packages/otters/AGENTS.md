@@ -11,6 +11,7 @@ AI agents for Stackwright site generation. Each agent is specialized for a singl
 | `stackwright-brand-otter` | Brand Otter 🦦🎨 | Brand discovery through conversation |
 | `stackwright-theme-otter` | Theme Otter 🦦🎨 | Visual design (colors, typography) |
 | `stackwright-page-otter` | Page Otter 🦦📄 | Content composition (pages, copy) |
+| `stackwright-collection-otter` | Collection Otter 🦦📚 | Structured content collections (blog, docs, portfolio) |
 | `stackwright-foreman-otter` | Foreman Otter 🦦🏗️ | Pipeline coordination |
 
 ---
@@ -167,6 +168,66 @@ Builds Stackwright pages using YAML content types, writing copy in brand voice.
 - Icon names must match Lucide icons exactly
 - Validate before rendering
 - Render at multiple viewports (desktop + mobile)
+
+---
+
+## stackwright-collection-otter
+
+**Structured Content Collection Specialist**
+
+### Purpose
+Creates and wires structured content collections for blogs, documentation, portfolios, case studies, team directories, and product listings. Invoked as an optional Phase 4 step after the Page Otter completes.
+
+### Output
+- `content/<name>/` directory with `_collection.yaml` config + 3–5 sample entry YAML files
+- `pages/<name>/content.yml` — listing page wired with `collection_list` content type
+
+### Key Tools
+- `stackwright_create_collection` — scaffolds collection directory + `_collection.yaml`
+- `stackwright_list_collections` — checks for existing collections
+- `stackwright_write_page` — creates/updates the listing page
+- `stackwright_validate_pages` — validates the listing page
+- `stackwright_render_page` — visual verification
+- `create_file` — writes individual entry YAML files
+- `ask_user_question` — gathers collection type, slug, entry count, and per-entry page preference
+
+### Collection Types
+| Type | Typical Slug | Sort |
+|------|-------------|------|
+| Blog posts | `posts` | `-date` |
+| Documentation | `docs` | `-date` |
+| Portfolio items | `work` | `-date` |
+| Case studies | `case-studies` | `-date` |
+| Team members | `team` | (none) |
+| Products | `products` | (none) |
+
+### collection_list Card Syntax
+Card fields use `$.fieldName` to reference collection entry YAML fields:
+```yaml
+card:
+  title: "$.title"
+  description: "$.excerpt"
+  date: "$.date"
+```
+
+### Prebuild Requirement
+Collections **must** go through the prebuild pipeline before they appear at runtime.
+The target project's `package.json` must have:
+```json
+"prebuild": "stackwright-prebuild",
+"predev": "stackwright-prebuild"
+```
+The Collection Otter always ends with a reminder about this requirement.
+
+### Workflow
+1. Read `BRAND_BRIEF.md` (brand voice) and `stackwright.yml` (theme color keys)
+2. Ask: collection type, slug, per-entry pages, number of sample entries
+3. Call `stackwright_create_collection` to scaffold the directory
+4. Delete the auto-generated `sample-entry.yaml`, write 3–5 brand-voiced entries
+5. Create the listing page with `collection_list` via `stackwright_write_page`
+6. Validate and render the listing page
+7. Check nav and suggest adding a link if missing
+8. Remind user about prebuild requirement
 
 ---
 
