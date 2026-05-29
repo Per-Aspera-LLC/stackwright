@@ -96,7 +96,7 @@ jobs:
       - name: Pack workspace packages as tarballs
         run: |
           mkdir -p /tmp/stackwright-tarballs
-          for pkg in types themes icons collections core nextjs build-scripts ui-shadcn cli sbom-generator; do
+          for pkg in types themes icons collections core nextjs build-scripts ui-shadcn cli sbom-generator otters; do
             pnpm --filter "@stackwright/$pkg" pack --pack-destination /tmp/stackwright-tarballs
           done
 
@@ -109,7 +109,7 @@ jobs:
             const fs = require('fs');
             const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
             const tarballs = fs.readdirSync('/tmp/stackwright-tarballs');
-            const names = ['types','themes','icons','collections','core','nextjs','build-scripts','ui-shadcn','cli','sbom-generator'];
+            const names = ['types','themes','icons','collections','core','nextjs','build-scripts','ui-shadcn','cli','sbom-generator','otters'];
             const overrides = {};
             for (const name of names) {
               const tarball = tarballs.find(t => t.startsWith('stackwright-' + name + '-'));
