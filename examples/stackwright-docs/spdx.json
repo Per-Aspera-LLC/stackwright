@@ -1,11 +1,11 @@
 {
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
-  "SPDXID": "SPDXRef-DOCUMENT-a1e78504",
-  "name": "stackwright-docs@0.1.8-alpha.1",
-  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-05-24T23:02:02.672Z",
+  "SPDXID": "SPDXRef-DOCUMENT-28d15344",
+  "name": "stackwright-docs@0.1.8-alpha.3",
+  "documentNamespace": "https://stackwright.dev/spdx/stackwright-docs/2026-05-29T22:06:34.743Z",
   "creationInfo": {
-    "created": "2026-05-24T23:02:02.672Z",
+    "created": "2026-05-29T22:06:34.743Z",
     "creators": [
       "Tool: @stackwright/sbom-generator",
       "Tool-Version: 0.0.0"
@@ -360,7 +360,7 @@
   ],
   "relationships": [
     {
-      "spdxElementId": "SPDXRef-DOCUMENT-a1e78504",
+      "spdxElementId": "SPDXRef-DOCUMENT-28d15344",
       "relationshipType": "DESCRIBES",
       "relatedSpdxElement": "SPDXRef-Package-clsx"
     },

@@ -1,6 +1,10 @@
 const { createStackwrightNextConfig } = require("@stackwright/nextjs");
 
-module.exports = createStackwrightNextConfig({
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+});
+
+module.exports = withBundleAnalyzer(createStackwrightNextConfig({
     transpilePackages: [
         "@stackwright/core",
         "@stackwright/nextjs",
@@ -15,4 +19,4 @@ module.exports = createStackwrightNextConfig({
     },
     // Add trailing slash so URLs work without requiring explicit trailing slashes on R2/CDN hosting
     trailingSlash: true,
-});
+}));
