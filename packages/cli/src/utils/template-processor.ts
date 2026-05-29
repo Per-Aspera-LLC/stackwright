@@ -230,6 +230,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
     swBuildScripts: '^0.7.0',
     swUiShadcn: '^0.1.0',
     swOtters: '^0.2.0',
+    swCollections: '^0.1.0',
     // Third-party
     concurrently: '^9.1.0',
     jsYaml: '^4.1.1',
@@ -260,6 +261,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
     },
     dependencies: {
       '@stackwright/otters': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swOtters,
+      '@stackwright/collections': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swCollections,
       '@stackwright/ui-shadcn': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swUiShadcn,
       '@stackwright/core': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swCore,
       '@stackwright/icons': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swIcons,
