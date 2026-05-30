@@ -100,6 +100,7 @@ describe('generateStackwrightStaticParams — recursive locale directory walk', 
           makeFile('about.json'),
           makeFile('_site.json'), // reserved — must be excluded
           makeFile('_root.json'), // top-level root page — prefix [] → dropped
+          makeFile('_icon-manifest.json'), // prebuild debug artifact — must be excluded
           makeDir('fr'), // locale subdir — should be recursed
           makeDir('collections'), // always skipped
         ];
@@ -125,6 +126,11 @@ describe('generateStackwrightStaticParams — recursive locale directory walk', 
   it('excludes reserved files (_site.json, locale _site variants)', () => {
     const result = generateStackwrightStaticParams();
     expect(result).not.toContainEqual({ slug: ['_site'] });
+  });
+
+  it('regression stackwright-1ec: excludes _icon-manifest.json (prebuild debug artifact, not a page slug)', () => {
+    const result = generateStackwrightStaticParams();
+    expect(result).not.toContainEqual({ slug: ['_icon-manifest'] });
   });
 
   it('excludes top-level _root.json (root page has no [...slug] param)', () => {

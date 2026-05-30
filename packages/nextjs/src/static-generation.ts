@@ -8,7 +8,12 @@ const COLLECTIONS_DIR = path.join(CONTENT_DIR, 'collections');
  * Reserved filenames that are NOT page slugs.
  * Note: _root.json is intentionally absent — locale subdirs need fr/_root.json → slug ['fr'].
  */
-const RESERVED_FILES = new Set(['_site.json', '_font-links.json', 'search-index.json']);
+const RESERVED_FILES = new Set([
+  '_site.json',
+  '_font-links.json',
+  'search-index.json',
+  '_icon-manifest.json',
+]);
 
 /**
  * Returns true for filenames that must never become page slugs:

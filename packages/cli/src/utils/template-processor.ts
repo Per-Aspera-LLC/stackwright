@@ -232,6 +232,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
     swOtters: '^0.2.0',
     // Third-party
     concurrently: '^9.1.0',
+    lucideReact: '^1.8.0',
     jsYaml: '^4.1.1',
     next: '^16.1.6',
     react: '^19.2.4',
@@ -265,6 +266,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
       '@stackwright/icons': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swIcons,
       '@stackwright/nextjs': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swNextjs,
       'js-yaml': VERSIONS.jsYaml,
+      'lucide-react': VERSIONS.lucideReact,
       next: VERSIONS.next,
       react: VERSIONS.react,
       'react-dom': VERSIONS.reactDom,
