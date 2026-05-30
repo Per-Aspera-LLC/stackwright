@@ -398,6 +398,7 @@ const LEGACY_MUI_ICON_ALIASES: Record<string, string> = {
   // Lucide renamed-icon backward compat
   CheckCircle: 'CircleCheck',
   AlertTriangle: 'TriangleAlert',
+  Layout: 'LayoutTemplate',
 };
 
 /**
