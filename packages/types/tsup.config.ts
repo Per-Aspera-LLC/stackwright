@@ -1,7 +1,7 @@
 import { defineConfig, type Options } from 'tsup';
 
 const config: Options = {
-  entry: ['src/types/index.ts'],
+  entry: ['src/types/index.ts', 'src/types/validation.ts', 'src/types/validation-hints.ts'],
   format: ['cjs', 'esm'],
   dts: true,
   clean: true,

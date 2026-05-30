@@ -14,6 +14,7 @@ export * from './secrets';
 export * from './secret-detection';
 export * from '../constants';
 
-// Re-export validation utilities
-export * from './validation';
-export * from './validation-hints';
+// Validation utilities (zod-heavy, build/CLI/server only) are intentionally
+// NOT re-exported here. Import them directly:
+//   import { validatePageContent } from '@stackwright/types/validation';
+// This keeps zod out of the client-side JavaScript bundle.

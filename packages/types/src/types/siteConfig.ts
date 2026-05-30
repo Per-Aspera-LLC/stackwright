@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { navigationItemSchema } from './navigation';
 import { buttonContentSchema } from './base';
 import { mediaItemSchema } from './media';
-import { themeSchema } from '@stackwright/themes';
+import { themeSchema } from '@stackwright/themes/schemas';
 import { integrationAuthSchema } from './secrets';
 
 export const appBarConfigSchema = z.object({

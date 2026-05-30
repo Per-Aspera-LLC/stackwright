@@ -26,13 +26,13 @@ import yaml from 'js-yaml';
 import { z } from 'zod';
 import {
   siteConfigSchema,
-  validatePageContent,
   collectionConfigSchema,
   VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
   resolveEnvVarsDeep,
-  buildExtendedPageContentSchema,
   checkForPlaintextSecret,
 } from '@stackwright/types';
+import { validatePageContent } from '@stackwright/types/validation';
+import { buildExtendedPageContentSchema } from '@stackwright/types';
 import type {
   CollectionConfig,
   EntryPageConfig,

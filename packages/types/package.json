@@ -10,11 +10,22 @@
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
+    "sideEffects": false,
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
             "require": "./dist/index.js"
+        },
+        "./validation": {
+            "types": "./dist/validation.d.ts",
+            "import": "./dist/validation.mjs",
+            "require": "./dist/validation.js"
+        },
+        "./validation-hints": {
+            "types": "./dist/validation-hints.d.ts",
+            "import": "./dist/validation-hints.mjs",
+            "require": "./dist/validation-hints.js"
         },
         "./schemas/theme-schema.json": "./schemas/theme-schema.json",
         "./schemas/content-schema.json": "./schemas/content-schema.json",
