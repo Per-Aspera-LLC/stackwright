@@ -33,6 +33,7 @@
     "feat-test-a11y-command",
     "fix-a11y-cluster",
     "fix-map-component-api",
+    "icon-layout-alias-fix",
     "refactor-board-beads-native"
   ]
 }
