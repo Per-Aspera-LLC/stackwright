@@ -10,9 +10,9 @@ export * from './components/structural';
 // Export Menu system (complete module)
 export { CompressedMenu } from './components/base/Menu';
 
-// Export narrative components
-//export * from './components/narrative'
-export { Carousel } from './components/narrative/Carousel/Carousel';
+// Carousel is NOT exported from the main barrel — it is lazy-loaded by the
+// component registry (React.lazy) so it stays out of the first-load bundle.
+// Import directly from '@stackwright/core/carousel' if you need the component.
 
 // Export configuration utilities (remove loadUserConfig)
 export { mergeConfig, coreDefaults } from './config/defaults';

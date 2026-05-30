@@ -25,6 +25,11 @@
             "types": "./dist/pages/SlugPage.d.ts",
             "import": "./dist/pages/SlugPage.mjs",
             "require": "./dist/pages/SlugPage.js"
+        },
+        "./carousel": {
+            "types": "./dist/components/narrative/Carousel/Carousel.d.ts",
+            "import": "./dist/components/narrative/Carousel/Carousel.mjs",
+            "require": "./dist/components/narrative/Carousel/Carousel.js"
         }
     },
     "files": [

@@ -1,5 +1,10 @@
-import { ComponentType } from 'react';
-import { Carousel } from '../components/narrative/Carousel/Carousel';
+import React, { ComponentType } from 'react';
+
+// Carousel is lazy-loaded so it is NOT in the first-load JS bundle.
+// Pages that contain no carousel items never download the Carousel chunk.
+const LazyCarousel = React.lazy(() =>
+  import('../components/narrative/Carousel/Carousel').then((m) => ({ default: m.Carousel }))
+) as ComponentType<any>;
 import {
   MainContentGrid,
   TabbedContentGrid,
@@ -29,7 +34,7 @@ import {
 
 // Component registry mapping YAML key → React component (or lazy factory for stackwright- prefixed)
 export const componentRegistry: Record<string, ComponentType<any> | (() => ComponentType<any>)> = {
-  carousel: Carousel,
+  carousel: LazyCarousel,
   main: MainContentGrid,
   tabbed_content: TabbedContentGrid,
   text_block: TextBlockGrid,

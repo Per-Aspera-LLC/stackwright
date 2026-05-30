@@ -7,7 +7,10 @@
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Fuse from 'fuse.js';
+// fuse.js is NOT imported statically — it is dynamically imported inside the
+// useEffect below so webpack creates a separate async chunk for it.
+// The type-only import gives TypeScript the FuseResult shape without bundling.
+import type FuseType from 'fuse.js';
 
 // Type for search index entries - matches build-searchIndex.ts
 interface SearchEntry {
@@ -36,7 +39,8 @@ export function SearchModal({
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [results, setResults] = useState<SearchEntry[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [fuse, setFuse] = useState<Fuse<SearchEntry> | null>(null);
+  // Minimal structural type — only the .search() method is called below.
+  const [fuse, setFuse] = useState<Pick<FuseType<SearchEntry>, 'search'> | null>(null);
   const [loading, setLoading] = useState(true);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -61,18 +65,23 @@ export function SearchModal({
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Load search index with AbortController for cleanup
+  // Load fuse.js (async chunk) + search index in parallel on mount.
+  // Dynamic import keeps fuse.js out of the initial JS bundle — it is only
+  // downloaded once, cached by the browser, and ready before the user opens
+  // the modal for the first time.
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
 
-    fetch('/stackwright-content/search-index.json', { signal: controller.signal })
-      .then((res) => {
+    Promise.all([
+      import('fuse.js'),
+      fetch('/stackwright-content/search-index.json', { signal: controller.signal }).then((res) => {
         if (!res.ok) throw new Error('Search index not found');
-        return res.json();
-      })
-      .then((data: SearchEntry[]) => {
-        const fuseInstance = new Fuse(data, {
+        return res.json() as Promise<SearchEntry[]>;
+      }),
+    ])
+      .then(([{ default: FuseClass }, data]) => {
+        const fuseInstance = new FuseClass(data, {
           keys: [
             { name: 'title', weight: 2 },
             { name: 'headings', weight: 1.5 },
@@ -85,14 +94,12 @@ export function SearchModal({
         });
         setFuse(fuseInstance);
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         if (err.name !== 'AbortError') {
           console.warn('Search index not available:', err);
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
 
     return () => controller.abort();
   }, []);
