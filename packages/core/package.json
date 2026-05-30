@@ -51,7 +51,7 @@
         "js-yaml": "^4.1.0",
         "prismjs": "^1.30.0",
         "uuid": "^13.0.0",
-        "zod": "^4.3.6"
+        "zod": "^4.4.3"
     },
     "devDependencies": {
         "@stackwright/collections": "workspace:*",
