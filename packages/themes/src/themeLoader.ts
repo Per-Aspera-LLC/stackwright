@@ -114,7 +114,6 @@ export class ThemeLoader {
    */
   static loadThemeFromYaml(yamlContent: string): Theme {
     try {
-       
       const yaml = require('js-yaml') as typeof import('js-yaml');
       const theme = yaml.load(yamlContent) as Theme;
       this.themes.set(theme.name, theme);
