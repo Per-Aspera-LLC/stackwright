@@ -100,6 +100,15 @@ function hasChangeset(files) {
   return files.some((file) => file.startsWith('.changeset/') && file.endsWith('.md'));
 }
 
+// Bots that only bump versions/deps never need a changeset
+const EXEMPT_ACTORS = ['dependabot[bot]', 'renovate[bot]'];
+const actor = process.env.GITHUB_ACTOR || '';
+
+if (EXEMPT_ACTORS.includes(actor)) {
+  console.log(`✅ Changeset not required for ${actor} — skipping.`);
+  process.exit(0);
+}
+
 const changedFiles = getChangedFiles();
 
 if (hasPackageChanges(changedFiles) && !hasChangeset(changedFiles)) {
