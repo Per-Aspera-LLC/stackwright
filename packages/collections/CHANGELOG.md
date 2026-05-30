@@ -1,5 +1,11 @@
 # @stackwright/collections
 
+## 0.1.2-alpha.2
+
+### Patch Changes
+
+- @stackwright/types@1.6.0-alpha.2
+
 ## 0.1.2-alpha.1
 
 ### Patch Changes

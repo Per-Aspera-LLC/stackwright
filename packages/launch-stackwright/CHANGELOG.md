@@ -1,5 +1,12 @@
 # launch-stackwright
 
+## 0.2.7-alpha.8
+
+### Patch Changes
+
+- @stackwright/cli@0.9.0-alpha.5
+- @stackwright/scaffold-core@0.3.2-alpha.2
+
 ## 0.2.7-alpha.7
 
 ### Patch Changes

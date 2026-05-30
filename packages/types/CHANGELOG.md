@@ -1,5 +1,12 @@
 # @stackwright/types
 
+## 1.6.0-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [a72f3ad]
+  - @stackwright/themes@0.6.0-alpha.0
+
 ## 1.6.0-alpha.1
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # @stackwright/build-scripts
 
+## 0.8.0-alpha.3
+
+### Patch Changes
+
+- @stackwright/types@1.6.0-alpha.2
+
 ## 0.8.0-alpha.2
 
 ### Patch Changes
