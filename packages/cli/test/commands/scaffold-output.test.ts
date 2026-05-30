@@ -389,36 +389,26 @@ describe('scaffold output — package.json', () => {
     expect(deps['@stackwright/nextjs']).toBeDefined();
     expect(deps['@stackwright/icons']).toBeDefined();
     expect(deps['@stackwright/ui-shadcn']).toBeDefined();
-    expect(deps['@stackwright/collections']).toBeDefined();
     expect(deps['lucide-react']).toBeDefined();
     expect(deps['next']).toBeDefined();
     expect(deps['react']).toBeDefined();
     expect(deps['react-dom']).toBeDefined();
   });
 
-  it('regression stackwright-1ec: includes @stackwright/collections and lucide-react', async () => {
+  it('regression stackwright-1ec: lucide-react is included as a dependency', async () => {
     const targetDir = path.join(tmpDir, 'regression-1ec');
     await scaffold(targetDir, baseOpts({ name: 'regression-1ec' }));
 
     const pkg = readJson(path.join(targetDir, 'package.json'));
     const deps = pkg.dependencies as Record<string, string>;
 
-    // @stackwright/collections is imported by providers.tsx
-    expect(deps['@stackwright/collections']).toBeDefined();
-    expect(deps['@stackwright/collections']).not.toBe('');
-
     // lucide-react is imported by stackwright-generated/icons.ts (stackwright-prebuild output)
     expect(deps['lucide-react']).toBeDefined();
     expect(deps['lucide-react']).not.toBe('');
-  });
 
-  it('regression stackwright-1ec: @stackwright/collections uses workspace:* in monorepo mode', async () => {
-    const targetDir = path.join(tmpDir, 'regression-1ec-mono');
-    await scaffold(targetDir, baseOpts({ name: 'regression-1ec-mono', monorepo: true }));
-
-    const pkg = readJson(path.join(targetDir, 'package.json'));
-    const deps = pkg.dependencies as Record<string, string>;
-    expect(deps['@stackwright/collections']).toBe('workspace:*');
+    // @stackwright/collections must NOT be in deps — FileCollectionProvider is Node-only
+    // and must never be imported in a 'use client' component
+    expect(deps['@stackwright/collections']).toBeUndefined();
   });
 
   it('has build-scripts in devDependencies', async () => {
@@ -520,5 +510,40 @@ describe('scaffold output — placeholder substitution', () => {
       expect(content).not.toContain('{{siteTitle}}');
       expect(content).not.toContain('{{year}}');
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// providers.tsx guard — regression for stackwright-1ec
+// ---------------------------------------------------------------------------
+
+describe('scaffold output — providers.tsx client boundary', () => {
+  let targetDir: string;
+  let tmpDir: string;
+
+  beforeEach(async () => {
+    tmpDir = makeTmpDir();
+    targetDir = path.join(tmpDir, 'providers-guard');
+    await scaffold(targetDir, baseOpts({ name: 'providers-guard' }));
+  });
+
+  afterEach(() => {
+    fs.removeSync(tmpDir);
+  });
+
+  it('does not import @stackwright/collections in providers.tsx', () => {
+    const content = fs.readFileSync(
+      path.join(targetDir, 'app', '_components', 'providers.tsx'),
+      'utf8'
+    );
+    expect(content).not.toContain('@stackwright/collections');
+  });
+
+  it('does not call registerCollectionProvider in providers.tsx', () => {
+    const content = fs.readFileSync(
+      path.join(targetDir, 'app', '_components', 'providers.tsx'),
+      'utf8'
+    );
+    expect(content).not.toContain('registerCollectionProvider');
   });
 });

@@ -230,7 +230,6 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
     swBuildScripts: '^0.7.0',
     swUiShadcn: '^0.1.0',
     swOtters: '^0.2.0',
-    swCollections: '^0.1.0',
     // Third-party
     concurrently: '^9.1.0',
     lucideReact: '^1.8.0',
@@ -266,7 +265,6 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
       '@stackwright/core': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swCore,
       '@stackwright/icons': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swIcons,
       '@stackwright/nextjs': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swNextjs,
-      '@stackwright/collections': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swCollections,
       'js-yaml': VERSIONS.jsYaml,
       'lucide-react': VERSIONS.lucideReact,
       next: VERSIONS.next,
