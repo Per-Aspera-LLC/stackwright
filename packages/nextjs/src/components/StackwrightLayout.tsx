@@ -1,7 +1,7 @@
 import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import { ColorModeScript } from '@stackwright/themes';
+import { ColorModeScript } from '@stackwright/themes/color-mode-script';
 
 /**
  * Font link data structure matching the _font-links.json output format.

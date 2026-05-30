@@ -1,10 +1,10 @@
 {
   "format": "stackwright-build-manifest",
   "version": "1.0.0",
-  "generated": "2026-05-29T22:06:34.745Z",
+  "generated": "2026-05-30T17:55:51.814Z",
   "project": {
     "name": "stackwright-docs",
-    "version": "0.1.8-alpha.3",
+    "version": "0.1.8-alpha.4",
     "root": "/home/charles/git/peraspera/stackwright/examples/stackwright-docs",
     "isMonorepo": false
   },
@@ -64,6 +64,15 @@
       "depth": 0
     },
     {
+      "name": "@stackwright/types",
+      "version": "workspace:*",
+      "type": "direct",
+      "category": "tool",
+      "purl": "pkg:npm/stackwright/types@workspace:*",
+      "integrity": "c17f8eea005da5702afa2b135e9c65a0c7825b05c67da9792bddfe598e44f7f1",
+      "depth": 0
+    },
+    {
       "name": "@stackwright/ui-shadcn",
       "version": "workspace:*",
       "type": "direct",
@@ -101,11 +110,11 @@
     },
     {
       "name": "lucide-react",
-      "version": "1.8.0",
+      "version": "1.17.0",
       "type": "direct",
       "category": "external",
-      "purl": "pkg:npm/lucide-react@1.8.0",
-      "integrity": "40d803f28472791a029ae0f633449a6526c50a08932f2b8a36b28efc84e9ec5d",
+      "purl": "pkg:npm/lucide-react@1.17.0",
+      "integrity": "3ca6f555a2ef5e4e68b9618564846fbb87f8530ce24e4a116f3157102f9df037",
       "depth": 0
     },
     {
@@ -146,12 +155,12 @@
     }
   ],
   "metadata": {
-    "totalDependencies": 15,
-    "directDependencies": 15,
+    "totalDependencies": 16,
+    "directDependencies": 16,
     "devDependencies": 0,
     "peerDependencies": 0,
     "transitiveDependencies": 0,
-    "stackwrightInternal": 4,
+    "stackwrightInternal": 5,
     "external": 11
   }
 }

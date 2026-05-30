@@ -24,6 +24,11 @@
       "types": "./dist/schemas.d.ts",
       "import": "./dist/schemas.mjs",
       "require": "./dist/schemas.js"
+    },
+    "./color-mode-script": {
+      "types": "./dist/color-mode-script.d.ts",
+      "import": "./dist/color-mode-script.mjs",
+      "require": "./dist/color-mode-script.js"
     }
   },
   "scripts": {
