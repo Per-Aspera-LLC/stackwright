@@ -1,5 +1,59 @@
 # @stackwright/nextjs
 
+## 0.6.0-alpha.4
+
+### Patch Changes
+
+- 6946d19: fix(scaffold): remove Node-only FileCollectionProvider from client component; exclude \_icon-manifest.json from static params
+
+  Three layered bugs caused `next build` to fail on freshly scaffolded projects:
+  1. **`lucide-react` missing from generated `package.json`** — `stackwright-generated/icons.ts`
+     (produced by `stackwright-prebuild`) imports from `lucide-react`, but it was absent from
+     the scaffold-generated `package.json`. Added `lucide-react` to `buildPackageJson` deps.
+  2. **`FileCollectionProvider` in a `'use client'` component** — `providers.tsx` imported
+     `FileCollectionProvider` from `@stackwright/collections`, a Node.js-only module (`fs`,
+     `path`). Turbopack tried to bundle it for the browser and failed. The registration was
+     also dead code: `getCollectionProvider()` is never called; `CollectionList` receives data
+     via the prebuild-injected `_entries` prop. Removed the import and call entirely.
+  3. **`_icon-manifest.json` not excluded from static params** — `stackwright-prebuild` writes
+     `_icon-manifest.json` into `public/stackwright-content/`. `walkContentDir()` in
+     `static-generation.ts` was missing it from `RESERVED_FILES`, so Next.js tried to prerender
+     `/_icon-manifest` as a page and crashed with `TypeError: Cannot read properties of
+undefined (reading 'meta')`. Added `_icon-manifest.json` to `RESERVED_FILES`.
+
+  Fixes bead stackwright-1ec.
+
+## 0.6.0-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [af4a166]
+  - @stackwright/types@1.6.0-alpha.1
+  - @stackwright/core@0.8.6-alpha.2
+
+## 0.6.0-alpha.2
+
+### Minor Changes
+
+- 22e60b8: Add App Router support. New exports: `StackwrightLayout` (root layout component replacing `StackwrightDocument`), `generateStackwrightStaticParams`, `getStackwrightPageData`, `getStackwrightSiteConfig` (static generation helpers replacing `getStaticProps`/`getStaticPaths` patterns). `NextStackwrightRouter` now uses `next/navigation` (App Router) — Pages Router (`next/router`) support is removed. `StackwrightDocument` and `NextStackwrightHead` are deprecated; use `StackwrightLayout` and the Metadata API respectively. Scaffold template now generates App Router structure (`app/` directory) by default.
+
+  Server-only exports (`StackwrightLayout`, `generateStackwrightStaticParams`, `getStackwrightPageData`, `getStackwrightSiteConfig`) are available from `@stackwright/nextjs/server` — a dedicated subpath entry that is excluded from browser bundles. The main `@stackwright/nextjs` entry remains fully browser-safe and Pages Router compatible.
+
+## 0.5.5-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [be7f767]
+  - @stackwright/types@1.5.1-alpha.0
+  - @stackwright/core@0.8.6-alpha.1
+
+## 0.5.5-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [474b8eb]
+  - @stackwright/core@0.8.6-alpha.0
+
 ## 0.5.4
 
 ### Patch Changes

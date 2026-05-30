@@ -3,6 +3,7 @@ import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
 import { resolvePagesDir } from '@stackwright/cli';
+import { runPrebuild } from '@stackwright/build-scripts';
 import { renderPage, probeServer } from '../renderer/page-renderer.js';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
@@ -111,8 +112,14 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
         .optional()
         .default('png')
         .describe('Image format. Use jpeg for smaller file size.'),
+      projectRoot: z
+        .string()
+        .optional()
+        .describe(
+          'Absolute path to the Stackwright project root. If provided, runs stackwright-prebuild before rendering to ensure co-located images and recent content changes are processed.'
+        ),
     },
-    async ({ baseUrl, slug, viewport, fullPage, format }) => {
+    async ({ baseUrl, slug, viewport, fullPage, format, projectRoot }) => {
       // Security: Validate localhost only
       const localCheck = validateLocalhost(baseUrl);
       if (!localCheck.valid) {
@@ -134,6 +141,15 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
           ],
           isError: true,
         };
+      }
+
+      // If projectRoot is provided, run prebuild to ensure content is up-to-date
+      if (projectRoot) {
+        try {
+          await runPrebuild(projectRoot);
+        } catch (prebuildErr) {
+          console.warn(`[stackwright_render_page] prebuild warning: ${errorMessage(prebuildErr)}`);
+        }
       }
 
       try {
@@ -200,8 +216,14 @@ Use this for brand-critical changes where visual regression matters.`,
         .optional()
         .describe('Viewport size'),
       fullPage: z.boolean().optional().default(true).describe('Capture full scrollable page'),
+      projectRoot: z
+        .string()
+        .optional()
+        .describe(
+          'Absolute path to the Stackwright project root. If provided, runs stackwright-prebuild before rendering to ensure co-located images and recent content changes are processed.'
+        ),
     },
-    async ({ baseUrl, slug, viewport, fullPage }) => {
+    async ({ baseUrl, slug, viewport, fullPage, projectRoot }) => {
       // Security: Validate localhost only
       const localCheck = validateLocalhost(baseUrl);
       if (!localCheck.valid) {
@@ -222,6 +244,15 @@ Use this for brand-critical changes where visual regression matters.`,
           ],
           isError: true,
         };
+      }
+
+      // If projectRoot is provided, run prebuild to ensure content is up-to-date
+      if (projectRoot) {
+        try {
+          await runPrebuild(projectRoot);
+        } catch (prebuildErr) {
+          console.warn(`[stackwright_render_diff] prebuild warning: ${errorMessage(prebuildErr)}`);
+        }
       }
 
       try {
@@ -326,9 +357,16 @@ This is the "try before you buy" tool — see exactly how your YAML will look wi
         fs.mkdirSync(tempPageDir, { recursive: true });
         fs.writeFileSync(tempContentFile, yamlContent, 'utf8');
 
-        // Wait for the dev server's watch mode to pick up the new file
-        // The prebuild watch detects new YAML files and recompiles
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Explicitly run prebuild so co-located images are processed
+        // regardless of whether the watcher daemon is running.
+        try {
+          await runPrebuild(projectRoot);
+        } catch (prebuildErr) {
+          // Non-fatal: watcher may handle it; log and continue
+          console.warn(`[stackwright_render_yaml] prebuild warning: ${errorMessage(prebuildErr)}`);
+        }
+        // Short wait for Next.js hot-reload to pick up the new page route
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         // Render the temp page
         const result = await renderPage({

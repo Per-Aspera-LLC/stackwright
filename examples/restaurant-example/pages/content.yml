@@ -1,0 +1,112 @@
+content:
+  meta:
+    title: "Ember Kitchen | Wood-Fire Restaurant in Portland, OR"
+    description: "Neighborhood wood-fire restaurant serving seasonal farm-to-table cuisine. Dinner nightly, brunch Saturday and Sunday. Reservations welcome."
+  content_items:
+    - type: main
+      label: "hero"
+      heading:
+        text: "Good Fire. Good Food. Good People."
+        textSize: "h1"
+      textBlocks:
+        - text: "Seasonal farm-to-table cuisine cooked over a live wood fire. Dinner nightly. Brunch on weekends. Come as you are."
+          textSize: "h3"
+      buttons:
+        - text: "Make a Reservation"
+          variant: "contained"
+          href: "/reservations"
+          bgColor: "accent"
+          textSize: "button"
+        - text: "View the Menu"
+          variant: "outlined"
+          href: "/menu"
+          textSize: "button"
+      background: "primary"
+      color: "surface"
+
+    - type: feature_list
+      label: "why-ember"
+      heading:
+        text: "What Makes Ember Different"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Wood-Fire Cooking"
+          description: "Everything that can be cooked over fire, is. The smoke is part of the flavor — not a garnish."
+          icon:
+            type: icon
+            src: "Flame"
+        - label: "Seasonal Sourcing"
+          description: "The menu changes weekly based on what's arriving from our farm partners. If it's not in season, it's not on the menu."
+          icon:
+            type: icon
+            src: "Leaf"
+        - label: "No Shortcuts"
+          description: "Pork shoulders smoke for 12 hours. Bread bakes fresh daily. Stock simmers overnight. Some things just take time."
+          icon:
+            type: icon
+            src: "Clock"
+      background: "background"
+
+    - type: feature_list
+      label: "dining-options"
+      heading:
+        text: "How We Serve"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Dinner Service"
+          description: "Tuesday–Sunday, 5pm–10pm. Full menu, full bar. Reservations recommended."
+          icon:
+            type: icon
+            src: "Utensils"
+        - label: "Weekend Brunch"
+          description: "Saturday and Sunday, 10am–2pm. Eggs, fire-roasted everything, bottomless coffee."
+          icon:
+            type: icon
+            src: "Coffee"
+        - label: "Bar & Walk-Ins"
+          description: "The bar is always walk-in. Good cocktails, small plates, no reservation needed."
+          icon:
+            type: icon
+            src: "Wine"
+      background: "surface"
+
+    - type: testimonial_grid
+      label: "guest-quotes"
+      heading:
+        text: "What People Are Saying"
+        textSize: "h2"
+      columns: 3
+      items:
+        - quote: "The smoked duck was honestly one of the best things I've eaten in Portland. Not fancy-restaurant good — actually good."
+          author: "Jamie L."
+          role: "Portland, OR"
+        - quote: "We come for brunch almost every Sunday now. The wood-fire hash browns alone are worth the trip."
+          author: "Marcus & Dani R."
+          role: "Regular Guests"
+        - quote: "Finally a farm-to-table place where the menu reads like food, not a manifesto. And the fire-roasted vegetables actually taste like fire."
+          author: "Rebecca T."
+          role: "Portland Food Blog"
+      background: "background"
+
+    - type: main
+      label: "reservation-cta"
+      heading:
+        text: "Come Hungry"
+        textSize: "h2"
+      textBlocks:
+        - text: "Reservations are preferred, but we always save room at the bar. Find us at 2847 NE Alberta Street, Portland."
+          textSize: "body1"
+      buttons:
+        - text: "Make a Reservation"
+          variant: "contained"
+          href: "/reservations"
+          bgColor: "accent"
+          textSize: "button"
+        - text: "View the Menu"
+          variant: "outlined"
+          href: "/menu"
+          textSize: "button"
+      background: "primary"
+      color: "surface"

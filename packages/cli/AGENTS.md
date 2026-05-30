@@ -27,7 +27,7 @@ pnpm stackwright -- page list
 
 | Command | File | Purpose |
 |---------|------|---------|
-| `board` | `src/commands/board.ts` | Display the priority-tiered product board (queries GitHub Issues) |
+| `board` | `src/commands/board.ts` | Display the priority-tiered product board (reads `.beads/issues.jsonl`) |
 | `generate-agent-docs` | `src/commands/generate-agent-docs.ts` | Regenerate content type tables in all AGENTS.md files from live Zod schemas |
 | `git-ops` | `src/commands/git-ops.ts` | Git workflow helpers |
 | `info` | `src/commands/info.ts` | Display project and environment info |
@@ -69,6 +69,6 @@ src/
 
 ## Key Notes
 
-- The `board` command queries **GitHub Issues** via the GitHub API and displays them sorted by priority labels (`priority:now`, `priority:next`, `priority:later`, `priority:vision`).
+- The `board` command reads `.beads/issues.jsonl` (walking up from cwd) and displays open issues sorted by numeric priority (`1`=now, `2`=next, `3`=later, `4`=vision). Requires beads to be initialized (`bd init`).
 - The `generate-agent-docs` command introspects live Zod schemas and writes the content type reference tables into AGENTS.md files. **Do not edit those tables manually.**
 - All commands use `commander` for consistent structure and `--help` output.

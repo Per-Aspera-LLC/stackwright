@@ -1,0 +1,15 @@
+title: Hello World
+date: "2025-01-15"
+excerpt: Welcome to your new Stackwright site. This is your first post.
+tags:
+  - welcome
+  - getting-started
+body: |
+  # Hello World
+
+  Welcome to your new Stackwright site! This is your first blog post.
+
+  You can edit this file at `content/posts/hello-world.yaml` or create new posts
+  by adding YAML files to the `content/posts/` directory.
+
+  Each post needs at minimum: `title`, `date`, and `body`.

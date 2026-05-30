@@ -211,10 +211,16 @@ describe('defaultStackwrightIcons', () => {
     expect(defaultStackwrightIcons.stackwright).toBe(StackwrightIcon);
   });
 
-  it('includes all lucide icons from the full set', () => {
-    for (const name of Object.keys(lucideAllIconsPreset)) {
+  it('includes all icons from the curated preset (not the full set)', () => {
+    // defaultStackwrightIcons now uses lucideIconPreset (curated ~43 icons) instead of
+    // lucideAllIconsPreset. This is intentional — see stackwright-zkq.
+    for (const name of Object.keys(lucideIconPreset)) {
       expect(defaultStackwrightIcons).toHaveProperty(name);
     }
+    // Should NOT include icons from the full set that aren't in the curated preset
+    expect(defaultStackwrightIcons).not.toHaveProperty('AArrowDown');
+    expect(defaultStackwrightIcons).not.toHaveProperty('Heart');
+    expect(defaultStackwrightIcons).not.toHaveProperty('Camera');
   });
 
   it('registerDefaultIcons registers all defaults into the registry', () => {
@@ -224,14 +230,18 @@ describe('defaultStackwrightIcons', () => {
     expect(registered.length).toBe(Object.keys(defaultStackwrightIcons).length);
     expect(stackwrightIconRegistry.isRegistered('bluesky')).toBe(true);
     expect(stackwrightIconRegistry.isRegistered('stackwright')).toBe(true);
-    // Legacy MUI alias
+    // Legacy MUI aliases — present in curated preset
     expect(stackwrightIconRegistry.isRegistered('Speed')).toBe(true);
-    // Full Lucide set — these icons were NOT in the curated preset
-    expect(stackwrightIconRegistry.isRegistered('Heart')).toBe(true);
-    expect(stackwrightIconRegistry.isRegistered('Camera')).toBe(true);
-    expect(stackwrightIconRegistry.isRegistered('Truck')).toBe(true);
-    // Should have significantly more than the curated preset
-    expect(registered.length).toBeGreaterThan(500);
+    // System icons — always in curated preset
+    expect(stackwrightIconRegistry.isRegistered('Sun')).toBe(true);
+    expect(stackwrightIconRegistry.isRegistered('Moon')).toBe(true);
+    expect(stackwrightIconRegistry.isRegistered('Info')).toBe(true);
+    // Full set icons no longer in default — use registerAllLucideIcons() for these
+    expect(stackwrightIconRegistry.isRegistered('Heart')).toBe(false);
+    expect(stackwrightIconRegistry.isRegistered('Camera')).toBe(false);
+    expect(stackwrightIconRegistry.isRegistered('Truck')).toBe(false);
+    // Curated preset is smaller than the full set
+    expect(registered.length).toBeLessThan(200);
   });
 });
 

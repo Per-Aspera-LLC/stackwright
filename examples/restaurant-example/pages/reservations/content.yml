@@ -1,0 +1,75 @@
+content:
+  meta:
+    title: "Reservations | Ember Kitchen Portland"
+    description: "Reserve a table at Ember Kitchen. Dinner Tuesday–Sunday, brunch Saturday–Sunday. Bar is always walk-in welcome. Call (503) 555-0187."
+  content_items:
+    - type: main
+      label: "reservations-hero"
+      heading:
+        text: "Reserve a Table"
+        textSize: "h1"
+      textBlocks:
+        - text: "Reservations are preferred for dinner and brunch. The bar is always walk-in welcome."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: contact_form_stub
+      label: "reservation-contact"
+      heading:
+        text: "Get in Touch"
+        textSize: "h2"
+      email: "reservations@emberkitchen.example.com"
+      phone: "(503) 555-0187"
+      address: "2847 NE Alberta Street, Portland, OR 97211"
+      description: "For same-day reservations or groups of 7 or more, please call us directly. For all other reservations, email or use the form and we'll confirm within a few hours."
+      button_text: "Send Reservation Request"
+      email_subject: "Reservation Request — Ember Kitchen"
+
+    - type: feature_list
+      label: "hours-and-info"
+      heading:
+        text: "Hours & Details"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Dinner"
+          description: "Tuesday through Sunday, 5:00pm–10:00pm. Last seating at 9:30pm."
+          icon:
+            type: icon
+            src: "Utensils"
+        - label: "Weekend Brunch"
+          description: "Saturday and Sunday, 10:00am–2:00pm. Last seating at 1:30pm."
+          icon:
+            type: icon
+            src: "Coffee"
+        - label: "Bar Walk-Ins"
+          description: "The bar is always open during service hours — no reservation needed."
+          icon:
+            type: icon
+            src: "Wine"
+      background: "background"
+
+    - type: feature_list
+      label: "good-to-know"
+      heading:
+        text: "Good to Know"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Large Parties"
+          description: "Groups of 7 or more, please call. We can accommodate private dining for groups up to 20."
+          icon:
+            type: icon
+            src: "Users"
+        - label: "Dietary Needs"
+          description: "We always have vegetarian and vegan options. Gluten-free adaptations available — just let us know when booking."
+          icon:
+            type: icon
+            src: "Heart"
+        - label: "Parking"
+          description: "Street parking on Alberta St and side streets. Plenty of bike parking at the front."
+          icon:
+            type: icon
+            src: "MapPin"
+      background: "surface"

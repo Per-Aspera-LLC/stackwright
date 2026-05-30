@@ -6,6 +6,7 @@ import { registerProjectTools } from '../src/tools/project';
 import { registerSiteTools } from '../src/tools/site';
 import { registerGitOpsTools } from '../src/tools/git-ops';
 import { registerComposeTools } from '../src/tools/compose';
+import { registerIntegrationTools } from '../src/tools/integrations';
 import { getTypes } from '@stackwright/cli';
 import fs from 'fs-extra';
 import path from 'path';
@@ -758,6 +759,187 @@ appBar:
     });
   });
 
+  describe('Integration Tools', () => {
+    const configWithIntegrations = () =>
+      makeValidSiteConfig() +
+      `integrations:\n` +
+      `  - type: openapi\n    name: logistics\n    spec: ./specs/api.yaml\n` +
+      `  - type: rest\n    name: inventory\n    endpoint: https://api.example.com\n`;
+
+    it('registers all three integration tools', () => {
+      const server = new McpServer({ name: 'test', version: '1.0.0' });
+      registerIntegrationTools(server);
+      const tools = Object.keys((server as any)._registeredTools);
+      expect(tools).toContain('stackwright_list_integrations');
+      expect(tools).toContain('stackwright_get_integration');
+      expect(tools).toContain('stackwright_add_integration');
+    });
+
+    describe('stackwright_list_integrations', () => {
+      it('returns "No integrations configured." when stackwright.yml has no integrations', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const result = await tool.handler({ projectRoot: testDir });
+        expect(result.content[0].text).toBe('No integrations configured.');
+        expect(result.isError).toBeFalsy();
+      });
+
+      it('returns formatted list with name and type when integrations exist', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const result = await tool.handler({ projectRoot: testDir });
+        const text = result.content[0].text;
+        expect(text).toContain('Integrations (2)');
+        expect(text).toContain('logistics');
+        expect(text).toContain('openapi');
+        expect(text).toContain('inventory');
+        expect(text).toContain('rest');
+      });
+
+      it('shows spec and endpoint fields in output when present', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const result = await tool.handler({ projectRoot: testDir });
+        const text = result.content[0].text;
+        expect(text).toContain('spec: ./specs/api.yaml');
+        expect(text).toContain('endpoint: https://api.example.com');
+      });
+
+      it('returns isError when projectRoot does not exist', async () => {
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const result = await tool.handler({ projectRoot: '/definitely/does/not/exist/sw-test' });
+        expect(result.isError).toBe(true);
+      });
+    });
+
+    describe('stackwright_get_integration', () => {
+      it('returns JSON details for a known integration', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_get_integration'];
+        const result = await tool.handler({ projectRoot: testDir, name: 'logistics' });
+        expect(result.isError).toBeFalsy();
+        const parsed = JSON.parse(result.content[0].text);
+        expect(parsed.name).toBe('logistics');
+        expect(parsed.type).toBe('openapi');
+      });
+
+      it('returns isError: true with "not found" message for unknown name', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_get_integration'];
+        const result = await tool.handler({ projectRoot: testDir, name: 'nonexistent' });
+        expect(result.isError).toBe(true);
+        expect(result.content[0].text).toContain('not found');
+      });
+
+      it('returns correct type and name in output', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_get_integration'];
+        const result = await tool.handler({ projectRoot: testDir, name: 'inventory' });
+        expect(result.isError).toBeFalsy();
+        const parsed = JSON.parse(result.content[0].text);
+        expect(parsed.type).toBe('rest');
+        expect(parsed.name).toBe('inventory');
+      });
+    });
+
+    describe('stackwright_add_integration', () => {
+      it('adds a new integration and returns "Added integration" message', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_add_integration'];
+        const result = await tool.handler({
+          projectRoot: testDir,
+          name: 'new-api',
+          type: 'openapi',
+          spec: './specs/new-api.yaml',
+        });
+        expect(result.isError).toBeFalsy();
+        expect(result.content[0].text).toContain('Added integration');
+      });
+
+      it('updates an existing integration and returns "Updated integration" message', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const tool = (server as any)._registeredTools['stackwright_add_integration'];
+        const result = await tool.handler({
+          projectRoot: testDir,
+          name: 'logistics',
+          type: 'openapi',
+          spec: './specs/logistics-v2.yaml',
+        });
+        expect(result.isError).toBeFalsy();
+        expect(result.content[0].text).toContain('Updated integration');
+      });
+
+      it('file is actually modified — re-listing after add returns the new integration', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const addTool = (server as any)._registeredTools['stackwright_add_integration'];
+        await addTool.handler({
+          projectRoot: testDir,
+          name: 'brand-new',
+          type: 'rest',
+          endpoint: 'https://brand-new.example.com',
+        });
+        const listTool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const result = await listTool.handler({ projectRoot: testDir });
+        expect(result.content[0].text).toContain('brand-new');
+        expect(result.content[0].text).toContain('rest');
+      });
+
+      it('includes spec in added entry (verified via get)', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const addTool = (server as any)._registeredTools['stackwright_add_integration'];
+        await addTool.handler({
+          projectRoot: testDir,
+          name: 'spec-api',
+          type: 'openapi',
+          spec: './specs/spec-api.yaml',
+        });
+        const getTool = (server as any)._registeredTools['stackwright_get_integration'];
+        const result = await getTool.handler({ projectRoot: testDir, name: 'spec-api' });
+        const parsed = JSON.parse(result.content[0].text);
+        expect(parsed.spec).toBe('./specs/spec-api.yaml');
+      });
+
+      it('includes endpoint in added rest entry (verified via get)', async () => {
+        fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
+        const server = new McpServer({ name: 'test', version: '1.0.0' });
+        registerIntegrationTools(server);
+        const addTool = (server as any)._registeredTools['stackwright_add_integration'];
+        await addTool.handler({
+          projectRoot: testDir,
+          name: 'endpoint-api',
+          type: 'rest',
+          endpoint: 'https://endpoint.example.com/v1',
+        });
+        const getTool = (server as any)._registeredTools['stackwright_get_integration'];
+        const result = await getTool.handler({ projectRoot: testDir, name: 'endpoint-api' });
+        const parsed = JSON.parse(result.content[0].text);
+        expect(parsed.endpoint).toBe('https://endpoint.example.com/v1');
+      });
+    });
+  });
+
   describe('Server Integration', () => {
     it('registers all tool categories', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
@@ -768,6 +950,7 @@ appBar:
       registerSiteTools(server);
       registerGitOpsTools(server);
       registerComposeTools(server);
+      registerIntegrationTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
 
@@ -788,9 +971,12 @@ appBar:
       expect(tools).toContain('stackwright_stage_changes');
       expect(tools).toContain('stackwright_open_pr');
       expect(tools).toContain('stackwright_compose_site');
+      expect(tools).toContain('stackwright_list_integrations');
+      expect(tools).toContain('stackwright_get_integration');
+      expect(tools).toContain('stackwright_add_integration');
 
-      // Should have exactly 16 tools
-      expect(tools.length).toBe(16);
+      // Should have exactly 19 tools
+      expect(tools.length).toBe(19);
     });
   });
 });

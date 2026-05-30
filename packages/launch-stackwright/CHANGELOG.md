@@ -1,5 +1,63 @@
 # launch-stackwright
 
+## 0.2.7-alpha.7
+
+### Patch Changes
+
+- Updated dependencies [6946d19]
+  - @stackwright/cli@0.9.0-alpha.5
+
+## 0.2.7-alpha.6
+
+### Patch Changes
+
+- Updated dependencies [5df938e]
+  - @stackwright/cli@0.9.0-alpha.4
+
+## 0.2.7-alpha.5
+
+### Patch Changes
+
+- @stackwright/cli@0.9.0-alpha.3
+- @stackwright/scaffold-core@0.3.2-alpha.1
+
+## 0.2.7-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [22e60b8]
+- Updated dependencies [091ae66]
+  - @stackwright/cli@0.9.0-alpha.3
+  - @stackwright/otters@0.2.2-alpha.0
+
+## 0.2.7-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [8dbbe0b]
+  - @stackwright/cli@0.9.0-alpha.2
+
+## 0.2.7-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [34d95c8]
+  - @stackwright/cli@0.9.0-alpha.1
+
+## 0.2.7-alpha.1
+
+### Patch Changes
+
+- @stackwright/cli@0.9.0-alpha.0
+- @stackwright/scaffold-core@0.3.2-alpha.0
+
+## 0.2.7-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [ba6b73a]
+  - @stackwright/cli@0.9.0-alpha.0
+
 ## 0.2.6
 
 ### Patch Changes

@@ -185,6 +185,96 @@ describe('Timeline', () => {
     );
     expect(dots).toHaveLength(2);
   });
+
+  it('applies per-item dotColor to the dot background', () => {
+    const { container } = render(
+      <Timeline
+        label="timeline"
+        items={[{ year: '2022', event: 'Dot color test', dotColor: '#badc58' }]}
+      />
+    );
+    const dots = Array.from(container.querySelectorAll('div')).filter(
+      (el) => (el as HTMLElement).style.borderRadius === '50%'
+    );
+    expect(dots).toHaveLength(1);
+    expect(dots[0]).toHaveStyle({ backgroundColor: '#badc58' });
+  });
+
+  it('applies per-item yearColor to the year heading', () => {
+    render(
+      <Timeline
+        label="timeline"
+        items={[{ year: '2023', event: 'Year color test', yearColor: '#6ab04c' }]}
+      />
+    );
+    const yearEl = screen.getByText('2023');
+    expect(yearEl).toHaveStyle({ color: '#6ab04c' });
+  });
+
+  it('applies per-item cardBackground to the card', () => {
+    render(
+      <Timeline
+        label="timeline"
+        items={[{ year: '2024', event: 'Card bg test', cardBackground: '#f9ca24' }]}
+      />
+    );
+    // The year heading lives inside the card — its parentElement is the card div
+    const yearEl = screen.getByText('2024');
+    const card = yearEl.parentElement as HTMLElement;
+    expect(card).toHaveStyle({ backgroundColor: '#f9ca24' });
+  });
+
+  it('renders horizontal layout without error and shows all items', () => {
+    render(
+      <Timeline
+        label="timeline"
+        layout="horizontal"
+        items={[
+          { year: '2019', event: 'Founded' },
+          { year: '2021', event: 'Launched' },
+          { year: '2023', event: 'Scaled' },
+        ]}
+      />
+    );
+    expect(screen.getByText('2019')).toBeInTheDocument();
+    expect(screen.getByText('Founded')).toBeInTheDocument();
+    expect(screen.getByText('2021')).toBeInTheDocument();
+    expect(screen.getByText('Launched')).toBeInTheDocument();
+    expect(screen.getByText('2023')).toBeInTheDocument();
+    expect(screen.getByText('Scaled')).toBeInTheDocument();
+  });
+
+  it('horizontal layout renders a dot per item', () => {
+    const { container } = render(
+      <Timeline
+        label="timeline"
+        layout="horizontal"
+        items={[
+          { year: '2020', event: 'Alpha' },
+          { year: '2022', event: 'Beta' },
+        ]}
+      />
+    );
+    const dots = Array.from(container.querySelectorAll('div')).filter(
+      (el) => (el as HTMLElement).style.borderRadius === '50%'
+    );
+    expect(dots).toHaveLength(2);
+  });
+
+  it('horizontal layout applies per-item dotColor', () => {
+    const { container } = render(
+      <Timeline
+        label="timeline"
+        layout="horizontal"
+        items={[{ year: '2025', event: 'Future', dotColor: '#eb4d4b' }]}
+      />
+    );
+    const dots = Array.from(container.querySelectorAll('div')).filter(
+      (el) => (el as HTMLElement).style.borderRadius === '50%'
+    );
+    expect(dots).toHaveLength(1);
+    expect(dots[0]).toHaveStyle({ backgroundColor: '#eb4d4b' });
+  });
 });
 
 // ---------------------------------------------------------------------------

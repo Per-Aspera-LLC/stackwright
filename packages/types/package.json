@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/types",
-    "version": "1.5.0",
+    "version": "1.6.0-alpha.1",
     "description": "TypeScript types and JSON schemas for Stackwright",
     "license": "MIT",
     "repository": {
@@ -10,11 +10,22 @@
     "main": "./dist/index.js",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts",
+    "sideEffects": false,
     "exports": {
         ".": {
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
             "require": "./dist/index.js"
+        },
+        "./validation": {
+            "types": "./dist/validation.d.ts",
+            "import": "./dist/validation.mjs",
+            "require": "./dist/validation.js"
+        },
+        "./validation-hints": {
+            "types": "./dist/validation-hints.d.ts",
+            "import": "./dist/validation-hints.mjs",
+            "require": "./dist/validation-hints.js"
         },
         "./schemas/theme-schema.json": "./schemas/theme-schema.json",
         "./schemas/content-schema.json": "./schemas/content-schema.json",
@@ -34,14 +45,14 @@
     "dependencies": {
         "@stackwright/themes": "workspace:*",
         "js-yaml": "^4.1.0",
-        "zod": "^4.3.6"
+        "zod": "^4.4.3"
     },
     "devDependencies": {
         "@faker-js/faker": "^10.4.0",
         "@types/fs-extra": "11.0.4",
         "@types/js-yaml": "^4.0.5",
         "@types/react": "^19.2.14",
-        "fs-extra": "^11.3.4",
+        "fs-extra": "^11.3.5",
         "tsup": "^8.5.1",
         "tsx": "^4.21.0",
         "vitest": "^4.0.18"

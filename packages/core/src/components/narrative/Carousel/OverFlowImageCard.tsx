@@ -1,6 +1,7 @@
 import React from 'react';
 import { CarouselItem, MediaItem } from '@stackwright/types';
 import { useSafeTheme } from '../../../hooks/useSafeTheme';
+import { getBetterTextColor } from '../../../utils/colorUtils';
 import { Media } from '../../media/Media';
 
 interface OverflowImageCardProps {
@@ -13,6 +14,7 @@ export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardPr
   const theme = useSafeTheme();
 
   const backgroundColor = item.background || theme.colors.accent;
+  const cardTextColor = getBetterTextColor('#1a1a1a', '#FFFFFF', backgroundColor);
 
   return (
     <div
@@ -42,11 +44,11 @@ export const OverflowImageCard = ({ item, minWidth, style }: OverflowImageCardPr
         <div style={{ width: '100%', height: '100%', backgroundColor: backgroundColor }}>
           <Media {...(item.media as MediaItem)} label={item.title} style="overflow" />
 
-          <h3 style={{ margin: theme.spacing.xs, color: theme.colors.text, textAlign: 'center' }}>
+          <h3 style={{ margin: theme.spacing.xs, color: cardTextColor, textAlign: 'center' }}>
             {item.title}
           </h3>
 
-          <p style={{ margin: theme.spacing.md, color: theme.colors.text }}>{item.text}</p>
+          <p style={{ margin: theme.spacing.md, color: cardTextColor }}>{item.text}</p>
         </div>
       </div>
     </div>

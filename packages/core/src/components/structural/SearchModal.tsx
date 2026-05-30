@@ -7,7 +7,10 @@
  */
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Fuse from 'fuse.js';
+// fuse.js is NOT imported statically — it is dynamically imported inside the
+// useEffect below so webpack creates a separate async chunk for it.
+// The type-only import gives TypeScript the FuseResult shape without bundling.
+import type FuseType from 'fuse.js';
 
 // Type for search index entries - matches build-searchIndex.ts
 interface SearchEntry {
@@ -22,24 +25,39 @@ interface SearchEntry {
 interface SearchModalProps {
   placeholder?: string;
   shortcut?: string;
+  /** Optional navigation handler. When provided, called instead of `window.location.href`. */
+  onNavigate?: (path: string) => void;
 }
 
-export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: SearchModalProps) {
+export function SearchModal({
+  placeholder = 'Search...',
+  shortcut = 'k',
+  onNavigate,
+}: SearchModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [results, setResults] = useState<SearchEntry[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [fuse, setFuse] = useState<Fuse<SearchEntry> | null>(null);
+  // Minimal structural type — only the .search() method is called below.
+  const [fuse, setFuse] = useState<Pick<FuseType<SearchEntry>, 'search'> | null>(null);
   const [loading, setLoading] = useState(true);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Navigate to a path using window.location (works in all environments)
-  const navigateTo = useCallback((path: string) => {
-    window.location.href = path;
-  }, []);
+  // Navigate to a path — uses the injected handler when provided (e.g. Next.js router),
+  // falling back to window.location.href for non-Next.js environments.
+  const navigateTo = useCallback(
+    (path: string) => {
+      if (onNavigate) {
+        onNavigate(path);
+      } else {
+        window.location.href = path;
+      }
+    },
+    [onNavigate]
+  );
 
   // Debounce search query (300ms)
   useEffect(() => {
@@ -47,18 +65,23 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Load search index with AbortController for cleanup
+  // Load fuse.js (async chunk) + search index in parallel on mount.
+  // Dynamic import keeps fuse.js out of the initial JS bundle — it is only
+  // downloaded once, cached by the browser, and ready before the user opens
+  // the modal for the first time.
   useEffect(() => {
     const controller = new AbortController();
     setLoading(true);
 
-    fetch('/stackwright-content/search-index.json', { signal: controller.signal })
-      .then((res) => {
+    Promise.all([
+      import('fuse.js'),
+      fetch('/stackwright-content/search-index.json', { signal: controller.signal }).then((res) => {
         if (!res.ok) throw new Error('Search index not found');
-        return res.json();
-      })
-      .then((data: SearchEntry[]) => {
-        const fuseInstance = new Fuse(data, {
+        return res.json() as Promise<SearchEntry[]>;
+      }),
+    ])
+      .then(([{ default: FuseClass }, data]) => {
+        const fuseInstance = new FuseClass(data, {
           keys: [
             { name: 'title', weight: 2 },
             { name: 'headings', weight: 1.5 },
@@ -71,14 +94,12 @@ export function SearchModal({ placeholder = 'Search...', shortcut = 'k' }: Searc
         });
         setFuse(fuseInstance);
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         if (err.name !== 'AbortError') {
           console.warn('Search index not available:', err);
         }
       })
-      .finally(() => {
-        setLoading(false);
-      });
+      .finally(() => setLoading(false));
 
     return () => controller.abort();
   }, []);

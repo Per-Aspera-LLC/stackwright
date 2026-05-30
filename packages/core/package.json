@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/core",
-    "version": "0.8.5",
+    "version": "0.8.6-alpha.2",
     "description": "Core framework for building applications from YAML configuration",
     "license": "MIT",
     "repository": {
@@ -25,6 +25,11 @@
             "types": "./dist/pages/SlugPage.d.ts",
             "import": "./dist/pages/SlugPage.mjs",
             "require": "./dist/pages/SlugPage.js"
+        },
+        "./carousel": {
+            "types": "./dist/components/narrative/Carousel/Carousel.d.ts",
+            "import": "./dist/components/narrative/Carousel/Carousel.mjs",
+            "require": "./dist/components/narrative/Carousel/Carousel.js"
         }
     },
     "files": [
@@ -46,7 +51,7 @@
         "js-yaml": "^4.1.0",
         "prismjs": "^1.30.0",
         "uuid": "^13.0.0",
-        "zod": "^4.3.6"
+        "zod": "^4.4.3"
     },
     "devDependencies": {
         "@stackwright/collections": "workspace:*",

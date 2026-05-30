@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { git, gh } from '../utils/git';
+import { git } from '../utils/git';
 import { detectProject } from '../utils/project-detector';
 import { validatePages } from './page';
 import { validateSite } from './site';
@@ -130,10 +130,62 @@ function generatePrDescription(files: string[]): string {
 }
 
 /**
- * Validate staged content, commit, push to a new branch, and open a GitHub PR.
+ * Try to extract a "Create a pull request" URL from git push stderr output.
  *
- * Aborts with VALIDATION_FAILED if any staged YAML is invalid — nothing is committed.
- * Requires the GitHub CLI (`gh`) to be installed and authenticated.
+ * GitHub, GitLab, Gitea, and Codeberg all emit a clickable URL in the push
+ * stderr when a new branch is pushed. This picks the first https:// URL found.
+ */
+function extractPrUrlFromPushOutput(output: string): string | null {
+  const match = output.match(/https?:\/\/\S+/);
+  if (!match) return null;
+  // Trim trailing punctuation that may be part of the surrounding sentence
+  return match[0].replace(/[.,;)]+$/, '');
+}
+
+/**
+ * Derive a "compare / open PR" URL from the git remote URL.
+ *
+ * Supports GitHub, GitLab, and Gitea/Codeberg/generic hosts.
+ * SSH remotes (git@host:owner/repo.git) are converted to HTTPS first.
+ *
+ * On GitHub the `draft` flag appends `?draft=1` to pre-check the draft
+ * checkbox; other hosts ignore it gracefully.
+ */
+function buildPrUrlFromRemote(
+  remoteUrl: string,
+  branchName: string,
+  baseBranch?: string,
+  draft?: boolean
+): string {
+  let httpUrl = remoteUrl.trim();
+  // Convert SSH to HTTPS: git@github.com:owner/repo.git -> https://github.com/owner/repo
+  httpUrl = httpUrl.replace(/^git@([^:]+):/, 'https://$1/');
+  // Remove .git suffix and trailing slashes
+  httpUrl = httpUrl.replace(/\.git$/, '').replace(/\/$/, '');
+
+  if (/github\.com/.test(httpUrl)) {
+    const compare = baseBranch ? `${baseBranch}...${branchName}` : branchName;
+    const url = `${httpUrl}/compare/${compare}`;
+    return draft ? `${url}?draft=1` : url;
+  }
+
+  if (/gitlab/.test(httpUrl)) {
+    const params = new URLSearchParams({ 'merge_request[source_branch]': branchName });
+    if (baseBranch) params.set('merge_request[target_branch]', baseBranch);
+    return `${httpUrl}/-/merge_requests/new?${params.toString()}`;
+  }
+
+  // Gitea / Codeberg / generic Forgejo: compare URL works the same as GitHub
+  const compare = baseBranch ? `${baseBranch}...${branchName}` : branchName;
+  return `${httpUrl}/compare/${compare}`;
+}
+
+/**
+ * Validate staged content, commit, push to a new branch, and return a PR
+ * creation URL for the user to open.
+ *
+ * Aborts with VALIDATION_FAILED if any staged YAML is invalid — nothing is
+ * committed. Works with GitHub, GitLab, Gitea, Codeberg, or any git host.
  */
 export async function openPr(
   projectRoot: string,
@@ -192,15 +244,25 @@ export async function openPr(
     const commitMessage = description ? `${title}\n\n${description}` : title;
     await git(['commit', '-m', commitMessage], projectRoot);
 
-    // 5. Push to origin
-    await git(['push', '-u', 'origin', branchName], projectRoot);
+    // 5. Push to origin — capture stderr which may contain a "Create a pull request" URL hint
+    const { stderr: pushStderr } = await git(['push', '-u', 'origin', branchName], projectRoot);
 
-    // 6. Open PR via gh CLI
-    const ghArgs = ['pr', 'create', '--title', title, '--body', description];
-    if (options?.baseBranch) ghArgs.push('--base', options.baseBranch);
-    if (options?.draft) ghArgs.push('--draft');
-    const { stdout: prUrlRaw } = await gh(ghArgs, projectRoot);
-    const prUrl = prUrlRaw.trim();
+    // 6. Derive a PR creation URL from the push output, falling back to the remote URL
+    let prUrl = extractPrUrlFromPushOutput(pushStderr);
+    if (!prUrl) {
+      try {
+        const { stdout: remoteUrlRaw } = await git(['remote', 'get-url', 'origin'], projectRoot);
+        prUrl = buildPrUrlFromRemote(
+          remoteUrlRaw.trim(),
+          branchName,
+          options?.baseBranch,
+          options?.draft
+        );
+      } catch {
+        // Best-effort: remote URL lookup failed; return empty string rather than crashing
+        prUrl = '';
+      }
+    }
 
     // 7. Get commit hash
     const { stdout: commitHashRaw } = await git(['rev-parse', 'HEAD'], projectRoot);
@@ -256,12 +318,12 @@ export function registerGitOps(program: Command): void {
 
   gitCmd
     .command('open-pr')
-    .description('Validate, commit, push, and open a GitHub PR for staged content changes')
+    .description('Validate, commit, push, and print a PR link for staged content changes')
     .option('--title <title>', 'PR title')
     .option('--description <description>', 'PR body/description')
     .option('--branch <name>', 'Custom branch name')
     .option('--base <branch>', 'Target branch for the PR')
-    .option('--draft', 'Open as a draft PR')
+    .option('--draft', 'Mark as draft (appends ?draft=1 on GitHub compare URLs)')
     .option('--json', 'Output machine-readable JSON')
     .action(
       async (opts: {
@@ -283,7 +345,10 @@ export function registerGitOps(program: Command): void {
             draft: opts.draft,
           });
           outputResult(result, { json }, () => {
-            console.log(chalk.green(`PR opened: ${result.prUrl}`));
+            console.log(chalk.green('Branch pushed — open a pull request:'));
+            if (result.prUrl) {
+              console.log(`  ${chalk.cyan(result.prUrl)}`);
+            }
             console.log(`  Branch: ${chalk.cyan(result.branchName)}`);
             console.log(`  Commit: ${chalk.dim(result.commitHash.slice(0, 8))}`);
             console.log(`  Files:  ${result.filesCommitted.length}`);

@@ -786,6 +786,15 @@
                   },
                   "event": {
                     "type": "string"
+                  },
+                  "yearColor": {
+                    "type": "string"
+                  },
+                  "cardBackground": {
+                    "type": "string"
+                  },
+                  "dotColor": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -794,6 +803,13 @@
                 ],
                 "additionalProperties": false
               }
+            },
+            "layout": {
+              "type": "string",
+              "enum": [
+                "vertical",
+                "horizontal"
+              ]
             }
           },
           "required": [
@@ -1257,6 +1273,101 @@
             "label",
             "type",
             "email"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "$ref": "#/definitions/__schema19"
+            },
+            "color": {
+              "$ref": "#/definitions/__schema20"
+            },
+            "background": {
+              "$ref": "#/definitions/__schema21"
+            },
+            "type": {
+              "type": "string",
+              "const": "form"
+            },
+            "heading": {
+              "allOf": [
+                {
+                  "$ref": "#/definitions/__schema26"
+                }
+              ]
+            },
+            "description": {
+              "type": "string"
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "email",
+                      "textarea",
+                      "select",
+                      "checkbox"
+                    ]
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "placeholder": {
+                    "type": "string"
+                  },
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "options": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "defaultValue": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "action": {
+              "type": "string"
+            },
+            "method": {
+              "type": "string",
+              "enum": [
+                "GET",
+                "POST"
+              ]
+            },
+            "submit_text": {
+              "type": "string"
+            },
+            "success_message": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "label",
+            "type",
+            "fields",
+            "action"
           ],
           "additionalProperties": false
         },

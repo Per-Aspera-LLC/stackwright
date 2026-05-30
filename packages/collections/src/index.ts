@@ -16,3 +16,5 @@ export type {
   CollectionListResult,
 } from '@stackwright/types';
 export { FileCollectionProvider } from './file-collection-provider';
+export { S3CollectionProvider } from './s3-collection-provider';
+export type { S3CollectionProviderOptions } from './s3-collection-provider';

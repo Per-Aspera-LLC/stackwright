@@ -5,7 +5,7 @@ import fs from 'fs-extra';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
 import { detectProject } from '../utils/project-detector';
-import { validatePageContent } from '@stackwright/types';
+import { validatePageContent } from '@stackwright/types/validation';
 import { outputResult, outputError, getErrorCode, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------

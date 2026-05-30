@@ -1,11 +1,11 @@
 {
   "name": "stackwright-docs",
-  "version": "0.1.7",
+  "version": "0.1.8-alpha.4",
   "private": true,
   "scripts": {
     "prebuild": "stackwright-prebuild",
     "predev": "stackwright-prebuild",
-    "dev": "next dev",
+    "dev": "concurrently \"next dev\" \"stackwright-prebuild --watch\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -22,22 +22,24 @@
     "clsx": "^2.1.1",
     "fuse.js": "^7.1.0",
     "js-yaml": "^4.1.1",
-    "lucide-react": "^1.8.0",
+    "lucide-react": "^1.17.0",
     "next": "^16.2.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.6",
     "@playwright/browser-chromium": "^1.58.2",
     "@stackwright/build-scripts": "workspace:*",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.6.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "concurrently": "^9.1.0",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.2.6",
-    "playwright": "^1.58.2",
+    "playwright": "^1.60.0",
     "typescript": "^5.9.3"
   },
   "engines": {

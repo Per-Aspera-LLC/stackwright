@@ -1,0 +1,74 @@
+content:
+  meta:
+    title: "About Synapse Analytics | Our Story"
+    description: "Synapse Analytics was founded in 2019 to solve the customer journey data problem. Learn about our team, mission, and values."
+  content_items:
+    - type: main
+      label: "about-hero"
+      heading:
+        text: "Built by Marketers Who Got Tired of Spreadsheets"
+        textSize: "h1"
+      textBlocks:
+        - text: "Synapse started in 2019 when our founders—former marketing ops leads—spent the third consecutive Friday building the same attribution report. There had to be a better way."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: timeline
+      label: "company-timeline"
+      heading:
+        text: "Our Journey"
+        textSize: "h2"
+      items:
+        - year: "2019"
+          event: "Founded in San Francisco. First customer: a Series A B2B SaaS company that replaced their weekly attribution spreadsheet with Synapse"
+        - year: "2020"
+          event: "Launched multi-source data connectors. 50 customers. Remote-first from day one"
+        - year: "2021"
+          event: "Series A funding. Expanded integrations to 20+ data sources including Snowflake and BigQuery"
+        - year: "2022"
+          event: "Reached 250 customers. Launched real-time dashboards and custom alerting"
+        - year: "2023"
+          event: "500+ customers. AI-assisted journey recommendations in beta. Expanding to EMEA"
+      background: "background"
+
+    - type: icon_grid
+      label: "company-values"
+      heading:
+        text: "What We Believe"
+        textSize: "h2"
+      icons:
+        - label: "Data Clarity"
+          src: "Activity"
+          type: icon
+          alt: "Data Clarity"
+        - label: "Customer Obsession"
+          src: "Users"
+          type: icon
+          alt: "Customer Focus"
+        - label: "Transparency"
+          src: "Globe"
+          type: icon
+          alt: "Transparency"
+        - label: "Ship Fast"
+          src: "Zap"
+          type: icon
+          alt: "Speed"
+      background: "surface"
+
+    - type: main
+      label: "about-cta"
+      heading:
+        text: "Come Build With Us"
+        textSize: "h2"
+      textBlocks:
+        - text: "We're a remote-first team of 45 building the future of marketing analytics. Always looking for curious, outcome-driven people."
+          textSize: "body1"
+      buttons:
+        - text: "See Open Roles"
+          variant: "contained"
+          href: "/contact"
+          bgColor: "accent"
+          textSize: "button"
+      background: "primary"
+      color: "surface"

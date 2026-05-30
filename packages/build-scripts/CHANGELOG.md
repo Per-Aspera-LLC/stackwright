@@ -1,5 +1,29 @@
 # @stackwright/build-scripts
 
+## 0.8.0-alpha.2
+
+### Patch Changes
+
+- 9bd288f: Add `Layout → LayoutTemplate` to `LEGACY_MUI_ICON_ALIASES` in the icon manifest generator. `Layout` was renamed to `LayoutTemplate` in lucide-react v1.x; without this alias the prebuild emitted `import { Layout } from 'lucide-react'` which does not exist and crashes the build.
+
+## 0.8.0-alpha.1
+
+### Minor Changes
+
+- af4a166: Add font loading strategy (bundle/local) to prebuild: bundle downloads fonts at build time, local uses pre-provided files for air-gapped environments
+
+### Patch Changes
+
+- Updated dependencies [af4a166]
+  - @stackwright/types@1.6.0-alpha.1
+
+## 0.7.3-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [be7f767]
+  - @stackwright/types@1.5.1-alpha.0
+
 ## 0.7.2
 
 ### Patch Changes

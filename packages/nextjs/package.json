@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.5.4",
+    "version": "0.6.0-alpha.4",
     "description": "Next.js implementations for Stackwright components",
     "license": "MIT",
     "repository": {
@@ -15,6 +15,16 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.mjs",
             "require": "./dist/index.js"
+        },
+        "./server": {
+            "types": "./dist/server.d.ts",
+            "import": "./dist/server.mjs",
+            "require": "./dist/server.js"
+        },
+        "./app-router": {
+            "types": "./dist/app-router.d.ts",
+            "import": "./dist/app-router.mjs",
+            "require": "./dist/app-router.js"
         }
     },
     "files": [

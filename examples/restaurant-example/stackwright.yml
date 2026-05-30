@@ -1,0 +1,55 @@
+title: "Ember Kitchen"
+meta:
+  description: "Neighborhood wood-fire restaurant in Portland, OR. Seasonal farm-to-table cuisine, dinner nightly, weekend brunch. Reservations welcome."
+
+appBar:
+  titleText: "Ember Kitchen"
+  backgroundColor: "primary"
+  textColor: "#FFFFFF"
+  colorModeToggle: false
+
+navigation:
+  - label: "Home"
+    href: "/"
+  - label: "Menu"
+    href: "/menu"
+  - label: "Reservations"
+    href: "/reservations"
+
+footer:
+  backgroundColor: "primary"
+  textColor: "#FFFFFF"
+  links:
+    - label: "© 2024 Ember Kitchen"
+      href: "/"
+    - label: "Reservations"
+      href: "/reservations"
+    - label: "Find Us"
+      href: "/reservations"
+
+customTheme:
+  id: "ember-kitchen"
+  name: "Ember Kitchen"
+  description: "Warm restaurant theme — terracotta and cream with charcoal typography"
+  colors:
+    primary: "#C1440E"
+    secondary: "#8B3A0F"
+    accent: "#D4A056"
+    background: "#FBF5E6"
+    surface: "#FFFFFF"
+    text: "#2C2824"
+    textSecondary: "#6B5E54"
+  darkColors:
+    primary: "#D4603A"
+    secondary: "#C1440E"
+    accent: "#D4A056"
+    background: "#1A1410"
+    surface: "#2C2824"
+    text: "#F5EEE0"
+    textSecondary: "#B8A898"
+  typography:
+    fontFamily:
+      primary: "Lora"
+      secondary: "Source Sans 3"
+  spacing:
+    unit: 8

@@ -110,6 +110,23 @@ pnpm install
 pnpm dev
 ```
 
+Once the dev server is running, audit all pages for WCAG 2.1 AA accessibility compliance:
+```bash
+stackwright test:a11y
+```
+> Requires `playwright` and `@axe-core/playwright` as dev dependencies (`pnpm add -D playwright @axe-core/playwright`, then `pnpm exec playwright install chromium`).
+
+## Stackwright CLI
+
+Once inside your project, the `stackwright` CLI is available:
+
+- `stackwright prebuild` — Process YAML content and co-located images
+- `stackwright test:a11y` — Run a WCAG 2.1 AA accessibility audit against your running dev server
+- `stackwright page add <slug>` — Create a new page
+- `stackwright preview [slug]` — Render a page to a screenshot
+
+Run `stackwright --help` to see all available commands.
+
 ## Prerequisites
 
 - **Node.js** 18+ and **pnpm**

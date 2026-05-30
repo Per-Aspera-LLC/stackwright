@@ -1,5 +1,42 @@
 # stackwright-docs
 
+## 0.1.8-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [6946d19]
+  - @stackwright/nextjs@0.6.0-alpha.4
+
+## 0.1.8-alpha.3
+
+### Patch Changes
+
+- @stackwright/core@0.8.6-alpha.2
+- @stackwright/nextjs@0.6.0-alpha.3
+
+## 0.1.8-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [22e60b8]
+  - @stackwright/nextjs@0.6.0-alpha.2
+
+## 0.1.8-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [be7f767]
+  - @stackwright/core@0.8.6-alpha.1
+  - @stackwright/nextjs@0.5.5-alpha.1
+
+## 0.1.8-alpha.0
+
+### Patch Changes
+
+- Updated dependencies [474b8eb]
+  - @stackwright/core@0.8.6-alpha.0
+  - @stackwright/nextjs@0.5.5-alpha.0
+
 ## 0.1.7
 
 ### Patch Changes

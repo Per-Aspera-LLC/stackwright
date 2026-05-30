@@ -1,72 +1,27 @@
 import React, { useRef, useState, useEffect } from 'react';
 import TopAppBar from './TopAppBar';
-import { PageContent, SiteConfig, PageSidebar } from '@stackwright/types';
+import { PageContent, SiteConfig } from '@stackwright/types';
 import BottomAppBar from './BottomAppBar';
 import NavSidebar from './NavSidebar';
 import { SearchModal } from './SearchModal';
 import { renderContent } from '../../utils/contentRenderer';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { defaultSiteConfig } from '../../config/siteDefaults';
+import { resolveSidebarConfig } from '../../utils/resolveSidebar';
 
 interface PageLayoutProps {
   pageContent: PageContent;
   siteConfig?: SiteConfig;
+  /**
+   * Optional navigation handler forwarded to SearchModal.
+   * When omitted, SearchModal falls back to `window.location.href`.
+   * Next.js apps should pass `router.push` here via `NextPageLayout`
+   * from `@stackwright/nextjs`.
+   */
+  onNavigate?: (path: string) => void;
 }
 
-/**
- * Resolves the effective sidebar config for a page.
- *
- * Resolution order (highest wins):
- *  1. Page-level `navSidebar` in content.yml (explicit override)
- *  2. Site-level `sidebar` in stackwright.yml (default)
- *  3. undefined (no sidebar)
- *
- * Special case: `navSidebar: null` in page content always hides the sidebar,
- * even when the site config has a sidebar. This lets dashboard / full-bleed
- * pages opt out without removing the sidebar from the theme.
- */
-function resolveSidebarConfig(
-  pageSidebar: PageSidebar,
-  siteSidebar: SiteConfig['sidebar']
-): SiteConfig['sidebar'] | undefined {
-  // null means "hide sidebar on this page" — explicit override wins
-  if (pageSidebar === null) {
-    return undefined;
-  }
-
-  // undefined means "use site config" (no override)
-  if (pageSidebar === undefined) {
-    return siteSidebar;
-  }
-
-  // Partial override — merge page values over site defaults
-  if (siteSidebar) {
-    return {
-      navigation: pageSidebar.navigation ?? siteSidebar.navigation,
-      collapsed: pageSidebar.collapsed ?? siteSidebar.collapsed,
-      width: pageSidebar.width ?? siteSidebar.width,
-      mobileBreakpoint: pageSidebar.mobileBreakpoint ?? siteSidebar.mobileBreakpoint,
-      backgroundColor: pageSidebar.backgroundColor ?? siteSidebar.backgroundColor,
-      textColor: pageSidebar.textColor ?? siteSidebar.textColor,
-    };
-  }
-
-  // Site has no sidebar, but page provides values — build a sidebar from page config
-  if (pageSidebar.navigation) {
-    return {
-      navigation: pageSidebar.navigation,
-      collapsed: pageSidebar.collapsed ?? false,
-      width: pageSidebar.width ?? 240,
-      mobileBreakpoint: pageSidebar.mobileBreakpoint ?? 768,
-      backgroundColor: pageSidebar.backgroundColor,
-      textColor: pageSidebar.textColor,
-    };
-  }
-
-  return undefined;
-}
-
-export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps) {
+export default function PageLayout({ pageContent, siteConfig, onNavigate }: PageLayoutProps) {
   const theme = useSafeTheme();
   const config = siteConfig || defaultSiteConfig;
   const backgroundColor = theme.colors.background;
@@ -179,7 +134,12 @@ export default function PageLayout({ pageContent, siteConfig }: PageLayoutProps)
       </div>
 
       {/* Search Modal - Cmd+K to open */}
-      <SearchModal placeholder={config.search?.placeholder} shortcut={config.search?.shortcut} />
+      {/* onNavigate: Next.js apps override this via StackwrightLayout in @stackwright/nextjs */}
+      <SearchModal
+        placeholder={config.search?.placeholder}
+        shortcut={config.search?.shortcut}
+        onNavigate={onNavigate}
+      />
     </div>
   );
 }

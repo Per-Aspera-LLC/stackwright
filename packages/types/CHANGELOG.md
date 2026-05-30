@@ -1,5 +1,17 @@
 # @stackwright/types
 
+## 1.6.0-alpha.1
+
+### Minor Changes
+
+- af4a166: Add fonts config schema with strategy (external | bundle | local) for configurable font loading
+
+## 1.5.1-alpha.0
+
+### Patch Changes
+
+- be7f767: Fix Map content type: assemble MapConfig from flat YAML props (was crashing on render), move Map component to base directory, tighten mapLayerSchema.data to z.unknown(), remove duplicate ZodLike declaration, fix checkForPlaintextSecret entropy threshold direction
+
 ## 1.5.0
 
 ### Minor Changes

@@ -12,9 +12,12 @@ import { registerGenerateAgentDocs } from './commands/generate-agent-docs';
 import { registerGitOps } from './commands/git-ops';
 import { registerBoard } from './commands/board';
 import { registerCollection } from './commands/collection';
+import { registerIntegration } from './commands/integration';
 import { registerCompose } from './commands/compose';
 import { registerPreview } from './commands/preview';
 import { registerSBOM } from './commands/sbom';
+import { registerTestA11y } from './commands/a11y';
+import { registerInit } from './commands/init';
 
 const { version } = require('../package.json') as { version: string };
 
@@ -28,6 +31,7 @@ async function main(): Promise<void> {
     .option('--plugin-dir <path>', 'Load additional commands from a plugin directory');
 
   // Register built-in commands
+  registerInit(program);
   registerScaffold(program);
   registerPage(program);
   registerSite(program);
@@ -39,9 +43,11 @@ async function main(): Promise<void> {
   registerGitOps(program);
   registerBoard(program);
   registerCollection(program);
+  registerIntegration(program);
   registerCompose(program);
   registerPreview(program);
   registerSBOM(program);
+  registerTestA11y(program);
 
   // Pre-parse to extract global options (including --plugin-dir) before full dispatch.
   // parseOptions() does NOT dispatch commands — it only extracts options.

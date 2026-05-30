@@ -1,10 +1,10 @@
 {
   "format": "stackwright-build-manifest",
   "version": "1.0.0",
-  "generated": "2026-05-18T16:22:20.092Z",
+  "generated": "2026-05-29T22:06:34.745Z",
   "project": {
     "name": "stackwright-docs",
-    "version": "0.1.6",
+    "version": "0.1.8-alpha.3",
     "root": "/home/charles/git/peraspera/stackwright/examples/stackwright-docs",
     "isMonorepo": false
   },

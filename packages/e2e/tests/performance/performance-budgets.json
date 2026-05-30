@@ -13,14 +13,14 @@
   },
   "bundle": {
     "firstLoadJS": {
-      "max": 450000,
-      "warn": 420000,
-      "description": "First-load JS bundle size (bytes, gzipped). Current: ~403KB, Target: <420KB"
+      "max": 204800,
+      "warn": 153600,
+      "description": "First-load JS bundle size (bytes, gzipped). Post-optimization targets (see docs/adr/bundle-architecture.md). 200KB max / 150KB warn. Includes React+Next.js runtime (~130KB)."
     },
     "allPagesJS": {
-      "max": 1070000,
-      "warn": 1000000,
-      "description": "Total JS across all pages (bytes, gzipped). Current: ~932KB, Target: <1000KB"
+      "max": 819200,
+      "warn": 614400,
+      "description": "Total JS across all pages (bytes, gzipped). Post-optimization targets. 800KB max / 600KB warn."
     }
   },
   "runtime": {

@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/build-scripts",
-    "version": "0.7.2",
+    "version": "0.8.0-alpha.2",
     "description": "Build-time scripts for Stackwright projects (prebuild image processing, YAML compilation)",
     "license": "MIT",
     "repository": {
@@ -32,7 +32,7 @@
         "@stackwright/sbom-generator": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0",
-        "zod": "^4.3.6"
+        "zod": "^4.4.3"
     },
     "devDependencies": {
         "@types/js-yaml": "^4.0",

@@ -26,12 +26,13 @@ import yaml from 'js-yaml';
 import { z } from 'zod';
 import {
   siteConfigSchema,
-  validatePageContent,
   collectionConfigSchema,
   VIDEO_EXTENSIONS as VIDEO_EXTENSIONS_ARRAY,
   resolveEnvVarsDeep,
-  buildExtendedPageContentSchema,
+  checkForPlaintextSecret,
 } from '@stackwright/types';
+import { validatePageContent } from '@stackwright/types/validation';
+import { buildExtendedPageContentSchema } from '@stackwright/types';
 import type {
   CollectionConfig,
   EntryPageConfig,
@@ -228,6 +229,44 @@ export function generateGoogleFontsUrl(fonts: string[]): string {
   return `https://fonts.googleapis.com/css2?${familyParams}&display=swap`;
 }
 
+export interface FontLink {
+  rel: string;
+  href: string;
+  crossorigin?: boolean;
+}
+
+/**
+ * Extract all Google Font names from a site config's customTheme typography settings.
+ * Returns deduplicated array of font names suitable for loading from Google Fonts.
+ */
+export function getAllGoogleFontNames(siteConfig: unknown): string[] {
+  const config = siteConfig as Record<string, unknown>;
+  const customTheme = config?.customTheme as Record<string, unknown> | undefined;
+  if (!customTheme) return [];
+  const typography = customTheme?.typography as Record<string, unknown> | undefined;
+  if (!typography) return [];
+  const fontFamily = typography?.fontFamily as Record<string, string> | undefined;
+  if (!fontFamily) return [];
+
+  const primaryFonts = extractGoogleFontNames(fontFamily?.primary ?? '');
+  const secondaryFonts = extractGoogleFontNames(fontFamily?.secondary ?? '');
+  return [...new Set([...primaryFonts, ...secondaryFonts])];
+}
+
+/**
+ * Build external Google Fonts link tags from an already-extracted font names list.
+ * Private helper shared by generateFontLinkTags and the bundle-strategy fallback.
+ */
+function generateFontLinkTags_external(fonts: string[]): FontLink[] {
+  if (fonts.length === 0) return [];
+  const fontsUrl = generateGoogleFontsUrl(fonts);
+  if (!fontsUrl) return [];
+  return [
+    { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: true },
+    { rel: 'stylesheet', href: fontsUrl },
+  ];
+}
+
 /**
  * Generate link tag objects from a site config for Google Fonts.
  *
@@ -236,62 +275,284 @@ export function generateGoogleFontsUrl(fonts: string[]): string {
  *   - A stylesheet link to Google Fonts CSS
  *
  * Reads from customTheme.typography.fontFamily.primary and .secondary
+ * Uses the "external" strategy (CDN links at runtime).
  */
-export interface FontLink {
-  rel: string;
-  href: string;
-  crossorigin?: boolean;
+export function generateFontLinkTags(siteConfig: unknown): FontLink[] {
+  return generateFontLinkTags_external(getAllGoogleFontNames(siteConfig));
 }
 
-export function generateFontLinkTags(siteConfig: unknown): FontLink[] {
-  const config = siteConfig as Record<string, unknown>;
-  const customTheme = config?.customTheme as Record<string, unknown> | undefined;
+/**
+ * Download Google Fonts and bundle them locally for runtime-independence.
+ *
+ * Strategy: "bundle"
+ * - Fetches Google Fonts CSS using a modern browser User-Agent (required to receive woff2)
+ * - Parses the CSS to extract woff2 file URLs
+ * - Downloads each woff2 file to public/fonts/
+ * - Rewrites the CSS @font-face src: URLs to /fonts/<filename>
+ * - Writes the rewritten CSS to public/fonts/fonts.css
+ * - Returns a single local stylesheet link
+ *
+ * Requires Node 18+ for native fetch.
+ */
+export async function downloadAndBundleFonts(
+  fonts: string[],
+  publicDir: string
+): Promise<FontLink[]> {
+  if (fonts.length === 0) return [];
 
-  if (!customTheme) {
-    return [];
+  const fontsDir = path.join(publicDir, 'fonts');
+  fs.mkdirSync(fontsDir, { recursive: true });
+
+  const fontsUrl = generateGoogleFontsUrl(fonts);
+  if (!fontsUrl) return [];
+
+  // Fetch the Google Fonts CSS — must use a modern UA or we get ttf instead of woff2
+  const UA =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
+  let css: string;
+  try {
+    const response = await fetch(fontsUrl, { headers: { 'User-Agent': UA } });
+    if (!response.ok) {
+      console.warn(
+        `  WARNING: Failed to fetch Google Fonts CSS (HTTP ${response.status}). Falling back to external links.`
+      );
+      return generateFontLinkTags_external(fonts);
+    }
+    css = await response.text();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(
+      `  WARNING: Could not reach Google Fonts (${msg}). Falling back to external links.`
+    );
+    return generateFontLinkTags_external(fonts);
   }
 
-  const typography = customTheme?.typography as Record<string, unknown> | undefined;
-  if (!typography) {
-    return [];
+  // Extract woff2 URLs from the CSS
+  // Google Fonts CSS format: url(https://fonts.gstatic.com/s/.../xxx.woff2) format('woff2')
+  const woff2UrlRegex = /url\((https:\/\/fonts\.gstatic\.com\/[^)]+\.woff2)\)/g;
+  const woff2Urls: string[] = [];
+  let match: RegExpExecArray | null;
+  while ((match = woff2UrlRegex.exec(css)) !== null) {
+    if (match[1]) woff2Urls.push(match[1]);
   }
 
-  const fontFamily = typography?.fontFamily as Record<string, string> | undefined;
-  if (!fontFamily) {
-    return [];
+  // Download each woff2 and rewrite the CSS
+  let rewrittenCss = css;
+  for (const woff2Url of woff2Urls) {
+    // Derive a stable local filename from the URL path
+    const urlPath = new URL(woff2Url).pathname;
+    const segments = urlPath.split('/').filter(Boolean);
+    // Use last 2 path segments joined with '-' for a readable name: e.g., "roboto-v47-latin-regular.woff2"
+    const localFilename = segments.slice(-2).join('-');
+    const localFilePath = path.join(fontsDir, localFilename);
+
+    try {
+      const fontResponse = await fetch(woff2Url);
+      if (!fontResponse.ok) {
+        console.warn(
+          `  WARNING: Failed to download font: ${woff2Url} (HTTP ${fontResponse.status})`
+        );
+        continue;
+      }
+      const fontBuffer = Buffer.from(await fontResponse.arrayBuffer());
+      fs.writeFileSync(localFilePath, fontBuffer);
+      // Rewrite the URL in the CSS to point to the local path
+      rewrittenCss = rewrittenCss.replace(woff2Url, `/fonts/${localFilename}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`  WARNING: Failed to download font ${localFilename}: ${msg}`);
+    }
   }
 
-  // Extract fonts from primary and secondary
-  const primaryFonts = extractGoogleFontNames(fontFamily?.primary ?? '');
-  const secondaryFonts = extractGoogleFontNames(fontFamily?.secondary ?? '');
+  // Write the patched CSS file
+  fs.writeFileSync(path.join(fontsDir, 'fonts.css'), rewrittenCss, 'utf8');
+  console.log(`  ✓ Bundled ${woff2Urls.length} font file(s) to public/fonts/`);
 
-  // Combine and deduplicate
-  const allFonts = [...new Set([...primaryFonts, ...secondaryFonts])];
+  return [{ rel: 'stylesheet', href: '/fonts/fonts.css' }];
+}
 
-  if (allFonts.length === 0) {
-    return [];
+// -- Icon Manifest ----------------------------------------------------------
+
+/**
+ * Legacy MUI icon name aliases (hard-coded, Option B).
+ * Keys: icon src values that appear in YAML content.
+ * Values: the Lucide export name they map to.
+ *
+ * NOTE: These are candidates for deprecation in a future major version
+ * in favor of direct Lucide icon names.
+ */
+const LEGACY_MUI_ICON_ALIASES: Record<string, string> = {
+  Speed: 'Zap',
+  VerifiedUser: 'ShieldCheck',
+  CloudDone: 'CloudCheck',
+  Description: 'FileText',
+  Language: 'Globe',
+  Build: 'Wrench',
+  AutoAwesome: 'Sparkles',
+  Dashboard: 'LayoutDashboard',
+  Api: 'Braces',
+  Storage: 'Database',
+  Security: 'Shield',
+  People: 'Users',
+  // Lucide renamed-icon backward compat
+  CheckCircle: 'CircleCheck',
+  AlertTriangle: 'TriangleAlert',
+  Layout: 'LayoutTemplate',
+};
+
+/**
+ * System icons always included in the generated manifest.
+ * These power core UI: color mode toggle, alert banners, etc.
+ */
+const SYSTEM_ICON_NAMES: readonly string[] = [
+  'Sun',
+  'Moon',
+  'Info',
+  'TriangleAlert',
+  'CircleAlert',
+];
+
+/**
+ * Recursively walk a value and collect all icon src references.
+ * Targets any object with { type: "icon", src: string }.
+ * Identical shape to the font-name extraction pattern already in this file.
+ */
+export function collectIconSrcs(obj: unknown, srcs: Set<string>): void {
+  if (!obj || typeof obj !== 'object') return;
+  if (Array.isArray(obj)) {
+    for (const item of obj) collectIconSrcs(item, srcs);
+    return;
+  }
+  const record = obj as Record<string, unknown>;
+  if (record.type === 'icon' && typeof record.src === 'string') {
+    srcs.add(record.src);
+  }
+  for (const val of Object.values(record)) {
+    collectIconSrcs(val, srcs);
+  }
+}
+
+/**
+ * Walk all processed JSON output files and generate:
+ *   1. public/stackwright-content/_icon-manifest.json — debug artifact
+ *   2. <projectRoot>/stackwright-generated/icons.ts — static lucide imports + registerSiteIcons()
+ *
+ * The generated .ts file enables webpack (via Next.js) to tree-shake lucide-react
+ * to only the icons actually referenced in the site's YAML content.
+ */
+export async function generateIconManifest(
+  contentOutDir: string,
+  projectRoot: string
+): Promise<void> {
+  const rawSrcs = new Set<string>();
+
+  // Walk ALL JSON files in contentOutDir (including _root.json, _site.json, etc.)
+  // Only skip _icon-manifest.json itself to avoid self-referential loops on re-runs.
+  function walkJsonDir(dir: string): void {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walkJsonDir(fullPath);
+      } else if (entry.name.endsWith('.json') && entry.name !== '_icon-manifest.json') {
+        try {
+          const data = JSON.parse(fs.readFileSync(fullPath, 'utf8')) as unknown;
+          collectIconSrcs(data, rawSrcs);
+        } catch {
+          // Skip malformed JSON files silently
+        }
+      }
+    }
+  }
+  walkJsonDir(contentOutDir);
+
+  // Build lucideImports map: lucideName → Set<yamlSrcNames>
+  // Maps each Lucide export name to the set of YAML src values that use it
+  const lucideImports = new Map<string, Set<string>>();
+
+  // Always include system icons
+  for (const sysName of SYSTEM_ICON_NAMES) {
+    if (!lucideImports.has(sysName)) lucideImports.set(sysName, new Set());
+    lucideImports.get(sysName)!.add(sysName);
   }
 
-  // Generate Google Fonts URL
-  const fontsUrl = generateGoogleFontsUrl(allFonts);
-
-  if (!fontsUrl) {
-    return [];
+  // Process site icons — resolve legacy MUI aliases
+  for (const src of rawSrcs) {
+    const lucideName = LEGACY_MUI_ICON_ALIASES[src] ?? src;
+    if (!lucideImports.has(lucideName)) lucideImports.set(lucideName, new Set());
+    lucideImports.get(lucideName)!.add(src);
   }
 
-  return [
-    // Preconnect for performance
-    {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com',
-      crossorigin: true,
-    },
-    // The actual stylesheet
-    {
-      rel: 'stylesheet',
-      href: fontsUrl,
-    },
+  // 1. Write debug manifest to contentOutDir
+  fs.writeFileSync(
+    path.join(contentOutDir, '_icon-manifest.json'),
+    JSON.stringify(
+      {
+        generated: new Date().toISOString(),
+        siteIcons: Array.from(rawSrcs).sort(),
+        systemIcons: Array.from(SYSTEM_ICON_NAMES),
+        totalUniqueLucideImports: lucideImports.size,
+      },
+      null,
+      2
+    )
+  );
+
+  // 2. Generate stackwright-generated/icons.ts with static lucide imports
+  const generatedDir = path.join(projectRoot, 'stackwright-generated');
+  fs.mkdirSync(generatedDir, { recursive: true });
+
+  const sortedLucideNames = Array.from(lucideImports.keys()).sort();
+
+  const lines: string[] = [
+    '// GENERATED by stackwright-prebuild — do not edit.',
+    '// To regenerate: pnpm predev (or pnpm prebuild)',
+    '//',
+    '// This file is safe to commit. It will be updated whenever your YAML content changes.',
+    '',
+    `import { ${sortedLucideNames.join(', ')} } from 'lucide-react';`,
+    `import {`,
+    `  BlueSkyIcon,`,
+    `  StackwrightIcon,`,
+    `  registerStackwrightIcons,`,
+    `} from '@stackwright/icons';`,
+    '',
+    '// eslint-disable-next-line @typescript-eslint/no-explicit-any',
+    'const siteIconPreset: Record<string, React.ComponentType<any>> = {',
   ];
+
+  // Add each entry: direct names on one line, aliases with comment
+  for (const [lucideName, yamlNames] of [...lucideImports.entries()].sort()) {
+    for (const yamlName of [...yamlNames].sort()) {
+      if (yamlName === lucideName) {
+        lines.push(`  ${lucideName},`);
+      } else {
+        lines.push(
+          `  '${yamlName}': ${lucideName}, // legacy MUI alias — candidate for deprecation`
+        );
+      }
+    }
+  }
+
+  lines.push(
+    '  // Brand icons — always included',
+    '  bluesky: BlueSkyIcon,',
+    '  stackwright: StackwrightIcon,',
+    '};',
+    '',
+    'export function registerSiteIcons(): void {',
+    '  registerStackwrightIcons(siteIconPreset);',
+    '}',
+    ''
+  );
+
+  fs.writeFileSync(path.join(generatedDir, 'icons.ts'), lines.join('\n'));
+
+  console.log(
+    `  ✓ Icon manifest: ${rawSrcs.size} site icon(s) + ${SYSTEM_ICON_NAMES.length} system icon(s) → ${lucideImports.size} unique lucide import(s)`
+  );
+  console.log(`  ✓ Generated stackwright-generated/icons.ts`);
 }
 
 // -- Helpers ----------------------------------------------------------------
@@ -424,10 +685,15 @@ interface ContentFile {
   slug: string | null;
   filePath: string;
   contentDir: string;
+  /** BCP 47 locale tag if this is a locale variant (e.g. "fr"), undefined for the default locale. */
+  locale?: string;
 }
 
+/** BCP 47 locale tag pattern: two lowercase letters, optionally followed by a hyphen and two uppercase letters (e.g. "fr", "en-US"). */
+const LOCALE_TAG_REGEX = /^[a-z]{2}(-[A-Z]{2})?$/;
+
 /** Recursively find all content.yml / content.yaml files under dir. */
-function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
+export function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
   const results: ContentFile[] = [];
   if (!fs.existsSync(dir)) return results;
 
@@ -441,6 +707,20 @@ function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
         filePath: path.join(dir, entry.name),
         contentDir: dir,
       });
+    } else {
+      // Discover locale variant files: content.<locale>.yml / content.<locale>.yaml
+      const localeMatch = entry.name.match(/^content\.([^.]+)\.(yml|yaml)$/);
+      if (localeMatch) {
+        const locale = localeMatch[1];
+        if (LOCALE_TAG_REGEX.test(locale)) {
+          results.push({
+            slug: baseSlug || null,
+            filePath: path.join(dir, entry.name),
+            contentDir: dir,
+            locale,
+          });
+        }
+      }
     }
   }
   return results;
@@ -1007,7 +1287,60 @@ async function executePlugins(
   }
 }
 
+/**
+ * Audit integration auth fields for plaintext secrets before env var resolution.
+ *
+ * Must be called on the raw (pre-resolution) config so that $VAR references
+ * are still present and correctly skipped by checkForPlaintextSecret.
+ *
+ * Checks: auth.token (bearer), auth.value (apiKey), auth.password (basic auth).
+ */
+function auditIntegrationAuthSecrets(config: unknown): void {
+  if (!config || typeof config !== 'object') return;
+  const { integrations } = config as Record<string, unknown>;
+  if (!Array.isArray(integrations)) return;
+
+  for (const integration of integrations) {
+    if (!integration || typeof integration !== 'object') continue;
+    const { name, auth } = integration as Record<string, unknown>;
+    if (!auth || typeof auth !== 'object') continue;
+
+    const integrationLabel = typeof name === 'string' ? name : '(unnamed)';
+    const authObj = auth as Record<string, unknown>;
+
+    for (const field of ['token', 'value', 'password'] as const) {
+      const fieldValue = authObj[field];
+      if (typeof fieldValue !== 'string') continue;
+
+      const warning = checkForPlaintextSecret(
+        fieldValue,
+        `integrations[${integrationLabel}].auth.${field}`
+      );
+      if (warning) {
+        console.warn(`  ${warning}`);
+      }
+    }
+  }
+}
+
 // -- Main -------------------------------------------------------------------
+
+/** Find locale-specific site config files in projectRoot (e.g. stackwright.fr.yml → { locale: 'fr', filePath }) */
+function findLocaleConfigFiles(projectRoot: string): Array<{ locale: string; filePath: string }> {
+  const results: Array<{ locale: string; filePath: string }> = [];
+  if (!fs.existsSync(projectRoot)) return results;
+
+  for (const entry of fs.readdirSync(projectRoot, { withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    const localeMatch = entry.name.match(/^stackwright\.([^.]+)\.(yml|yaml)$/);
+    if (!localeMatch) continue;
+    const locale = localeMatch[1];
+    if (LOCALE_TAG_REGEX.test(locale)) {
+      results.push({ locale, filePath: path.join(projectRoot, entry.name) });
+    }
+  }
+  return results;
+}
 
 export async function runPrebuild(options?: string | PrebuildOptions): Promise<void> {
   // Backward compatibility: support old API with string parameter
@@ -1062,6 +1395,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
 
   const processedConfig = processSiteConfig(rawConfig, projectRoot, imagesDir);
 
+  // Audit integration auth fields for plaintext secrets BEFORE env var resolution
+  // so that $VAR_NAME references are still raw and correctly skipped.
+  auditIntegrationAuthSecrets(processedConfig);
+
   // Resolve environment variable references in integrations
   const configWithEnvResolved = applyEnvVarResolution(processedConfig);
   console.log('  ✓ Resolved environment variable references in integrations');
@@ -1081,8 +1418,58 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   );
   console.log('  OK _site.json');
 
-  // 1b. Generate and write font links for Google Fonts
-  const fontLinks = generateFontLinkTags(configWithEnvResolved);
+  // 1b. Process locale-specific site configs (stackwright.<locale>.yml / .yaml)
+  const localeConfigFiles = findLocaleConfigFiles(projectRoot);
+  for (const { locale, filePath: localeFilePath } of localeConfigFiles) {
+    const rawLocaleConfig = yaml.load(fs.readFileSync(localeFilePath, 'utf8'));
+    const localeValidation = siteConfigSchema.safeParse(rawLocaleConfig);
+    if (!localeValidation.success) {
+      const details = localeValidation.error.issues
+        .map((issue) => {
+          const field = issue.path.length > 0 ? issue.path.join('.') : '(root)';
+          return `  ${field}: ${issue.message}`;
+        })
+        .join('\n');
+      console.warn(`  WARNING: stackwright.${locale}.yml is invalid — skipping:\n${details}`);
+      continue;
+    }
+    const processedLocaleConfig = processSiteConfig(rawLocaleConfig, projectRoot, imagesDir);
+    const localeConfigWithEnvResolved = applyEnvVarResolution(processedLocaleConfig);
+    fs.writeFileSync(
+      path.join(contentOutDir, `_site.${locale}.json`),
+      JSON.stringify(localeConfigWithEnvResolved, null, 2)
+    );
+    console.log(`  OK _site.${locale}.json`);
+  }
+
+  // 1c. Generate and write font links (strategy: external | bundle | local)
+  const fontsConfig = (configWithEnvResolved as Record<string, unknown>).fonts as
+    | { strategy?: string; local_path?: string }
+    | undefined;
+  const fontStrategy = fontsConfig?.strategy ?? 'external';
+
+  let fontLinks: FontLink[] = [];
+  if (fontStrategy === 'bundle') {
+    const allFonts = getAllGoogleFontNames(configWithEnvResolved);
+    if (allFonts.length > 0) {
+      console.log(`  Bundling fonts locally (strategy: bundle)...`);
+      fontLinks = await downloadAndBundleFonts(allFonts, publicDir);
+    }
+  } else if (fontStrategy === 'local') {
+    const localPath = fontsConfig?.local_path;
+    if (localPath) {
+      fontLinks = [{ rel: 'stylesheet', href: localPath }];
+      console.log(`  Using local fonts (strategy: local): ${localPath}`);
+    } else {
+      console.warn(
+        '  WARNING: fonts.strategy is "local" but local_path is not set. No fonts will be loaded.'
+      );
+    }
+  } else {
+    // 'external' — default, current behavior
+    fontLinks = generateFontLinkTags(configWithEnvResolved);
+  }
+
   if (fontLinks.length > 0) {
     fs.writeFileSync(
       path.join(contentOutDir, '_font-links.json'),
@@ -1123,7 +1510,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     console.warn('  WARNING: No content.yml files found in pages/');
   }
 
-  for (const { slug, filePath, contentDir } of contentFiles) {
+  for (const { slug, filePath, contentDir, locale } of contentFiles) {
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
 
@@ -1167,8 +1554,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     }
 
     const slugDir = slug ?? '_root';
-    const imageDestDir = path.join(imagesDir, slugDir);
-    const publicPrefix = `/images/${slugDir}`;
+    const imageDestDir = locale
+      ? path.join(imagesDir, locale, slugDir)
+      : path.join(imagesDir, slugDir);
+    const publicPrefix = locale ? `/images/${locale}/${slugDir}` : `/images/${slugDir}`;
 
     const processedContent = processPageContent(
       normalizedContent,
@@ -1182,10 +1571,12 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const expandedContent = injectCollectionEntries(processedContent, collectionIndexes);
 
     const outFile = slug ? `${slug}.json` : '_root.json';
-    const outPath = path.join(contentOutDir, outFile);
+    const outPath = path.join(contentOutDir, locale ?? '', outFile);
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     fs.writeFileSync(outPath, JSON.stringify(expandedContent, null, 2));
-    console.log(`  OK ${outFile}  (${label})`);
+    const logPath = locale ? `${locale}/${outFile}` : outFile;
+    const logLabel = locale ? `${label} [${locale}]` : label;
+    console.log(`  OK ${logPath}  (${logLabel})`);
   }
 
   // Warn about collisions between generated entry pages and manually-authored pages
@@ -1200,6 +1591,10 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
       }
     }
   }
+
+  // Generate icon manifest from all processed content
+  console.log('\nGenerating icon manifest...');
+  await generateIconManifest(contentOutDir, projectRoot);
 
   // Run afterBuild plugin hooks
   if (plugins.length > 0) {
@@ -1226,6 +1621,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
 
   // 5. Generate SBOM (unless --no-sbom flag is set)
   if (!process.argv.includes('--no-sbom')) {
+    const sbomStrict = process.argv.includes('--sbom-strict');
     try {
       const { createSBOM } = await import('@stackwright/sbom-generator');
       const sbom = await createSBOM({
@@ -1238,7 +1634,14 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
       await sbom.writeTo(projectRoot);
       console.log('\n  [OK] SBOM generated: .stackwright/sbom/');
     } catch (error) {
-      // SBOM generation failure should not fail the build
+      if (sbomStrict) {
+        throw new Error(
+          '[SBOM] Generation failed (--sbom-strict mode): ' +
+            (error as Error).message +
+            '\nRemove --sbom-strict or resolve the error to continue.'
+        );
+      }
+      // Non-strict: warn and continue
       console.warn('\n  [WARN] SBOM generation failed (non-critical): ' + (error as Error).message);
     }
   }
@@ -1250,9 +1653,14 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
 if (require.main === module) {
   const watchMode = process.argv.includes('--watch');
   const noSBOM = process.argv.includes('--no-sbom');
+  const sbomStrict = process.argv.includes('--sbom-strict');
 
   if (noSBOM) {
     console.log('[INFO] SBOM generation skipped (--no-sbom flag)');
+  }
+
+  if (sbomStrict) {
+    console.log('[INFO] SBOM strict mode enabled — build will fail if SBOM generation errors');
   }
 
   if (watchMode) {

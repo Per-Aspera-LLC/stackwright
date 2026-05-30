@@ -109,10 +109,19 @@ describe('scaffold output — file structure', () => {
   });
 
   it('creates Next.js template files', () => {
+    // Shared (App Router + Pages Router)
     expect(fs.existsSync(path.join(targetDir, 'next.config.js'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'pages', '_app.tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'pages', '[...slug].tsx'))).toBe(true);
-    expect(fs.existsSync(path.join(targetDir, 'pages', 'index.ts'))).toBe(true);
+    // App Router structure
+    expect(fs.existsSync(path.join(targetDir, 'app', 'layout.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', 'page.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', '[...slug]', 'page.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', '_components', 'providers.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', '_components', 'page-client.tsx'))).toBe(true);
+    expect(fs.existsSync(path.join(targetDir, 'app', 'not-found.tsx'))).toBe(true);
+    // Pages Router files must NOT exist (removed in App Router template)
+    expect(fs.existsSync(path.join(targetDir, 'pages', '_app.tsx'))).toBe(false);
+    expect(fs.existsSync(path.join(targetDir, 'pages', '[...slug].tsx'))).toBe(false);
+    expect(fs.existsSync(path.join(targetDir, 'pages', 'index.ts'))).toBe(false);
   });
 
   it('removes template repo README.md', () => {
@@ -363,7 +372,7 @@ describe('scaffold output — package.json', () => {
 
     const pkg = readJson(path.join(targetDir, 'package.json'));
     const scripts = pkg.scripts as Record<string, string>;
-    expect(scripts.dev).toBe('next dev');
+    expect(scripts.dev).toBe('concurrently "next dev" "stackwright-prebuild --watch"');
     expect(scripts.build).toBe('next build');
     expect(scripts.prebuild).toBe('stackwright-prebuild');
     expect(scripts.predev).toBe('stackwright-prebuild');
@@ -380,9 +389,26 @@ describe('scaffold output — package.json', () => {
     expect(deps['@stackwright/nextjs']).toBeDefined();
     expect(deps['@stackwright/icons']).toBeDefined();
     expect(deps['@stackwright/ui-shadcn']).toBeDefined();
+    expect(deps['lucide-react']).toBeDefined();
     expect(deps['next']).toBeDefined();
     expect(deps['react']).toBeDefined();
     expect(deps['react-dom']).toBeDefined();
+  });
+
+  it('regression stackwright-1ec: lucide-react is included as a dependency', async () => {
+    const targetDir = path.join(tmpDir, 'regression-1ec');
+    await scaffold(targetDir, baseOpts({ name: 'regression-1ec' }));
+
+    const pkg = readJson(path.join(targetDir, 'package.json'));
+    const deps = pkg.dependencies as Record<string, string>;
+
+    // lucide-react is imported by stackwright-generated/icons.ts (stackwright-prebuild output)
+    expect(deps['lucide-react']).toBeDefined();
+    expect(deps['lucide-react']).not.toBe('');
+
+    // @stackwright/collections must NOT be in deps — FileCollectionProvider is Node-only
+    // and must never be imported in a 'use client' component
+    expect(deps['@stackwright/collections']).toBeUndefined();
   });
 
   it('has build-scripts in devDependencies', async () => {
@@ -392,6 +418,7 @@ describe('scaffold output — package.json', () => {
     const pkg = readJson(path.join(targetDir, 'package.json'));
     const devDeps = pkg.devDependencies as Record<string, string>;
     expect(devDeps['@stackwright/build-scripts']).toBeDefined();
+    expect(devDeps['concurrently']).toBeDefined();
     expect(devDeps['typescript']).toBeDefined();
   });
 
@@ -483,5 +510,40 @@ describe('scaffold output — placeholder substitution', () => {
       expect(content).not.toContain('{{siteTitle}}');
       expect(content).not.toContain('{{year}}');
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// providers.tsx guard — regression for stackwright-1ec
+// ---------------------------------------------------------------------------
+
+describe('scaffold output — providers.tsx client boundary', () => {
+  let targetDir: string;
+  let tmpDir: string;
+
+  beforeEach(async () => {
+    tmpDir = makeTmpDir();
+    targetDir = path.join(tmpDir, 'providers-guard');
+    await scaffold(targetDir, baseOpts({ name: 'providers-guard' }));
+  });
+
+  afterEach(() => {
+    fs.removeSync(tmpDir);
+  });
+
+  it('does not import @stackwright/collections in providers.tsx', () => {
+    const content = fs.readFileSync(
+      path.join(targetDir, 'app', '_components', 'providers.tsx'),
+      'utf8'
+    );
+    expect(content).not.toContain('@stackwright/collections');
+  });
+
+  it('does not call registerCollectionProvider in providers.tsx', () => {
+    const content = fs.readFileSync(
+      path.join(targetDir, 'app', '_components', 'providers.tsx'),
+      'utf8'
+    );
+    expect(content).not.toContain('registerCollectionProvider');
   });
 });

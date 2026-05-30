@@ -1,0 +1,51 @@
+content:
+  meta:
+    title: "Contact Meridian Law Group | Schedule a Consultation"
+    description: "Schedule a legal consultation with Meridian Law Group in Portland, OR. Call (503) 555-0142 or use our online form."
+  content_items:
+    - type: main
+      label: "contact-hero"
+      heading:
+        text: "Schedule a Consultation"
+        textSize: "h1"
+      textBlocks:
+        - text: "Our attorneys are ready to review your situation and outline your options. Reach out by phone or use the form below."
+          textSize: "h4"
+      background: "primary"
+      color: "surface"
+
+    - type: contact_form_stub
+      label: "contact-form"
+      heading:
+        text: "Get in Touch"
+        textSize: "h2"
+      email: "info@meridianlaw.example.com"
+      phone: "(503) 555-0142"
+      address: "One Pacific Square, Suite 800, Portland, OR 97204"
+      description: "Tell us briefly about your legal matter and the best time to reach you. We respond to all inquiries within one business day."
+      button_text: "Send Message"
+      email_subject: "New Consultation Request — Meridian Law Group"
+
+    - type: feature_list
+      label: "office-hours"
+      heading:
+        text: "Office Information"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Office Hours"
+          description: "Monday–Friday: 8:30am – 5:30pm. Evening appointments available by arrangement."
+          icon:
+            type: icon
+            src: "Clock"
+        - label: "Location"
+          description: "One Pacific Square, Suite 800, Portland, OR 97204. Two blocks from Pioneer Courthouse Square."
+          icon:
+            type: icon
+            src: "MapPin"
+        - label: "Phone & Email"
+          description: "(503) 555-0142 — info@meridianlaw.example.com. Real attorneys answer — no call center."
+          icon:
+            type: icon
+            src: "Phone"
+      background: "background"

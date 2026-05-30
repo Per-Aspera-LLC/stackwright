@@ -244,7 +244,12 @@ function DynamicPageInner({
           />
         )}
         <DynamicPageErrorBoundary pageName={slug}>
-          <PageLayout pageContent={pageContent} siteConfig={siteConfig} />
+          {/* Suspense catches React.lazy()-wrapped content type components (e.g. Carousel).
+              The null fallback means other content renders immediately; lazy chunks
+              fill in asynchronously once loaded. */}
+          <React.Suspense fallback={null}>
+            <PageLayout pageContent={pageContent} siteConfig={siteConfig} />
+          </React.Suspense>
         </DynamicPageErrorBoundary>
       </div>
     </>

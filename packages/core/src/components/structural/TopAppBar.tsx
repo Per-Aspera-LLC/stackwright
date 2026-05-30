@@ -163,21 +163,39 @@ export default function TopAppBar({
                 label={`${title} logo`}
               />
             </div>
-            <h1
-              style={{
-                fontSize: 'clamp(1rem, 4vw, 2.125rem)',
-                fontWeight: 400,
-                margin: 0,
-                marginRight: theme.spacing.xl,
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                minWidth: 0,
-                flexShrink: 1,
-              }}
-            >
-              {title}
-            </h1>
+            {title ? (
+              <h1
+                style={{
+                  fontSize: 'clamp(1rem, 4vw, 2.125rem)',
+                  fontWeight: 400,
+                  margin: 0,
+                  marginRight: theme.spacing.xl,
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  minWidth: 0,
+                  flexShrink: 1,
+                }}
+              >
+                {title}
+              </h1>
+            ) : (
+              <h1
+                style={{
+                  position: 'absolute',
+                  width: '1px',
+                  height: '1px',
+                  overflow: 'hidden',
+                  clip: 'rect(0,0,0,0)',
+                  whiteSpace: 'nowrap',
+                  margin: 0,
+                  padding: 0,
+                  border: 0,
+                }}
+              >
+                {(logo as { alt?: string }).alt || 'Home'}
+              </h1>
+            )}
           </>
         ) : (
           <h1

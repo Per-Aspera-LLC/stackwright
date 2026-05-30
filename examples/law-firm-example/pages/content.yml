@@ -1,0 +1,117 @@
+content:
+  meta:
+    title: "Meridian Law Group | Portland's Trusted Law Firm Since 1987"
+    description: "Full-service law firm serving Portland businesses and families. Expert counsel in business law, estate planning, and personal injury. Schedule a consultation today."
+  content_items:
+    - type: main
+      label: "hero"
+      heading:
+        text: "Trusted Counsel. Proven Results."
+        textSize: "h1"
+      textBlocks:
+        - text: "35 years protecting Portland businesses and families. Real attorneys. Real answers. Schedule a consultation today."
+          textSize: "h4"
+      buttons:
+        - text: "Schedule a Consultation"
+          variant: "contained"
+          href: "/contact"
+          bgColor: "accent"
+          textSize: "button"
+        - text: "Our Practice Areas"
+          variant: "outlined"
+          href: "/practice-areas"
+          textSize: "button"
+      background: "primary"
+      color: "surface"
+
+    - type: feature_list
+      label: "practice-areas-overview"
+      heading:
+        text: "How We Can Help"
+        textSize: "h2"
+      columns: 3
+      items:
+        - label: "Business Law"
+          description: "Formation, contracts, mergers, and compliance. We protect your business at every stage."
+          icon:
+            type: icon
+            src: "Briefcase"
+        - label: "Estate Planning"
+          description: "Wills, trusts, powers of attorney, and probate. Protect your family and legacy."
+          icon:
+            type: icon
+            src: "FileText"
+        - label: "Personal Injury"
+          description: "Car accidents, workplace injuries, and wrongful death. Fight for the compensation you deserve."
+          icon:
+            type: icon
+            src: "Shield"
+      background: "background"
+
+    - type: feature_list
+      label: "firm-stats"
+      heading:
+        text: "Why Clients Choose Meridian"
+        textSize: "h2"
+      columns: 4
+      items:
+        - label: "35+ Years"
+          description: "Of legal excellence in the Portland community"
+          icon:
+            type: icon
+            src: "Award"
+        - label: "2,000+ Clients"
+          description: "Families and businesses served with personal attention"
+          icon:
+            type: icon
+            src: "Users"
+        - label: "98% Client Satisfaction"
+          description: "Based on post-case surveys and repeat clients"
+          icon:
+            type: icon
+            src: "Star"
+        - label: "Boutique Firm"
+          description: "Your attorney answers the phone — no runaround"
+          icon:
+            type: icon
+            src: "Phone"
+      background: "surface"
+
+    - type: testimonial_grid
+      label: "client-testimonials"
+      heading:
+        text: "What Our Clients Say"
+        textSize: "h2"
+      columns: 3
+      items:
+        - quote: "Meridian handled our business acquisition with complete professionalism. They explained every step clearly and protected our interests throughout."
+          author: "Robert T."
+          role: "Business Owner"
+        - quote: "After my car accident, I didn't know where to turn. The team at Meridian guided me through everything and got me fair compensation."
+          author: "Sarah M."
+          role: "Personal Injury Client"
+        - quote: "We finally got our estate plan done after years of putting it off. The process was straightforward and gave us real peace of mind."
+          author: "James & Linda K."
+          role: "Estate Planning Clients"
+      background: "background"
+
+    - type: main
+      label: "consultation-cta"
+      heading:
+        text: "Ready to Protect What Matters Most?"
+        textSize: "h2"
+      textBlocks:
+        - text: "Schedule a consultation with one of our attorneys. We'll review your situation and outline your options — no obligation."
+          textSize: "body1"
+      buttons:
+        - text: "Schedule a Consultation"
+          variant: "contained"
+          href: "/contact"
+          bgColor: "accent"
+          textSize: "button"
+        - text: "Call (503) 555-0142"
+          variant: "outlined"
+          href: "tel:5035550142"
+          textSize: "button"
+      background: "primary"
+      color: "surface"

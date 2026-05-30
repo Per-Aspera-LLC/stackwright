@@ -1,0 +1,67 @@
+title: "Synapse Analytics"
+
+locales:
+  default: en
+  supported:
+    - en
+    - fr
+meta:
+  description: "Customer journey analytics that connects your data sources to reveal every touchpoint. No SQL required. Start free."
+
+appBar:
+  titleText: "Synapse Analytics"
+  backgroundColor: "primary"
+  textColor: "#FFFFFF"
+  colorModeToggle: true
+
+navigation:
+  - label: "Home"
+    href: "/"
+  - label: "Features"
+    href: "/features"
+  - label: "Pricing"
+    href: "/pricing"
+  - label: "About"
+    href: "/about"
+  - label: "Contact"
+    href: "/contact"
+
+footer:
+  backgroundColor: "primary"
+  textColor: "#FFFFFF"
+  links:
+    - label: "© 2024 Synapse Analytics"
+      href: "/"
+    - label: "Privacy Policy"
+      href: "/privacy"
+    - label: "Terms of Service"
+      href: "/terms"
+    - label: "Start Free Trial"
+      href: "/contact"
+
+customTheme:
+  id: "synapse-analytics"
+  name: "Synapse Analytics"
+  description: "Modern SaaS theme — deep indigo with amber accents for energy and intelligence"
+  colors:
+    primary: "#3730A3"
+    secondary: "#4F46E5"
+    accent: "#F59E0B"
+    background: "#F8F9FC"
+    surface: "#FFFFFF"
+    text: "#111827"
+    textSecondary: "#6B7280"
+  darkColors:
+    primary: "#4F46E5"
+    secondary: "#3730A3"
+    accent: "#FBBF24"
+    background: "#0F0E1A"
+    surface: "#1A1830"
+    text: "#F9FAFB"
+    textSecondary: "#9CA3AF"
+  typography:
+    fontFamily:
+      primary: "Inter"
+      secondary: "Space Grotesk"
+  spacing:
+    unit: 8

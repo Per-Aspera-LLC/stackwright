@@ -16,13 +16,18 @@ const execAsync = promisify(exec);
  * 3. Per-page bundle sizes
  * 4. Image optimization results
  *
- * Baselines (established 2025-01-27):
- * - First-load JS: ~85KB gzipped
- * - Total JS: ~300KB gzipped
+ * Performance budget — post-optimization targets (see docs/adr/bundle-architecture.md)
+ * Baseline: Jan 2025 ~85KB gzip, pre-optimization peak: ~392KB gzip
+ * Post-optimization target: ≤200KB gzip first-load
+ * Budget set: 2026-05-29
  *
- * Budgets:
- * - First-load JS: <100KB gzipped (warn at 80KB)
- * - All pages JS: <500KB gzipped (warn at 400KB)
+ * Baselines (historical, for reference):
+ * - First-load JS: ~85KB gzipped (Jan 2025), ~392KB gzipped (pre-optimization peak May 2026)
+ * - Total JS: ~300KB gzipped (Jan 2025), ~932KB gzipped (pre-optimization peak May 2026)
+ *
+ * Current budgets (authoritative source: performance-budgets.json):
+ * - First-load JS: ≤200KB gzipped (warn at 150KB)
+ * - All pages JS: ≤800KB gzipped (warn at 600KB)
  */
 
 const exampleAppDir = path.resolve(__dirname, '../../../../examples/stackwright-docs');

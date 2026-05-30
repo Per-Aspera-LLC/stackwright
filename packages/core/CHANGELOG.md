@@ -1,5 +1,26 @@
 # @stackwright/core
 
+## 0.8.6-alpha.2
+
+### Patch Changes
+
+- Updated dependencies [af4a166]
+  - @stackwright/types@1.6.0-alpha.1
+
+## 0.8.6-alpha.1
+
+### Patch Changes
+
+- be7f767: Fix Map content type: assemble MapConfig from flat YAML props (was crashing on render), move Map component to base directory, tighten mapLayerSchema.data to z.unknown(), remove duplicate ZodLike declaration, fix checkForPlaintextSecret entropy threshold direction
+- Updated dependencies [be7f767]
+  - @stackwright/types@1.5.1-alpha.0
+
+## 0.8.6-alpha.0
+
+### Patch Changes
+
+- 474b8eb: Fix accessibility issues: remove WCAG 2.1.2 keyboard trap from code_block `<pre>` element, add visually-hidden `<h1>` to TopAppBar when title is empty and logo is present, add ARIA arrow-key keyboard navigation (ArrowLeft/ArrowRight/Home/End) to tabbed_content component, fix carousel card text/background contrast ratio using auto-computed contrast-safe text color.
+
 ## 0.8.5
 
 ### Patch Changes

@@ -1,5 +1,10 @@
-import { ComponentType } from 'react';
-import { Carousel } from '../components/narrative/Carousel/Carousel';
+import React, { ComponentType } from 'react';
+
+// Carousel is lazy-loaded so it is NOT in the first-load JS bundle.
+// Pages that contain no carousel items never download the Carousel chunk.
+const LazyCarousel = React.lazy(() =>
+  import('../components/narrative/Carousel/Carousel').then((m) => ({ default: m.Carousel }))
+) as ComponentType<any>;
 import {
   MainContentGrid,
   TabbedContentGrid,
@@ -11,13 +16,14 @@ import {
   Faq,
   PricingTable,
   ContactFormStub,
+  Form,
   Alert,
   LayoutGrid,
   CollectionList,
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
-import { Map } from '../components/content/Map';
+import { Map } from '../components/base/Map';
 import NavSidebar from '../components/structural/NavSidebar';
 import {
   getStackwrightImage,
@@ -28,7 +34,7 @@ import {
 
 // Component registry mapping YAML key → React component (or lazy factory for stackwright- prefixed)
 export const componentRegistry: Record<string, ComponentType<any> | (() => ComponentType<any>)> = {
-  carousel: Carousel,
+  carousel: LazyCarousel,
   main: MainContentGrid,
   tabbed_content: TabbedContentGrid,
   text_block: TextBlockGrid,
@@ -43,6 +49,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   pricing_table: PricingTable,
   alert: Alert,
   contact_form_stub: ContactFormStub,
+  form: Form,
   grid: LayoutGrid,
   collection_list: CollectionList,
   map: Map,

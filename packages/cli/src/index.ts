@@ -6,6 +6,7 @@ export type { PluginRegistrar } from './types';
 export { outputResult, outputError } from './utils/json-output';
 
 // Pure command functions — callable as a library without spawning a subprocess
+export { init } from './commands/init';
 export { scaffold } from './commands/scaffold';
 export { listPages, addPage, validatePages, readPage, writePage } from './commands/page';
 export { validateSite, readSiteConfig, writeSiteConfig } from './commands/site';
@@ -17,12 +18,15 @@ export { generateAgentDocs } from './commands/generate-agent-docs';
 export { stageChanges, openPr } from './commands/git-ops';
 export { getBoard, parseBoard } from './commands/board';
 export { listCollections, addCollection, resolveContentDir } from './commands/collection';
+export { listIntegrations, getIntegration, addIntegration } from './commands/integration';
 export { composeSite } from './commands/compose';
 export { preview } from './commands/preview';
+export { testA11y } from './commands/a11y';
 export { validateSiteComposition } from './utils/site-validator';
 export { detectProject, resolvePagesDir } from './utils/project-detector';
 
 // Result types
+export type { InitResult } from './commands/init';
 export type { ScaffoldResult, ScaffoldOptions } from './commands/scaffold';
 export type {
   PageSummary,
@@ -49,14 +53,27 @@ export type {
   OpenPrResult,
   OpenPrOptions,
 } from './commands/git-ops';
-export type { BoardResult, BoardIssue, GhIssueRaw } from './commands/board';
+export type { BoardResult, BoardIssue, BeadsIssue } from './commands/board';
 export type {
   CollectionSummary,
   CollectionListResult,
   AddCollectionResult,
 } from './commands/collection';
+export type {
+  IntegrationEntry,
+  ListIntegrationsResult,
+  GetIntegrationResult,
+  AddIntegrationResult,
+} from './commands/integration';
 export type { ComposeSiteResult, ComposeSiteOptions } from './commands/compose';
 export type { PreviewResult, PreviewOptions } from './commands/preview';
+export type { TestA11yOptions, A11yAuditResult } from './commands/a11y';
+export type {
+  A11yViolation,
+  A11yPageResult,
+  A11yRunnerOptions,
+  A11yColorMode,
+} from './utils/a11y-runner';
 export type {
   ValidateSiteCompositionResult,
   ValidateSiteCompositionOptions,

@@ -148,11 +148,14 @@ export function runWatch(projectRoot = process.cwd()): void {
     watchers.push(contentWatcher);
   }
 
-  // Watch site config file by watching its parent directory
+  // Watch site config and any locale variants (stackwright.yml, stackwright.fr.yml, etc.)
   if (siteConfigFile) {
-    const configBasename = path.basename(siteConfigFile);
     const configWatcher = fs.watch(projectRoot, (_event, filename) => {
-      if (filename === configBasename) {
+      if (
+        filename &&
+        filename.startsWith('stackwright.') &&
+        YAML_EXTENSIONS.has(path.extname(filename))
+      ) {
         scheduleRebuild('site config');
       }
     });

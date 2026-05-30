@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/index.ts'],
+  entry: ['src/index.ts', 'src/server.ts', 'src/app-router.ts'],
   target: 'es2022',
   format: ['cjs', 'esm'],
   dts: true, // We use tsc for declarations

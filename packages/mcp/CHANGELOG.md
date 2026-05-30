@@ -1,5 +1,86 @@
 # @stackwright/mcp
 
+## 0.5.0-alpha.8
+
+### Patch Changes
+
+- Updated dependencies [6946d19]
+  - @stackwright/cli@0.9.0-alpha.5
+
+## 0.5.0-alpha.7
+
+### Patch Changes
+
+- Updated dependencies [9bd288f]
+  - @stackwright/build-scripts@0.8.0-alpha.2
+  - @stackwright/cli@0.9.0-alpha.4
+
+## 0.5.0-alpha.6
+
+### Patch Changes
+
+- 2b85093: feat(mcp): auto-trigger prebuild before render in all four render tools. Replaces the fragile 2-second sleep in `stackwright_render_yaml` with an explicit `runPrebuild()` call so co-located images are always processed. Adds optional `projectRoot` param to `stackwright_render_page` and `stackwright_render_diff` for the same benefit.
+- Updated dependencies [5df938e]
+  - @stackwright/cli@0.9.0-alpha.4
+
+## 0.5.0-alpha.5
+
+### Patch Changes
+
+- Updated dependencies [af4a166]
+  - @stackwright/types@1.6.0-alpha.1
+  - @stackwright/cli@0.9.0-alpha.3
+
+## 0.5.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [22e60b8]
+  - @stackwright/cli@0.9.0-alpha.3
+
+## 0.5.0-alpha.3
+
+### Minor Changes
+
+- 8dbbe0b: Add `stackwright test:a11y` command for portable WCAG 2.1 AA accessibility auditing. Tests all pages (auto-discovered) in both light and dark modes using axe-core + Playwright. Also exposes `stackwright_test_a11y` MCP tool for Otter agent integration.
+
+### Patch Changes
+
+- Updated dependencies [8dbbe0b]
+  - @stackwright/cli@0.9.0-alpha.2
+
+## 0.5.0-alpha.2
+
+### Minor Changes
+
+- 34d95c8: Replace GitHub Issues board with beads-native implementation. The `stackwright board` CLI command and `stackwright_get_board` MCP tool now read from `.beads/issues.jsonl` instead of calling the `gh` CLI. No GitHub authentication or `gh` CLI required.
+
+  **Breaking change in `@stackwright/cli` public types**: `GhIssueRaw` is removed (replaced by `BeadsIssue`); `BoardIssue.number` is now `BoardIssue.id: string`; `BoardIssue.labels` and `BoardIssue.assignees` are removed; `BoardIssue.issueType` is added.
+
+### Patch Changes
+
+- Updated dependencies [34d95c8]
+  - @stackwright/cli@0.9.0-alpha.1
+
+## 0.5.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [be7f767]
+  - @stackwright/types@1.5.1-alpha.0
+  - @stackwright/cli@0.9.0-alpha.0
+
+## 0.5.0-alpha.0
+
+### Minor Changes
+
+- ba6b73a: Add integration management commands and MCP tools: `stackwright integrations list/get/add` CLI commands and `stackwright_list_integrations`, `stackwright_get_integration`, `stackwright_add_integration` MCP tools for managing OpenAPI, GraphQL, and REST integrations in stackwright.yml.
+
+### Patch Changes
+
+- Updated dependencies [ba6b73a]
+  - @stackwright/cli@0.9.0-alpha.0
+
 ## 0.4.6
 
 ### Patch Changes

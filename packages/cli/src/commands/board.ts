@@ -1,26 +1,29 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { gh } from '../utils/git';
+import path from 'path';
+import fs from 'fs-extra';
 import { outputResult, outputError, formatError } from '../utils/json-output';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-/** Shape returned by `gh issue list --json ...` for each issue. */
-export interface GhIssueRaw {
-  number: number;
+/** Shape of a single record in .beads/issues.jsonl */
+export interface BeadsIssue {
+  _type: string;
+  id: string;
   title: string;
-  labels: { name: string }[];
-  assignees: { login: string }[];
-  updatedAt: string;
+  description?: string;
+  status: 'open' | 'closed';
+  priority: number;
+  issue_type?: 'task' | 'feature' | 'bug';
+  updated_at: string;
 }
 
 export interface BoardIssue {
-  number: number;
+  id: string;
   title: string;
-  labels: string[];
-  assignees: string[];
+  issueType?: string;
   updatedAt: string;
 }
 
@@ -46,41 +49,38 @@ const TIER_CONFIG: Record<PriorityTier, { emoji: string; color: (s: string) => s
 };
 
 // ---------------------------------------------------------------------------
-// Pure functions (testable without GitHub)
+// Pure functions (testable without filesystem)
 // ---------------------------------------------------------------------------
 
-function toBoard(raw: GhIssueRaw): BoardIssue {
+function toBoard(raw: BeadsIssue): BoardIssue {
   return {
-    number: raw.number,
+    id: raw.id,
     title: raw.title,
-    labels: raw.labels.map((l) => l.name),
-    assignees: raw.assignees.map((a) => a.login),
-    updatedAt: raw.updatedAt,
+    issueType: raw.issue_type,
+    updatedAt: raw.updated_at,
   };
 }
 
-function getTier(issue: BoardIssue): PriorityTier | null {
-  for (const label of issue.labels) {
-    if (label.startsWith('priority:')) {
-      const tier = label.slice('priority:'.length);
-      if (tier === 'now' || tier === 'next' || tier === 'later' || tier === 'vision') {
-        return tier;
-      }
-    }
-  }
+function getTier(issue: BeadsIssue): PriorityTier | null {
+  if (issue.priority === 1) return 'now';
+  if (issue.priority === 2) return 'next';
+  if (issue.priority === 3) return 'later';
+  if (issue.priority === 4) return 'vision';
   return null;
 }
 
 /**
- * Parse raw GitHub issue data into a priority-tiered board.
+ * Parse raw beads issue data into a priority-tiered board.
  * Pure function — no I/O, fully testable.
+ * Only includes open issues; closed issues are silently skipped.
  */
-export function parseBoard(rawIssues: GhIssueRaw[]): BoardResult {
+export function parseBoard(rawIssues: BeadsIssue[]): BoardResult {
   const result: BoardResult = { now: [], next: [], later: [], vision: [], unlabeled: [] };
 
   for (const raw of rawIssues) {
+    if (raw._type !== 'issue' || raw.status !== 'open') continue;
     const issue = toBoard(raw);
-    const tier = getTier(issue);
+    const tier = getTier(raw);
     if (tier) {
       result[tier].push(issue);
     } else {
@@ -92,32 +92,42 @@ export function parseBoard(rawIssues: GhIssueRaw[]): BoardResult {
 }
 
 // ---------------------------------------------------------------------------
-// I/O: fetch issues via gh CLI
+// I/O: locate and parse .beads/issues.jsonl
 // ---------------------------------------------------------------------------
 
-async function fetchIssues(cwd?: string): Promise<GhIssueRaw[]> {
-  const args = [
-    'issue',
-    'list',
-    '--state',
-    'open',
-    '--json',
-    'number,title,labels,assignees,updatedAt',
-    '--limit',
-    '100',
-  ];
+/**
+ * Walk up from startDir looking for .beads/issues.jsonl.
+ * Throws BEADS_NOT_FOUND if not found.
+ */
+function findBeadsFile(startDir: string): string {
+  let dir = startDir;
+  while (true) {
+    const candidate = path.join(dir, '.beads', 'issues.jsonl');
+    if (fs.existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  const err = new Error('No .beads/issues.jsonl found. Run `bd init` to set up issue tracking.');
+  (err as NodeJS.ErrnoException).code = 'BEADS_NOT_FOUND';
+  throw err;
+}
 
+async function loadBeadsIssues(cwd?: string): Promise<BeadsIssue[]> {
   const effectiveCwd = cwd ?? process.cwd();
-  const { stdout } = await gh(args, effectiveCwd);
-  return JSON.parse(stdout) as GhIssueRaw[];
+  const jsonlPath = findBeadsFile(effectiveCwd);
+  const content = await fs.readFile(jsonlPath, 'utf8');
+  return content
+    .split('\n')
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as BeadsIssue);
 }
 
 /**
- * Fetch open GitHub issues and organize them into a priority board.
- * Requires `gh` CLI to be installed and authenticated.
+ * Load issues from .beads/issues.jsonl and organize into a priority board.
  */
 export async function getBoard(cwd?: string): Promise<BoardResult> {
-  const raw = await fetchIssues(cwd);
+  const raw = await loadBeadsIssues(cwd);
   return parseBoard(raw);
 }
 
@@ -126,9 +136,9 @@ export async function getBoard(cwd?: string): Promise<BoardResult> {
 // ---------------------------------------------------------------------------
 
 function formatIssue(issue: BoardIssue): string {
-  const num = chalk.dim(`#${issue.number}`);
-  const assignee = issue.assignees.length > 0 ? chalk.dim(` (${issue.assignees.join(', ')})`) : '';
-  return `  ${num.padEnd(16)}${issue.title}${assignee}`;
+  const id = chalk.dim(issue.id);
+  const badge = issue.issueType ? chalk.dim(` [${issue.issueType.slice(0, 4)}]`) : '';
+  return `  ${id.padEnd(28)}${badge.padEnd(8)}${issue.title}`;
 }
 
 function formatTier(tier: PriorityTier, issues: BoardIssue[]): string {
@@ -174,7 +184,7 @@ function formatBoard(board: BoardResult): string {
 export function registerBoard(program: Command): void {
   program
     .command('board')
-    .description('Show the priority-tiered product board from GitHub Issues')
+    .description('Show the priority-tiered product board from .beads/issues.jsonl')
     .option('--json', 'Output machine-readable JSON')
     .action(async (opts: { json?: boolean }) => {
       const json = Boolean(opts.json);
@@ -184,7 +194,12 @@ export function registerBoard(program: Command): void {
           process.stdout.write(formatBoard(board));
         });
       } catch (err: unknown) {
-        outputError(formatError(err), 'BOARD_FAILED', { json }, 2);
+        const code = (err as NodeJS.ErrnoException).code;
+        if (code === 'BEADS_NOT_FOUND') {
+          outputError(formatError(err), 'BEADS_NOT_FOUND', { json });
+        } else {
+          outputError(formatError(err), 'BOARD_FAILED', { json }, 2);
+        }
       }
     });
 }

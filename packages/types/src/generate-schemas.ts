@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { z } from 'zod';
 import { pageContentSchema } from './types/layout';
 import { siteConfigSchema } from './types/siteConfig';
-import { themeConfigSchema } from '@stackwright/themes';
+import { themeConfigSchema } from '@stackwright/themes/schemas';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

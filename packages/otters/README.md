@@ -155,6 +155,28 @@ For detailed architecture documentation, see [OTTER_ARCHITECTURE.md](../../OTTER
 
 ---
 
+## Example Sites
+
+The following reference sites demonstrate complete otter pipeline output. Each contains `BRAND_BRIEF.md`, `stackwright.yml`, and all page YAML files — exactly what Brand Otter → Theme Otter → Page Otter would produce.
+
+| Example | Type | Pages | Theme |
+|---------|------|-------|-------|
+| [`examples/law-firm-example/`](../../examples/law-firm-example/) | Professional services | 4 (Home, About, Practice Areas, Contact) | Navy + gold authority |
+| [`examples/saas-example/`](../../examples/saas-example/) | B2B SaaS / analytics | 5 (Home, Features, Pricing, About, Contact) | Indigo + amber energy |
+| [`examples/restaurant-example/`](../../examples/restaurant-example/) | Restaurant / hospitality | 3 (Home, Menu, Reservations) | Terracotta + cream warmth |
+
+To use an example site:
+```bash
+npx launch-stackwright my-site
+cd my-site
+cp -r path/to/example/BRAND_BRIEF.md .
+cp -r path/to/example/stackwright.yml .
+cp -r path/to/example/pages ./pages
+pnpm dev
+```
+
+---
+
 ## Package Structure
 
 ```
