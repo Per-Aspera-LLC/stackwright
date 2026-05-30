@@ -150,7 +150,7 @@ test.describe('Missing/Broken Media Handling', () => {
 });
 
 test.describe('Extreme Content Length', () => {
-  test('Very long strings (10,000 chars) don\'t break layout', async ({ page }) => {
+  test("Very long strings (10,000 chars) don't break layout", async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
     // Create a 10,000 character string
@@ -207,7 +207,7 @@ test.describe('Extreme Content Length', () => {
     console.log('✅ Long unbroken words wrap correctly');
   });
 
-  test('Many nested elements (deep DOM) don\'t crash', async ({ page }) => {
+  test("Many nested elements (deep DOM) don't crash", async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
     // Create deeply nested structure (100 levels)
@@ -226,7 +226,7 @@ test.describe('Extreme Content Length', () => {
     const deepElement = page.locator('.nested-99');
     await expect(deepElement).toBeVisible();
 
-    console.log('✅ Deeply nested DOM doesn\'t crash');
+    console.log("✅ Deeply nested DOM doesn't crash");
   });
 });
 
@@ -312,9 +312,7 @@ test.describe('Unicode and Special Characters', () => {
     console.log('✅ HTML special characters are escaped');
   });
 
-
-
-  test('Special markdown/code characters don\'t break rendering', async ({ page }) => {
+  test("Special markdown/code characters don't break rendering", async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
     const specialChars = '`~!@#$%^&*()_+-={}[]|\\:";\'<>?,./';
@@ -337,7 +335,7 @@ test.describe('Unicode and Special Characters', () => {
 });
 
 test.describe('Boundary Conditions', () => {
-  test('Empty content arrays don\'t crash', async ({ page }) => {
+  test("Empty content arrays don't crash", async ({ page }) => {
     // This would need a test page with empty content_items
     // For now, just verify showcase doesn't have empty content breaking things
     await page.goto(SHOWCASE_PAGE, { waitUntil: 'networkidle' });
@@ -364,12 +362,10 @@ test.describe('Boundary Conditions', () => {
     const zeroDiv = page.locator('#zero-size-test');
     expect(await zeroDiv.count()).toBe(1);
 
-    console.log('✅ Zero-sized elements don\'t crash');
+    console.log("✅ Zero-sized elements don't crash");
   });
 
-
-
-  test('Maximum viewport width doesn\'t break layout', async ({ page }) => {
+  test("Maximum viewport width doesn't break layout", async ({ page }) => {
     // Test with ultra-wide viewport
     await page.setViewportSize({ width: 3840, height: 2160 });
     await page.goto('/', { waitUntil: 'networkidle' });
@@ -407,8 +403,8 @@ test.describe('Boundary Conditions', () => {
 });
 
 test.describe('Rapid State Changes', () => {
-  test('Rapid page navigation doesn\'t crash', async ({ page }) => {
-    const pages = PAGES.slice(0, 4).map(p => p.path);
+  test("Rapid page navigation doesn't crash", async ({ page }) => {
+    const pages = PAGES.slice(0, 4).map((p) => p.path);
 
     for (let i = 0; i < 3; i++) {
       for (const pagePath of pages) {
@@ -421,7 +417,7 @@ test.describe('Rapid State Changes', () => {
     console.log('✅ Rapid navigation handled gracefully');
   });
 
-  test('Spam clicking navigation links doesn\'t break', async ({ page }) => {
+  test("Spam clicking navigation links doesn't break", async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
     const navLink = page.locator('header a[href], nav a[href]').first();
@@ -434,12 +430,14 @@ test.describe('Rapid State Changes', () => {
         });
       }
 
-      // Wait for navigation to settle
-      await page.waitForLoadState('domcontentloaded');
+      // Wait for navigation to fully settle - networkidle is more reliable than domcontentloaded
+      await page.waitForLoadState('networkidle');
 
-      // Page should still be functional
-      const bodyText = await page.locator('body').innerText();
-      expect(bodyText.length).toBeGreaterThan(0);
+      // Page should still be functional - use toPass() for retry resilience
+      await expect(async () => {
+        const bodyText = await page.locator('body').innerText();
+        expect(bodyText.length).toBeGreaterThan(0);
+      }).toPass({ timeout: 5000 });
 
       console.log('✅ Spam clicking handled gracefully');
     }
@@ -447,7 +445,7 @@ test.describe('Rapid State Changes', () => {
 });
 
 test.describe('Browser Compatibility Edge Cases', () => {
-  test('localStorage unavailable doesn\'t crash', async ({ page }) => {
+  test("localStorage unavailable doesn't crash", async ({ page }) => {
     // Disable localStorage
     await page.addInitScript(() => {
       Object.defineProperty(window, 'localStorage', {
