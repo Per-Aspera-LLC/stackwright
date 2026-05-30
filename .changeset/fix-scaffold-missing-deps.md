@@ -1,5 +1,6 @@
 ---
 "@stackwright/cli": patch
+"@stackwright/nextjs": patch
 ---
 
 fix(scaffold): add @stackwright/collections and lucide-react to generated package.json
