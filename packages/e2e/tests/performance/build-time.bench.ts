@@ -94,9 +94,13 @@ test.describe('Build Time Benchmarks', () => {
   });
 
   test('next build performance', async () => {
-    // Clean build directory
+    // Clean build directory and static export output
     const buildDir = path.join(exampleAppDir, '.next');
-    await fs.rm(buildDir, { recursive: true, force: true });
+    const outDir = path.join(exampleAppDir, 'out');
+    await Promise.all([
+      fs.rm(buildDir, { recursive: true, force: true }),
+      fs.rm(outDir, { recursive: true, force: true }),
+    ]);
 
     const duration = await benchmarkCommand('next build', 'pnpm exec next build', exampleAppDir);
 
@@ -125,9 +129,11 @@ test.describe('Build Time Benchmarks', () => {
     // Clean everything
     const processedDir = path.join(exampleAppDir, '.stackwright/processed');
     const buildDir = path.join(exampleAppDir, '.next');
+    const outDir = path.join(exampleAppDir, 'out');
     await Promise.all([
       fs.rm(processedDir, { recursive: true, force: true }),
       fs.rm(buildDir, { recursive: true, force: true }),
+      fs.rm(outDir, { recursive: true, force: true }),
     ]);
 
     const startTime = Date.now();

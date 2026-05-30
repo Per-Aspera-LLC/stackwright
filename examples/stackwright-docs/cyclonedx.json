@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-05-29T22:06:34.745Z",
+    "timestamp": "2026-05-30T17:55:51.814Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -14,8 +14,8 @@
     "component": {
       "type": "application",
       "name": "stackwright-docs",
-      "version": "0.1.8-alpha.3",
-      "purl": "pkg:npm/stackwright-docs@0.1.8-alpha.3"
+      "version": "0.1.8-alpha.4",
+      "purl": "pkg:npm/stackwright-docs@0.1.8-alpha.4"
     }
   },
   "components": [
@@ -135,6 +135,25 @@
     },
     {
       "type": "library",
+      "name": "@stackwright/types",
+      "version": "workspace:*",
+      "purl": "pkg:npm/stackwright/types@workspace:*",
+      "scope": "required",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "c17f8eea005da5702afa2b135e9c65a0c7825b05c67da9792bddfe598e44f7f1"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "package-manager",
+          "url": "https://www.npmjs.com/package/@stackwright/types"
+        }
+      ]
+    },
+    {
+      "type": "library",
       "name": "@stackwright/ui-shadcn",
       "version": "workspace:*",
       "purl": "pkg:npm/stackwright/ui-shadcn@workspace:*",
@@ -212,13 +231,13 @@
     {
       "type": "library",
       "name": "lucide-react",
-      "version": "1.8.0",
-      "purl": "pkg:npm/lucide-react@1.8.0",
+      "version": "1.17.0",
+      "purl": "pkg:npm/lucide-react@1.17.0",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "40d803f28472791a029ae0f633449a6526c50a08932f2b8a36b28efc84e9ec5d"
+          "content": "3ca6f555a2ef5e4e68b9618564846fbb87f8530ce24e4a116f3157102f9df037"
         }
       ],
       "externalReferences": [
@@ -307,7 +326,7 @@
   ],
   "dependencies": [
     {
-      "ref": "pkg:npm/stackwright-docs@0.1.8-alpha.3",
+      "ref": "pkg:npm/stackwright-docs@0.1.8-alpha.4",
       "dependsOn": [
         "@radix-ui/react-accordion",
         "@radix-ui/react-slot",
@@ -315,6 +334,7 @@
         "@stackwright/core",
         "@stackwright/icons",
         "@stackwright/nextjs",
+        "@stackwright/types",
         "@stackwright/ui-shadcn",
         "clsx",
         "fuse.js",
