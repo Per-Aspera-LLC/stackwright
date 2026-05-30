@@ -389,9 +389,36 @@ describe('scaffold output — package.json', () => {
     expect(deps['@stackwright/nextjs']).toBeDefined();
     expect(deps['@stackwright/icons']).toBeDefined();
     expect(deps['@stackwright/ui-shadcn']).toBeDefined();
+    expect(deps['@stackwright/collections']).toBeDefined();
+    expect(deps['lucide-react']).toBeDefined();
     expect(deps['next']).toBeDefined();
     expect(deps['react']).toBeDefined();
     expect(deps['react-dom']).toBeDefined();
+  });
+
+  it('regression stackwright-1ec: includes @stackwright/collections and lucide-react', async () => {
+    const targetDir = path.join(tmpDir, 'regression-1ec');
+    await scaffold(targetDir, baseOpts({ name: 'regression-1ec' }));
+
+    const pkg = readJson(path.join(targetDir, 'package.json'));
+    const deps = pkg.dependencies as Record<string, string>;
+
+    // @stackwright/collections is imported by providers.tsx
+    expect(deps['@stackwright/collections']).toBeDefined();
+    expect(deps['@stackwright/collections']).not.toBe('');
+
+    // lucide-react is imported by stackwright-generated/icons.ts (stackwright-prebuild output)
+    expect(deps['lucide-react']).toBeDefined();
+    expect(deps['lucide-react']).not.toBe('');
+  });
+
+  it('regression stackwright-1ec: @stackwright/collections uses workspace:* in monorepo mode', async () => {
+    const targetDir = path.join(tmpDir, 'regression-1ec-mono');
+    await scaffold(targetDir, baseOpts({ name: 'regression-1ec-mono', monorepo: true }));
+
+    const pkg = readJson(path.join(targetDir, 'package.json'));
+    const deps = pkg.dependencies as Record<string, string>;
+    expect(deps['@stackwright/collections']).toBe('workspace:*');
   });
 
   it('has build-scripts in devDependencies', async () => {

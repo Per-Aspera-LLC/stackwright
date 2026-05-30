@@ -40,6 +40,7 @@ const PACKAGE_MAP = {
   swBuildScripts: 'build-scripts',
   swUiShadcn:     'ui-shadcn',
   swOtters:       'otters',
+  swCollections:  'collections',
 };
 
 // Resolve current versions
