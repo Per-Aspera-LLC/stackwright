@@ -3,7 +3,7 @@
 //
 // This file is safe to commit. It will be updated whenever your YAML content changes.
 
-import { Bot, Box, Camera, CircleAlert, CircleCheck, Code, Code2, FileCode, FilePlus, FileText, FlaskConical, Globe, Hammer, Image, Info, Layers, Layout, Map, Moon, Package, Palette, Plug, Rocket, Search, Shield, ShieldCheck, Smartphone, Sparkles, Sun, Terminal, TriangleAlert, Zap } from 'lucide-react';
+import { Bot, Box, Camera, CircleAlert, CircleCheck, Code, Code2, FileCode, FilePlus, FileText, FlaskConical, Globe, Hammer, Image, Info, Layers, LayoutTemplate, Map, Moon, Package, Palette, Plug, Rocket, Search, Shield, ShieldCheck, Smartphone, Sparkles, Sun, Terminal, TriangleAlert, Zap } from 'lucide-react';
 import {
   BlueSkyIcon,
   StackwrightIcon,
@@ -28,7 +28,7 @@ const siteIconPreset: Record<string, React.ComponentType<any>> = {
   Image,
   Info,
   Layers,
-  Layout,
+  'Layout': LayoutTemplate, // legacy MUI alias — candidate for deprecation
   Map,
   Moon,
   Package,
