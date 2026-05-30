@@ -51,10 +51,10 @@
         "@faker-js/faker": "^10.4.0",
         "@types/fs-extra": "11.0.4",
         "@types/js-yaml": "^4.0.5",
-        "@types/react": "^19.2.14",
+        "@types/react": "^19.2.15",
         "fs-extra": "^11.3.5",
         "tsup": "^8.5.1",
-        "tsx": "^4.21.0",
-        "vitest": "^4.0.18"
+        "tsx": "^4.22.3",
+        "vitest": "^4.1.7"
     }
 }
