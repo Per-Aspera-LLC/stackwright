@@ -293,3 +293,21 @@ describe('Form — client-side validation', () => {
     expect(screen.getByText(/"phone" is required\./)).toBeInTheDocument();
   });
 });
+
+// ---------------------------------------------------------------------------
+// Accessibility — WCAG 4.1.3 live region announcements
+// ---------------------------------------------------------------------------
+
+describe('Form — accessibility', () => {
+  it('success message has role="status" for screen reader announcement', async () => {
+    (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: true });
+    render(<Form {...baseProps} fields={[]} success_message="Your message has been sent!" />);
+    const submitButton = screen.getByRole('button', { name: /submit/i });
+    fireEvent.click(submitButton);
+    await waitFor(() => {
+      const statusEl = document.querySelector('[role="status"]');
+      expect(statusEl).toBeTruthy();
+      expect(statusEl?.textContent).toContain('Your message has been sent!');
+    });
+  });
+});

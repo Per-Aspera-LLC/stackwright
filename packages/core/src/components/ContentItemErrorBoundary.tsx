@@ -33,6 +33,7 @@ export class ContentItemErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <div
+          role="alert"
           style={{
             padding: '16px',
             margin: '8px 0',
