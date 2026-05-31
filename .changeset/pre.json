@@ -25,6 +25,7 @@
     "app-router-scaffold",
     "app-router-support",
     "docs-otters-examples",
+    "feat-aria-live-regions",
     "feat-build-scripts-font-strategies",
     "feat-fonts-config-schema",
     "feat-integration-management",

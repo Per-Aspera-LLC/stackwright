@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.9.0-alpha.7
+
+### Minor Changes
+
+- 5639890: feat(core): add AriaLiveRegion utility and wire aria-live regions into Form, SearchModal, Carousel, ContentItemErrorBoundary (WCAG 4.1.3)
+
 ## 0.9.0-alpha.6
 
 ### Minor Changes
