@@ -125,7 +125,7 @@ export default function PageLayout({ pageContent, siteConfig, onNavigate }: Page
 
         {/* Content column: main grows to fill space, footer sits at the bottom */}
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
-          <main id="main-content" style={{ flex: 1, backgroundColor }}>
+          <main id="main-content" tabIndex={-1} style={{ flex: 1, backgroundColor }}>
             {renderContent(pageContent, { contentItemsOnly: true })}
           </main>
 
