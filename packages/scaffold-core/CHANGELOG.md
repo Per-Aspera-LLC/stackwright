@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2-alpha.3
+
+### Patch Changes
+
+- @stackwright/hooks-registry@0.1.2-alpha.3
+
 ## 0.3.2-alpha.2
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @stackwright/build-scripts
 
+## 0.8.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [ed64fab]
+  - @stackwright/types@1.6.0-alpha.3
+
 ## 0.8.0-alpha.3
 
 ### Patch Changes
