@@ -6,6 +6,7 @@ import { AriaLiveRegion } from '../../base/AriaLiveRegion';
 import { CarouselContent } from '@stackwright/types';
 import { useSafeTheme } from '../../../hooks/useSafeTheme';
 import { useBreakpoints } from '../../../hooks/useBreakpoints';
+import { useReducedMotion } from '../../../hooks/useReducedMotion';
 
 const ArrowButton = ({
   direction,
@@ -56,6 +57,7 @@ export const Carousel = (carouselContent: CarouselContent) => {
   const transitionTimeouts = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const safeTheme = useSafeTheme();
   const { isXs, isSmUp, isMdUp, isLgUp } = useBreakpoints();
+  const reducedMotion = useReducedMotion();
 
   const getItemsToShow = () => {
     if (isXs) return 1;
@@ -108,7 +110,7 @@ export const Carousel = (carouselContent: CarouselContent) => {
   }, [next]);
 
   useEffect(() => {
-    if (carouselContent.autoPlay && scrollAndButtonsEnabled) {
+    if (carouselContent.autoPlay && scrollAndButtonsEnabled && !reducedMotion) {
       const autoPlaySpeed = carouselContent.autoPlaySpeed || 3000;
       const interval = setInterval(() => {
         if (Date.now() - lastInteraction >= autoPlaySpeed) {
@@ -124,6 +126,7 @@ export const Carousel = (carouselContent: CarouselContent) => {
     itemsToShow,
     next,
     lastInteraction,
+    reducedMotion,
   ]);
 
   useEffect(() => {
@@ -188,7 +191,7 @@ export const Carousel = (carouselContent: CarouselContent) => {
           width: '100%',
           height: '100%',
           opacity: isTransitioning ? 0 : 1,
-          transition: 'opacity 0.3s ease-in-out',
+          transition: reducedMotion ? 'none' : 'opacity 0.3s ease-in-out',
         }}
       >
         {carouselContent.items

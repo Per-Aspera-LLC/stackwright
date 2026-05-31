@@ -32,6 +32,9 @@ export { default as PageLayout } from './components/structural/PageLayout';
 // Export safe theme hook
 export { useSafeTheme } from './hooks/useSafeTheme';
 
+// Export reduced-motion hook
+export { useReducedMotion } from './hooks/useReducedMotion';
+
 // Export page utilities
 export * from './pages/SlugPage';
 
