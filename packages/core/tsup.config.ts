@@ -11,6 +11,14 @@ export default defineConfig({
     // Map is a separate entry so '@stackwright/core/map' is a stable
     // subpath import and the async chunk has a deterministic name.
     'src/components/base/Map.tsx',
+    // CodeBlock is a separate entry so '@stackwright/core/code-block' is a
+    // stable subpath import and the async chunk has a deterministic name.
+    // PrismJS moves into this chunk automatically (it's only imported by CodeBlock).
+    'src/components/base/CodeBlock.tsx',
+    // Faq is a separate entry so '@stackwright/core/faq' is a stable
+    // subpath import and the async chunk has a deterministic name.
+    // @radix-ui/react-accordion moves into this chunk automatically.
+    'src/components/base/Faq.tsx',
   ],
   format: ['cjs', 'esm'],
   target: 'es2022',

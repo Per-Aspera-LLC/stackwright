@@ -13,9 +13,9 @@
   },
   "bundle": {
     "firstLoadJS": {
-      "max": 448512,
-      "warn": 409600,
-      "description": "First-load JS bundle size (bytes, gzipped). Post-MapLibre-tree-shaking target (stackwright-b2w: ✅ done, −36KB). Pending: CodeBlock/PrismJS and FAQ lazy-loading (stackwright-70q). Turbopack-era interim budget — 438KB max / 400KB warn. Final ADR target: ≤350KB."
+      "max": 256000,
+      "warn": 204800,
+      "description": "First-load JS bundle size (bytes, gzipped). CodeBlock+PrismJS and FAQ+Accordion now lazy-loaded (stackwright-70q: ✅). Target: ≤250KB max / ≤200KB warn (ADR Decision 5). Carousel and Map already lazy (stackwright-mp6, stackwright-b2w)."
     },
     "allPagesJS": {
       "max": 819200,

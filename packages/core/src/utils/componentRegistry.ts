@@ -11,15 +11,25 @@ const LazyCarousel = React.lazy(() =>
 const LazyMap = React.lazy(() =>
   import('../components/base/Map').then((m) => ({ default: m.Map }))
 ) as ComponentType<any>;
+
+// CodeBlock + PrismJS are lazy-loaded so they are NOT in the first-load JS bundle.
+// Pages that contain no code_block items never download the CodeBlock chunk.
+const LazyCodeBlock = React.lazy(() =>
+  import('../components/base/CodeBlock').then((m) => ({ default: m.CodeBlock }))
+) as ComponentType<any>;
+
+// FAQ + @radix-ui/react-accordion are lazy-loaded so they are NOT in the first-load JS bundle.
+// Pages that contain no faq items never download the Faq chunk.
+const LazyFaq = React.lazy(() =>
+  import('../components/base/Faq').then((m) => ({ default: m.Faq }))
+) as ComponentType<any>;
 import {
   MainContentGrid,
   TabbedContentGrid,
   TextBlockGrid,
-  CodeBlock,
   IconGrid,
   FeatureList,
   TestimonialGrid,
-  Faq,
   PricingTable,
   ContactFormStub,
   Form,
@@ -47,10 +57,10 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   video: Media,
   timeline: Timeline,
   icon_grid: IconGrid,
-  code_block: CodeBlock,
+  code_block: LazyCodeBlock,
   feature_list: FeatureList,
   testimonial_grid: TestimonialGrid,
-  faq: Faq,
+  faq: LazyFaq,
   pricing_table: PricingTable,
   alert: Alert,
   contact_form_stub: ContactFormStub,

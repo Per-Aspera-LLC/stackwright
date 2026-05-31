@@ -137,11 +137,11 @@ The `performance-budgets.json` file in `packages/e2e/tests/performance` is the a
 | Decision | Status | Notes |
 |----------|--------|-------|
 | 1. Icon Loading Strategy | ✅ Implemented | `registerSiteIcons()` + prebuild manifest |
-| 2. Content Type Code Splitting | ⚠️ Partially | Carousel: ✅ React.lazy in core. Map: ✅ React.lazy in core (stackwright-b2w). CodeBlock/PrismJS: NOT yet lazy. FAQ/Accordion: NOT yet lazy. |
+| 2. Content Type Code Splitting | ✅ Complete | Carousel: ✅ React.lazy (mp6). Map: ✅ React.lazy (b2w). CodeBlock+PrismJS: ✅ React.lazy (70q). FAQ+Accordion: ✅ React.lazy (70q). Video: deferred (shares component with media). |
 | 3. First-Load Contract | 🔄 In Progress | App Router migration removes polyfills. Further code splitting needed to reach ≤200KB target. |
 | 4. New Dependency Policy | ✅ Active | No new heavy deps added since ADR. |
-| 5. Performance Budget | 🔄 Updated | Interim: 350KB max / 300KB warn. Target after all optimizations: 250KB max / 200KB warn. |
-| 6. App Router Migration | ✅ Complete | Benchmark app migrated; code splitting now functional. |
+| 5. Performance Budget | ✅ Updated | 200KB warn / 250KB max (set after stackwright-70q: CodeBlock+FAQ lazy-loading). ADR Decision 5 final target: ≤200KB first-load. |
+| 6. App Router Migration | ✅ Complete | Benchmark app migrated; `transpilePackages` removed (App Router handles workspace packages automatically). fuse.js moved to optionalDependencies in @stackwright/core. |
 
 ---
 
