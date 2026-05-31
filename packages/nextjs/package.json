@@ -42,21 +42,21 @@
         "@stackwright/core": "workspace:*",
         "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
-        "js-yaml": "^4.1.0"
+        "js-yaml": "catalog:"
     },
     "devDependencies": {
         "@swc/core": "^1.15.26",
         "@testing-library/jest-dom": "^6.6",
         "@testing-library/react": "^16.3",
-        "@types/js-yaml": "^4.0",
+        "@types/js-yaml": "catalog:",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "jsdom": "^29.0.2",
         "next": "^16.1.6",
         "react": "^19",
         "react-dom": "^19",
-        "tsup": "^8.5.1",
-        "vitest": "^4.0.18"
+        "tsup": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "next": ">=16.1.7",
