@@ -1,5 +1,14 @@
 # @stackwright/mcp
 
+## 0.5.0-alpha.10
+
+### Patch Changes
+
+- Updated dependencies [ed64fab]
+  - @stackwright/types@1.6.0-alpha.3
+  - @stackwright/build-scripts@0.8.0-alpha.4
+  - @stackwright/cli@0.9.0-alpha.5
+
 ## 0.5.0-alpha.9
 
 ### Patch Changes

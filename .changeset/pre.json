@@ -28,6 +28,7 @@
     "feat-build-scripts-font-strategies",
     "feat-fonts-config-schema",
     "feat-integration-management",
+    "feat-markdown-textblock",
     "feat-mcp-prebuild-render",
     "feat-scaffold-prebuild-watch",
     "feat-test-a11y-command",

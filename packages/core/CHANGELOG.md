@@ -1,5 +1,16 @@
 # @stackwright/core
 
+## 0.9.0-alpha.6
+
+### Minor Changes
+
+- ed64fab: feat(core,types): add format: markdown to TextBlock for CommonMark rendering via micromark
+
+### Patch Changes
+
+- Updated dependencies [ed64fab]
+  - @stackwright/types@1.6.0-alpha.3
+
 ## 0.8.6-alpha.5
 
 ### Patch Changes
