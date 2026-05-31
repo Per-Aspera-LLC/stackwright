@@ -167,8 +167,8 @@ The YAML key is the key used inside `content_items` entries. All types inherit `
 
 | Type | Fields |
 |---|---|
-| `TextBlock` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string) |
-| `ButtonContent` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string), `variant` (`text` | `outlined` | `contained`), `variantSize`? (`small` | `medium` | `large`), `href`? (string), `action`? (string), `icon`? (MediaItem), `alignment`? (`left` | `center` | `right`), `bgColor`? (string) |
+| `TextBlock` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string), `format`? (`plain` | `markdown`) |
+| `ButtonContent` | `text` (string), `textSize` (TypographyVariant), `textColor`? (string), `format`? (`plain` | `markdown`), `variant` (`text` | `outlined` | `contained`), `variantSize`? (`small` | `medium` | `large`), `href`? (string), `action`? (string), `icon`? (MediaItem), `alignment`? (`left` | `center` | `right`), `bgColor`? (string) |
 | `MediaItem` | Discriminated union: `type: "media"` \| `type: "icon"` \| `type: "image"` \| `type: "video"`. `type` field is required and acts as discriminator. |
 | `ImageContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("image"), `aspect_ratio`? (number) |
 | `IconContent` | `label` (string), `color`? (string), `background`? (string), `src` (string), `alt`? (string), `height`? (number | string), `width`? (number | string), `style`? (`contained` | `overflow`), `type` ("icon"), `size`? (number | TypographyVariant) |
