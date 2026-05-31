@@ -35,11 +35,11 @@
         "@stackwright/cli": "workspace:*",
         "@stackwright/types": "workspace:*",
         "playwright": "^1.60.0",
-        "zod": "^4.4.3"
+        "zod": "catalog:"
     },
     "devDependencies": {
-        "@types/node": "^25.6.2",
+        "@types/node": "catalog:",
         "fs-extra": "^11.3.5",
-        "tsup": "^8.5.1"
+        "tsup": "catalog:"
     }
 }
