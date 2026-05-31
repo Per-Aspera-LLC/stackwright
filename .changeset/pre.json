@@ -32,6 +32,7 @@
     "feat-scaffold-prebuild-watch",
     "feat-test-a11y-command",
     "fix-a11y-cluster",
+    "fix-flaky-rapid-nav-test",
     "fix-map-component-api",
     "fix-scaffold-missing-deps",
     "icon-layout-alias-fix",

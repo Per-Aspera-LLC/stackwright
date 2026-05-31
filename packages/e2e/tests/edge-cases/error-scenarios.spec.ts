@@ -409,8 +409,9 @@ test.describe('Rapid State Changes', () => {
     for (let i = 0; i < 3; i++) {
       for (const pagePath of pages) {
         await page.goto(pagePath, { waitUntil: 'domcontentloaded' });
-        // Quick check that it loaded
-        expect(await page.locator('body').innerText()).not.toBe('');
+        // Use auto-retrying expect(locator) instead of bare innerText() — the old form
+        // had zero retry logic and raced against React hydration under CI load (stackwright-jh6)
+        await expect(page.locator('main')).toBeVisible();
       }
     }
 

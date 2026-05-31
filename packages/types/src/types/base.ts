@@ -12,6 +12,7 @@ export const textBlockSchema = z.object({
   text: z.string(),
   textSize: typographyVariantSchema,
   textColor: z.string().optional(),
+  format: z.enum(['plain', 'markdown']).optional(), // default: 'plain' for backward compat
 });
 
 export const buttonContentSchema = textBlockSchema.extend({

@@ -63,6 +63,7 @@
         "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "^4.1.0",
+        "micromark": "^4.0.1",
         "prismjs": "^1.30.0",
         "uuid": "^13.0.0",
         "zod": "^4.4.3"

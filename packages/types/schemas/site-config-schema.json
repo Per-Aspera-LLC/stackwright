@@ -317,6 +317,13 @@
               "textColor": {
                 "type": "string"
               },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "plain",
+                  "markdown"
+                ]
+              },
               "variant": {
                 "type": "string",
                 "enum": [

@@ -1,4 +1,5 @@
 import React from 'react';
+import { micromark } from 'micromark';
 import { TextBlock } from '@stackwright/types';
 import { v4 as uuidv4 } from 'uuid';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
@@ -11,6 +12,16 @@ interface TextGridProps {
   config?: {
     list_icon?: string;
   };
+}
+
+/**
+ * Renders a TextBlock using CommonMark via micromark.
+ * micromark does NOT pass through raw HTML by default (allowDangerousHtml: false),
+ * so the output is XSS-safe by construction — no sanitization library needed.
+ */
+function renderMarkdown(text: string, color?: string): React.ReactNode {
+  const html = micromark(text);
+  return <div style={{ color: color ?? 'inherit' }} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
 /**
@@ -85,52 +96,64 @@ export function TextGrid({ content, config }: TextGridProps) {
 
   return (
     <>
-      {content.map((textItem) => (
-        <div key={uuidv4()}>
-          {textItem.text
-            .split('\n')
-            .filter((line) => line.trim() !== '')
-            .map((line) => {
-              const lineBlock: TextBlock = {
-                ...textItem,
-                text: line,
-              };
-              return (
-                <div
-                  key={uuidv4()}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: theme.spacing.md,
-                    marginBottom: theme.spacing.xs,
-                  }}
-                >
-                  {startsWithBullet(line) && listIcon && (
-                    <span
-                      style={{
-                        color: theme.colors.primary,
-                      }}
-                    >
-                      {listIcon}
-                    </span>
-                  )}
+      {content.map((textItem) => {
+        // Markdown mode: pass the entire text to micromark, skip line-splitting and special chars
+        if (textItem.format === 'markdown') {
+          return (
+            <div key={uuidv4()}>
+              {renderMarkdown(textItem.text, textItem.textColor ?? theme.colors.text)}
+            </div>
+          );
+        }
 
-                  {startsWithListNumber(line) && (
-                    <span
-                      style={{
-                        color: theme.colors.primary,
-                      }}
-                    >
-                      {listNumber++}.
-                    </span>
-                  )}
+        // Plain mode (default): existing line-splitting + bullet/list/special char logic
+        return (
+          <div key={uuidv4()}>
+            {textItem.text
+              .split('\n')
+              .filter((line) => line.trim() !== '')
+              .map((line) => {
+                const lineBlock: TextBlock = {
+                  ...textItem,
+                  text: line,
+                };
+                return (
+                  <div
+                    key={uuidv4()}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: theme.spacing.md,
+                      marginBottom: theme.spacing.xs,
+                    }}
+                  >
+                    {startsWithBullet(line) && listIcon && (
+                      <span
+                        style={{
+                          color: theme.colors.primary,
+                        }}
+                      >
+                        {listIcon}
+                      </span>
+                    )}
 
-                  {renderText(lineBlock)}
-                </div>
-              );
-            })}
-        </div>
-      ))}
+                    {startsWithListNumber(line) && (
+                      <span
+                        style={{
+                          color: theme.colors.primary,
+                        }}
+                      >
+                        {listNumber++}.
+                      </span>
+                    )}
+
+                    {renderText(lineBlock)}
+                  </div>
+                );
+              })}
+          </div>
+        );
+      })}
     </>
   );
 }
