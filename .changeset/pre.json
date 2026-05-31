@@ -37,6 +37,7 @@
     "icon-layout-alias-fix",
     "perf-lazy-codeblock-faq",
     "refactor-board-beads-native",
+    "skip-link-tabindex",
     "validate-app-router-migration"
   ]
 }

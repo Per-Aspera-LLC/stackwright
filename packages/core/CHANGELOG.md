@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.8.6-alpha.5
+
+### Patch Changes
+
+- a0e2a3c: fix(a11y): add tabIndex={-1} to main content area so skip-to-content link correctly moves keyboard focus (WCAG 2.4.1)
+
 ## 0.8.6-alpha.4
 
 ### Patch Changes
