@@ -487,3 +487,141 @@ integrations:
     expect(securityWarning).toBeUndefined();
   });
 });
+
+// ---------------------------------------------------------------------------
+// SEO Autopilot (sitemap + robots.txt)
+// ---------------------------------------------------------------------------
+
+describe('runPrebuild — SEO Autopilot (sitemap + robots.txt)', () => {
+  let root: string;
+
+  beforeEach(() => {
+    root = makeTmpProject();
+  });
+
+  it('generates sitemap.xml and robots.txt when meta.base_url is set', async () => {
+    // Override the site config to include meta.base_url
+    fs.writeFileSync(
+      path.join(root, 'stackwright.yml'),
+      `
+title: Test Site
+meta:
+  base_url: https://example.com
+navigation: []
+appBar:
+  titleText: Test Site
+`
+    );
+    writePageContent(
+      root,
+      '',
+      `
+content:
+  content_items:
+    - type: text_block
+      label: home
+      textBlocks:
+        - text: "Welcome"
+          textSize: h1
+`
+    );
+    writePageContent(
+      root,
+      'about',
+      `
+content:
+  content_items:
+    - type: text_block
+      label: about
+      textBlocks:
+        - text: "About Us"
+          textSize: h1
+`
+    );
+
+    await runPrebuild(root);
+
+    const sitemapPath = path.join(root, 'public', 'sitemap.xml');
+    const robotsPath = path.join(root, 'public', 'robots.txt');
+
+    expect(fs.existsSync(sitemapPath)).toBe(true);
+    expect(fs.existsSync(robotsPath)).toBe(true);
+
+    const sitemap = fs.readFileSync(sitemapPath, 'utf8');
+    expect(sitemap).toContain('https://example.com/');
+    expect(sitemap).toContain('https://example.com/about');
+    expect(sitemap).toContain('</urlset>');
+
+    const robots = fs.readFileSync(robotsPath, 'utf8');
+    expect(robots).toContain('Sitemap: https://example.com/sitemap.xml');
+  });
+
+  it('skips sitemap/robots.txt when meta.base_url is not set', async () => {
+    writePageContent(
+      root,
+      'about',
+      `
+content:
+  content_items:
+    - type: text_block
+      label: about
+      textBlocks:
+        - text: "About Us"
+          textSize: h1
+`
+    );
+
+    await runPrebuild(root);
+
+    expect(fs.existsSync(path.join(root, 'public', 'sitemap.xml'))).toBe(false);
+    expect(fs.existsSync(path.join(root, 'public', 'robots.txt'))).toBe(false);
+  });
+
+  it('excludes noindex pages from sitemap', async () => {
+    fs.writeFileSync(
+      path.join(root, 'stackwright.yml'),
+      `
+title: Test Site
+meta:
+  base_url: https://example.com
+navigation: []
+appBar:
+  titleText: Test Site
+`
+    );
+    writePageContent(
+      root,
+      'public-page',
+      `
+content:
+  content_items:
+    - type: text_block
+      label: pub
+      textBlocks:
+        - text: "Public"
+          textSize: h1
+`
+    );
+    writePageContent(
+      root,
+      'secret-page',
+      `
+content:
+  meta:
+    noindex: true
+  content_items:
+    - type: text_block
+      label: secret
+      textBlocks:
+        - text: "Secret"
+          textSize: h1
+`
+    );
+
+    await runPrebuild(root);
+
+    const sitemap = fs.readFileSync(path.join(root, 'public', 'sitemap.xml'), 'utf8');
+    expect(sitemap).toContain('https://example.com/public-page');
+    expect(sitemap).not.toContain('https://example.com/secret-page');
+  });
+});
