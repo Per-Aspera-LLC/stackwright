@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.8.6-alpha.4
+
+### Patch Changes
+
+- dae351d: CodeBlock+PrismJS and FAQ+@radix-ui/react-accordion are now lazy-loaded via React.lazy() (~17-20KB gzip first-load savings). fuse.js moved to optionalDependencies — no behavior change for consumers.
+
 ## 0.8.6-alpha.3
 
 ### Patch Changes
