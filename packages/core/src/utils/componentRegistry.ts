@@ -5,6 +5,12 @@ import React, { ComponentType } from 'react';
 const LazyCarousel = React.lazy(() =>
   import('../components/narrative/Carousel/Carousel').then((m) => ({ default: m.Carousel }))
 ) as ComponentType<any>;
+
+// Map is lazy-loaded so it is NOT in the first-load JS bundle.
+// Pages that contain no map items never download the Map chunk.
+const LazyMap = React.lazy(() =>
+  import('../components/base/Map').then((m) => ({ default: m.Map }))
+) as ComponentType<any>;
 import {
   MainContentGrid,
   TabbedContentGrid,
@@ -23,7 +29,6 @@ import {
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
-import { Map } from '../components/base/Map';
 import NavSidebar from '../components/structural/NavSidebar';
 import {
   getStackwrightImage,
@@ -52,7 +57,7 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   form: Form,
   grid: LayoutGrid,
   collection_list: CollectionList,
-  map: Map,
+  map: LazyMap,
   'nav-sidebar': NavSidebar,
   // Stackwright platform components (resolved dynamically via factory)
   'stackwright-image': () => getStackwrightImage(),

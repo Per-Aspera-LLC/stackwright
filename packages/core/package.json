@@ -30,6 +30,11 @@
             "types": "./dist/components/narrative/Carousel/Carousel.d.ts",
             "import": "./dist/components/narrative/Carousel/Carousel.mjs",
             "require": "./dist/components/narrative/Carousel/Carousel.js"
+        },
+        "./map": {
+            "types": "./dist/components/base/Map.d.ts",
+            "import": "./dist/components/base/Map.mjs",
+            "require": "./dist/components/base/Map.js"
         }
     },
     "files": [

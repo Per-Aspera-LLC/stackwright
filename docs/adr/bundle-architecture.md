@@ -58,7 +58,7 @@ Implemented for:
 - **Carousel**: Dynamically imported via `React.lazy()` in the component registry. A `<Suspense>` boundary was added to `DynamicPage`. tsup `splitting: true` ensures the Carousel module is a separate chunk.
 - **Video**: Not split (shares a component with `media` — splitting would require refactoring `Media.tsx`; deferred).
 - **SearchModal / fuse.js**: `fuse.js` import moved from module-level to inside `useEffect` (async `import('fuse.js')` at search-open time).
-- **Map**: Already uses a registry/provider pattern — zero weight unless `MapProvider` is registered. No change needed.
+- **Map**: ~~No change needed~~ — post App Router migration, Turbopack workspace scanning was pulling `@stackwright/maplibre` → `maplibre-gl` (~36KB gzip) into the shared chunk even though no pages use the `map` content type. Now lazy-loaded via `React.lazy()` in componentRegistry, matching the Carousel pattern. Bead: `stackwright-b2w`. ≈36KB gzip savings.
 
 **Pattern for future heavy content types**: Any content type component >20 KB gzip that is not universally used should be registered via `React.lazy(() => import('./path/to/Component'))` and the registering package must have `splitting: true` in tsup.
 
@@ -137,7 +137,7 @@ The `performance-budgets.json` file in `packages/e2e/tests/performance` is the a
 | Decision | Status | Notes |
 |----------|--------|-------|
 | 1. Icon Loading Strategy | ✅ Implemented | `registerSiteIcons()` + prebuild manifest |
-| 2. Content Type Code Splitting | ⚠️ Partially | Carousel: React.lazy in core ✅, but was broken in Pages Router. Now works post-App Router migration. CodeBlock/PrismJS: NOT yet lazy. FAQ/Accordion: NOT yet lazy. |
+| 2. Content Type Code Splitting | ⚠️ Partially | Carousel: ✅ React.lazy in core. Map: ✅ React.lazy in core (stackwright-b2w). CodeBlock/PrismJS: NOT yet lazy. FAQ/Accordion: NOT yet lazy. |
 | 3. First-Load Contract | 🔄 In Progress | App Router migration removes polyfills. Further code splitting needed to reach ≤200KB target. |
 | 4. New Dependency Policy | ✅ Active | No new heavy deps added since ADR. |
 | 5. Performance Budget | 🔄 Updated | Interim: 350KB max / 300KB warn. Target after all optimizations: 250KB max / 200KB warn. |

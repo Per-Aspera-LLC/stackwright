@@ -15,7 +15,9 @@ export { Form } from './Form';
 export { Alert } from './Alert';
 export { LayoutGrid } from './LayoutGrid';
 export { CollectionList } from './CollectionList';
-export { Map } from './Map';
+// Map is NOT exported from the main barrel — it is lazy-loaded by the
+// component registry (React.lazy) so it stays out of the first-load bundle.
+// Import directly from '@stackwright/core/map' if you need the component.
 export { UnknownContentType } from './UnknownContentType';
 
 export * from './Menu';

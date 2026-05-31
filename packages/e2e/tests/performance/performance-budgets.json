@@ -13,9 +13,9 @@
   },
   "bundle": {
     "firstLoadJS": {
-      "max": 471040,
+      "max": 448512,
       "warn": 409600,
-      "description": "First-load JS bundle size (bytes, gzipped). Turbopack-era interim target — Turbopack bundles all code as shared chunks (no page-specific splits). 460KB max / 400KB warn. Previous Webpack target was 350KB/300KB. Pending: MapLibre tree-shaking (36KB) and further code-splitting optimizations. Final target: ≤350KB."
+      "description": "First-load JS bundle size (bytes, gzipped). Post-MapLibre-tree-shaking target (stackwright-b2w: ✅ done, −36KB). Pending: CodeBlock/PrismJS and FAQ lazy-loading (stackwright-70q). Turbopack-era interim budget — 438KB max / 400KB warn. Final ADR target: ≤350KB."
     },
     "allPagesJS": {
       "max": 819200,

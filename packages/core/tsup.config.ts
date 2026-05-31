@@ -8,6 +8,9 @@ export default defineConfig({
     // Carousel is a separate entry so '@stackwright/core/carousel' is a stable
     // subpath import and the async chunk has a deterministic name.
     'src/components/narrative/Carousel/Carousel.tsx',
+    // Map is a separate entry so '@stackwright/core/map' is a stable
+    // subpath import and the async chunk has a deterministic name.
+    'src/components/base/Map.tsx',
   ],
   format: ['cjs', 'esm'],
   target: 'es2022',
