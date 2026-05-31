@@ -6,7 +6,8 @@
  * during prebuild.
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { AriaLiveRegion } from '../base/AriaLiveRegion';
 // fuse.js is NOT imported statically — it is dynamically imported inside the
 // useEffect below so webpack creates a separate async chunk for it.
 // The type-only import gives TypeScript the FuseResult shape without bundling.
@@ -172,6 +173,15 @@ export function SearchModal({
     }
   }, [selectedIndex]);
 
+  // Derive announcement for screen readers based on search state
+  // Must be before early return — React hooks must not be called conditionally
+  const liveMessage = useMemo(() => {
+    if (loading) return 'Loading search results…';
+    if (!query.trim()) return '';
+    if (results.length === 0) return `No results found for "${query}"`;
+    return `${results.length} result${results.length !== 1 ? 's' : ''} found for "${query}"`;
+  }, [loading, query, results.length]);
+
   if (!isOpen) return null;
 
   return (
@@ -200,6 +210,9 @@ export function SearchModal({
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Screen reader announcement for result count changes */}
+        <AriaLiveRegion message={liveMessage} />
+
         {/* Search Input */}
         <div
           style={{

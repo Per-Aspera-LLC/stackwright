@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { OverflowImageCard } from './OverFlowImageCard';
+import { AriaLiveRegion } from '../../base/AriaLiveRegion';
 import { CarouselContent } from '@stackwright/types';
 import { useSafeTheme } from '../../../hooks/useSafeTheme';
 import { useBreakpoints } from '../../../hooks/useBreakpoints';
@@ -205,6 +206,11 @@ export const Carousel = (carouselContent: CarouselContent) => {
       </div>
 
       {scrollAndButtonsEnabled && <ArrowButton direction="right" onClick={manualNext} />}
+
+      {/* Announce slide position to screen readers */}
+      <AriaLiveRegion
+        message={`Showing slide ${currentIndex + 1} of ${carouselContent.items.length}`}
+      />
     </div>
   );
 };

@@ -194,6 +194,9 @@ export function Form({
 
         {submitted ? (
           <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
             style={{
               padding: theme.spacing.lg,
               backgroundColor: theme.colors.primary,

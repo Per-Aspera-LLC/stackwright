@@ -1,5 +1,7 @@
 // Clean named exports - no "default as" needed
 
+export { AriaLiveRegion } from './AriaLiveRegion';
+export type { AriaLiveRegionProps } from './AriaLiveRegion';
 export { TextGrid } from './TextGrid';
 export { TextBlockGrid } from './TextBlockGrid';
 export { MainContentGrid } from './MainContentGrid';
