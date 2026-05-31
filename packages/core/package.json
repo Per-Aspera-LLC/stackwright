@@ -35,6 +35,16 @@
             "types": "./dist/components/base/Map.d.ts",
             "import": "./dist/components/base/Map.mjs",
             "require": "./dist/components/base/Map.js"
+        },
+        "./code-block": {
+            "types": "./dist/components/base/CodeBlock.d.ts",
+            "import": "./dist/components/base/CodeBlock.mjs",
+            "require": "./dist/components/base/CodeBlock.js"
+        },
+        "./faq": {
+            "types": "./dist/components/base/Faq.d.ts",
+            "import": "./dist/components/base/Faq.mjs",
+            "require": "./dist/components/base/Faq.js"
         }
     },
     "files": [
@@ -52,11 +62,13 @@
         "@radix-ui/react-accordion": "^1.2.11",
         "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
-        "fuse.js": "^7.1.0",
         "js-yaml": "^4.1.0",
         "prismjs": "^1.30.0",
         "uuid": "^13.0.0",
         "zod": "^4.4.3"
+    },
+    "optionalDependencies": {
+        "fuse.js": "^7.1.0"
     },
     "devDependencies": {
         "@stackwright/collections": "workspace:*",

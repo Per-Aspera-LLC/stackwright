@@ -21,7 +21,6 @@
     "@stackwright/types": "workspace:*",
     "@stackwright/ui-shadcn": "workspace:*",
     "clsx": "^2.1.1",
-    "fuse.js": "^7.1.0",
     "js-yaml": "^4.1.1",
     "lucide-react": "^1.17.0",
     "next": "^16.2.2",

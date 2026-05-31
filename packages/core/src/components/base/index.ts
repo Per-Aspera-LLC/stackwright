@@ -4,11 +4,15 @@ export { TextGrid } from './TextGrid';
 export { TextBlockGrid } from './TextBlockGrid';
 export { MainContentGrid } from './MainContentGrid';
 export { TabbedContentGrid } from './TabbedContentGrid';
-export { CodeBlock } from './CodeBlock';
+// CodeBlock is NOT exported from the main barrel — it is lazy-loaded by the
+// component registry (React.lazy) so it stays out of the first-load bundle.
+// Import directly from '@stackwright/core/code-block' if you need the component.
 export { IconGrid } from './IconGrid';
 export { FeatureList } from './FeatureList';
 export { TestimonialGrid } from './TestimonialGrid';
-export { Faq } from './Faq';
+// Faq is NOT exported from the main barrel — it is lazy-loaded by the
+// component registry (React.lazy) so it stays out of the first-load bundle.
+// Import directly from '@stackwright/core/faq' if you need the component.
 export { PricingTable } from './PricingTable';
 export { ContactFormStub } from './ContactFormStub';
 export { Form } from './Form';
