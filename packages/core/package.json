@@ -64,7 +64,7 @@
         "@stackwright/types": "workspace:*",
         "js-yaml": "catalog:",
         "micromark": "^4.0.1",
-        "prismjs": "^1.30.0",
+        "shiki": "^4.1.0",
         "uuid": "^13.0.0",
         "zod": "catalog:"
     },
@@ -78,7 +78,6 @@
         "@testing-library/jest-dom": "^6.6",
         "@testing-library/react": "^16.3",
         "@types/node": "catalog:",
-        "@types/prismjs": "^1.26.6",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "@vitest/ui": "^4.1.6",
