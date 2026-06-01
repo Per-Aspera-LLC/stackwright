@@ -1,5 +1,12 @@
 # @stackwright/maplibre
 
+## 3.0.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [b4557d4]
+  - @stackwright/core@0.9.0-alpha.9
+
 ## 3.0.0-alpha.3
 
 ### Patch Changes
