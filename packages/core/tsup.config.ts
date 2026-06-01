@@ -13,7 +13,7 @@ export default defineConfig({
     'src/components/base/Map.tsx',
     // CodeBlock is a separate entry so '@stackwright/core/code-block' is a
     // stable subpath import and the async chunk has a deterministic name.
-    // PrismJS moves into this chunk automatically (it's only imported by CodeBlock).
+    // Shiki is an external dependency — only the thin wrapper is in this chunk.
     'src/components/base/CodeBlock.tsx',
     // Faq is a separate entry so '@stackwright/core/faq' is a stable
     // subpath import and the async chunk has a deterministic name.
@@ -38,7 +38,6 @@ export default defineConfig({
     '@stackwright/themes',
     '@stackwright/collections',
   ],
-  noExternal: ['prismjs'],
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.js' : '.mjs',

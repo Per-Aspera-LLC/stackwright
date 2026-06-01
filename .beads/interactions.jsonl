@@ -55,3 +55,4 @@
 {"id":"int-13dc0a3a","kind":"field_change","created_at":"2026-05-31T13:04:03.328783799Z","actor":"Stackwright Bot","issue_id":"stackwright-70q","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
 {"id":"int-e4836528","kind":"field_change","created_at":"2026-05-31T14:56:36.319940229Z","actor":"Stackwright Bot","issue_id":"stackwright-nw6","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
 {"id":"int-7d9d52ed","kind":"field_change","created_at":"2026-05-31T23:33:00.059300042Z","actor":"Stackwright Bot","issue_id":"stackwright-11p","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
+{"id":"int-e1b48efd","kind":"field_change","created_at":"2026-06-01T12:49:07.441446681Z","actor":"Stackwright Bot","issue_id":"stackwright-wx3","extra":{"field":"assignee","new_value":"planning-agent-8e804d","old_value":""}}

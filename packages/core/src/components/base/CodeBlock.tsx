@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CodeBlockContent } from '@stackwright/types';
 import { useSafeTheme, useSafeColorMode } from '../../hooks/useSafeTheme';
 import { resolveBackground } from '../../utils/resolveBackground';
-import { highlightCode, getTokenColor, HighlightToken } from '../../utils/prismHighlighter';
-import { hexToRgb, getLuminance } from '../../utils/colorUtils';
+import { ensureHighlighter, highlightCode, isHighlighterReady } from '../../utils/shikiHighlighter';
+import type { HighlightToken } from '../../utils/shikiHighlighter';
 
 /**
  * Split a flat token list into per-line groups so each line can be
@@ -16,7 +16,7 @@ function splitTokensByLine(tokens: HighlightToken[]): HighlightToken[][] {
     for (let p = 0; p < parts.length; p++) {
       if (p > 0) lines.push([]);
       if (parts[p].length > 0) {
-        lines[lines.length - 1].push({ type: token.type, content: parts[p] });
+        lines[lines.length - 1].push({ type: token.type, content: parts[p], color: token.color });
       }
     }
   }
@@ -26,11 +26,16 @@ function splitTokensByLine(tokens: HighlightToken[]): HighlightToken[][] {
 export function CodeBlock({ code, language, lineNumbers = false, background }: CodeBlockContent) {
   const theme = useSafeTheme();
   const resolvedColorMode = useSafeColorMode();
-  const surfaceRgb = hexToRgb(theme.colors.surface);
-  const surfaceLuminance = surfaceRgb ? getLuminance(surfaceRgb.r, surfaceRgb.g, surfaceRgb.b) : 0;
-  const isDarkSurface = surfaceLuminance < 0.179;
+  const isDark = resolvedColorMode === 'dark';
 
-  const tokens = highlightCode(code.trimEnd(), language);
+  const [ready, setReady] = useState(isHighlighterReady());
+  useEffect(() => {
+    if (!ready) {
+      ensureHighlighter().then(() => setReady(true));
+    }
+  }, [ready]);
+
+  const tokens = highlightCode(code.trimEnd(), language, isDark);
   const tokenLines = splitTokensByLine(tokens);
 
   return (
@@ -101,16 +106,15 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
               )}
               <span>
                 {lineTokens.length > 0
-                  ? lineTokens.map((t, j) => {
-                      const color = getTokenColor(t.type, isDarkSurface);
-                      return color ? (
-                        <span key={j} style={{ color }}>
+                  ? lineTokens.map((t, j) =>
+                      t.color ? (
+                        <span key={j} style={{ color: t.color }}>
                           {t.content}
                         </span>
                       ) : (
                         <span key={j}>{t.content}</span>
-                      );
-                    })
+                      )
+                    )
                   : ' '}
               </span>
               {'\n'}
