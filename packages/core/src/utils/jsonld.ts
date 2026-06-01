@@ -222,6 +222,14 @@ export function generateArticleJsonLd(
   return article;
 }
 
+/** Strip trailing `/` characters without a regex (avoids CodeQL ReDoS false positives). */
+function stripTrailingSlashes(url: string | undefined): string | undefined {
+  if (!url) return url;
+  let end = url.length;
+  while (end > 0 && url[end - 1] === '/') end--;
+  return end === url.length ? url : url.slice(0, end);
+}
+
 // ---------------------------------------------------------------------------
 // generatePageJsonLd  (master walker)
 // ---------------------------------------------------------------------------
@@ -241,7 +249,7 @@ export function generatePageJsonLd(
   siteConfig?: SiteConfigLike,
   slug?: string
 ): Record<string, unknown>[] {
-  const baseUrl = siteConfig?.meta?.base_url?.replace(/\/+$/, '');
+  const baseUrl = stripTrailingSlashes(siteConfig?.meta?.base_url);
   const pageUrl = baseUrl ? (slug ? `${baseUrl}/${slug}` : `${baseUrl}/`) : undefined;
 
   const results: Record<string, unknown>[] = [];

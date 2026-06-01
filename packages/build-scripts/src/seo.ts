@@ -194,7 +194,7 @@ function looksLikeLocale(s: string): boolean {
  */
 export function generateSitemap(options: SitemapOptions): string {
   const { pages, buildDate } = options;
-  const baseUrl = options.baseUrl.replace(/\/+$/, '');
+  const baseUrl = stripTrailingSlashes(options.baseUrl);
 
   // Group indexable pages by slug so we can attach locale alternates
   const groupedBySlug = new Map<string, PageEntry[]>();
@@ -258,7 +258,7 @@ export function generateSitemap(options: SitemapOptions): string {
  * @returns A robots.txt string ready to write to `public/robots.txt`.
  */
 export function generateRobotsTxt(baseUrl: string): string {
-  const base = baseUrl.replace(/\/+$/, '');
+  const base = stripTrailingSlashes(baseUrl);
 
   return [
     'User-agent: *',
@@ -290,6 +290,13 @@ function buildAbsoluteUrl(baseUrl: string, page: PageEntry): string {
   if (page.slug) segments.push(page.slug);
 
   return segments.length === 0 ? `${baseUrl}/` : `${baseUrl}/${segments.join('/')}`;
+}
+
+/** Strip trailing `/` characters without a regex (avoids CodeQL ReDoS false positives). */
+function stripTrailingSlashes(url: string): string {
+  let end = url.length;
+  while (end > 0 && url[end - 1] === '/') end--;
+  return end === url.length ? url : url.slice(0, end);
 }
 
 /** Minimal XML escaping for attribute/text values. */
