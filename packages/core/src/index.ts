@@ -78,6 +78,15 @@ export {
   getHighContrastTextColor,
 } from './utils/colorUtils';
 
+// JSON-LD structured data utilities
+export {
+  generatePageJsonLd,
+  generateFaqJsonLd,
+  generatePricingJsonLd,
+  generateArticleJsonLd,
+} from './utils/jsonld';
+export { JsonLdScript } from './components/JsonLdScript';
+
 // Cookie & consent utilities
 export { getCookie, setCookie, removeCookie } from './utils/cookies';
 export type { CookieOptions } from './utils/cookies';

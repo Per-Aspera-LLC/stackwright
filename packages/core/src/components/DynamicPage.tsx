@@ -6,6 +6,8 @@ import { useDevContentReload } from '../hooks/useDevContentReload';
 import { useReducedMotion } from '../hooks/useReducedMotion';
 import { getStackwrightHead } from '../utils/stackwrightComponentRegistry';
 import { StackwrightHeadProps } from '../interfaces/stackwright-components';
+import { generatePageJsonLd } from '../utils/jsonld';
+import { JsonLdScript } from './JsonLdScript';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -220,10 +222,12 @@ function DynamicPageInner({
   const { theme } = useTheme();
   const reducedMotion = useReducedMotion();
   const HeadComponent = getStackwrightHead();
+  const jsonLdData = generatePageJsonLd(pageContent, siteConfig, slug);
 
   return (
     <>
       {HeadComponent && <HeadComponent {...meta} />}
+      <JsonLdScript data={jsonLdData} />
       <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />
       <div
         style={{
