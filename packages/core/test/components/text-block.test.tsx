@@ -345,3 +345,106 @@ describe('TextBlockGrid', () => {
     expect(screen.getByText('After divider')).toBeInTheDocument();
   });
 });
+
+describe('TextGrid — markdown format', () => {
+  it('renders bold text when format is markdown', () => {
+    const { container } = render(
+      <TextBlockGrid
+        label="md-test"
+        textBlocks={[{ text: '**Bold text**', textSize: 'body1', format: 'markdown' }]}
+      />
+    );
+    expect(container.querySelector('strong')).toBeTruthy();
+    expect(container.querySelector('strong')?.textContent).toBe('Bold text');
+  });
+
+  it('renders italic text when format is markdown', () => {
+    const { container } = render(
+      <TextBlockGrid
+        label="md-test"
+        textBlocks={[{ text: '*Italic text*', textSize: 'body1', format: 'markdown' }]}
+      />
+    );
+    expect(container.querySelector('em')).toBeTruthy();
+    expect(container.querySelector('em')?.textContent).toBe('Italic text');
+  });
+
+  it('renders a link when format is markdown', () => {
+    const { container } = render(
+      <TextBlockGrid
+        label="md-test"
+        textBlocks={[
+          {
+            text: '[Visit site](https://example.com)',
+            textSize: 'body1',
+            format: 'markdown',
+          },
+        ]}
+      />
+    );
+    const link = container.querySelector('a');
+    expect(link).toBeTruthy();
+    expect(link?.getAttribute('href')).toBe('https://example.com');
+    expect(link?.textContent).toBe('Visit site');
+  });
+
+  it('does NOT render raw HTML (XSS-safe by construction)', () => {
+    const { container } = render(
+      <TextBlockGrid
+        label="md-test"
+        textBlocks={[
+          {
+            text: '<script>alert("xss")</script> safe text',
+            textSize: 'body1',
+            format: 'markdown',
+          },
+        ]}
+      />
+    );
+    // micromark strips raw HTML by default — no script tag should appear
+    expect(container.querySelector('script')).toBeNull();
+    expect(container.textContent).toContain('safe text');
+  });
+
+  it('renders a markdown list when format is markdown', () => {
+    const { container } = render(
+      <TextBlockGrid
+        label="md-test"
+        textBlocks={[
+          {
+            text: '- Item one\n- Item two\n- Item three',
+            textSize: 'body1',
+            format: 'markdown',
+          },
+        ]}
+      />
+    );
+    const listItems = container.querySelectorAll('li');
+    expect(listItems.length).toBe(3);
+    expect(listItems[0].textContent).toBe('Item one');
+    expect(listItems[1].textContent).toBe('Item two');
+  });
+
+  it('backward compat: plain format (no format field) unchanged behavior', () => {
+    const { container } = render(
+      <TextBlockGrid
+        label="plain-test"
+        textBlocks={[{ text: '**Not bold** in plain mode', textSize: 'body1' }]}
+      />
+    );
+    // Plain mode uses renderInlineMarkdown — **text** is rendered as <strong> via React children
+    // (not via dangerouslySetInnerHTML). Existing behavior is preserved.
+    expect(container.querySelector('strong')).toBeTruthy();
+    expect(container.querySelector('strong')?.textContent).toBe('Not bold');
+  });
+
+  it('backward compat: explicit format: plain unchanged behavior', () => {
+    render(
+      <TextBlockGrid
+        label="plain-test"
+        textBlocks={[{ text: 'Regular text', textSize: 'body1', format: 'plain' }]}
+      />
+    );
+    expect(screen.getByText('Regular text')).toBeInTheDocument();
+  });
+});

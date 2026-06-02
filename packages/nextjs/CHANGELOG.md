@@ -1,5 +1,63 @@
 # @stackwright/nextjs
 
+## 0.6.0-alpha.11
+
+### Patch Changes
+
+- Updated dependencies [b4557d4]
+  - @stackwright/core@0.9.0-alpha.9
+
+## 0.6.0-alpha.10
+
+### Patch Changes
+
+- Updated dependencies [85075cd]
+  - @stackwright/core@0.9.0-alpha.8
+
+## 0.6.0-alpha.9
+
+### Patch Changes
+
+- Updated dependencies [5639890]
+  - @stackwright/core@0.9.0-alpha.7
+
+## 0.6.0-alpha.8
+
+### Patch Changes
+
+- Updated dependencies [ed64fab]
+  - @stackwright/core@0.9.0-alpha.6
+  - @stackwright/types@1.6.0-alpha.3
+
+## 0.6.0-alpha.7
+
+### Patch Changes
+
+- Updated dependencies [a0e2a3c]
+  - @stackwright/core@0.8.6-alpha.5
+
+## 0.6.0-alpha.6
+
+### Patch Changes
+
+- Updated dependencies [dae351d]
+  - @stackwright/core@0.8.6-alpha.4
+
+## 0.6.0-alpha.5
+
+### Patch Changes
+
+- a72f3ad: Add server-safe `@stackwright/themes/color-mode-script` entry point for App Router Server Components.
+
+  `StackwrightLayout` (a Server Component) needs `ColorModeScript` but must not import `ThemeProvider` and its client-only React hooks. The new `@stackwright/themes/color-mode-script` export provides exactly `ColorModeScript` without pulling in any client code.
+  - **@stackwright/themes**: New `./color-mode-script` export path (server-safe, no React hooks)
+  - **@stackwright/nextjs**: `StackwrightLayout` now imports from `@stackwright/themes/color-mode-script`
+
+- Updated dependencies [a72f3ad]
+  - @stackwright/themes@0.6.0-alpha.0
+  - @stackwright/core@0.8.6-alpha.3
+  - @stackwright/types@1.6.0-alpha.2
+
 ## 0.6.0-alpha.4
 
 ### Patch Changes

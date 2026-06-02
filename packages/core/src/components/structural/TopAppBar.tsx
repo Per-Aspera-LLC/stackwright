@@ -6,6 +6,7 @@ import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { getBetterTextColor, resolveColor } from '../../utils/colorUtils';
 import { Media } from '../media/Media';
 import { useBreakpoints } from '../../hooks/useBreakpoints';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { getThemeShadow } from '../../utils/shadowUtils';
 import { useThemeOptional } from '@stackwright/themes';
 import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
@@ -17,6 +18,7 @@ import { getIconRegistry } from '../../utils/stackwrightComponentRegistry';
 function ColorModeToggle({ textColor }: { textColor: string }) {
   const themeCtx = useThemeOptional();
   const uniqueId = useId();
+  const reducedMotion = useReducedMotion();
   if (!themeCtx) return null;
 
   const { resolvedColorMode, setColorMode } = themeCtx;
@@ -57,7 +59,7 @@ function ColorModeToggle({ textColor }: { textColor: string }) {
           alignItems: 'center',
           justifyContent: 'center',
           borderRadius: '50%',
-          transition: 'background-color 0.2s',
+          transition: reducedMotion ? 'none' : 'background-color 0.2s',
         }}
       >
         {resolvedColorMode === 'dark' ? (

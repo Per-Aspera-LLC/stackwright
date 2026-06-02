@@ -1,5 +1,34 @@
 # @stackwright/build-scripts
 
+## 0.8.0-alpha.5
+
+### Minor Changes
+
+- 85075cd: feat: SEO Autopilot — auto-generate sitemap.xml, robots.txt, and JSON-LD structured data
+
+  Prebuild now generates `sitemap.xml` and `robots.txt` in `public/` when `meta.base_url` is set in `stackwright.yml`. Pages with `noindex: true` are excluded from the sitemap. Locale variants get `xhtml:link` alternate entries.
+
+  Content types with natural schema.org mappings now emit `<script type="application/ld+json">` tags:
+  - `faq` → FAQPage schema
+  - `pricing_table` → Product with AggregateOffer schema
+
+  New exports:
+  - `@stackwright/build-scripts`: `generateSitemap`, `generateRobotsTxt`, `collectPageMeta`
+  - `@stackwright/core`: `generatePageJsonLd`, `generateFaqJsonLd`, `generatePricingJsonLd`, `generateArticleJsonLd`, `JsonLdScript`
+
+## 0.8.0-alpha.4
+
+### Patch Changes
+
+- Updated dependencies [ed64fab]
+  - @stackwright/types@1.6.0-alpha.3
+
+## 0.8.0-alpha.3
+
+### Patch Changes
+
+- @stackwright/types@1.6.0-alpha.2
+
 ## 0.8.0-alpha.2
 
 ### Patch Changes

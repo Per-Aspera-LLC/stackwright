@@ -8,6 +8,17 @@ export default defineConfig({
     // Carousel is a separate entry so '@stackwright/core/carousel' is a stable
     // subpath import and the async chunk has a deterministic name.
     'src/components/narrative/Carousel/Carousel.tsx',
+    // Map is a separate entry so '@stackwright/core/map' is a stable
+    // subpath import and the async chunk has a deterministic name.
+    'src/components/base/Map.tsx',
+    // CodeBlock is a separate entry so '@stackwright/core/code-block' is a
+    // stable subpath import and the async chunk has a deterministic name.
+    // Shiki is an external dependency — only the thin wrapper is in this chunk.
+    'src/components/base/CodeBlock.tsx',
+    // Faq is a separate entry so '@stackwright/core/faq' is a stable
+    // subpath import and the async chunk has a deterministic name.
+    // @radix-ui/react-accordion moves into this chunk automatically.
+    'src/components/base/Faq.tsx',
   ],
   format: ['cjs', 'esm'],
   target: 'es2022',
@@ -27,7 +38,6 @@ export default defineConfig({
     '@stackwright/themes',
     '@stackwright/collections',
   ],
-  noExternal: ['prismjs'],
   outExtension({ format }) {
     return {
       js: format === 'cjs' ? '.js' : '.mjs',

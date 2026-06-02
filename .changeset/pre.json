@@ -25,16 +25,24 @@
     "app-router-scaffold",
     "app-router-support",
     "docs-otters-examples",
+    "feat-aria-live-regions",
     "feat-build-scripts-font-strategies",
     "feat-fonts-config-schema",
     "feat-integration-management",
+    "feat-markdown-textblock",
     "feat-mcp-prebuild-render",
     "feat-scaffold-prebuild-watch",
     "feat-test-a11y-command",
     "fix-a11y-cluster",
+    "fix-flaky-rapid-nav-test",
     "fix-map-component-api",
     "fix-scaffold-missing-deps",
     "icon-layout-alias-fix",
-    "refactor-board-beads-native"
+    "perf-lazy-codeblock-faq",
+    "refactor-board-beads-native",
+    "seo-autopilot",
+    "shiki-migration",
+    "skip-link-tabindex",
+    "validate-app-router-migration"
   ]
 }

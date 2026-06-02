@@ -40,6 +40,11 @@ vi.mock('../../src/components/media/Media', () => ({
   Media: ({ label }: { label: string }) => <div data-testid={`media-${label}`}>Media</div>,
 }));
 
+let mockReducedMotion = false;
+vi.mock('../../src/hooks/useReducedMotion', () => ({
+  useReducedMotion: () => mockReducedMotion,
+}));
+
 import { Carousel } from '../../src/components/narrative/Carousel/Carousel';
 
 const makeItems = (count: number) =>
@@ -67,6 +72,7 @@ describe('Carousel', () => {
       isLgDown: false,
     });
     vi.useFakeTimers();
+    mockReducedMotion = false;
   });
 
   afterEach(() => {
@@ -276,6 +282,40 @@ describe('Carousel', () => {
 
       expect(screen.getByText('Item 2')).toBeInTheDocument();
       expect(screen.getByText('Item 5')).toBeInTheDocument();
+    });
+  });
+
+  describe('reduced motion', () => {
+    it('does not auto-advance when prefers-reduced-motion is active', () => {
+      mockReducedMotion = true;
+      render(
+        <Carousel
+          label="test-carousel"
+          heading="Test"
+          autoPlay={true}
+          autoPlaySpeed={1000}
+          items={makeItems(6)}
+        />
+      );
+      expect(screen.getByText('Item 1')).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(3000);
+      });
+
+      // Should still be on Item 1 — autoplay must not fire
+      expect(screen.getByText('Item 1')).toBeInTheDocument();
+    });
+
+    it('removes opacity transition when prefers-reduced-motion is active', () => {
+      mockReducedMotion = true;
+      render(<Carousel label="test-carousel" heading="Test" items={makeItems(6)} />);
+
+      // The slide grid div has the transition style. Find it by its grid structure.
+      const grids = document.querySelectorAll('[style*="grid-template-columns"]');
+      expect(grids.length).toBeGreaterThan(0);
+      const grid = grids[0] as HTMLElement;
+      expect(grid.style.transition).toBe('none');
     });
   });
 });

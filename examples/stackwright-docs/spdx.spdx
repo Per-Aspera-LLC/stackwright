@@ -1,11 +1,11 @@
 SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
-SPDXID: SPDXRef-DOCUMENT-28d15344
-DocumentName: stackwright-docs@0.1.8-alpha.3
-DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-05-29T22:06:34.743Z
+SPDXID: SPDXRef-DOCUMENT-0e05e1d1
+DocumentName: stackwright-docs@0.1.8-alpha.4
+DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-05-30T17:55:51.813Z
 
 CreationInfo:
-  Created: 2026-05-29T22:06:34.743Z
+  Created: 2026-05-30T17:55:51.813Z
   Creator: Tool: @stackwright/sbom-generator
   Creator: Tool-Version: 0.0.0
 
@@ -57,6 +57,14 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: b19c754719b46bf6371f09086bd8b754e289bf617322626044dbb47620163cf3
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/stackwright/nextjs@workspace:*
 
+PackageName: @stackwright/types
+SPDXID: SPDXRef-Package--stackwright-types
+PackageVersion: workspace:*
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageChecksum: SHA256: c17f8eea005da5702afa2b135e9c65a0c7825b05c67da9792bddfe598e44f7f1
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/stackwright/types@workspace:*
+
 PackageName: @stackwright/ui-shadcn
 SPDXID: SPDXRef-Package--stackwright-ui-shadcn
 PackageVersion: workspace:*
@@ -91,11 +99,11 @@ ExternalRef: PACKAGE-MANAGER purl pkg:npm/js-yaml@4.1.1
 
 PackageName: lucide-react
 SPDXID: SPDXRef-Package-lucide-react
-PackageVersion: 1.8.0
+PackageVersion: 1.17.0
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: 40d803f28472791a029ae0f633449a6526c50a08932f2b8a36b28efc84e9ec5d
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/lucide-react@1.8.0
+PackageChecksum: SHA256: 3ca6f555a2ef5e4e68b9618564846fbb87f8530ce24e4a116f3157102f9df037
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/lucide-react@1.17.0
 
 PackageName: next
 SPDXID: SPDXRef-Package-next
@@ -129,13 +137,14 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: 084c7514e672a9283e7a4bf1c162bf248d481e0aac75ffe397d8763082a57852
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@3.6.0
 
-Relationship: SPDXRef-DOCUMENT-28d15344 DESCRIBES SPDXRef-Package-clsx
+Relationship: SPDXRef-DOCUMENT-0e05e1d1 DESCRIBES SPDXRef-Package-clsx
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-accordion
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-slot
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-tabs
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--stackwright-core
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--stackwright-icons
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--stackwright-nextjs
+Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--stackwright-types
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--stackwright-ui-shadcn
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-fuse-js
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package-js-yaml

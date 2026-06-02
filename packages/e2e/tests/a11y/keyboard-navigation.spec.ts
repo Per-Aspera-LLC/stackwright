@@ -419,32 +419,25 @@ test.describe('Site-wide Keyboard Navigation', () => {
   test('Skip link is present and functional', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' });
 
-    // Press Tab to potentially reveal skip link
+    // Tab once — the skip link is the first focusable element and becomes
+    // visible on focus (visually-hidden-until-focused pattern).
     await page.keyboard.press('Tab');
 
-    // Look for skip link (common patterns)
-    const skipLink = page
-      .locator('a[href="#main"], a[href="#content"], a[href="#main-content"]')
-      .first();
+    // Hard assertion: the skip link MUST be present
+    const skipLink = page.locator('a[href="#main-content"]').first();
+    await expect(skipLink).toBeVisible({ timeout: 2000 });
 
-    if (await skipLink.isVisible()) {
-      // Activate the skip link
-      await skipLink.focus();
-      await page.keyboard.press('Enter');
+    // Activate the skip link
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(100);
 
-      // Check that focus moved to main content
-      const focused = await getFocusedElement(page);
-      const focusedId = await focused.evaluate((el) => el?.id || '');
+    // Focus should now be on <main id="main-content" tabIndex={-1}>
+    const focused = await page.evaluateHandle(() => document.activeElement);
+    const focusedId = await focused.evaluate((el) => (el as HTMLElement)?.id ?? '');
 
-      expect(
-        ['main', 'content', 'main-content'].some((id) => focusedId.includes(id)),
-        'Skip link should move focus to main content area'
-      ).toBe(true);
+    expect(focusedId).toBe('main-content');
 
-      console.log('✅ Skip link is functional');
-    } else {
-      console.warn('⚠️  No skip link found - consider adding one for better accessibility');
-    }
+    console.log(' Skip link is present and moves focus to #main-content');
   });
 
   test('Modal/Dialog can be closed with Escape key', async ({ page }) => {

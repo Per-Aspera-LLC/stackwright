@@ -5,15 +5,31 @@ import React, { ComponentType } from 'react';
 const LazyCarousel = React.lazy(() =>
   import('../components/narrative/Carousel/Carousel').then((m) => ({ default: m.Carousel }))
 ) as ComponentType<any>;
+
+// Map is lazy-loaded so it is NOT in the first-load JS bundle.
+// Pages that contain no map items never download the Map chunk.
+const LazyMap = React.lazy(() =>
+  import('../components/base/Map').then((m) => ({ default: m.Map }))
+) as ComponentType<any>;
+
+// CodeBlock + PrismJS are lazy-loaded so they are NOT in the first-load JS bundle.
+// Pages that contain no code_block items never download the CodeBlock chunk.
+const LazyCodeBlock = React.lazy(() =>
+  import('../components/base/CodeBlock').then((m) => ({ default: m.CodeBlock }))
+) as ComponentType<any>;
+
+// FAQ + @radix-ui/react-accordion are lazy-loaded so they are NOT in the first-load JS bundle.
+// Pages that contain no faq items never download the Faq chunk.
+const LazyFaq = React.lazy(() =>
+  import('../components/base/Faq').then((m) => ({ default: m.Faq }))
+) as ComponentType<any>;
 import {
   MainContentGrid,
   TabbedContentGrid,
   TextBlockGrid,
-  CodeBlock,
   IconGrid,
   FeatureList,
   TestimonialGrid,
-  Faq,
   PricingTable,
   ContactFormStub,
   Form,
@@ -23,7 +39,6 @@ import {
 } from '../components/base/';
 import { Media } from '../components/media/Media';
 import { Timeline } from '../components/narrative/Timeline';
-import { Map } from '../components/base/Map';
 import NavSidebar from '../components/structural/NavSidebar';
 import {
   getStackwrightImage,
@@ -42,17 +57,17 @@ export const componentRegistry: Record<string, ComponentType<any> | (() => Compo
   video: Media,
   timeline: Timeline,
   icon_grid: IconGrid,
-  code_block: CodeBlock,
+  code_block: LazyCodeBlock,
   feature_list: FeatureList,
   testimonial_grid: TestimonialGrid,
-  faq: Faq,
+  faq: LazyFaq,
   pricing_table: PricingTable,
   alert: Alert,
   contact_form_stub: ContactFormStub,
   form: Form,
   grid: LayoutGrid,
   collection_list: CollectionList,
-  map: Map,
+  map: LazyMap,
   'nav-sidebar': NavSidebar,
   // Stackwright platform components (resolved dynamically via factory)
   'stackwright-image': () => getStackwrightImage(),

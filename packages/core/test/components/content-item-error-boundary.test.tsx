@@ -45,4 +45,18 @@ describe('ContentItemErrorBoundary', () => {
     expect(screen.getByText(/Error rendering "bad"/)).toBeInTheDocument();
     errorSpy.mockRestore();
   });
+
+  it('error state has role="alert" for screen reader announcement', () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { container } = render(
+      <ContentItemErrorBoundary contentType="test" label="test-label">
+        <ThrowingComponent />
+      </ContentItemErrorBoundary>
+    );
+    // Error div should have role="alert" so screen readers announce it immediately
+    const alertDiv = container.querySelector('[role="alert"]');
+    expect(alertDiv).toBeTruthy();
+    expect(alertDiv?.textContent).toContain('Render explosion');
+    errorSpy.mockRestore();
+  });
 });

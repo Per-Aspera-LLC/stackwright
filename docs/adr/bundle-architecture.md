@@ -58,7 +58,7 @@ Implemented for:
 - **Carousel**: Dynamically imported via `React.lazy()` in the component registry. A `<Suspense>` boundary was added to `DynamicPage`. tsup `splitting: true` ensures the Carousel module is a separate chunk.
 - **Video**: Not split (shares a component with `media` — splitting would require refactoring `Media.tsx`; deferred).
 - **SearchModal / fuse.js**: `fuse.js` import moved from module-level to inside `useEffect` (async `import('fuse.js')` at search-open time).
-- **Map**: Already uses a registry/provider pattern — zero weight unless `MapProvider` is registered. No change needed.
+- **Map**: ~~No change needed~~ — post App Router migration, Turbopack workspace scanning was pulling `@stackwright/maplibre` → `maplibre-gl` (~36KB gzip) into the shared chunk even though no pages use the `map` content type. Now lazy-loaded via `React.lazy()` in componentRegistry, matching the Carousel pattern. Bead: `stackwright-b2w`. ≈36KB gzip savings.
 
 **Pattern for future heavy content types**: Any content type component >20 KB gzip that is not universally used should be registered via `React.lazy(() => import('./path/to/Component'))` and the registering package must have `splitting: true` in tsup.
 
@@ -112,6 +112,39 @@ The `performance-budgets.json` file in `packages/e2e/tests/performance` is the a
 
 ---
 
+### Decision 6 — App Router Migration (2026-06)
+
+**Choice**: Migrate `examples/stackwright-docs` (the benchmark reference app) from Pages Router to App Router.
+
+**Rationale**:
+1. **React.lazy() code splitting was broken** in Pages Router. With `transpilePackages`, webpack inlined all dynamic imports — the Carousel lazy chunk never became a separate file in the final build output.
+2. **110 KB polyfills chunk eliminated** — App Router + React 19 does not ship the legacy polyfills bundle.
+3. **Server/client boundary** enables future RSC optimizations and prevents accidental client-side leakage of server-only code.
+4. **Framework already supports it** — `@stackwright/nextjs` ships `StackwrightLayout`, `registerAppRouterComponents()`, `generateStackwrightStaticParams()`, and `getStackwrightPageData()`. The scaffold template was already App Router.
+5. **Pages Router is deprecated** in Stackwright's own AGENTS.md documentation.
+
+**Estimated savings from migration alone**: ~50-65 KB gzip (polyfills removal + better tree-shaking).
+
+**Implementation status**:
+- ✅ Scaffold template (new projects) — App Router since May 2026
+- ✅ `examples/stackwright-docs` — migrated June 2026
+- ✅ Performance benchmarks — updated to analyze `out/_next/static/chunks/` directly
+
+---
+
+## Implementation Status (2026-06 Update)
+
+| Decision | Status | Notes |
+|----------|--------|-------|
+| 1. Icon Loading Strategy | ✅ Implemented | `registerSiteIcons()` + prebuild manifest |
+| 2. Content Type Code Splitting | ✅ Complete | Carousel: ✅ React.lazy (mp6). Map: ✅ React.lazy (b2w). CodeBlock+PrismJS: ✅ React.lazy (70q). FAQ+Accordion: ✅ React.lazy (70q). Video: deferred (shares component with media). |
+| 3. First-Load Contract | 🔄 In Progress | App Router migration removes polyfills. Further code splitting needed to reach ≤200KB target. |
+| 4. New Dependency Policy | ✅ Active | No new heavy deps added since ADR. |
+| 5. Performance Budget | ✅ Updated | 200KB warn / 250KB max (set after stackwright-70q: CodeBlock+FAQ lazy-loading). ADR Decision 5 final target: ≤200KB first-load. |
+| 6. App Router Migration | ✅ Complete | Benchmark app migrated; `transpilePackages` removed (App Router handles workspace packages automatically). fuse.js moved to optionalDependencies in @stackwright/core. |
+
+---
+
 ## Consequences
 
 ### Positive
@@ -126,6 +159,7 @@ The `performance-budgets.json` file in `packages/e2e/tests/performance` is the a
 - Carousel now has a `<Suspense>` boundary — slight visual delay on first render (null fallback used)
 - Legacy MUI icon aliases are still present; they should be deprecated in a future major version
 - Video splitting deferred (requires refactoring `Media.tsx`)
+- App Router migration means the example app no longer demonstrates Pages Router patterns (but Pages Router remains functional for existing users)
 
 ### Migration
 - New projects scaffolded with `launch-stackwright` get all of this automatically

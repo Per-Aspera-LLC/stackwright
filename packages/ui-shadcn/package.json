@@ -41,7 +41,7 @@
     "@types/react": "^19.2.14",
     "react": "^19",
     "tailwindcss": "^4.1.11",
-    "tsup": "^8"
+    "tsup": "catalog:"
   },
   "peerDependencies": {
     "react": "^19",

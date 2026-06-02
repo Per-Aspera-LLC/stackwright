@@ -3,8 +3,11 @@ import { PageContent, SiteConfig } from '@stackwright/types';
 import PageLayout from './structural/PageLayout';
 import { ThemeProvider, ThemeLoader, ThemeStyleInjector, useTheme } from '@stackwright/themes';
 import { useDevContentReload } from '../hooks/useDevContentReload';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { getStackwrightHead } from '../utils/stackwrightComponentRegistry';
 import { StackwrightHeadProps } from '../interfaces/stackwright-components';
+import { generatePageJsonLd } from '../utils/jsonld';
+import { JsonLdScript } from './JsonLdScript';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -56,19 +59,23 @@ class DynamicPageErrorBoundary extends React.Component<
   }
 }
 
-// CSS keyframes for background animations -- injected once via <style> tag
+// CSS keyframes for background animations -- injected once via <style> tag.
+// Guarded by prefers-reduced-motion so they are never defined (and thus never
+// run) when the user has requested reduced motion.
 const ANIMATION_STYLES = `
-@keyframes sf-shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-@keyframes sf-drift {
-  0% { background-position-y: 0px; }
-  100% { background-position-y: 100px; }
-}
-@keyframes sf-float {
-  0%, 100% { background-position-y: 0px; }
-  50% { background-position-y: 20px; }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes sf-shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+  @keyframes sf-drift {
+    0% { background-position-y: 0px; }
+    100% { background-position-y: 100px; }
+  }
+  @keyframes sf-float {
+    0%, 100% { background-position-y: 0px; }
+    50% { background-position-y: 20px; }
+  }
 }
 `;
 
@@ -213,11 +220,14 @@ function DynamicPageInner({
   getDriftFloatAnimation: () => string | undefined;
 }) {
   const { theme } = useTheme();
+  const reducedMotion = useReducedMotion();
   const HeadComponent = getStackwrightHead();
+  const jsonLdData = generatePageJsonLd(pageContent, siteConfig, slug);
 
   return (
     <>
       {HeadComponent && <HeadComponent {...meta} />}
+      <JsonLdScript data={jsonLdData} />
       <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />
       <div
         style={{
@@ -225,7 +235,7 @@ function DynamicPageInner({
           position: 'relative',
           fontFamily: theme.typography?.fontFamily?.primary || 'sans-serif',
           ...backgroundImageStyles,
-          animation: getDriftFloatAnimation(),
+          animation: reducedMotion ? undefined : getDriftFloatAnimation(),
         }}
       >
         {showShimmer && (
@@ -238,7 +248,7 @@ function DynamicPageInner({
               height: '100%',
               background:
                 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
-              animation: 'sf-shimmer 2s ease-in-out infinite',
+              animation: reducedMotion ? undefined : 'sf-shimmer 2s ease-in-out infinite',
               pointerEvents: 'none',
             }}
           />
