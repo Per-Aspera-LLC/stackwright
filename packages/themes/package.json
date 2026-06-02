@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/themes",
-  "version": "0.5.3",
+  "version": "0.6.0-alpha.0",
   "description": "YAML-configurable theming with dark mode, CSS custom properties, and cookie-based persistence",
   "license": "MIT",
   "repository": {
@@ -24,6 +24,11 @@
       "types": "./dist/schemas.d.ts",
       "import": "./dist/schemas.mjs",
       "require": "./dist/schemas.js"
+    },
+    "./color-mode-script": {
+      "types": "./dist/color-mode-script.d.ts",
+      "import": "./dist/color-mode-script.mjs",
+      "require": "./dist/color-mode-script.js"
     }
   },
   "scripts": {
@@ -34,8 +39,8 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "js-yaml": "^4",
-    "zod": "^4.4.3"
+    "js-yaml": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9",
@@ -46,8 +51,8 @@
     "jsdom": "^29.0.2",
     "react": "^19",
     "react-dom": "^19",
-    "tsup": "^8",
-    "vitest": "^4"
+    "tsup": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "react": "^19"

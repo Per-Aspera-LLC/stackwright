@@ -8,3 +8,5 @@ export { runPrebuild } from './prebuild';
 export { runWatch } from './watch';
 export type { PrebuildOptions, PrebuildPlugin, PrebuildPluginContext } from '@stackwright/types';
 export type { SBOMOptions, SBOM, SBOMFormat } from '@stackwright/sbom-generator';
+export { generateSitemap, generateRobotsTxt, collectPageMeta } from './seo';
+export type { PageEntry, PageMeta, SitemapOptions } from './seo';

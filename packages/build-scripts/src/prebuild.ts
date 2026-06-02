@@ -42,6 +42,7 @@ import type {
   PrebuildPlugin,
   PrebuildPluginContext,
 } from '@stackwright/types';
+import { generateSitemap, generateRobotsTxt, collectPageMeta } from './seo';
 
 /**
  * Recursively resolve environment variable references in config values.
@@ -1595,6 +1596,29 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   // Generate icon manifest from all processed content
   console.log('\nGenerating icon manifest...');
   await generateIconManifest(contentOutDir, projectRoot);
+
+  // 3b. Generate sitemap.xml and robots.txt (SEO Autopilot)
+  const siteMetaConfig = (configWithEnvResolved as Record<string, unknown>).meta as
+    | Record<string, unknown>
+    | undefined;
+  const baseUrl = siteMetaConfig?.base_url as string | undefined;
+
+  if (baseUrl) {
+    const pages = collectPageMeta(contentOutDir);
+    const buildDate = new Date().toISOString().split('T')[0];
+
+    const sitemapXml = generateSitemap({ pages, baseUrl, buildDate });
+    fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml);
+    console.log(`  [OK] sitemap.xml (${pages.filter((p) => !p.meta?.noindex).length} pages)`);
+
+    const robotsTxt = generateRobotsTxt(baseUrl);
+    fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt);
+    console.log('  [OK] robots.txt');
+  } else {
+    console.log(
+      '  [INFO] Skipping sitemap.xml/robots.txt — set meta.base_url in stackwright.yml to enable'
+    );
+  }
 
   // Run afterBuild plugin hooks
   if (plugins.length > 0) {

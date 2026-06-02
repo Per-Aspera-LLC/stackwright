@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/core",
-    "version": "0.8.6-alpha.2",
+    "version": "0.9.0-alpha.9",
     "description": "Core framework for building applications from YAML configuration",
     "license": "MIT",
     "repository": {
@@ -30,6 +30,21 @@
             "types": "./dist/components/narrative/Carousel/Carousel.d.ts",
             "import": "./dist/components/narrative/Carousel/Carousel.mjs",
             "require": "./dist/components/narrative/Carousel/Carousel.js"
+        },
+        "./map": {
+            "types": "./dist/components/base/Map.d.ts",
+            "import": "./dist/components/base/Map.mjs",
+            "require": "./dist/components/base/Map.js"
+        },
+        "./code-block": {
+            "types": "./dist/components/base/CodeBlock.d.ts",
+            "import": "./dist/components/base/CodeBlock.mjs",
+            "require": "./dist/components/base/CodeBlock.js"
+        },
+        "./faq": {
+            "types": "./dist/components/base/Faq.d.ts",
+            "import": "./dist/components/base/Faq.mjs",
+            "require": "./dist/components/base/Faq.js"
         }
     },
     "files": [
@@ -47,11 +62,14 @@
         "@radix-ui/react-accordion": "^1.2.11",
         "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
-        "fuse.js": "^7.1.0",
-        "js-yaml": "^4.1.0",
-        "prismjs": "^1.30.0",
+        "js-yaml": "catalog:",
+        "micromark": "^4.0.1",
+        "shiki": "^4.1.0",
         "uuid": "^13.0.0",
-        "zod": "^4.4.3"
+        "zod": "catalog:"
+    },
+    "optionalDependencies": {
+        "fuse.js": "^7.1.0"
     },
     "devDependencies": {
         "@stackwright/collections": "workspace:*",
@@ -59,16 +77,15 @@
         "@swc/core": "^1.15.26",
         "@testing-library/jest-dom": "^6.6",
         "@testing-library/react": "^16.3",
-        "@types/node": "^25.6",
-        "@types/prismjs": "^1.26.6",
+        "@types/node": "catalog:",
         "@types/react": "^19.2.14",
         "@types/react-dom": "^19.2.3",
         "@vitest/ui": "^4.1.6",
         "jsdom": "^29.0.2",
         "react": "^19",
         "react-dom": "^19",
-        "tsup": "^8.5",
-        "vitest": "^4.0.18"
+        "tsup": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "react": "^19",

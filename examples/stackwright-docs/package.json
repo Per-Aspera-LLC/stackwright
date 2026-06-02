@@ -1,6 +1,6 @@
 {
   "name": "stackwright-docs",
-  "version": "0.1.8-alpha.4",
+  "version": "0.1.8-alpha.11",
   "private": true,
   "scripts": {
     "prebuild": "stackwright-prebuild",
@@ -18,9 +18,9 @@
     "@stackwright/core": "workspace:*",
     "@stackwright/icons": "workspace:*",
     "@stackwright/nextjs": "workspace:*",
+    "@stackwright/types": "workspace:*",
     "@stackwright/ui-shadcn": "workspace:*",
     "clsx": "^2.1.1",
-    "fuse.js": "^7.1.0",
     "js-yaml": "^4.1.1",
     "lucide-react": "^1.17.0",
     "next": "^16.2.2",

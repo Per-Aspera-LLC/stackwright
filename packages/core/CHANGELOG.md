@@ -1,5 +1,71 @@
 # @stackwright/core
 
+## 0.9.0-alpha.9
+
+### Minor Changes
+
+- b4557d4: Replace Prism.js with Shiki for syntax highlighting in CodeBlock
+  - **Shiki integration**: Uses Shiki with the JavaScript regex engine (no WASM binary required) for syntax highlighting, replacing the previous Prism.js-based highlighter
+  - **200+ languages**: Shiki supports 200+ languages out of the box (up from 10 with Prism). The same 10 languages are pre-loaded at startup for fast first-render
+  - **Theme-aware dark mode**: Uses GitHub Light and GitHub Dark themes that automatically switch based on the Stackwright color mode
+  - **Async initialization**: Highlighter loads asynchronously on first use; CodeBlock gracefully falls back to plain text until ready
+  - **Zero WASM**: Uses `createJavaScriptRegexEngine` — no WebAssembly binary to load or bundle
+  - **Bundle improvement**: Shiki is an external dependency (not bundled into the CodeBlock chunk), and grammars are lazy-loaded
+  - **Backward compatible**: `HighlightToken` interface unchanged; `getTokenColor` and `highlightCodeWithMode` preserved as deprecated shims
+
+## 0.9.0-alpha.8
+
+### Minor Changes
+
+- 85075cd: feat: SEO Autopilot — auto-generate sitemap.xml, robots.txt, and JSON-LD structured data
+
+  Prebuild now generates `sitemap.xml` and `robots.txt` in `public/` when `meta.base_url` is set in `stackwright.yml`. Pages with `noindex: true` are excluded from the sitemap. Locale variants get `xhtml:link` alternate entries.
+
+  Content types with natural schema.org mappings now emit `<script type="application/ld+json">` tags:
+  - `faq` → FAQPage schema
+  - `pricing_table` → Product with AggregateOffer schema
+
+  New exports:
+  - `@stackwright/build-scripts`: `generateSitemap`, `generateRobotsTxt`, `collectPageMeta`
+  - `@stackwright/core`: `generatePageJsonLd`, `generateFaqJsonLd`, `generatePricingJsonLd`, `generateArticleJsonLd`, `JsonLdScript`
+
+## 0.9.0-alpha.7
+
+### Minor Changes
+
+- 5639890: feat(core): add AriaLiveRegion utility and wire aria-live regions into Form, SearchModal, Carousel, ContentItemErrorBoundary (WCAG 4.1.3)
+
+## 0.9.0-alpha.6
+
+### Minor Changes
+
+- ed64fab: feat(core,types): add format: markdown to TextBlock for CommonMark rendering via micromark
+
+### Patch Changes
+
+- Updated dependencies [ed64fab]
+  - @stackwright/types@1.6.0-alpha.3
+
+## 0.8.6-alpha.5
+
+### Patch Changes
+
+- a0e2a3c: fix(a11y): add tabIndex={-1} to main content area so skip-to-content link correctly moves keyboard focus (WCAG 2.4.1)
+
+## 0.8.6-alpha.4
+
+### Patch Changes
+
+- dae351d: CodeBlock+PrismJS and FAQ+@radix-ui/react-accordion are now lazy-loaded via React.lazy() (~17-20KB gzip first-load savings). fuse.js moved to optionalDependencies — no behavior change for consumers.
+
+## 0.8.6-alpha.3
+
+### Patch Changes
+
+- Updated dependencies [a72f3ad]
+  - @stackwright/themes@0.6.0-alpha.0
+  - @stackwright/types@1.6.0-alpha.2
+
 ## 0.8.6-alpha.2
 
 ### Patch Changes

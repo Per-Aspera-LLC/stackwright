@@ -35,8 +35,8 @@
     "chalk": "^5.6.2",
     "commander": "^14.0.3",
     "fs-extra": "^11.3",
-    "js-yaml": "^4.1.0",
-    "zod": "^4.4.3"
+    "js-yaml": "catalog:",
+    "zod": "catalog:"
   },
   "peerDependencies": {
     "@axe-core/playwright": "^4.11.1",
@@ -57,9 +57,9 @@
     "@stackwright/themes": "workspace:*",
     "@stackwright/types": "workspace:*",
     "@types/fs-extra": "^11.0",
-    "@types/js-yaml": "^4.0",
-    "@types/node": "^25.6",
-    "tsup": "^8.5",
-    "vitest": "^4.0.18"
+    "@types/js-yaml": "catalog:",
+    "@types/node": "catalog:",
+    "tsup": "catalog:",
+    "vitest": "catalog:"
   }
 }

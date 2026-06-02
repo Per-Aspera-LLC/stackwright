@@ -14,6 +14,10 @@ export { CompressedMenu } from './components/base/Menu';
 // component registry (React.lazy) so it stays out of the first-load bundle.
 // Import directly from '@stackwright/core/carousel' if you need the component.
 
+// Map is NOT exported from the main barrel — it is lazy-loaded by the
+// component registry (React.lazy) so it stays out of the first-load bundle.
+// Import directly from '@stackwright/core/map' if you need the component.
+
 // Export configuration utilities (remove loadUserConfig)
 export { mergeConfig, coreDefaults } from './config/defaults';
 export { defaultSiteConfig } from './config/siteDefaults';
@@ -27,6 +31,9 @@ export { default as PageLayout } from './components/structural/PageLayout';
 
 // Export safe theme hook
 export { useSafeTheme } from './hooks/useSafeTheme';
+
+// Export reduced-motion hook
+export { useReducedMotion } from './hooks/useReducedMotion';
 
 // Export page utilities
 export * from './pages/SlugPage';
@@ -70,6 +77,15 @@ export {
   resolveColor,
   getHighContrastTextColor,
 } from './utils/colorUtils';
+
+// JSON-LD structured data utilities
+export {
+  generatePageJsonLd,
+  generateFaqJsonLd,
+  generatePricingJsonLd,
+  generateArticleJsonLd,
+} from './utils/jsonld';
+export { JsonLdScript } from './components/JsonLdScript';
 
 // Cookie & consent utilities
 export { getCookie, setCookie, removeCookie } from './utils/cookies';

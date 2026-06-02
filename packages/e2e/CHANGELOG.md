@@ -1,5 +1,11 @@
 # @stackwright/e2e
 
+## 0.3.1-alpha.0
+
+### Patch Changes
+
+- c47f9e9: fix(e2e): replace non-retrying innerText() with auto-retrying expect(locator) in rapid navigation test
+
 ## 0.3.0
 
 ### Minor Changes

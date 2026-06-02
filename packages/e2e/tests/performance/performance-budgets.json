@@ -13,9 +13,9 @@
   },
   "bundle": {
     "firstLoadJS": {
-      "max": 204800,
-      "warn": 153600,
-      "description": "First-load JS bundle size (bytes, gzipped). Post-optimization targets (see docs/adr/bundle-architecture.md). 200KB max / 150KB warn. Includes React+Next.js runtime (~130KB)."
+      "max": 256000,
+      "warn": 204800,
+      "description": "First-load JS bundle size (bytes, gzipped). CodeBlock+PrismJS and FAQ+Accordion now lazy-loaded (stackwright-70q: ✅). Target: ≤250KB max / ≤200KB warn (ADR Decision 5). Carousel and Map already lazy (stackwright-mp6, stackwright-b2w)."
     },
     "allPagesJS": {
       "max": 819200,

@@ -1,7 +1,12 @@
 import React from 'react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { CodeBlock } from '../../src/components/base/CodeBlock';
+import { ensureHighlighter } from '../../src/utils/shikiHighlighter';
+
+beforeAll(async () => {
+  await ensureHighlighter();
+}, 30000);
 
 describe('CodeBlock', () => {
   it('renders plain code without a language', () => {
@@ -40,7 +45,7 @@ describe('CodeBlock', () => {
     const jsCode = 'const x = 42;';
     const { container } = render(<CodeBlock code={jsCode} language="javascript" />);
     const pre = container.querySelector('pre')!;
-    // Prism should produce spans with inline color styles for tokens
+    // Shiki should produce spans with inline color styles for tokens
     const coloredSpans = pre.querySelectorAll('span[style*="color"]');
     expect(coloredSpans.length).toBeGreaterThan(0);
   });
