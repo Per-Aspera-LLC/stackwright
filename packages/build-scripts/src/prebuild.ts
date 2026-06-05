@@ -1240,6 +1240,21 @@ function normalizeContentItem(item: unknown): unknown {
 function normalizePageContent(rawContent: unknown): unknown {
   if (!rawContent || typeof rawContent !== 'object') return rawContent;
   const page = rawContent as Record<string, unknown>;
+
+  // App-shell format: content is a flat array (Dashboard Otter output).
+  // Normalize to standard { content: { content_items: [...] } } shape so
+  // the rest of the pipeline (validation, JSON output) works unchanged.
+  // layoutMode and all other top-level keys are preserved via ...page spread.
+  if (Array.isArray(page.content)) {
+    return {
+      ...page,
+      content: {
+        content_items: (page.content as unknown[]).map(normalizeContentItem),
+      },
+    };
+  }
+
+  // Standard format: content is an object with content_items
   const content = page.content as Record<string, unknown> | undefined;
   if (!content) return rawContent;
   const items = content.content_items;

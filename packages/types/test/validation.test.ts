@@ -117,6 +117,45 @@ describe('validatePageContent', () => {
   });
 });
 
+describe('validatePageContent — layoutMode', () => {
+  const minimalContent = { content_items: [] };
+
+  it('passes when layoutMode is app-shell', () => {
+    const result = validatePageContent({
+      layoutMode: 'app-shell',
+      content: minimalContent,
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('passes when layoutMode is page', () => {
+    const result = validatePageContent({
+      layoutMode: 'page',
+      content: minimalContent,
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+
+  it('fails when layoutMode is an invalid value', () => {
+    const result = validatePageContent({
+      layoutMode: 'invalid-value',
+      content: minimalContent,
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.length).toBeGreaterThan(0);
+  });
+
+  it('passes when layoutMode is omitted entirely', () => {
+    const result = validatePageContent({
+      content: minimalContent,
+    });
+    expect(result.valid).toBe(true);
+    expect(result.errors).toHaveLength(0);
+  });
+});
+
 describe('suggestContentType', () => {
   it('returns null for exact match', () => {
     expect(suggestContentType('main')).toBeNull();
