@@ -1326,6 +1326,41 @@ function auditIntegrationAuthSecrets(config: unknown): void {
 
 // -- Main -------------------------------------------------------------------
 
+/** The keys in siteConfig that belong to the theme split file. */
+const THEME_OVERRIDE_KEYS = ['themeName', 'customTheme', 'fonts'] as const;
+
+/**
+ * Find the theme override file in the project root.
+ * Returns the file path if found, or null.
+ * Checks stackwright.theme.yml and stackwright.theme.yaml.
+ */
+function findThemeOverrideFile(projectRoot: string): string | null {
+  for (const name of ['stackwright.theme.yml', 'stackwright.theme.yaml']) {
+    const p = path.join(projectRoot, name);
+    if (fs.existsSync(p)) return p;
+  }
+  return null;
+}
+
+/**
+ * Merge theme-specific keys from themeConfig into baseConfig.
+ * Only THEME_OVERRIDE_KEYS are merged — all other keys in themeConfig are ignored.
+ * Theme file values win (override base config values for the same key).
+ * Returns a new object; does not mutate inputs.
+ */
+function mergeThemeOverride(
+  baseConfig: Record<string, unknown>,
+  themeConfig: Record<string, unknown>
+): Record<string, unknown> {
+  const result: Record<string, unknown> = { ...baseConfig };
+  for (const key of THEME_OVERRIDE_KEYS) {
+    if (themeConfig[key] !== undefined) {
+      result[key] = themeConfig[key];
+    }
+  }
+  return result;
+}
+
 /** Find locale-specific site config files in projectRoot (e.g. stackwright.fr.yml → { locale: 'fr', filePath }) */
 function findLocaleConfigFiles(projectRoot: string): Array<{ locale: string; filePath: string }> {
   const results: Array<{ locale: string; filePath: string }> = [];
@@ -1381,7 +1416,21 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   }
 
   console.log('\nProcessing site config...');
-  const rawConfig = yaml.load(fs.readFileSync(siteConfigFile, 'utf8'));
+  const rawSiteConfig = yaml.load(fs.readFileSync(siteConfigFile, 'utf8'));
+
+  // Apply theme override from stackwright.theme.yml (if present).
+  // Only themeName, customTheme, and fonts are merged; all other keys are ignored.
+  // This allows Theme Otter and Page Otter to own separate files without clobbering.
+  const themeOverrideFile = findThemeOverrideFile(projectRoot);
+  const rawConfig = themeOverrideFile
+    ? mergeThemeOverride(
+        rawSiteConfig as Record<string, unknown>,
+        yaml.load(fs.readFileSync(themeOverrideFile, 'utf8')) as Record<string, unknown>
+      )
+    : rawSiteConfig;
+  if (themeOverrideFile) {
+    console.log('  Applied theme override from stackwright.theme.yml');
+  }
 
   const siteValidation = siteConfigSchema.safeParse(rawConfig);
   if (!siteValidation.success) {
