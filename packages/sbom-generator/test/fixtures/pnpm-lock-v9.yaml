@@ -1,0 +1,43 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+  .:
+    dependencies:
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.1
+      react:
+        specifier: ^19.0.0
+        version: 19.2.6
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.4.5
+
+packages:
+  js-yaml@4.1.1:
+    resolution: {integrity: sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YH2rmg7I8DPqg==}
+    engines: {node: '>=12.0.0'}
+
+  react@19.2.6:
+    resolution: {integrity: sha512-mock-react-integrity}
+    engines: {node: '>=0.10.0'}
+    peerDependencies:
+      react: '>=16.8.0'
+
+  typescript@5.4.5:
+    resolution: {integrity: sha512-mock-ts-integrity}
+    engines: {node: '>=14.17'}
+
+snapshots:
+  js-yaml@4.1.1:
+    dependencies:
+      argparse: 2.0.1
+
+  react@19.2.6: {}
+
+  typescript@5.4.5: {}

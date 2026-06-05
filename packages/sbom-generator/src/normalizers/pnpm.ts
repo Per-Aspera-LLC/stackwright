@@ -8,15 +8,17 @@ import { resolve } from 'node:path';
 import yaml from 'js-yaml';
 
 export interface LockfilePackage {
-  /** Resolved version */
-  version: string;
+  /** Resolved version — present in older pnpm lockfile formats; embedded in key for v9+ */
+  version?: string;
+  /** pnpm v9+: resolution info including integrity hash */
+  resolution?: { integrity?: string };
   /** Optional resolved version string */
   resolvedVersion?: string;
   /** Dependencies with version specifiers as keys */
   dependencies?: Record<string, string>;
   /** Peer dependencies */
   peerDependencies?: Record<string, string>;
-  /** Optional integrity hash */
+  /** Optional integrity hash (older formats) */
   integrity?: string;
 }
 
@@ -72,7 +74,40 @@ export async function readPnpmLockfile(projectRoot: string): Promise<{
 }
 
 /**
- * Parse lockfile packages section to extract dependencies
+ * Extract package name and version from a pnpm lockfile key.
+ *
+ * Handles multiple lockfile version formats:
+ *   - v5/v6:  /react@18.0.0  or  /@scope/pkg@1.0.0
+ *   - v9:     react@18.0.0   or  @scope/pkg@1.0.0
+ *   - v9 with peer context: pkg@1.0.0(peer@2.0.0)
+ */
+function extractNameVersionFromKey(key: string): { name: string; version: string } | null {
+  // Strip leading slash (v5/v6 format: /react@18.0.0)
+  let clean = key.startsWith('/') ? key.slice(1) : key;
+
+  // Strip peer context suffix: pkg@1.0.0(peerPkg@peerVer) → pkg@1.0.0
+  // Handle nested parens: pkg@1.0.0(a@1(b@2)) — strip from first top-level '('
+  const parenIdx = clean.indexOf('(');
+  if (parenIdx !== -1) {
+    clean = clean.slice(0, parenIdx);
+  }
+
+  // Split on the LAST '@' to separate name from version
+  // (handles scoped packages like @scope/name@1.0.0 where there are two '@')
+  const lastAt = clean.lastIndexOf('@');
+  if (lastAt <= 0) return null; // No '@' found, or '@' only at position 0 (not a version)
+
+  const name = clean.slice(0, lastAt);
+  const version = clean.slice(lastAt + 1);
+
+  if (!name || !version) return null;
+
+  return { name, version };
+}
+
+/**
+ * Parse lockfile packages section to extract dependencies.
+ * Works with all pnpm lockfile versions (v5, v6, v9).
  */
 export function parseLockfilePackages(
   packages: Record<string, LockfilePackage>,
@@ -80,28 +115,28 @@ export function parseLockfilePackages(
 ): NormalizedDependency[] {
   const result: NormalizedDependency[] = [];
 
-  for (const [path, pkg] of Object.entries(packages)) {
-    // Skip if not a node_modules path
-    if (!path.includes('node_modules/')) continue;
+  for (const [key, pkg] of Object.entries(packages)) {
+    if (!pkg || typeof pkg !== 'object') continue;
 
-    // Extract package name from path
-    const name = extractPackageName(path);
-    if (!name) continue;
+    // Extract name and version from the lockfile key (works for all pnpm lockfile versions)
+    const extracted = extractNameVersionFromKey(key);
+    if (!extracted) continue;
 
-    if (!pkg.version) continue;
+    const { name, version } = extracted;
 
-    const normalizedVersion = normalizeVersion(pkg.version);
+    // Integrity: v9 stores it under resolution.integrity; older formats under pkg.integrity
+    const integrity = pkg.resolution?.integrity ?? pkg.integrity;
 
     result.push({
       name,
-      version: normalizedVersion,
+      version,
       resolved: pkg.resolvedVersion,
-      integrity: pkg.integrity,
+      integrity,
       dependencies: pkg.dependencies || {},
       peerDependencies: pkg.peerDependencies,
       isDev: false,
       isPeer: false,
-      depth: calculateDepth(path),
+      depth: calculateDepth(key),
       license: undefined,
     });
   }
@@ -110,29 +145,15 @@ export function parseLockfilePackages(
 }
 
 /**
- * Extract package name from lockfile path
+ * Calculate dependency depth from lockfile key.
+ * Legacy formats encode nesting depth via repeated node_modules/ segments.
+ * v9 format lists all packages flat, so depth is always 0.
  */
-function extractPackageName(path: string): string | null {
-  const nodeModulesIndex = path.indexOf('node_modules/');
-  if (nodeModulesIndex === -1) return null;
-
-  const afterModules = path.slice(nodeModulesIndex + 'node_modules/'.length);
-  const segments = afterModules.split('/');
-
-  if (segments[0].startsWith('@')) {
-    return `${segments[0]}/${segments[1]}`;
-  }
-
-  return segments[0];
-}
-
-/**
- * Calculate dependency depth from path
- */
-function calculateDepth(path: string): number {
-  const matches = path.match(/node_modules/g);
-  if (!matches) return 0;
-  return Math.max(0, matches.length - 1);
+function calculateDepth(key: string): number {
+  const matches = key.match(/node_modules/g);
+  if (matches) return Math.max(0, matches.length - 1);
+  // v6/v9 format: all packages listed flat at depth 0 in the packages section
+  return 0;
 }
 
 /**

@@ -61,15 +61,19 @@ export async function analyzeDependencies(options: AnalyzerOptions): Promise<{
     const content = await readFile(lockfilePath, 'utf-8');
     const lockfile = yaml.load(content) as Record<string, unknown>;
 
-    if (lockfile.packages) {
-      debugLog('Lockfile packages found', {
-        count: Object.keys(lockfile.packages as object).length,
+    // pnpm v9 uses 'snapshots' for installed instances (with dep info);
+    // older versions use 'packages' which includes both metadata and deps.
+    // Prefer snapshots if present (v9), fall back to packages.
+    const packagesSource =
+      (lockfile.snapshots as Record<string, LockfilePackage> | undefined) ??
+      (lockfile.packages as Record<string, LockfilePackage> | undefined);
+
+    if (packagesSource) {
+      debugLog('Lockfile packages/snapshots found', {
+        count: Object.keys(packagesSource).length,
       });
 
-      dependencies = parseLockfilePackages(
-        lockfile.packages as Record<string, LockfilePackage>,
-        projectRoot
-      );
+      dependencies = parseLockfilePackages(packagesSource, projectRoot);
     }
   } catch {
     debugLog('Could not read lockfile, using package.json dependencies only');
