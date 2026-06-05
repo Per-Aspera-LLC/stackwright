@@ -1648,14 +1648,15 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     const sbomStrict = process.argv.includes('--sbom-strict');
     try {
       const { createSBOM } = await import('@stackwright/sbom-generator');
+      const sbomOutputDir = path.join(projectRoot, '.stackwright', 'sbom');
       const sbom = await createSBOM({
         projectRoot,
         formats: ['spdx', 'cyclonedx', 'build-manifest'],
         includeDevDependencies: false,
         includePeerDependencies: true,
-        outputDir: path.join(projectRoot, '.stackwright', 'sbom'),
+        outputDir: sbomOutputDir,
       });
-      await sbom.writeTo(projectRoot);
+      await sbom.writeTo(sbomOutputDir);
       console.log('\n  [OK] SBOM generated: .stackwright/sbom/');
     } catch (error) {
       if (sbomStrict) {
