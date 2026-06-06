@@ -46,7 +46,7 @@
     "@testing-library/jest-dom": "^6.9",
     "@testing-library/react": "^16.3",
     "@types/js-yaml": "^4",
-    "@types/react": "^19.2.14",
+    "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "jsdom": "^29.0.2",
     "react": "^19",
