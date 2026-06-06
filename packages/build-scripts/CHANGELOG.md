@@ -1,5 +1,57 @@
 # @stackwright/build-scripts
 
+## 0.8.0
+
+### Minor Changes
+
+- cd5403d: Add font loading strategy (bundle/local) to prebuild: bundle downloads fonts at build time, local uses pre-provided files for air-gapped environments
+- a931eb3: feat(prebuild): support `stackwright.theme.yml` sidecar config for isolated theme configuration — merges `themeName`, `customTheme`, and `fonts` on top of `stackwright.yml`, preventing multi-otter clobbering between Theme Otter and Page Otter
+- f0bd272: feat: SEO Autopilot — auto-generate sitemap.xml, robots.txt, and JSON-LD structured data
+
+  Prebuild now generates `sitemap.xml` and `robots.txt` in `public/` when `meta.base_url` is set in `stackwright.yml`. Pages with `noindex: true` are excluded from the sitemap. Locale variants get `xhtml:link` alternate entries.
+
+  Content types with natural schema.org mappings now emit `<script type="application/ld+json">` tags:
+  - `faq` → FAQPage schema
+  - `pricing_table` → Product with AggregateOffer schema
+
+  New exports:
+  - `@stackwright/build-scripts`: `generateSitemap`, `generateRobotsTxt`, `collectPageMeta`
+  - `@stackwright/core`: `generatePageJsonLd`, `generateFaqJsonLd`, `generatePricingJsonLd`, `generateArticleJsonLd`, `JsonLdScript`
+
+### Patch Changes
+
+- a931eb3: fix(sbom): write SBOM files to `.stackwright/sbom/` instead of project root; fix pnpm lockfile v9 parsing that produced 0 dependencies in all SBOMs
+- cd5403d: Add `Layout → LayoutTemplate` to `LEGACY_MUI_ICON_ALIASES` in the icon manifest generator. `Layout` was renamed to `LayoutTemplate` in lucide-react v1.x; without this alias the prebuild emitted `import { Layout } from 'lucide-react'` which does not exist and crashes the build.
+- a931eb3: feat(core): implement `layoutMode: app-shell` layout mode
+
+  Dashboard Otter pages that emit `layoutMode: app-shell` now render
+  correctly in the Stackwright framework.
+
+  **What's new:**
+  - **`@stackwright/types`**: `PageContent` gains an optional top-level
+    `layoutMode` field (`'page' | 'app-shell'`). Fully backward-compatible —
+    existing pages without the field continue to validate and render as before.
+  - **`@stackwright/core`**: New `AppShellLayout` component — a locked-chrome
+    layout where `TopAppBar` and `NavSidebar` are sticky and only the content
+    viewport scrolls (`height: 100vh / overflow: hidden` root, `overflowY: auto`
+    on the content column). `DynamicPage` routes to `AppShellLayout` when
+    `pageContent.layoutMode === 'app-shell'`, and to the existing `PageLayout`
+    otherwise.
+  - **`@stackwright/build-scripts`**: `normalizePageContent()` now handles the
+    Dashboard Otter flat-array format (`content: [...]`) by normalizing it to
+    `{ content: { content_items: [...] } }` before validation and JSON output.
+    `layoutMode` is preserved at the top level through the `...page` spread.
+
+  Closes swp-0rz.
+
+- Updated dependencies [cd5403d]
+- Updated dependencies [f0bd272]
+- Updated dependencies [cd5403d]
+- Updated dependencies [a931eb3]
+- Updated dependencies [a931eb3]
+  - @stackwright/types@1.6.0
+  - @stackwright/sbom-generator@0.2.2
+
 ## 0.8.0-alpha.7
 
 ### Patch Changes

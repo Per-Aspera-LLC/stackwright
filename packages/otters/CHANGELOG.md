@@ -1,5 +1,11 @@
 # @stackwright/otters
 
+## 0.2.2
+
+### Patch Changes
+
+- cd5403d: Expand Otter Raft documentation with detailed end-to-end pipeline checklist and reference example outputs for law firm, SaaS, and restaurant site types.
+
 ## 0.2.2-alpha.0
 
 ### Patch Changes

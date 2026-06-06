@@ -1,5 +1,37 @@
 # @stackwright/mcp
 
+## 0.5.0
+
+### Minor Changes
+
+- cd5403d: Add integration management commands and MCP tools: `stackwright integrations list/get/add` CLI commands and `stackwright_list_integrations`, `stackwright_get_integration`, `stackwright_add_integration` MCP tools for managing OpenAPI, GraphQL, and REST integrations in stackwright.yml.
+- cd5403d: Add `stackwright test:a11y` command for portable WCAG 2.1 AA accessibility auditing. Tests all pages (auto-discovered) in both light and dark modes using axe-core + Playwright. Also exposes `stackwright_test_a11y` MCP tool for Otter agent integration.
+- cd5403d: Replace GitHub Issues board with beads-native implementation. The `stackwright board` CLI command and `stackwright_get_board` MCP tool now read from `.beads/issues.jsonl` instead of calling the `gh` CLI. No GitHub authentication or `gh` CLI required.
+
+  **Breaking change in `@stackwright/cli` public types**: `GhIssueRaw` is removed (replaced by `BeadsIssue`); `BoardIssue.number` is now `BoardIssue.id: string`; `BoardIssue.labels` and `BoardIssue.assignees` are removed; `BoardIssue.issueType` is added.
+
+### Patch Changes
+
+- cd5403d: feat(mcp): auto-trigger prebuild before render in all four render tools. Replaces the fragile 2-second sleep in `stackwright_render_yaml` with an explicit `runPrebuild()` call so co-located images are always processed. Adds optional `projectRoot` param to `stackwright_render_page` and `stackwright_render_diff` for the same benefit.
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [f0bd272]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [a931eb3]
+- Updated dependencies [cd5403d]
+- Updated dependencies [a931eb3]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [f0bd272]
+- Updated dependencies [a931eb3]
+  - @stackwright/cli@0.9.0
+  - @stackwright/build-scripts@0.8.0
+  - @stackwright/types@1.6.0
+
 ## 0.5.0-alpha.13
 
 ### Patch Changes

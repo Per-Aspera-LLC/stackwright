@@ -1,5 +1,57 @@
 # @stackwright/nextjs
 
+## 0.6.0
+
+### Minor Changes
+
+- cd5403d: Add App Router support. New exports: `StackwrightLayout` (root layout component replacing `StackwrightDocument`), `generateStackwrightStaticParams`, `getStackwrightPageData`, `getStackwrightSiteConfig` (static generation helpers replacing `getStaticProps`/`getStaticPaths` patterns). `NextStackwrightRouter` now uses `next/navigation` (App Router) — Pages Router (`next/router`) support is removed. `StackwrightDocument` and `NextStackwrightHead` are deprecated; use `StackwrightLayout` and the Metadata API respectively. Scaffold template now generates App Router structure (`app/` directory) by default.
+
+  Server-only exports (`StackwrightLayout`, `generateStackwrightStaticParams`, `getStackwrightPageData`, `getStackwrightSiteConfig`) are available from `@stackwright/nextjs/server` — a dedicated subpath entry that is excluded from browser bundles. The main `@stackwright/nextjs` entry remains fully browser-safe and Pages Router compatible.
+
+### Patch Changes
+
+- a931eb3: fix(nextjs): add `suppressHydrationWarning` to `<html>` in `StackwrightLayout` to prevent React 19 hydration mismatch from `ColorModeScript`; add explicit inline dimension styles to `NextStackwrightImage` to prevent Next.js aspect-ratio warnings when Tailwind preflight overrides `height: auto` on `<img>` elements
+- cd5403d: fix(scaffold): remove Node-only FileCollectionProvider from client component; exclude \_icon-manifest.json from static params
+
+  Three layered bugs caused `next build` to fail on freshly scaffolded projects:
+  1. **`lucide-react` missing from generated `package.json`** — `stackwright-generated/icons.ts`
+     (produced by `stackwright-prebuild`) imports from `lucide-react`, but it was absent from
+     the scaffold-generated `package.json`. Added `lucide-react` to `buildPackageJson` deps.
+  2. **`FileCollectionProvider` in a `'use client'` component** — `providers.tsx` imported
+     `FileCollectionProvider` from `@stackwright/collections`, a Node.js-only module (`fs`,
+     `path`). Turbopack tried to bundle it for the browser and failed. The registration was
+     also dead code: `getCollectionProvider()` is never called; `CollectionList` receives data
+     via the prebuild-injected `_entries` prop. Removed the import and call entirely.
+  3. **`_icon-manifest.json` not excluded from static params** — `stackwright-prebuild` writes
+     `_icon-manifest.json` into `public/stackwright-content/`. `walkContentDir()` in
+     `static-generation.ts` was missing it from `RESERVED_FILES`, so Next.js tried to prerender
+     `/_icon-manifest` as a page and crashed with `TypeError: Cannot read properties of
+undefined (reading 'meta')`. Added `_icon-manifest.json` to `RESERVED_FILES`.
+
+  Fixes bead stackwright-1ec.
+
+- f0bd272: Add server-safe `@stackwright/themes/color-mode-script` entry point for App Router Server Components.
+
+  `StackwrightLayout` (a Server Component) needs `ColorModeScript` but must not import `ThemeProvider` and its client-only React hooks. The new `@stackwright/themes/color-mode-script` export provides exactly `ColorModeScript` without pulling in any client code.
+  - **@stackwright/themes**: New `./color-mode-script` export path (server-safe, no React hooks)
+  - **@stackwright/nextjs**: `StackwrightLayout` now imports from `@stackwright/themes/color-mode-script`
+
+- Updated dependencies [f0bd272]
+- Updated dependencies [cd5403d]
+- Updated dependencies [f0bd272]
+- Updated dependencies [cd5403d]
+- Updated dependencies [a931eb3]
+- Updated dependencies [cd5403d]
+- Updated dependencies [f0bd272]
+- Updated dependencies [f0bd272]
+- Updated dependencies [f0bd272]
+- Updated dependencies [f0bd272]
+- Updated dependencies [a931eb3]
+- Updated dependencies [f0bd272]
+  - @stackwright/core@0.9.0
+  - @stackwright/types@1.6.0
+  - @stackwright/themes@0.6.0
+
 ## 0.6.0-alpha.12
 
 ### Patch Changes

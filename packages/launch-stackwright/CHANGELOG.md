@@ -1,5 +1,20 @@
 # launch-stackwright
 
+## 0.2.7
+
+### Patch Changes
+
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+- Updated dependencies [cd5403d]
+  - @stackwright/cli@0.9.0
+  - @stackwright/otters@0.2.2
+  - @stackwright/scaffold-core@0.3.2
+
 ## 0.2.7-alpha.10
 
 ### Patch Changes

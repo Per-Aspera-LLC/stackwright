@@ -1,5 +1,69 @@
 # @stackwright/core
 
+## 0.9.0
+
+### Minor Changes
+
+- f0bd272: feat(core): add AriaLiveRegion utility and wire aria-live regions into Form, SearchModal, Carousel, ContentItemErrorBoundary (WCAG 4.1.3)
+- f0bd272: feat(core,types): add format: markdown to TextBlock for CommonMark rendering via micromark
+- f0bd272: feat: SEO Autopilot — auto-generate sitemap.xml, robots.txt, and JSON-LD structured data
+
+  Prebuild now generates `sitemap.xml` and `robots.txt` in `public/` when `meta.base_url` is set in `stackwright.yml`. Pages with `noindex: true` are excluded from the sitemap. Locale variants get `xhtml:link` alternate entries.
+
+  Content types with natural schema.org mappings now emit `<script type="application/ld+json">` tags:
+  - `faq` → FAQPage schema
+  - `pricing_table` → Product with AggregateOffer schema
+
+  New exports:
+  - `@stackwright/build-scripts`: `generateSitemap`, `generateRobotsTxt`, `collectPageMeta`
+  - `@stackwright/core`: `generatePageJsonLd`, `generateFaqJsonLd`, `generatePricingJsonLd`, `generateArticleJsonLd`, `JsonLdScript`
+
+- f0bd272: Replace Prism.js with Shiki for syntax highlighting in CodeBlock
+  - **Shiki integration**: Uses Shiki with the JavaScript regex engine (no WASM binary required) for syntax highlighting, replacing the previous Prism.js-based highlighter
+  - **200+ languages**: Shiki supports 200+ languages out of the box (up from 10 with Prism). The same 10 languages are pre-loaded at startup for fast first-render
+  - **Theme-aware dark mode**: Uses GitHub Light and GitHub Dark themes that automatically switch based on the Stackwright color mode
+  - **Async initialization**: Highlighter loads asynchronously on first use; CodeBlock gracefully falls back to plain text until ready
+  - **Zero WASM**: Uses `createJavaScriptRegexEngine` — no WebAssembly binary to load or bundle
+  - **Bundle improvement**: Shiki is an external dependency (not bundled into the CodeBlock chunk), and grammars are lazy-loaded
+  - **Backward compatible**: `HighlightToken` interface unchanged; `getTokenColor` and `highlightCodeWithMode` preserved as deprecated shims
+
+- a931eb3: feat(core): implement `layoutMode: app-shell` layout mode
+
+  Dashboard Otter pages that emit `layoutMode: app-shell` now render
+  correctly in the Stackwright framework.
+
+  **What's new:**
+  - **`@stackwright/types`**: `PageContent` gains an optional top-level
+    `layoutMode` field (`'page' | 'app-shell'`). Fully backward-compatible —
+    existing pages without the field continue to validate and render as before.
+  - **`@stackwright/core`**: New `AppShellLayout` component — a locked-chrome
+    layout where `TopAppBar` and `NavSidebar` are sticky and only the content
+    viewport scrolls (`height: 100vh / overflow: hidden` root, `overflowY: auto`
+    on the content column). `DynamicPage` routes to `AppShellLayout` when
+    `pageContent.layoutMode === 'app-shell'`, and to the existing `PageLayout`
+    otherwise.
+  - **`@stackwright/build-scripts`**: `normalizePageContent()` now handles the
+    Dashboard Otter flat-array format (`content: [...]`) by normalizing it to
+    `{ content: { content_items: [...] } }` before validation and JSON output.
+    `layoutMode` is preserved at the top level through the `...page` spread.
+
+  Closes swp-0rz.
+
+### Patch Changes
+
+- cd5403d: Fix accessibility issues: remove WCAG 2.1.2 keyboard trap from code_block `<pre>` element, add visually-hidden `<h1>` to TopAppBar when title is empty and logo is present, add ARIA arrow-key keyboard navigation (ArrowLeft/ArrowRight/Home/End) to tabbed_content component, fix carousel card text/background contrast ratio using auto-computed contrast-safe text color.
+- a931eb3: fix(core): `CodeBlock` now selects Shiki syntax theme based on surface luminance rather than `colorMode`, fixing dark-text-on-dark-background for themes with a dark surface in light mode (e.g. the stackwright-docs documentation theme)
+- cd5403d: Fix Map content type: assemble MapConfig from flat YAML props (was crashing on render), move Map component to base directory, tighten mapLayerSchema.data to z.unknown(), remove duplicate ZodLike declaration, fix checkForPlaintextSecret entropy threshold direction
+- f0bd272: CodeBlock+PrismJS and FAQ+@radix-ui/react-accordion are now lazy-loaded via React.lazy() (~17-20KB gzip first-load savings). fuse.js moved to optionalDependencies — no behavior change for consumers.
+- f0bd272: fix(a11y): add tabIndex={-1} to main content area so skip-to-content link correctly moves keyboard focus (WCAG 2.4.1)
+- Updated dependencies [cd5403d]
+- Updated dependencies [f0bd272]
+- Updated dependencies [cd5403d]
+- Updated dependencies [a931eb3]
+- Updated dependencies [f0bd272]
+  - @stackwright/types@1.6.0
+  - @stackwright/themes@0.6.0
+
 ## 0.9.0-alpha.10
 
 ### Minor Changes

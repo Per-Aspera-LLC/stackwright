@@ -1,5 +1,39 @@
 # @stackwright/types
 
+## 1.6.0
+
+### Minor Changes
+
+- cd5403d: Add fonts config schema with strategy (external | bundle | local) for configurable font loading
+- f0bd272: feat(core,types): add format: markdown to TextBlock for CommonMark rendering via micromark
+- a931eb3: feat(core): implement `layoutMode: app-shell` layout mode
+
+  Dashboard Otter pages that emit `layoutMode: app-shell` now render
+  correctly in the Stackwright framework.
+
+  **What's new:**
+  - **`@stackwright/types`**: `PageContent` gains an optional top-level
+    `layoutMode` field (`'page' | 'app-shell'`). Fully backward-compatible —
+    existing pages without the field continue to validate and render as before.
+  - **`@stackwright/core`**: New `AppShellLayout` component — a locked-chrome
+    layout where `TopAppBar` and `NavSidebar` are sticky and only the content
+    viewport scrolls (`height: 100vh / overflow: hidden` root, `overflowY: auto`
+    on the content column). `DynamicPage` routes to `AppShellLayout` when
+    `pageContent.layoutMode === 'app-shell'`, and to the existing `PageLayout`
+    otherwise.
+  - **`@stackwright/build-scripts`**: `normalizePageContent()` now handles the
+    Dashboard Otter flat-array format (`content: [...]`) by normalizing it to
+    `{ content: { content_items: [...] } }` before validation and JSON output.
+    `layoutMode` is preserved at the top level through the `...page` spread.
+
+  Closes swp-0rz.
+
+### Patch Changes
+
+- cd5403d: Fix Map content type: assemble MapConfig from flat YAML props (was crashing on render), move Map component to base directory, tighten mapLayerSchema.data to z.unknown(), remove duplicate ZodLike declaration, fix checkForPlaintextSecret entropy threshold direction
+- Updated dependencies [f0bd272]
+  - @stackwright/themes@0.6.0
+
 ## 1.6.0-alpha.4
 
 ### Minor Changes

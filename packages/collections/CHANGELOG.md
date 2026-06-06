@@ -1,5 +1,15 @@
 # @stackwright/collections
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [cd5403d]
+- Updated dependencies [f0bd272]
+- Updated dependencies [cd5403d]
+- Updated dependencies [a931eb3]
+  - @stackwright/types@1.6.0
+
 ## 0.1.2-alpha.4
 
 ### Patch Changes

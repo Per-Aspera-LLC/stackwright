@@ -1,5 +1,11 @@
 # @stackwright/sbom-generator
 
+## 0.2.2
+
+### Patch Changes
+
+- a931eb3: fix(sbom): write SBOM files to `.stackwright/sbom/` instead of project root; fix pnpm lockfile v9 parsing that produced 0 dependencies in all SBOMs
+
 ## 0.2.2-alpha.0
 
 ### Patch Changes

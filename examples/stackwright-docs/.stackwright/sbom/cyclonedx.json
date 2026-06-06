@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-06-06T16:36:57.086Z",
+    "timestamp": "2026-06-06T18:15:28.213Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -14,8 +14,8 @@
     "component": {
       "type": "application",
       "name": "stackwright-docs",
-      "version": "0.1.8-alpha.12",
-      "purl": "pkg:npm/stackwright-docs@0.1.8-alpha.12"
+      "version": "0.1.8",
+      "purl": "pkg:npm/stackwright-docs@0.1.8"
     }
   },
   "components": [
@@ -307,7 +307,7 @@
   ],
   "dependencies": [
     {
-      "ref": "pkg:npm/stackwright-docs@0.1.8-alpha.12",
+      "ref": "pkg:npm/stackwright-docs@0.1.8",
       "dependsOn": [
         "@radix-ui/react-accordion",
         "@radix-ui/react-slot",
