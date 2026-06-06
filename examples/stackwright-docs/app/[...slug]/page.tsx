@@ -8,6 +8,7 @@ import { StackwrightPageClient } from '../_components/page-client';
 import type { PageContent, SiteConfig } from '@stackwright/types';
 
 export const generateStaticParams = generateStackwrightStaticParams;
+export const dynamicParams = false;
 
 export default async function SlugPage({ params }: { params: Promise<{ slug: string[] }> }) {
   const { slug } = await params;

@@ -29,19 +29,34 @@ export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
   debugLog('Rendering image', { src });
   debugLog('Image component type:', { type: typeof Image, name: Image?.name });
 
+  const resolvedWidth = fill
+    ? undefined
+    : typeof width === 'number'
+      ? width
+      : parseInt(String(width)) || undefined;
+
+  const resolvedHeight = fill
+    ? undefined
+    : typeof height === 'number'
+      ? height
+      : parseInt(String(height)) || undefined;
+
+  // Add explicit inline dimensions to override Tailwind preflight's `img { height: auto }`
+  // global reset, which triggers Next.js aspect-ratio warnings when width is fixed as
+  // an HTML attribute but height is modified by CSS.
+  const dimensionStyle =
+    !fill && (resolvedWidth !== undefined || resolvedHeight !== undefined)
+      ? {
+          width: resolvedWidth !== undefined ? `${resolvedWidth}px` : undefined,
+          height: resolvedHeight !== undefined ? `${resolvedHeight}px` : undefined,
+        }
+      : {};
+
   const imageProps = {
     src,
     alt,
-    width: fill
-      ? undefined
-      : typeof width === 'number'
-        ? width
-        : parseInt(String(width)) || undefined,
-    height: fill
-      ? undefined
-      : typeof height === 'number'
-        ? height
-        : parseInt(String(height)) || undefined,
+    width: resolvedWidth,
+    height: resolvedHeight,
     fill,
     priority,
     quality,
@@ -49,7 +64,7 @@ export const NextStackwrightImage: React.FC<StackwrightImageProps> = ({
     placeholder,
     blurDataURL,
     className,
-    style,
+    style: { ...dimensionStyle, ...style },
   };
   debugLog('Image props:', imageProps);
 
