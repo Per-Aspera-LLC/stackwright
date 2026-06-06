@@ -49,11 +49,24 @@ vi.mock('next/head', () => ({
   default: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
+vi.mock('fs', () => ({
+  existsSync: vi.fn().mockReturnValue(false),
+  readFileSync: vi.fn().mockImplementation(() => {
+    throw new Error('ENOENT');
+  }),
+  readdirSync: vi.fn().mockReturnValue([]),
+}));
+
+vi.mock('@stackwright/themes/color-mode-script', () => ({
+  ColorModeScript: () => null,
+}));
+
 // ---------------------------------------------------------------------------
 // Imports (after mocks)
 // ---------------------------------------------------------------------------
 
 import { NextStackwrightImage } from '../src/components/NextStackwrightImage';
+import { StackwrightLayout } from '../src/components/StackwrightLayout';
 import { NextStackwrightLink } from '../src/components/NextStackwrightLink';
 import {
   NextStackwrightRouter,
@@ -158,6 +171,80 @@ describe('NextStackwrightImage', () => {
     const img = screen.getByTestId('next-image');
     expect(img).toHaveClass('hero-img');
     expect(img).toHaveStyle({ objectFit: 'cover' });
+  });
+
+  it('adds explicit inline style dimensions to override CSS resets', () => {
+    render(
+      <NextStackwrightImage src="/logo.png" alt="Logo" aspect_ratio={3} width={180} height={60} />
+    );
+    const img = screen.getByTestId('next-image');
+    expect(img).toHaveStyle({ width: '180px', height: '60px' });
+  });
+
+  it('does not add inline dimension style when fill=true', () => {
+    render(
+      <NextStackwrightImage
+        src="/bg.png"
+        alt="Background"
+        aspect_ratio={1}
+        fill={true}
+        width={800}
+        height={600}
+      />
+    );
+    const img = screen.getByTestId('next-image');
+    const style = (img as HTMLElement).getAttribute('style') ?? '';
+    expect(style).not.toContain('800px');
+    expect(style).not.toContain('600px');
+  });
+
+  it('caller explicit style wins over computed dimension style', () => {
+    render(
+      <NextStackwrightImage
+        src="/x.png"
+        alt="X"
+        aspect_ratio={1}
+        width={100}
+        height={50}
+        style={{ width: '200px', objectFit: 'contain' }}
+      />
+    );
+    const img = screen.getByTestId('next-image');
+    // caller style.width overrides dimensionStyle.width (spread order: ...dimensionStyle, ...style)
+    expect(img).toHaveStyle({ width: '200px', objectFit: 'contain' });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// StackwrightLayout
+// ---------------------------------------------------------------------------
+
+describe('StackwrightLayout', () => {
+  it('renders children without throwing', () => {
+    const { baseElement } = render(
+      <StackwrightLayout>
+        <div>content</div>
+      </StackwrightLayout>
+    );
+    expect(baseElement.textContent).toContain('content');
+  });
+
+  it('renders with a custom lang attribute', () => {
+    render(
+      <StackwrightLayout lang="fr">
+        <div>bonjour</div>
+      </StackwrightLayout>
+    );
+    expect(document.documentElement.lang).toBe('fr');
+  });
+
+  it('defaults lang to en', () => {
+    render(
+      <StackwrightLayout>
+        <div>hello</div>
+      </StackwrightLayout>
+    );
+    expect(document.documentElement.lang).toBe('en');
   });
 });
 

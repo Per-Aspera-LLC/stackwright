@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.6.0-alpha.11",
+    "version": "0.6.0-alpha.12",
     "description": "Next.js implementations for Stackwright components",
     "license": "MIT",
     "repository": {
@@ -45,13 +45,13 @@
         "js-yaml": "catalog:"
     },
     "devDependencies": {
-        "@swc/core": "^1.15.26",
+        "@swc/core": "^1.15.40",
         "@testing-library/jest-dom": "^6.6",
         "@testing-library/react": "^16.3",
         "@types/js-yaml": "catalog:",
-        "@types/react": "^19.2.14",
+        "@types/react": "^19.2.16",
         "@types/react-dom": "^19.2.3",
-        "jsdom": "^29.0.2",
+        "jsdom": "^29.1.1",
         "next": "^16.1.6",
         "react": "^19",
         "react-dom": "^19",

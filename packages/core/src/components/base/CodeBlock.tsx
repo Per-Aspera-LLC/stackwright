@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CodeBlockContent } from '@stackwright/types';
 import { useSafeTheme, useSafeColorMode } from '../../hooks/useSafeTheme';
+import { hexToRgb, getLuminance } from '../../utils/colorUtils';
 import { resolveBackground } from '../../utils/resolveBackground';
 import { ensureHighlighter, highlightCode, isHighlighterReady } from '../../utils/shikiHighlighter';
 import type { HighlightToken } from '../../utils/shikiHighlighter';
@@ -26,7 +27,6 @@ function splitTokensByLine(tokens: HighlightToken[]): HighlightToken[][] {
 export function CodeBlock({ code, language, lineNumbers = false, background }: CodeBlockContent) {
   const theme = useSafeTheme();
   const resolvedColorMode = useSafeColorMode();
-  const isDark = resolvedColorMode === 'dark';
 
   const [ready, setReady] = useState(isHighlighterReady());
   useEffect(() => {
@@ -35,7 +35,15 @@ export function CodeBlock({ code, language, lineNumbers = false, background }: C
     }
   }, [ready]);
 
-  const tokens = highlightCode(code.trimEnd(), language, isDark);
+  // Determine Shiki theme from actual surface luminance, not from colorMode.
+  // This handles themes where the base palette is dark (e.g. docs site: navy surface
+  // in "light mode") — github-light tokens (dark text) on a dark surface are unreadable.
+  const rgb = hexToRgb(theme.colors.surface);
+  const isDarkSurface = rgb
+    ? getLuminance(rgb.r, rgb.g, rgb.b) < 0.4
+    : resolvedColorMode === 'dark';
+
+  const tokens = highlightCode(code.trimEnd(), language, isDarkSurface);
   const tokenLines = splitTokensByLine(tokens);
 
   return (

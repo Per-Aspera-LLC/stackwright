@@ -1,6 +1,7 @@
 import React from 'react';
 import { PageContent, SiteConfig } from '@stackwright/types';
 import PageLayout from './structural/PageLayout';
+import AppShellLayout from './structural/AppShellLayout';
 import { ThemeProvider, ThemeLoader, ThemeStyleInjector, useTheme } from '@stackwright/themes';
 import { useDevContentReload } from '../hooks/useDevContentReload';
 import { useReducedMotion } from '../hooks/useReducedMotion';
@@ -224,21 +225,31 @@ function DynamicPageInner({
   const HeadComponent = getStackwrightHead();
   const jsonLdData = generatePageJsonLd(pageContent, siteConfig, slug);
 
+  const isAppShell = pageContent.layoutMode === 'app-shell';
+
   return (
     <>
       {HeadComponent && <HeadComponent {...meta} />}
       <JsonLdScript data={jsonLdData} />
       <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />
       <div
-        style={{
-          minHeight: '100vh',
-          position: 'relative',
-          fontFamily: theme.typography?.fontFamily?.primary || 'sans-serif',
-          ...backgroundImageStyles,
-          animation: reducedMotion ? undefined : getDriftFloatAnimation(),
-        }}
+        style={
+          isAppShell
+            ? {
+                height: '100vh',
+                overflow: 'hidden',
+                fontFamily: theme.typography?.fontFamily?.primary || 'sans-serif',
+              }
+            : {
+                minHeight: '100vh',
+                position: 'relative',
+                fontFamily: theme.typography?.fontFamily?.primary || 'sans-serif',
+                ...backgroundImageStyles,
+                animation: reducedMotion ? undefined : getDriftFloatAnimation(),
+              }
+        }
       >
-        {showShimmer && (
+        {!isAppShell && showShimmer && (
           <div
             style={{
               position: 'absolute',
@@ -258,7 +269,11 @@ function DynamicPageInner({
               The null fallback means other content renders immediately; lazy chunks
               fill in asynchronously once loaded. */}
           <React.Suspense fallback={null}>
-            <PageLayout pageContent={pageContent} siteConfig={siteConfig} />
+            {isAppShell ? (
+              <AppShellLayout pageContent={pageContent} siteConfig={siteConfig} />
+            ) : (
+              <PageLayout pageContent={pageContent} siteConfig={siteConfig} />
+            )}
           </React.Suspense>
         </DynamicPageErrorBoundary>
       </div>

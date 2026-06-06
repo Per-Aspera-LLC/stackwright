@@ -1,5 +1,46 @@
 # @stackwright/build-scripts
 
+## 0.8.0-alpha.7
+
+### Patch Changes
+
+- 510517c: feat(core): implement `layoutMode: app-shell` layout mode
+
+  Dashboard Otter pages that emit `layoutMode: app-shell` now render
+  correctly in the Stackwright framework.
+
+  **What's new:**
+  - **`@stackwright/types`**: `PageContent` gains an optional top-level
+    `layoutMode` field (`'page' | 'app-shell'`). Fully backward-compatible —
+    existing pages without the field continue to validate and render as before.
+  - **`@stackwright/core`**: New `AppShellLayout` component — a locked-chrome
+    layout where `TopAppBar` and `NavSidebar` are sticky and only the content
+    viewport scrolls (`height: 100vh / overflow: hidden` root, `overflowY: auto`
+    on the content column). `DynamicPage` routes to `AppShellLayout` when
+    `pageContent.layoutMode === 'app-shell'`, and to the existing `PageLayout`
+    otherwise.
+  - **`@stackwright/build-scripts`**: `normalizePageContent()` now handles the
+    Dashboard Otter flat-array format (`content: [...]`) by normalizing it to
+    `{ content: { content_items: [...] } }` before validation and JSON output.
+    `layoutMode` is preserved at the top level through the `...page` spread.
+
+  Closes swp-0rz.
+
+- Updated dependencies [510517c]
+  - @stackwright/types@1.6.0-alpha.4
+
+## 0.8.0-alpha.6
+
+### Minor Changes
+
+- 2eba549: feat(prebuild): support `stackwright.theme.yml` sidecar config for isolated theme configuration — merges `themeName`, `customTheme`, and `fonts` on top of `stackwright.yml`, preventing multi-otter clobbering between Theme Otter and Page Otter
+
+### Patch Changes
+
+- 2eba549: fix(sbom): write SBOM files to `.stackwright/sbom/` instead of project root; fix pnpm lockfile v9 parsing that produced 0 dependencies in all SBOMs
+- Updated dependencies [2eba549]
+  - @stackwright/sbom-generator@0.2.2-alpha.0
+
 ## 0.8.0-alpha.5
 
 ### Minor Changes

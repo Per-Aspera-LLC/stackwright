@@ -70,7 +70,7 @@ export function StackwrightLayout({ children, lang = 'en' }: StackwrightLayoutPr
   const fontLinks = getFontLinks();
 
   return (
-    <html lang={lang}>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <ColorModeScript />
         {fontLinks.map((link, index) => (

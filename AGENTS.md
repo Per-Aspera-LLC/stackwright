@@ -134,6 +134,40 @@ public/stackwright-content/
 - `stackwright_get_page` — accepts optional `locale` param; falls back to default with a note if locale file absent
 - `stackwright_list_pages` — shows available locales per page: `  /about  —  About Us  [en, fr]`
 
+### Theme Config File Split (`stackwright.theme.yml`)
+
+The prebuild supports an optional `stackwright.theme.yml` sidecar file for isolating theme configuration from the main `stackwright.yml`.
+
+**Purpose:** Prevents multi-otter clobbering. Theme Otter owns `stackwright.theme.yml`; Page Otter owns `stackwright.yml`. They never touch each other's files.
+
+**Keys merged from `stackwright.theme.yml`:**
+- `themeName` — name of the active theme
+- `customTheme` — full custom theme object (typography, colors, spacing, etc.)
+- `fonts` — font loading strategy
+
+**All other keys in `stackwright.theme.yml` are silently ignored** — only the three theme keys above are merged.
+
+**Resolution order (higher wins):**
+1. `stackwright.theme.yml` theme keys (override)
+2. `stackwright.yml` theme keys (base)
+
+**Example:**
+```yaml
+# stackwright.theme.yml — owned by Theme Otter
+themeName: "ocean-dark"
+fonts:
+  strategy: bundle
+customTheme:
+  typography:
+    fontFamily:
+      primary: "Inter, sans-serif"
+      secondary: "JetBrains Mono, monospace"
+```
+
+**Both files are required to form a valid config** — validation runs on the merged result, so errors in either file surface at build time.
+
+**Extension:** Both `.yml` and `.yaml` extensions are supported.
+
 ### Content Type Reference
 
 **AGENTS: This table is auto-generated from the live Zod schemas. Run `pnpm stackwright -- generate-agent-docs` to regenerate. Do NOT edit the content between the markers manually.**
