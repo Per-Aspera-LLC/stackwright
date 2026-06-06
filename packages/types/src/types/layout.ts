@@ -57,6 +57,7 @@ export const pageMetaSchema = z.object({
 });
 
 export const pageContentSchema = z.object({
+  layoutMode: z.enum(['page', 'app-shell']).optional(),
   content: z.object({
     meta: pageMetaSchema.optional(),
     app_bar: appBarContentSchema.optional(),
@@ -97,6 +98,7 @@ export function buildExtendedPageContentSchema(extraSchemas: z.ZodTypeAny[]): z.
   ]);
 
   return z.object({
+    layoutMode: z.enum(['page', 'app-shell']).optional(),
     content: z.object({
       meta: pageMetaSchema.optional(),
       app_bar: appBarContentSchema.optional(),
