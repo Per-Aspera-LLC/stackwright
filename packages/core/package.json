@@ -69,7 +69,7 @@
         "zod": "catalog:"
     },
     "optionalDependencies": {
-        "fuse.js": "^7.1.0"
+        "fuse.js": "^7.4.1"
     },
     "devDependencies": {
         "@stackwright/collections": "workspace:*",
@@ -78,7 +78,7 @@
         "@testing-library/jest-dom": "^6.6",
         "@testing-library/react": "^16.3",
         "@types/node": "catalog:",
-        "@types/react": "^19.2.14",
+        "@types/react": "^19.2.16",
         "@types/react-dom": "^19.2.3",
         "@vitest/ui": "^4.1.8",
         "jsdom": "^29.1.1",

@@ -1,5 +1,17 @@
 # @stackwright/build-scripts
 
+## 0.8.0-alpha.6
+
+### Minor Changes
+
+- 2eba549: feat(prebuild): support `stackwright.theme.yml` sidecar config for isolated theme configuration — merges `themeName`, `customTheme`, and `fonts` on top of `stackwright.yml`, preventing multi-otter clobbering between Theme Otter and Page Otter
+
+### Patch Changes
+
+- 2eba549: fix(sbom): write SBOM files to `.stackwright/sbom/` instead of project root; fix pnpm lockfile v9 parsing that produced 0 dependencies in all SBOMs
+- Updated dependencies [2eba549]
+  - @stackwright/sbom-generator@0.2.2-alpha.0
+
 ## 0.8.0-alpha.5
 
 ### Minor Changes
