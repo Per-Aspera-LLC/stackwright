@@ -1,5 +1,14 @@
 # stackwright-docs
 
+## 0.1.8-alpha.12
+
+### Patch Changes
+
+- Updated dependencies [510517c]
+  - @stackwright/types@1.6.0-alpha.4
+  - @stackwright/core@0.9.0-alpha.10
+  - @stackwright/nextjs@0.6.0-alpha.12
+
 ## 0.1.8-alpha.11
 
 ### Patch Changes
