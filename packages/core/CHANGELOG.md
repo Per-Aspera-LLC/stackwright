@@ -1,5 +1,11 @@
 # @stackwright/core
 
+## 0.9.0-alpha.11
+
+### Patch Changes
+
+- 3a6c15a: fix(core): `CodeBlock` now selects Shiki syntax theme based on surface luminance rather than `colorMode`, fixing dark-text-on-dark-background for themes with a dark surface in light mode (e.g. the stackwright-docs documentation theme)
+
 ## 0.9.0-alpha.10
 
 ### Minor Changes
