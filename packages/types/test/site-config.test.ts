@@ -315,3 +315,108 @@ describe('siteConfigSchema - integrations field', () => {
     });
   });
 });
+
+describe('siteConfigSchema - navigation with sections', () => {
+  const baseConfig = {
+    title: 'Test Site',
+    navigation: [],
+    appBar: { titleText: 'Test' },
+  };
+
+  it('should accept navigation with section groups', () => {
+    const config = {
+      ...baseConfig,
+      navigation: [
+        { label: 'Home', href: '/' },
+        {
+          section: 'Maps',
+          items: [
+            { label: 'Ops Map', href: '/ops-map' },
+            { label: 'Tracker', href: '/tracker' },
+          ],
+        },
+      ],
+    };
+    const result = siteConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept section-only navigation', () => {
+    const config = {
+      ...baseConfig,
+      navigation: [{ section: 'Admin', items: [{ label: 'Users', href: '/users' }] }],
+    };
+    const result = siteConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject section with empty items', () => {
+    const config = {
+      ...baseConfig,
+      navigation: [{ section: 'Empty', items: [] }],
+    };
+    const result = siteConfigSchema.safeParse(config);
+    expect(result.success).toBe(false);
+  });
+
+  it('should accept sections in appBar.menuItems', () => {
+    const config = {
+      ...baseConfig,
+      appBar: {
+        titleText: 'Test',
+        menuItems: [
+          { label: 'Home', href: '/' },
+          { section: 'Tools', items: [{ label: 'Editor', href: '/editor' }] },
+        ],
+      },
+    };
+    const result = siteConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept sections in sidebar.navigation', () => {
+    const config = {
+      ...baseConfig,
+      sidebar: {
+        navigation: [
+          {
+            section: 'Reports',
+            items: [
+              { label: 'Daily', href: '/daily' },
+              { label: 'Weekly', href: '/weekly' },
+            ],
+          },
+        ],
+      },
+    };
+    const result = siteConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+
+  it('should accept sections in footer.links', () => {
+    const config = {
+      ...baseConfig,
+      footer: {
+        links: [
+          { label: 'Privacy', href: '/privacy' },
+          { section: 'Legal', items: [{ label: 'Terms', href: '/terms' }] },
+        ],
+      },
+    };
+    const result = siteConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+
+  // Backward compatibility: existing nav still works
+  it('should still accept plain link-only navigation', () => {
+    const config = {
+      ...baseConfig,
+      navigation: [
+        { label: 'Home', href: '/' },
+        { label: 'About', href: '/about' },
+      ],
+    };
+    const result = siteConfigSchema.safeParse(config);
+    expect(result.success).toBe(true);
+  });
+});

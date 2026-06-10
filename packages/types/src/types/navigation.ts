@@ -17,21 +17,46 @@ export const menuThemeSchema = z.object({
   }),
 });
 
-// Define the type first to enable recursive schema
-export type NavigationItem = {
+// Define the link type first to enable recursive schema
+export type NavigationLink = {
   label: string;
   href: string;
-  children?: NavigationItem[];
+  children?: NavigationLink[];
 };
 
-// Lazy schema for recursive navigation items
-export const navigationItemSchema: z.ZodType<NavigationItem> = z.lazy(() =>
+// Lazy schema for recursive navigation links
+export const navigationLinkSchema: z.ZodType<NavigationLink> = z.lazy(() =>
   z.object({
     label: z.string(),
     href: z.string(),
-    children: z.array(navigationItemSchema).optional(),
+    children: z.array(navigationLinkSchema).optional(),
   })
 );
+
+// Section groups navigation links under a named heading (top-level only — no nesting sections)
+export type NavigationSection = {
+  section: string;
+  items: NavigationLink[];
+};
+
+export const navigationSectionSchema = z.object({
+  section: z.string(),
+  items: z.array(navigationLinkSchema).min(1),
+});
+
+// Union of link and section — this is the canonical NavigationItem type
+export type NavigationItem = NavigationLink | NavigationSection;
+
+export const navigationItemSchema = z.union([navigationLinkSchema, navigationSectionSchema]);
+
+// Type guards for discriminating the union
+export function isNavigationSection(item: NavigationItem): item is NavigationSection {
+  return 'section' in item && !('label' in item);
+}
+
+export function isNavigationLink(item: NavigationItem): item is NavigationLink {
+  return 'label' in item && 'href' in item;
+}
 
 export const menuContentSchema: z.ZodType<MenuContent> = z.lazy(() =>
   buttonContentSchema.extend({

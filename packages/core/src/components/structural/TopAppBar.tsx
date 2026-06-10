@@ -1,5 +1,10 @@
 import React, { useId, useState } from 'react';
-import { AppBarContent, NavigationItem } from '@stackwright/types';
+import {
+  AppBarContent,
+  NavigationItem,
+  NavigationSection,
+  isNavigationSection,
+} from '@stackwright/types';
 import { ThemedButton } from '../base/ThemedButton';
 import { CompressedMenu } from '../base/Menu/CompressedMenu';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
@@ -79,6 +84,95 @@ function ColorModeToggle({ textColor }: { textColor: string }) {
 }
 
 // ---------------------------------------------------------------------------
+// NavDropdown — desktop hover dropdown for NavigationSection items
+// ---------------------------------------------------------------------------
+
+interface NavDropdownProps {
+  section: NavigationSection;
+  headerTextColor: string;
+  dropdownBgColor: string;
+  dropdownTextColor: string;
+  shadow: string;
+  spacingXs: string;
+  spacingMd: string;
+}
+
+function NavDropdown({
+  section,
+  headerTextColor,
+  dropdownBgColor,
+  dropdownTextColor,
+  shadow,
+  spacingXs,
+  spacingMd,
+}: NavDropdownProps) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div
+      style={{ position: 'relative' }}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          color: headerTextColor,
+          padding: `6px ${spacingMd}`,
+          fontSize: '1rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '4px',
+          fontFamily: 'inherit',
+          fontWeight: 'inherit',
+        }}
+      >
+        {section.section}
+        <span style={{ fontSize: '0.65em', opacity: 0.8, lineHeight: 1 }}>▾</span>
+      </button>
+      {open && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            backgroundColor: dropdownBgColor,
+            boxShadow: shadow,
+            borderRadius: '6px',
+            minWidth: '160px',
+            zIndex: 1200,
+            padding: `${spacingXs} 0`,
+          }}
+        >
+          {section.items.map((link, idx) => (
+            <a
+              key={idx}
+              href={link.href}
+              style={{
+                display: 'block',
+                padding: `${spacingXs} ${spacingMd}`,
+                color: dropdownTextColor,
+                textDecoration: 'none',
+                fontSize: '1rem',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // TopAppBar
 // ---------------------------------------------------------------------------
 
@@ -114,22 +208,82 @@ export default function TopAppBar({
 
   const buildMenu = (items: NavigationItem[]) => (
     <>
-      {items.map((item, index) => (
-        <a
-          key={index}
-          href={item.href}
-          onClick={handleMenuClose}
-          style={{
-            display: 'block',
-            padding: `${theme.spacing.xs} ${theme.spacing.md}`,
-            color: theme.colors.text,
-            textDecoration: 'none',
-            fontSize: '1rem',
-          }}
-        >
-          {item.label}
-        </a>
-      ))}
+      {items.map((item, index) => {
+        if (isNavigationSection(item)) {
+          // Flatten sections with exactly one item — no orphaned group headers
+          if (item.items.length === 1) {
+            const single = item.items[0];
+            return (
+              <a
+                key={index}
+                href={single.href}
+                onClick={handleMenuClose}
+                style={{
+                  display: 'block',
+                  padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+                  color: theme.colors.text,
+                  textDecoration: 'none',
+                  fontSize: '1rem',
+                }}
+              >
+                {single.label}
+              </a>
+            );
+          }
+          return (
+            <div key={index}>
+              <div
+                style={{
+                  padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+                  paddingTop: index === 0 ? theme.spacing.xs : theme.spacing.sm,
+                  fontWeight: 600,
+                  opacity: 0.55,
+                  fontSize: '0.78rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.07em',
+                  color: theme.colors.text,
+                  cursor: 'default',
+                }}
+              >
+                {item.section}
+              </div>
+              {item.items.map((link, linkIndex) => (
+                <a
+                  key={linkIndex}
+                  href={link.href}
+                  onClick={handleMenuClose}
+                  style={{
+                    display: 'block',
+                    padding: `${theme.spacing.xs} ${theme.spacing.lg}`,
+                    color: theme.colors.text,
+                    textDecoration: 'none',
+                    fontSize: '1rem',
+                  }}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          );
+        }
+        // Plain link
+        return (
+          <a
+            key={index}
+            href={item.href}
+            onClick={handleMenuClose}
+            style={{
+              display: 'block',
+              padding: `${theme.spacing.xs} ${theme.spacing.md}`,
+              color: theme.colors.text,
+              textDecoration: 'none',
+              fontSize: '1rem',
+            }}
+          >
+            {item.label}
+          </a>
+        );
+      })}
     </>
   );
 
@@ -237,20 +391,55 @@ export default function TopAppBar({
             />
           ) : (
             <div style={{ display: 'flex', gap: theme.spacing.md, alignItems: 'center' }}>
-              {menuItems.map((item, index) => (
-                <ThemedButton
-                  key={index}
-                  button={{
-                    text: item.label,
-                    href: item.href,
-                    variant: 'text',
-                    bgColor: headerBgColor,
-                    textColor: headerTextColor,
-                    textSize: 'h6',
-                  }}
-                  size="medium"
-                />
-              ))}
+              {menuItems.map((item, index) => {
+                if (isNavigationSection(item)) {
+                  // Flatten sections with exactly one item
+                  if (item.items.length === 1) {
+                    const single = item.items[0];
+                    return (
+                      <ThemedButton
+                        key={index}
+                        button={{
+                          text: single.label,
+                          href: single.href,
+                          variant: 'text',
+                          bgColor: headerBgColor,
+                          textColor: headerTextColor,
+                          textSize: 'h6',
+                        }}
+                        size="medium"
+                      />
+                    );
+                  }
+                  return (
+                    <NavDropdown
+                      key={index}
+                      section={item}
+                      headerTextColor={headerTextColor}
+                      dropdownBgColor={theme.colors.background}
+                      dropdownTextColor={theme.colors.text}
+                      shadow={getThemeShadow(theme, 'md')}
+                      spacingXs={theme.spacing.xs}
+                      spacingMd={theme.spacing.md}
+                    />
+                  );
+                }
+                // Plain link
+                return (
+                  <ThemedButton
+                    key={index}
+                    button={{
+                      text: item.label,
+                      href: item.href,
+                      variant: 'text',
+                      bgColor: headerBgColor,
+                      textColor: headerTextColor,
+                      textSize: 'h6',
+                    }}
+                    size="medium"
+                  />
+                );
+              })}
             </div>
           ))}
 
