@@ -31,24 +31,28 @@ search:
 # Sidebar navigation (persistent left sidebar)
 sidebar:
   navigation:
-    - label: "📖 Documentation"
-      href: "/getting-started"
-    - label: "🚀 Getting Started"
-      href: "/getting-started"
-    - label: "📦 Content Types"
-      href: "/content-types"
-    - label: "🧪 Showcase"
-      href: "/showcase"
-    - label: "🏗️ Architecture"
-      href: "/architecture"
-    - label: "⌨️ CLI Reference"
-      href: "/cli"
-    - label: "🤖 Otter Raft"
-      href: "/otter-raft"
-    - label: "🔐 Pro"
-      href: "/pro"
-    - label: "🙏 Acknowledgements"
-      href: "/acknowledgements"
+    - section: "Learn"
+      items:
+        - label: "\U0001F680 Getting Started"
+          href: "/getting-started"
+        - label: "\U0001F4E6 Content Types"
+          href: "/content-types"
+        - label: "\U0001F9EA Showcase"
+          href: "/showcase"
+    - section: "Reference"
+      items:
+        - label: "\U0001F3D7\uFE0F Architecture"
+          href: "/architecture"
+        - label: "\u2328\uFE0F CLI Reference"
+          href: "/cli"
+        - label: "\U0001F916 Otter Raft"
+          href: "/otter-raft"
+    - section: "More"
+      items:
+        - label: "\U0001F510 Pro"
+          href: "/pro"
+        - label: "\U0001F64F Acknowledgements"
+          href: "/acknowledgements"
 
   collapsed: false
   width: 260
@@ -62,10 +66,12 @@ footer:
       href: "https://github.com/Per-Aspera-LLC/stackwright"
     - label: "Source for this Site"
       href: "https://github.com/Per-Aspera-LLC/stackwright/tree/main/examples/stackwright-docs"
-    - label: "Terms"
-      href: "/terms-and-conditions"
-    - label: "Privacy Policy"
-      href: "/privacy-policy"
+    - section: "Legal"
+      items:
+        - label: "Terms"
+          href: "/terms-and-conditions"
+        - label: "Privacy Policy"
+          href: "/privacy-policy"
 
 customTheme:
   id: "stackwright-docs"
