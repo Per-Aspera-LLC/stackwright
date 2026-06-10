@@ -42,6 +42,7 @@
     "fix-sbom-cp3",
     "fix-scaffold-missing-deps",
     "icon-layout-alias-fix",
+    "nav-section-grouping",
     "perf-lazy-codeblock-faq",
     "refactor-board-beads-native",
     "seo-autopilot",

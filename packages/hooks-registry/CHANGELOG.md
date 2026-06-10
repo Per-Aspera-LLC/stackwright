@@ -1,5 +1,12 @@
 # @stackwright/hooks-registry
 
+## 0.1.2-alpha.5
+
+### Patch Changes
+
+- Updated dependencies [c12f195]
+  - @stackwright/types@1.6.0-alpha.5
+
 ## 0.1.2-alpha.4
 
 ### Patch Changes
