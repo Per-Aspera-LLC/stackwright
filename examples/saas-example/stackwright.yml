@@ -17,14 +17,18 @@ appBar:
 navigation:
   - label: "Home"
     href: "/"
-  - label: "Features"
-    href: "/features"
-  - label: "Pricing"
-    href: "/pricing"
-  - label: "About"
-    href: "/about"
-  - label: "Contact"
-    href: "/contact"
+  - section: "Product"
+    items:
+      - label: "Features"
+        href: "/features"
+      - label: "Pricing"
+        href: "/pricing"
+  - section: "Company"
+    items:
+      - label: "About"
+        href: "/about"
+      - label: "Contact"
+        href: "/contact"
 
 footer:
   backgroundColor: "primary"

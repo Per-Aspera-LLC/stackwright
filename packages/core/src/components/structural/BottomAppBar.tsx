@@ -1,4 +1,4 @@
-import { FooterConfig } from '@stackwright/types';
+import { FooterConfig, isNavigationSection } from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { useBreakpoints } from '../../hooks/useBreakpoints';
 import { getHighContrastTextColor, resolveColor } from '../../utils/colorUtils';
@@ -73,20 +73,52 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
                     key={colIdx}
                     style={{ display: 'flex', flexDirection: 'column', gap: theme.spacing.xs }}
                   >
-                    {column!.map((link) => (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        style={{
-                          color: 'inherit',
-                          textDecoration: 'none',
-                          fontSize: '0.875rem',
-                          opacity: 0.9,
-                        }}
-                      >
-                        {link.label}
-                      </a>
-                    ))}
+                    {column!.map((link, linkIdx) =>
+                      isNavigationSection(link) ? (
+                        <div key={linkIdx}>
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              fontSize: '0.78rem',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.07em',
+                              opacity: 0.6,
+                              marginBottom: '4px',
+                            }}
+                          >
+                            {link.section}
+                          </div>
+                          {link.items.map((child) => (
+                            <a
+                              key={child.href}
+                              href={child.href}
+                              style={{
+                                display: 'block',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                                fontSize: '0.875rem',
+                                opacity: 0.9,
+                              }}
+                            >
+                              {child.label}
+                            </a>
+                          ))}
+                        </div>
+                      ) : (
+                        <a
+                          key={link.href}
+                          href={link.href}
+                          style={{
+                            color: 'inherit',
+                            textDecoration: 'none',
+                            fontSize: '0.875rem',
+                            opacity: 0.9,
+                          }}
+                        >
+                          {link.label}
+                        </a>
+                      )
+                    )}
                     <span
                       style={{
                         color: 'inherit',
@@ -109,20 +141,38 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
                   alignItems: 'center',
                 }}
               >
-                {footer!.links!.map((link) => (
-                  <a
-                    key={link.href}
-                    href={link.href}
-                    style={{
-                      color: 'inherit',
-                      textDecoration: 'none',
-                      fontSize: '0.875rem',
-                      opacity: 0.9,
-                    }}
-                  >
-                    {link.label}
-                  </a>
-                ))}
+                {footer!.links!.map((link, _linkIdx) =>
+                  isNavigationSection(link) ? (
+                    // Flatten section items into the row
+                    link.items.map((child) => (
+                      <a
+                        key={child.href}
+                        href={child.href}
+                        style={{
+                          color: 'inherit',
+                          textDecoration: 'none',
+                          fontSize: '0.875rem',
+                          opacity: 0.9,
+                        }}
+                      >
+                        {child.label}
+                      </a>
+                    ))
+                  ) : (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      style={{
+                        color: 'inherit',
+                        textDecoration: 'none',
+                        fontSize: '0.875rem',
+                        opacity: 0.9,
+                      }}
+                    >
+                      {link.label}
+                    </a>
+                  )
+                )}
                 <span
                   style={{
                     color: 'inherit',

@@ -1,6 +1,11 @@
 import React, { useId, useState, useEffect, useRef } from 'react';
 import type { Theme } from '@stackwright/themes';
-import { NavigationItem } from '@stackwright/types';
+import {
+  NavigationItem,
+  NavigationLink,
+  NavigationSection,
+  isNavigationSection,
+} from '@stackwright/types';
 import { useSafeTheme } from '../../hooks/useSafeTheme';
 import { resolveColor, getBetterTextColor } from '../../utils/colorUtils';
 import { getThemeShadow } from '../../utils/shadowUtils';
@@ -41,14 +46,14 @@ export interface NavSidebarProps {
 }
 
 interface NavItemProps {
-  item: NavigationItem;
+  item: NavigationLink;
   isActive: boolean;
   collapsed: boolean;
   textColor: string;
   activeColor: string;
   theme: Theme;
   depth?: number;
-  isActiveCheck?: (item: NavigationItem) => boolean;
+  isActiveCheck?: (item: NavigationLink) => boolean;
 }
 
 // ---------------------------------------------------------------------------
@@ -172,7 +177,7 @@ function NavItem({
       </a>
       {hasChildren && isExpanded && !collapsed && (
         <div role="group">
-          {children.map((child: NavigationItem, idx: number) => (
+          {children.map((child: NavigationLink, idx: number) => (
             <NavItem
               key={idx}
               item={child}
@@ -188,6 +193,37 @@ function NavItem({
         </div>
       )}
     </>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Section Header Component
+// ---------------------------------------------------------------------------
+
+interface SectionHeaderProps {
+  section: NavigationSection;
+  collapsed: boolean;
+  textColor: string;
+  theme: Theme;
+}
+
+function SectionHeader({ section, collapsed, textColor, theme }: SectionHeaderProps) {
+  if (collapsed) return null; // No header text when sidebar is icon-only
+  return (
+    <div
+      style={{
+        padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+        paddingTop: theme.spacing.md,
+        fontSize: '0.75rem',
+        fontWeight: 600,
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        color: textColor,
+        opacity: 0.6,
+      }}
+    >
+      {section.section}
+    </div>
   );
 }
 
@@ -368,6 +404,7 @@ export default function NavSidebar({
 
   // Check if a nav item is active
   const isItemActive = (item: NavigationItem) => {
+    if (isNavigationSection(item)) return false; // sections have no href
     return item.href === currentPath;
   };
 
@@ -441,18 +478,59 @@ export default function NavSidebar({
             paddingBottom: theme.spacing.sm,
           }}
         >
-          {navigationItems.map((item, index) => (
-            <NavItem
-              key={index}
-              item={item}
-              isActive={isItemActive(item)}
-              collapsed={collapsed && !isMobile}
-              textColor={textColorResolved}
-              activeColor={activeColor}
-              theme={theme}
-              isActiveCheck={isItemActive}
-            />
-          ))}
+          {navigationItems.map((item, index) => {
+            if (isNavigationSection(item)) {
+              // Single-item sections flatten to a plain link — no header noise
+              if (item.items.length === 1) {
+                return (
+                  <NavItem
+                    key={index}
+                    item={item.items[0]}
+                    isActive={isItemActive(item.items[0])}
+                    collapsed={collapsed && !isMobile}
+                    textColor={textColorResolved}
+                    activeColor={activeColor}
+                    theme={theme}
+                    isActiveCheck={(i) => i.href === currentPath}
+                  />
+                );
+              }
+              return (
+                <React.Fragment key={index}>
+                  <SectionHeader
+                    section={item}
+                    collapsed={collapsed && !isMobile}
+                    textColor={textColorResolved}
+                    theme={theme}
+                  />
+                  {item.items.map((child, childIdx) => (
+                    <NavItem
+                      key={`${index}-${childIdx}`}
+                      item={child}
+                      isActive={isItemActive(child)}
+                      collapsed={collapsed && !isMobile}
+                      textColor={textColorResolved}
+                      activeColor={activeColor}
+                      theme={theme}
+                      isActiveCheck={(i) => i.href === currentPath}
+                    />
+                  ))}
+                </React.Fragment>
+              );
+            }
+            return (
+              <NavItem
+                key={index}
+                item={item}
+                isActive={isItemActive(item)}
+                collapsed={collapsed && !isMobile}
+                textColor={textColorResolved}
+                activeColor={activeColor}
+                theme={theme}
+                isActiveCheck={(i) => i.href === currentPath}
+              />
+            );
+          })}
         </div>
       </nav>
 
