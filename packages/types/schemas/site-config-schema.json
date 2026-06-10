@@ -417,7 +417,9 @@
             "enum": [
               "openapi",
               "graphql",
-              "rest"
+              "rest",
+              "websocket",
+              "sse"
             ]
           },
           "name": {
@@ -471,6 +473,24 @@
               "type"
             ],
             "additionalProperties": false
+          },
+          "transport": {
+            "type": "string",
+            "enum": [
+              "polling",
+              "websocket",
+              "sse"
+            ]
+          },
+          "reconnectInterval": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 60000
+          },
+          "maxRetries": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
           }
         },
         "required": [
