@@ -48,6 +48,8 @@ export const siteMetaSchema = z.object({
  * - `openapi`: OpenAPI 3.x specifications → Zod schemas + TypeScript types + API clients
  * - `graphql`: GraphQL schemas → typed queries + mutations
  * - `rest`: REST APIs → collection providers + typed endpoints
+ * - `websocket`: WebSocket streaming connections → real-time push updates via `useStreaming`
+ * - `sse`: Server-Sent Events connections → real-time push updates through HTTP-compatible proxies/firewalls
  *
  * Each integration requires:
  * - `type`: Integration type (determines which plugin processes this config)
@@ -56,7 +58,7 @@ export const siteMetaSchema = z.object({
  * Additional fields are plugin-specific and passed through via `.passthrough()`.
  * See individual plugin docs for their configuration options.
  *
- * ⚠️ **Security Note:**
+ *  **Security Note:**
  * - Integration names are validated to prevent path traversal attacks
  * - API tokens should use environment variable references (e.g., `$API_TOKEN`)
  * - Never commit plaintext secrets to YAML files
@@ -71,11 +73,24 @@ export const siteMetaSchema = z.object({
  *       type: bearer
  *       token: $API_TOKEN  # Environment variable reference
  * ```
+ *
+ * @example
+ * ```yaml
+ * integrations:
+ *   - type: websocket
+ *     name: vessel-tracking
+ *     url: wss://ais-api.example.com/stream
+ *     reconnectInterval: 3000
+ *     maxRetries: 10
+ *     auth:
+ *       type: bearer
+ *       token: $AIS_TOKEN
+ * ```
  */
 export const integrationConfigSchema = z
   .object({
     /** Integration type - determines which plugin processes this config */
-    type: z.enum(['openapi', 'graphql', 'rest']),
+    type: z.enum(['openapi', 'graphql', 'rest', 'websocket', 'sse']),
     /**
      * Unique name for this integration (used for generated code paths).
      * Must be lowercase alphanumeric with hyphens (kebab-case).
@@ -95,6 +110,12 @@ export const integrationConfigSchema = z
       ),
     /** Optional authentication configuration for this integration. */
     auth: integrationAuthSchema,
+    /** Transport protocol. Defaults to 'polling' for rest/openapi/graphql. Auto-detected for websocket/sse types. */
+    transport: z.enum(['polling', 'websocket', 'sse']).optional(),
+    /** Reconnect interval in ms for streaming transports (default: 3000, min: 1000, max: 60000). */
+    reconnectInterval: z.number().int().min(1000).max(60000).optional(),
+    /** Max reconnect attempts before giving up (default: 5). */
+    maxRetries: z.number().int().min(0).max(100).optional(),
   })
   .passthrough();
 
@@ -167,7 +188,7 @@ export const siteConfigSchema = z.object({
   appBar: appBarConfigSchema,
   footer: footerConfigSchema.optional(),
   breakpoints: breakpointsConfigSchema.optional(),
-  /** Optional array of Pro package integrations (OpenAPI, GraphQL, REST). See integrationConfigSchema for details. */
+  /** Optional array of Pro package integrations (OpenAPI, GraphQL, REST, WebSocket, SSE). See integrationConfigSchema for details. */
   integrations: z.array(integrationConfigSchema).optional(),
   /** Optional sidebar navigation configuration. When present, a sidebar will be rendered on all pages. */
   sidebar: sidebarConfigSchema.optional(),
