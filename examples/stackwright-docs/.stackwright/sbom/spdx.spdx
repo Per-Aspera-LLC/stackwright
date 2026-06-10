@@ -1,37 +1,37 @@
 SPDXVersion: SPDX-2.3
 DataLicense: CC0-1.0
-SPDXID: SPDXRef-DOCUMENT-1c036ac5
-DocumentName: stackwright-docs@0.1.8
-DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-06-06T18:15:28.211Z
+SPDXID: SPDXRef-DOCUMENT-4bd3a8a8
+DocumentName: stackwright-docs@0.1.9
+DocumentNamespace: https://stackwright.dev/spdx/stackwright-docs/2026-06-10T21:08:55.061Z
 
 CreationInfo:
-  Created: 2026-06-06T18:15:28.211Z
+  Created: 2026-06-10T21:08:55.061Z
   Creator: Tool: @stackwright/sbom-generator
   Creator: Tool-Version: 0.0.0
 
 PackageName: @radix-ui/react-accordion
 SPDXID: SPDXRef-Package--radix-ui-react-accordion
-PackageVersion: 1.2.2
+PackageVersion: 1.2.13
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: 6385b547dec3958e12e36af31946a77045ae9b94c89e53bfacbedb71c0f3a10c
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/radix-ui/react-accordion@1.2.2
+PackageChecksum: SHA256: 1da1521b14fbd55a83bcabacb19641ab0c4ca647e4e1656410c515a181284682
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/radix-ui/react-accordion@1.2.13
 
 PackageName: @radix-ui/react-slot
 SPDXID: SPDXRef-Package--radix-ui-react-slot
-PackageVersion: 1.1.1
+PackageVersion: 1.2.5
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: 6c80259979afa356ff77686649e864a9be6fd187b480c8d3d49fecea2c977b75
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/radix-ui/react-slot@1.1.1
+PackageChecksum: SHA256: 730e8755dc2f5884daf27b69f25df1b1629e028218f8067be1af74306e279acd
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/radix-ui/react-slot@1.2.5
 
 PackageName: @radix-ui/react-tabs
 SPDXID: SPDXRef-Package--radix-ui-react-tabs
-PackageVersion: 1.1.2
+PackageVersion: 1.1.14
 PackageLicenseConcluded: NOASSERTION
 PackageLicenseDeclared: NOASSERTION
-PackageChecksum: SHA256: f3ad88f5751707a5c5f92a1603247d36820a4c7e2a748308c3c8c8acd4d07cd2
-ExternalRef: PACKAGE-MANAGER purl pkg:npm/radix-ui/react-tabs@1.1.2
+PackageChecksum: SHA256: 54ef0553554155468ef2f17b52ebccf8132ebc54cd16d7160095cdd62363e8da
+ExternalRef: PACKAGE-MANAGER purl pkg:npm/radix-ui/react-tabs@1.1.14
 
 PackageName: @stackwright/core
 SPDXID: SPDXRef-Package--stackwright-core
@@ -129,7 +129,7 @@ PackageLicenseDeclared: NOASSERTION
 PackageChecksum: SHA256: 084c7514e672a9283e7a4bf1c162bf248d481e0aac75ffe397d8763082a57852
 ExternalRef: PACKAGE-MANAGER purl pkg:npm/tailwind-merge@3.6.0
 
-Relationship: SPDXRef-DOCUMENT-1c036ac5 DESCRIBES SPDXRef-Package-clsx
+Relationship: SPDXRef-DOCUMENT-4bd3a8a8 DESCRIBES SPDXRef-Package-clsx
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-accordion
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-slot
 Relationship: SPDXRef-Package-clsx CONTAINS SPDXRef-Package--radix-ui-react-tabs

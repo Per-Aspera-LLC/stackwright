@@ -1,39 +1,39 @@
 {
   "format": "stackwright-build-manifest",
   "version": "1.0.0",
-  "generated": "2026-06-06T18:15:28.213Z",
+  "generated": "2026-06-10T21:08:55.063Z",
   "project": {
     "name": "stackwright-docs",
-    "version": "0.1.8",
-    "root": "/home/charles/git/peraspera/stackwright/examples/stackwright-docs",
+    "version": "0.1.9",
+    "root": "/home/charles/git/peraspera/stackwright/oss/examples/stackwright-docs",
     "isMonorepo": false
   },
   "dependencies": [
     {
       "name": "@radix-ui/react-accordion",
-      "version": "1.2.2",
+      "version": "1.2.13",
       "type": "direct",
       "category": "external",
-      "purl": "pkg:npm/radix-ui/react-accordion@1.2.2",
-      "integrity": "6385b547dec3958e12e36af31946a77045ae9b94c89e53bfacbedb71c0f3a10c",
+      "purl": "pkg:npm/radix-ui/react-accordion@1.2.13",
+      "integrity": "1da1521b14fbd55a83bcabacb19641ab0c4ca647e4e1656410c515a181284682",
       "depth": 0
     },
     {
       "name": "@radix-ui/react-slot",
-      "version": "1.1.1",
+      "version": "1.2.5",
       "type": "direct",
       "category": "external",
-      "purl": "pkg:npm/radix-ui/react-slot@1.1.1",
-      "integrity": "6c80259979afa356ff77686649e864a9be6fd187b480c8d3d49fecea2c977b75",
+      "purl": "pkg:npm/radix-ui/react-slot@1.2.5",
+      "integrity": "730e8755dc2f5884daf27b69f25df1b1629e028218f8067be1af74306e279acd",
       "depth": 0
     },
     {
       "name": "@radix-ui/react-tabs",
-      "version": "1.1.2",
+      "version": "1.1.14",
       "type": "direct",
       "category": "external",
-      "purl": "pkg:npm/radix-ui/react-tabs@1.1.2",
-      "integrity": "f3ad88f5751707a5c5f92a1603247d36820a4c7e2a748308c3c8c8acd4d07cd2",
+      "purl": "pkg:npm/radix-ui/react-tabs@1.1.14",
+      "integrity": "54ef0553554155468ef2f17b52ebccf8132ebc54cd16d7160095cdd62363e8da",
       "depth": 0
     },
     {

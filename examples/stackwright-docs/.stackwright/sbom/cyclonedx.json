@@ -3,7 +3,7 @@
   "specVersion": "1.5",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-06-06T18:15:28.213Z",
+    "timestamp": "2026-06-10T21:08:55.063Z",
     "tools": [
       {
         "vendor": "Stackwright",
@@ -14,21 +14,21 @@
     "component": {
       "type": "application",
       "name": "stackwright-docs",
-      "version": "0.1.8",
-      "purl": "pkg:npm/stackwright-docs@0.1.8"
+      "version": "0.1.9",
+      "purl": "pkg:npm/stackwright-docs@0.1.9"
     }
   },
   "components": [
     {
       "type": "library",
       "name": "@radix-ui/react-accordion",
-      "version": "1.2.2",
-      "purl": "pkg:npm/radix-ui/react-accordion@1.2.2",
+      "version": "1.2.13",
+      "purl": "pkg:npm/radix-ui/react-accordion@1.2.13",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "6385b547dec3958e12e36af31946a77045ae9b94c89e53bfacbedb71c0f3a10c"
+          "content": "1da1521b14fbd55a83bcabacb19641ab0c4ca647e4e1656410c515a181284682"
         }
       ],
       "externalReferences": [
@@ -41,13 +41,13 @@
     {
       "type": "library",
       "name": "@radix-ui/react-slot",
-      "version": "1.1.1",
-      "purl": "pkg:npm/radix-ui/react-slot@1.1.1",
+      "version": "1.2.5",
+      "purl": "pkg:npm/radix-ui/react-slot@1.2.5",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "6c80259979afa356ff77686649e864a9be6fd187b480c8d3d49fecea2c977b75"
+          "content": "730e8755dc2f5884daf27b69f25df1b1629e028218f8067be1af74306e279acd"
         }
       ],
       "externalReferences": [
@@ -60,13 +60,13 @@
     {
       "type": "library",
       "name": "@radix-ui/react-tabs",
-      "version": "1.1.2",
-      "purl": "pkg:npm/radix-ui/react-tabs@1.1.2",
+      "version": "1.1.14",
+      "purl": "pkg:npm/radix-ui/react-tabs@1.1.14",
       "scope": "required",
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f3ad88f5751707a5c5f92a1603247d36820a4c7e2a748308c3c8c8acd4d07cd2"
+          "content": "54ef0553554155468ef2f17b52ebccf8132ebc54cd16d7160095cdd62363e8da"
         }
       ],
       "externalReferences": [
@@ -307,7 +307,7 @@
   ],
   "dependencies": [
     {
-      "ref": "pkg:npm/stackwright-docs@0.1.8",
+      "ref": "pkg:npm/stackwright-docs@0.1.9",
       "dependsOn": [
         "@radix-ui/react-accordion",
         "@radix-ui/react-slot",
