@@ -166,7 +166,7 @@ content:
       label: success-story
       variant: success
       title: "🦦 Built Their Own Docs"
-      body: "The StackWright-docs site you're reading right now was built by the Otter Raft. Brand discovery → Theme design → 7 pages → Deployed. Total time: 4 hours of AI conversation. The YAML files are in the repo — you can read exactly what the otters wrote."
+      body: "The StackWright-docs site you're reading right now was built by the Otter Raft. Brand discovery → Theme design → 7 pages → Deployed. Total time: 4 hours of AI conversation. The YAML files are in the repo — you can read exactly what the otters wrote. For full build economics across the entire 45-package platform, see the Proof page."
       background: surface
 
     # ─────────────────────────────────────────────────────────

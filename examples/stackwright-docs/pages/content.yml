@@ -78,7 +78,7 @@ content:
             src: Plug
             height: 48
           heading: "MCP Integration"
-          description: "20+ tools via Model Context Protocol. AI agents create pages, validate schemas, render previews, and open PRs."
+          description: "26+ tools via Model Context Protocol. AI agents create pages, validate schemas, render previews, and open PRs — with 35 additional Pro tools for enterprise workflows."
       background: surface
 
     - type: text_block
@@ -176,5 +176,9 @@ content:
           variant: contained
           href: /getting-started
           bgColor: primary
+        - text: "See the Proof"
+          textSize: button
+          variant: outlined
+          href: /proof
       background: surface
       color: text

@@ -114,7 +114,7 @@ content:
       text: Package Architecture
       textSize: h2
     textBlocks:
-    - text: 'StackWright is a pnpm monorepo with 10 packages. Here''s how they relate:'
+    - text: 'The OSS framework is a pnpm monorepo with 17 packages (16 published + e2e tests), with 19 Pro and 9 Services packages extending the platform. Here''s how the OSS packages relate:'
       textSize: body1
     background: background
   - type: code_block
@@ -241,6 +241,8 @@ content:
     textBlocks:
     - text: 'StackWright''s constrained grammar creates a fundamentally different security posture:'
       textSize: body1
+    - text: "Every security claim on this page is verified in source code — reproducible commands and evidence in the Proof page."
+      textSize: body2
     background: background
   - type: feature_list
     label: safety-features
@@ -393,4 +395,8 @@ content:
       textSize: button
       variant: outlined
       href: /otter-raft
+    - text: Proof
+      textSize: button
+      variant: outlined
+      href: /proof
     background: background

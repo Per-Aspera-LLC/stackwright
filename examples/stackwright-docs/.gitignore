@@ -17,6 +17,13 @@
 
 # stackwright prebuild output (generated, not committed)
 /public/stackwright-content/
+/public/robots.txt
+/public/sitemap.xml
+/stackwright-generated/icons.ts
+/.stackwright/*
+/.stackwright/sbom/*.json
+/.stackwright/sbom/*.spdx
+
 
 # misc
 .DS_Store
