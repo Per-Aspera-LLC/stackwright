@@ -13,6 +13,6 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.60.0",
-    "lighthouse": "^13.3.0"
+    "lighthouse": "^13.4.0"
   }
 }
