@@ -59,7 +59,7 @@
         "prepublishOnly": "npm run build"
     },
     "dependencies": {
-        "@radix-ui/react-accordion": "^1.2.13",
+        "@radix-ui/react-accordion": "^1.2.14",
         "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "catalog:",
