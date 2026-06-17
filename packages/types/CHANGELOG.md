@@ -1,5 +1,13 @@
 # @stackwright/types
 
+## 1.7.1-alpha.0
+
+### Patch Changes
+
+- 803e6ea: Sync site-config JSON schema with websocket and SSE TypeScript type additions
+- Updated dependencies [9aeb5d5]
+  - @stackwright/themes@0.6.1-alpha.0
+
 ## 1.7.0
 
 ### Minor Changes

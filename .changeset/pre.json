@@ -21,5 +21,8 @@
     "@stackwright/types": "1.7.0",
     "@stackwright/ui-shadcn": "0.1.3"
   },
-  "changesets": []
+  "changesets": [
+    "fix-dark-mode-flash",
+    "sync-streaming-schema"
+  ]
 }
