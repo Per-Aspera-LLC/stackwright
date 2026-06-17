@@ -16,9 +16,27 @@ import { ColorMode } from './types';
  * For return visitors (cookie exists): correct theme on first paint, zero flash.
  * For first-time visitors with OS dark mode: one-frame flash (same as next-themes v0.2).
  */
-export function ColorModeScript({ fallback = 'system' }: { fallback?: ColorMode }) {
+export function ColorModeScript({
+  fallback = 'system',
+  lightBackground,
+  darkBackground,
+}: {
+  fallback?: ColorMode;
+  lightBackground?: string;
+  darkBackground?: string;
+}) {
   // The script is raw JS — no React, no module imports. It reads the cookie
   // and sets a data attribute. ~300 bytes, executes in <1ms.
+  //
+  // When both background props are provided, we also set
+  // `document.documentElement.style.backgroundColor` so the <html> element
+  // has the correct background before React hydrates — preventing the white
+  // flash that occurs during page transitions in dark mode.
+  const bgSnippet =
+    lightBackground && darkBackground
+      ? `\n    document.documentElement.style.backgroundColor = mode === 'dark' ? '${darkBackground}' : '${lightBackground}';`
+      : '';
+
   const scriptContent = `
 (function(){
   try {
@@ -27,7 +45,7 @@ export function ColorModeScript({ fallback = 'system' }: { fallback?: ColorMode 
     if (mode === 'system') {
       mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
-    document.documentElement.setAttribute('data-sw-color-mode', mode);
+    document.documentElement.setAttribute('data-sw-color-mode', mode);${bgSnippet}
   } catch(e) {}
 })();
 `.trim();

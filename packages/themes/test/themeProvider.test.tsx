@@ -62,6 +62,16 @@ const makeTheme = (overrides: Partial<Theme> = {}): Theme => ({
   ...overrides,
 });
 
+/**
+ * Normalize a color string the way jsdom does (e.g. '#111111' → 'rgb(17, 17, 17)').
+ * Avoids brittle hardcoding of rgb values in assertions.
+ */
+function normalizeColor(hex: string): string {
+  const el = document.createElement('div');
+  el.style.backgroundColor = hex;
+  return el.style.backgroundColor;
+}
+
 // Component that consumes the theme context for testing
 function ThemeConsumer() {
   const { theme } = useTheme();
@@ -302,11 +312,12 @@ describe('useThemeOptional', () => {
 describe('Dark mode', () => {
   const darkTheme = makeTheme({ darkColors: DARK_COLORS });
 
-  // Clean up cookie and data attribute between tests to prevent leaking
-  // color mode state from setColorMode() calls that now persist to cookies.
+  // Clean up cookie, data attribute, and background color between tests to
+  // prevent leaking color mode state from setColorMode() calls.
   beforeEach(() => {
     document.cookie = 'sw-color-mode=; max-age=0; path=/';
     document.documentElement.removeAttribute('data-sw-color-mode');
+    document.documentElement.style.backgroundColor = '';
   });
 
   it('defaults colorMode to system', () => {
@@ -500,6 +511,81 @@ describe('Dark mode', () => {
     expect(wrapper.style.getPropertyValue('--sw-color-text')).toBe(DARK_COLORS.text);
     expect(wrapper.style.getPropertyValue('--sw-color-primary')).toBe(DARK_COLORS.primary);
   });
+
+  it('sets document.documentElement.style.backgroundColor when switching to dark mode', () => {
+    function DarkToggle() {
+      const { setColorMode } = useTheme();
+      return <button onClick={() => setColorMode('dark')}>Go Dark</button>;
+    }
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <DarkToggle />
+      </ThemeProvider>
+    );
+
+    act(() => {
+      screen.getByText('Go Dark').click();
+    });
+
+    expect(document.documentElement.style.backgroundColor).toBe(
+      normalizeColor(DARK_COLORS.background)
+    );
+  });
+
+  it('sets document.documentElement.style.backgroundColor when switching to light mode', () => {
+    function ModeToggle() {
+      const { setColorMode } = useTheme();
+      return (
+        <div>
+          <button onClick={() => setColorMode('dark')}>Go Dark</button>
+          <button onClick={() => setColorMode('light')}>Go Light</button>
+        </div>
+      );
+    }
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <ModeToggle />
+      </ThemeProvider>
+    );
+
+    act(() => {
+      screen.getByText('Go Dark').click();
+    });
+    expect(document.documentElement.style.backgroundColor).toBe(
+      normalizeColor(DARK_COLORS.background)
+    );
+
+    act(() => {
+      screen.getByText('Go Light').click();
+    });
+    expect(document.documentElement.style.backgroundColor).toBe(
+      normalizeColor(LIGHT_COLORS.background)
+    );
+  });
+
+  it('sets document.documentElement.style.backgroundColor when switching to system mode', () => {
+    // matchMedia mock always returns matches: false → system resolves to light
+    function SystemToggle() {
+      const { setColorMode } = useTheme();
+      return <button onClick={() => setColorMode('system')}>Go System</button>;
+    }
+
+    render(
+      <ThemeProvider theme={darkTheme} initialColorMode="dark">
+        <SystemToggle />
+      </ThemeProvider>
+    );
+
+    act(() => {
+      screen.getByText('Go System').click();
+    });
+
+    expect(document.documentElement.style.backgroundColor).toBe(
+      normalizeColor(LIGHT_COLORS.background)
+    );
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -631,5 +717,27 @@ describe('ColorModeScript', () => {
     const { container } = render(<ColorModeScript />);
     const script = container.querySelector('script');
     expect(script!.innerHTML).toContain("'system'");
+  });
+
+  it('includes backgroundColor logic when both background props are provided', () => {
+    const { container } = render(
+      <ColorModeScript lightBackground="#ffffff" darkBackground="#111111" />
+    );
+    const script = container.querySelector('script');
+    expect(script!.innerHTML).toContain('backgroundColor');
+    expect(script!.innerHTML).toContain('#ffffff');
+    expect(script!.innerHTML).toContain('#111111');
+  });
+
+  it('does NOT include backgroundColor logic when background props are omitted', () => {
+    const { container } = render(<ColorModeScript />);
+    const script = container.querySelector('script');
+    expect(script!.innerHTML).not.toContain('backgroundColor');
+  });
+
+  it('does NOT include backgroundColor logic when only one background prop is provided', () => {
+    const { container } = render(<ColorModeScript lightBackground="#ffffff" />);
+    const script = container.querySelector('script');
+    expect(script!.innerHTML).not.toContain('backgroundColor');
   });
 });

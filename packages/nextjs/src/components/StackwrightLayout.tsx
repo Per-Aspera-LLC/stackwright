@@ -35,6 +35,39 @@ function getFontLinks(): FontLink[] {
   }
 }
 
+interface ThemeBackgrounds {
+  light?: string;
+  dark?: string;
+}
+
+/**
+ * Try to load theme background colors from the prebuild-generated _site.json.
+ * Falls back to empty object for backward compatibility.
+ *
+ * This runs as a Server Component — `fs` access is safe here.
+ */
+function getThemeBackgrounds(): ThemeBackgrounds {
+  try {
+    const sitePath = path.join(process.cwd(), 'public', 'stackwright-content', '_site.json');
+    const raw = fs.readFileSync(sitePath, 'utf8');
+    const data = JSON.parse(raw) as {
+      customTheme?: {
+        colors?: { background?: string };
+        darkColors?: { background?: string };
+      };
+    };
+    const light = data?.customTheme?.colors?.background;
+    const dark = data?.customTheme?.darkColors?.background;
+    return {
+      ...(light ? { light } : {}),
+      ...(dark ? { dark } : {}),
+    };
+  } catch {
+    // File doesn't exist or is invalid — backward compatibility
+    return {};
+  }
+}
+
 interface StackwrightLayoutProps {
   children: React.ReactNode;
   /** BCP 47 language tag for the `<html lang>` attribute. Defaults to 'en'. */
@@ -68,11 +101,15 @@ interface StackwrightLayoutProps {
  */
 export function StackwrightLayout({ children, lang = 'en' }: StackwrightLayoutProps) {
   const fontLinks = getFontLinks();
+  const themeBackgrounds = getThemeBackgrounds();
 
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
-        <ColorModeScript />
+        <ColorModeScript
+          lightBackground={themeBackgrounds.light}
+          darkBackground={themeBackgrounds.dark}
+        />
         {fontLinks.map((link, index) => (
           <link
             key={index}
