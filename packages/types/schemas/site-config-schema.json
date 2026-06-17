@@ -574,6 +574,59 @@
       ],
       "additionalProperties": false
     },
+    "imageOptimization": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean"
+        },
+        "formats": {
+          "default": [
+            "webp"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "webp",
+              "avif"
+            ]
+          }
+        },
+        "quality": {
+          "default": 80,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "maxWidth": {
+          "default": 1920,
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "blur": {
+          "default": true,
+          "type": "boolean"
+        },
+        "blurSize": {
+          "default": 10,
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 64
+        }
+      },
+      "required": [
+        "enabled",
+        "formats",
+        "quality",
+        "maxWidth",
+        "blur",
+        "blurSize"
+      ],
+      "additionalProperties": false
+    },
     "locales": {
       "type": "object",
       "properties": {

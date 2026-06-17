@@ -90,6 +90,11 @@ const renderImage = (content: MediaItem) => {
       ? Math.round(resolvedHeight / imageContent.aspect_ratio)
       : content.width;
 
+  // Blur placeholder injected by prebuild image optimization (ri2).
+  // The enrichContentJsonsWithBlur step adds blurDataURL as a sibling of src
+  // in the page content JSON when image optimization is enabled.
+  const blurDataURL = (content as Record<string, unknown>).blurDataURL as string | undefined;
+
   return (
     <StackwrightImage
       src={content.src}
@@ -100,6 +105,7 @@ const renderImage = (content: MediaItem) => {
       fill={shouldUseFill}
       sizes="(max-width: 768px) 100vw, 50vw"
       priority={true}
+      {...(blurDataURL ? { placeholder: 'blur' as const, blurDataURL } : {})}
     />
   );
 };

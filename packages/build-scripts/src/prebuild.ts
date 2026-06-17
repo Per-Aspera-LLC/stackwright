@@ -43,6 +43,13 @@ import type {
   PrebuildPluginContext,
 } from '@stackwright/types';
 import { generateSitemap, generateRobotsTxt, collectPageMeta } from './seo';
+import {
+  processImageOptimization,
+  shouldOptimizeImage,
+  type ImageManifest,
+  type ImageManifestEntry,
+} from './image-optimizer';
+import type { ImageOptimizationConfig } from '@stackwright/types';
 
 /**
  * Recursively resolve environment variable references in config values.
@@ -602,6 +609,110 @@ function copyIfNewer(src: string, dest: string, rootDir: string): void {
     fs.copyFileSync(src, dest);
     console.log(`  asset: ${path.relative(rootDir, src)} -> ${path.relative(rootDir, dest)}`);
   }
+}
+
+/**
+ * Copy an image and optionally run it through the optimization pipeline.
+ *
+ * When optimization is enabled AND the image is eligible (raster, not SVG/GIF),
+ * generates format variants + blur placeholder alongside the copied original.
+ * Otherwise falls back to `copyIfNewer` alone.
+ *
+ * Returns the manifest entry (or null if optimization was skipped/failed).
+ */
+async function copyAndOptimizeImage(
+  src: string,
+  dest: string,
+  destDir: string,
+  publicPrefix: string,
+  rootDir: string,
+  imageOptConfig: ImageOptimizationConfig | null
+): Promise<ImageManifestEntry | null> {
+  // Always copy the original first (existing behavior)
+  copyIfNewer(src, dest, rootDir);
+
+  // Then optimize if enabled
+  if (imageOptConfig?.enabled && shouldOptimizeImage(src)) {
+    return processImageOptimization(src, destDir, publicPrefix, imageOptConfig, rootDir);
+  }
+  return null;
+}
+
+/**
+ * Recursively find all image files under a directory.
+ */
+function collectAllCopiedImages(dir: string): string[] {
+  const results: string[] = [];
+  if (!fs.existsSync(dir)) return results;
+
+  function walk(d: string): void {
+    for (const entry of fs.readdirSync(d, { withFileTypes: true })) {
+      const full = path.join(d, entry.name);
+      if (entry.isDirectory()) {
+        walk(full);
+      } else if (isImagePath(entry.name)) {
+        results.push(full);
+      }
+    }
+  }
+  walk(dir);
+  return results;
+}
+
+/**
+ * Walk all JSON files in contentOutDir and inject blurDataURL for any image
+ * `src` fields that have a manifest entry.
+ *
+ * Modifies JSON files in place. Looks for objects with a `src` field that
+ * matches a manifest key and adds `blurDataURL` as a sibling field.
+ */
+function enrichContentJsonsWithBlur(contentOutDir: string, manifest: ImageManifest): void {
+  function enrichNode(node: unknown): unknown {
+    if (Array.isArray(node)) {
+      return node.map(enrichNode);
+    }
+    if (node !== null && typeof node === 'object') {
+      const obj = node as Record<string, unknown>;
+      const result: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(obj)) {
+        result[key] = enrichNode(value);
+      }
+      // If this object has a `src` field that matches a manifest entry,
+      // inject blurDataURL as a sibling field
+      if (typeof result.src === 'string' && manifest[result.src]?.blurDataURL) {
+        result.blurDataURL = manifest[result.src].blurDataURL;
+      }
+      return result;
+    }
+    return node;
+  }
+
+  function processJsonFile(filePath: string): void {
+    const raw = fs.readFileSync(filePath, 'utf8');
+    let data: unknown;
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      return; // skip non-JSON
+    }
+    const enriched = enrichNode(data);
+    const enrichedStr = JSON.stringify(enriched, null, 2);
+    if (enrichedStr !== raw) {
+      fs.writeFileSync(filePath, enrichedStr);
+    }
+  }
+
+  function walkJsonFiles(dir: string): void {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walkJsonFiles(full);
+      } else if (entry.name.endsWith('.json') && !entry.name.startsWith('_image-manifest')) {
+        processJsonFile(full);
+      }
+    }
+  }
+  walkJsonFiles(contentOutDir);
 }
 
 /**
@@ -1412,6 +1523,13 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
       ? (options.unknownContentTypes ?? 'error')
       : 'error';
 
+  // Resolve image optimization: CLI flag (PrebuildOptions) overrides YAML config.
+  // Default: enabled when not explicitly disabled.
+  const imageOptimizationEnabled =
+    typeof options === 'object' && options !== null && options.imageOptimization !== undefined
+      ? options.imageOptimization
+      : true; // Will be further refined after site config is parsed
+
   // Collect extra content schemas and known type keys from all plugins
   // Cast from ZodLike[] to ZodTypeAny[] — plugins always supply real Zod schemas;
   // ZodLike is used only in the public API surface to avoid d.ts version coupling.
@@ -1468,6 +1586,30 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   }
 
   const processedConfig = processSiteConfig(rawConfig, projectRoot, imagesDir);
+
+  // Resolve image optimization config from site config + CLI override
+  const siteImageConfig = (processedConfig as Record<string, unknown>).imageOptimization as
+    | Record<string, unknown>
+    | undefined;
+  const imageOptConfig: ImageOptimizationConfig = {
+    enabled: imageOptimizationEnabled && siteImageConfig?.enabled !== false,
+    formats: (siteImageConfig?.formats as ('webp' | 'avif')[]) ?? ['webp'],
+    quality: (siteImageConfig?.quality as number) ?? 80,
+    maxWidth: (siteImageConfig?.maxWidth as number) ?? 1920,
+    blur: (siteImageConfig?.blur as boolean) ?? true,
+    blurSize: (siteImageConfig?.blurSize as number) ?? 10,
+  };
+
+  // Master manifest: accumulated across all pages and collections
+  const imageManifest: ImageManifest = {};
+
+  if (imageOptConfig.enabled) {
+    console.log(
+      `\n  Image optimization: ON (formats: ${imageOptConfig.formats.join(', ')}, quality: ${imageOptConfig.quality}, maxWidth: ${imageOptConfig.maxWidth}, blur: ${imageOptConfig.blur})`
+    );
+  } else {
+    console.log('\n  Image optimization: OFF');
+  }
 
   // Audit integration auth fields for plaintext secrets BEFORE env var resolution
   // so that $VAR_NAME references are still raw and correctly skipped.
@@ -1666,6 +1808,51 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     }
   }
 
+  // Image optimization pass: process all collected images as a post-processing step.
+  // This runs AFTER all pages/collections have copied their images to public/images/,
+  // so we work on the already-copied destination files rather than modifying the
+  // synchronous processPageContent / processSiteConfig pipeline.
+  if (imageOptConfig.enabled) {
+    console.log('\nOptimizing images...');
+
+    const imageFiles = collectAllCopiedImages(imagesDir);
+
+    let optimizedCount = 0;
+    for (const absPath of imageFiles) {
+      const destDir = path.dirname(absPath);
+      const publicPrefix =
+        '/' + path.relative(path.join(projectRoot, 'public'), destDir).split(path.sep).join('/');
+
+      const entry = await processImageOptimization(
+        absPath,
+        destDir,
+        publicPrefix,
+        imageOptConfig,
+        projectRoot
+      );
+
+      if (entry) {
+        imageManifest[entry.original] = entry;
+        optimizedCount++;
+      }
+    }
+
+    console.log(
+      `  ✓ Optimized ${optimizedCount} image(s), ${Object.keys(imageManifest).length} manifest entries`
+    );
+
+    // Write image manifest to stackwright-content/
+    const manifestPath = path.join(contentOutDir, '_image-manifest.json');
+    fs.writeFileSync(manifestPath, JSON.stringify(imageManifest, null, 2));
+    console.log('  ✓ Written _image-manifest.json');
+
+    // Enrich page JSONs with blurDataURL from manifest
+    if (Object.keys(imageManifest).length > 0) {
+      enrichContentJsonsWithBlur(contentOutDir, imageManifest);
+      console.log('  ✓ Enriched content JSONs with blur placeholders');
+    }
+  }
+
   // Generate icon manifest from all processed content
   console.log('\nGenerating icon manifest...');
   await generateIconManifest(contentOutDir, projectRoot);
@@ -1752,6 +1939,7 @@ if (require.main === module) {
   const watchMode = process.argv.includes('--watch');
   const noSBOM = process.argv.includes('--no-sbom');
   const sbomStrict = process.argv.includes('--sbom-strict');
+  const noImageOptimization = process.argv.includes('--no-image-optimization');
 
   if (noSBOM) {
     console.log('[INFO] SBOM generation skipped (--no-sbom flag)');
@@ -1761,6 +1949,10 @@ if (require.main === module) {
     console.log('[INFO] SBOM strict mode enabled — build will fail if SBOM generation errors');
   }
 
+  if (noImageOptimization) {
+    console.log('[INFO] Image optimization skipped (--no-image-optimization flag)');
+  }
+
   if (watchMode) {
     // Dynamic import to avoid loading watch code in non-watch mode
     const { runWatch } = require('./watch');
@@ -1768,7 +1960,9 @@ if (require.main === module) {
   } else {
     (async () => {
       try {
-        await runPrebuild();
+        await runPrebuild({
+          imageOptimization: noImageOptimization ? false : undefined,
+        });
       } catch (err) {
         console.error(`ERROR: ${(err as Error).message}`);
         process.exit(1);

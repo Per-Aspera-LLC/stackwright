@@ -172,6 +172,41 @@ export const fontsConfigSchema = z
     path: ['local_path'],
   });
 
+/**
+ * Image optimization pipeline configuration.
+ *
+ * Controls how the `stackwright-prebuild` script processes images:
+ * - WebP and/or AVIF variants are generated alongside the original.
+ * - Blur placeholders (tiny base64-encoded data URIs) are generated for
+ *   use as `placeholder="blur"` in `NextStackwrightImage`.
+ * - Images wider than `maxWidth` are downscaled.
+ *
+ * @example
+ * ```yaml
+ * imageOptimization:
+ *   enabled: true
+ *   formats: [webp]
+ *   quality: 80
+ *   maxWidth: 1920
+ *   blur: true
+ *   blurSize: 10
+ * ```
+ */
+export const imageOptimizationConfigSchema = z.object({
+  /** Enable/disable image optimization. Defaults to true. */
+  enabled: z.boolean().default(true),
+  /** Output formats to generate alongside the original. */
+  formats: z.array(z.enum(['webp', 'avif'])).default(['webp']),
+  /** Quality for generated variants (1-100). */
+  quality: z.number().int().min(1).max(100).default(80),
+  /** Maximum width in pixels. Images wider than this are downscaled. */
+  maxWidth: z.number().int().min(1).default(1920),
+  /** Generate blur placeholders as base64 data URIs. */
+  blur: z.boolean().default(true),
+  /** Width in pixels for the tiny blur placeholder image. */
+  blurSize: z.number().int().min(4).max(64).default(10),
+});
+
 export const localesConfigSchema = z.object({
   /** BCP 47 default locale tag, e.g. "en", "fr", "de". */
   default: z.string().default('en'),
@@ -196,6 +231,8 @@ export const siteConfigSchema = z.object({
   search: searchConfigSchema.optional(),
   /** Optional font loading strategy configuration. Controls how web fonts are loaded. */
   fonts: fontsConfigSchema.optional(),
+  /** Optional image optimization configuration for the prebuild pipeline. */
+  imageOptimization: imageOptimizationConfigSchema.optional(),
   /** Optional locale configuration for multi-language content support. */
   locales: localesConfigSchema.optional(),
 });
@@ -208,5 +245,6 @@ export type IntegrationConfig = z.infer<typeof integrationConfigSchema>;
 export type SidebarConfig = z.infer<typeof sidebarConfigSchema>;
 export type SearchConfig = z.infer<typeof searchConfigSchema>;
 export type FontsConfig = z.infer<typeof fontsConfigSchema>;
+export type ImageOptimizationConfig = z.infer<typeof imageOptimizationConfigSchema>;
 export type LocalesConfig = z.infer<typeof localesConfigSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
