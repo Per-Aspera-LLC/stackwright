@@ -416,8 +416,12 @@ const SYSTEM_ICON_NAMES: readonly string[] = [
 
 /**
  * Recursively walk a value and collect all icon src references.
- * Targets any object with { type: "icon", src: string }.
- * Identical shape to the font-name extraction pattern already in this file.
+ *
+ * Catches two shapes:
+ *   1. Full icon object:    { type: "icon", src: "Truck" }         — OSS icon content item
+ *   2. Shorthand property:  { icon: "Truck", type: "metric_card" } — Pro content types, map markers
+ *
+ * Both shapes are collected into the same set for tree-shaking.
  */
 export function collectIconSrcs(obj: unknown, srcs: Set<string>): void {
   if (!obj || typeof obj !== 'object') return;
@@ -426,8 +430,13 @@ export function collectIconSrcs(obj: unknown, srcs: Set<string>): void {
     return;
   }
   const record = obj as Record<string, unknown>;
+  // Shape 1: { type: "icon", src: "Truck" }
   if (record.type === 'icon' && typeof record.src === 'string') {
     srcs.add(record.src);
+  }
+  // Shape 2: { icon: "Truck" } — plain string shorthand on any content item
+  if (typeof record.icon === 'string' && record.icon.length > 0) {
+    srcs.add(record.icon);
   }
   for (const val of Object.values(record)) {
     collectIconSrcs(val, srcs);

@@ -100,4 +100,8 @@ content:
           textSize: button
           variant: outlined
           href: "https://github.com/Per-Aspera-LLC/StackWright-pro/blob/main/VISION.md"
+        - text: "See the Proof"
+          textSize: button
+          variant: outlined
+          href: /proof
       background: background

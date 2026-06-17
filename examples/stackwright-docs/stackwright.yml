@@ -1,5 +1,6 @@
 title: "Stackwright"
 meta:
+  base_url: https://trystackwright.dev
   description: "YAML is the syntax. The schema is the safety net. AI writes the code. From API spec to working Next.js app in hours — safe by construction."
 
 appBar:
@@ -49,6 +50,8 @@ sidebar:
           href: "/otter-raft"
     - section: "More"
       items:
+        - label: "\U0001F4CA Proof"
+          href: "/proof"
         - label: "\U0001F510 Pro"
           href: "/pro"
         - label: "\U0001F64F Acknowledgements"
@@ -76,23 +79,23 @@ footer:
 customTheme:
   id: "stackwright-docs"
   name: "Stackwright Docs"
-  description: "Dark-mode-first documentation theme with golden yellow accents and monospace headings"
+  description: "Navy-and-gold documentation theme with monospace headings — light mode: navy text on white; dark mode: white text on navy"
   colors:
-    primary: "#FCC03E"   # Safety Yellow
-    secondary: "#4FC3F7"
-    accent: "#F59E0B"   # Amber - slightly darker accent
-    background: "#0B1F3A"
-    surface: "#1A2C46"
-    text: "#FFFFFF"
-    textSecondary: "#B0BEC5"
+    primary: "#FCC03E"       # Safety Yellow — appBar/button bg, navy text on top
+    secondary: "#0277BD"     # WCAG AA blue on white (darkened from dark-mode #4FC3F7)
+    accent: "#D97706"        # Amber-600 — WCAG AA on white (darkened from dark-mode #F59E0B)
+    background: "#FFFFFF"    # White
+    surface: "#F0F4F8"       # Subtle blue-grey tint (nods to navy palette)
+    text: "#0B1F3A"          # Navy — matches dark-mode background
+    textSecondary: "#3D5A80" # Mid-navy — readable on white
   darkColors:
-    primary: "#92400E"   # Amber-800 — WCAG AA on white (was #FCC03E Safety Yellow)
-    secondary: "#0288D1"
-    accent: "#B45309"    # Amber-700 — WCAG AA on white (was #F59E0B)
-    background: "#FDFDFD"
-    surface: "#F5F5F5"
-    text: "#1A1A2E"
-    textSecondary: "#666666"
+    primary: "#FCC03E"       # Safety Yellow
+    secondary: "#4FC3F7"     # Light Blue
+    accent: "#F59E0B"        # Amber
+    background: "#0B1F3A"    # Dark Navy
+    surface: "#1A2C46"       # Navy
+    text: "#FFFFFF"          # White
+    textSecondary: "#B0BEC5" # Blue Grey
   typography:
     fontFamily:
       primary: "JetBrains Mono"
