@@ -224,6 +224,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
   const VERSIONS = {
     tailwindcss: '^4.1.11',
     // Stackwright packages — keep in sync with workspace via scripts/sync-versions.mjs
+    swTypes: '^1.0.0',
     swCore: '^0.8.0',
     swNextjs: '^0.5.0',
     swIcons: '^0.5.0',
@@ -260,6 +261,7 @@ export function buildPackageJson(projectName: string, useWorkspaceDeps: boolean 
       'type-check': 'tsc --noEmit',
     },
     dependencies: {
+      '@stackwright/types': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swTypes,
       '@stackwright/otters': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swOtters,
       '@stackwright/ui-shadcn': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swUiShadcn,
       '@stackwright/core': useWorkspaceDeps ? 'workspace:*' : VERSIONS.swCore,
