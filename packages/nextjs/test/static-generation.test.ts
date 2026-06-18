@@ -11,23 +11,28 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Hoist mock fn references so they're available in the vi.mock factory AND
 // in test bodies. vi.hoisted runs before any imports/mocks.
 // ---------------------------------------------------------------------------
-const { mockReadFileSync, mockExistsSync } = vi.hoisted(() => ({
+const { mockReadFileSync, mockExistsSync, mockReaddirSync } = vi.hoisted(() => ({
   mockReadFileSync: vi.fn(),
   mockExistsSync: vi.fn(),
+  mockReaddirSync: vi.fn().mockReturnValue([]),
 }));
 
 vi.mock('fs', () => ({
   default: {
     readFileSync: mockReadFileSync,
     existsSync: mockExistsSync,
-    readdirSync: vi.fn().mockReturnValue([]),
+    readdirSync: mockReaddirSync,
   },
   readFileSync: mockReadFileSync,
   existsSync: mockExistsSync,
-  readdirSync: vi.fn().mockReturnValue([]),
+  readdirSync: mockReaddirSync,
 }));
 
-import { injectCollectionEntries, getStackwrightPageData } from '../src/static-generation';
+import {
+  injectCollectionEntries,
+  getStackwrightPageData,
+  generateStackwrightStaticParams,
+} from '../src/static-generation';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -216,5 +221,52 @@ describe('getStackwrightPageData', () => {
     const items = content.content_items as Record<string, unknown>[];
 
     expect(items[0]._entries).toEqual(SAMPLE_ENTRIES);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// generateStackwrightStaticParams — reserved file filtering
+// ---------------------------------------------------------------------------
+
+/** Build a minimal Dirent-like object for readdirSync({ withFileTypes: true }) */
+function makeDirent(name: string, isDir = false) {
+  return { name, isDirectory: () => isDir, isFile: () => !isDir };
+}
+
+describe('generateStackwrightStaticParams', () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    mockExistsSync.mockReturnValue(true);
+  });
+
+  it('excludes _image-manifest.json so it is never rendered as a page', () => {
+    mockReaddirSync.mockReturnValue([makeDirent('about.json'), makeDirent('_image-manifest.json')]);
+
+    const params = generateStackwrightStaticParams();
+    const slugs = params.map((p) => p.slug.join('/'));
+
+    expect(slugs).toContain('about');
+    expect(slugs).not.toContain('_image-manifest');
+  });
+
+  it('excludes other reserved files (_site.json, _icon-manifest.json, etc.)', () => {
+    mockReaddirSync.mockReturnValue([
+      makeDirent('home.json'),
+      makeDirent('_site.json'),
+      makeDirent('_font-links.json'),
+      makeDirent('search-index.json'),
+      makeDirent('_icon-manifest.json'),
+      makeDirent('_image-manifest.json'),
+    ]);
+
+    const params = generateStackwrightStaticParams();
+    const slugs = params.map((p) => p.slug.join('/'));
+
+    expect(slugs).toEqual(['home']);
+  });
+
+  it('returns [] when the content directory does not exist', () => {
+    mockExistsSync.mockReturnValue(false);
+    expect(generateStackwrightStaticParams()).toEqual([]);
   });
 });

@@ -131,31 +131,49 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     const mql = window.matchMedia('(prefers-color-scheme: dark)');
     const handler = (e: MediaQueryListEvent) => {
       setSystemPreference(e.matches ? 'dark' : 'light');
+      if (colorMode === 'system') {
+        const newMode = e.matches ? 'dark' : 'light';
+        document.documentElement.style.backgroundColor = resolveColors(
+          rawTheme,
+          newMode
+        ).background;
+      }
     };
     mql.addEventListener('change', handler);
     return () => mql.removeEventListener('change', handler);
-  }, []);
+  }, [colorMode, rawTheme]);
 
   // Persist color mode to cookie on change, and clear when set to 'system'.
-  const setColorMode = useCallback((mode: ColorMode) => {
-    setColorModeState(mode);
-    if (mode === 'system') {
-      deleteCookie(COLOR_MODE_COOKIE);
-      // Resolve system preference and sync the DOM attribute so CSS
-      // variable selectors update without a page reload.
-      if (typeof document !== 'undefined') {
-        const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light';
-        document.documentElement.setAttribute('data-sw-color-mode', systemMode);
+  const setColorMode = useCallback(
+    (mode: ColorMode) => {
+      setColorModeState(mode);
+      if (mode === 'system') {
+        deleteCookie(COLOR_MODE_COOKIE);
+        // Resolve system preference and sync the DOM attribute so CSS
+        // variable selectors update without a page reload.
+        if (typeof document !== 'undefined') {
+          const systemMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'dark'
+            : 'light';
+          document.documentElement.setAttribute('data-sw-color-mode', systemMode);
+          document.documentElement.style.backgroundColor = resolveColors(
+            rawTheme,
+            systemMode
+          ).background;
+        }
+      } else {
+        writeCookie(COLOR_MODE_COOKIE, mode);
+        if (typeof document !== 'undefined') {
+          document.documentElement.setAttribute('data-sw-color-mode', mode);
+          document.documentElement.style.backgroundColor = resolveColors(
+            rawTheme,
+            mode as 'light' | 'dark'
+          ).background;
+        }
       }
-    } else {
-      writeCookie(COLOR_MODE_COOKIE, mode);
-      if (typeof document !== 'undefined') {
-        document.documentElement.setAttribute('data-sw-color-mode', mode);
-      }
-    }
-  }, []);
+    },
+    [rawTheme]
+  );
 
   const resolvedColorMode: 'light' | 'dark' = colorMode === 'system' ? systemPreference : colorMode;
 
