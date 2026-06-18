@@ -160,4 +160,16 @@ export interface PrebuildOptions {
    * which always fails hard on invalid config.
    */
   unknownContentTypes?: 'error' | 'warn' | 'ignore';
+
+  /**
+   * Enable or disable image optimization during prebuild.
+   *
+   * When `true` (default), co-located images are processed through sharp to
+   * generate WebP/AVIF variants and blur placeholders. Set to `false` or use
+   * the `--no-image-optimization` CLI flag to skip processing (images are
+   * copied as-is, matching pre-ri2 behavior).
+   *
+   * This flag overrides `imageOptimization.enabled` in stackwright.yml.
+   */
+  imageOptimization?: boolean;
 }

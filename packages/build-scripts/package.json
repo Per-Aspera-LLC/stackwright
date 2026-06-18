@@ -40,6 +40,9 @@
         "tsup": "catalog:",
         "vitest": "catalog:"
     },
+    "optionalDependencies": {
+        "sharp": ">=0.33.0"
+    },
     "engines": {
         "node": ">=20.0.0"
     }

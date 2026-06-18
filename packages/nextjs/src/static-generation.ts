@@ -13,6 +13,7 @@ const RESERVED_FILES = new Set([
   '_font-links.json',
   'search-index.json',
   '_icon-manifest.json',
+  '_image-manifest.json',
 ]);
 
 /**
