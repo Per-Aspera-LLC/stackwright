@@ -23,6 +23,7 @@
   },
   "changesets": [
     "fix-dark-mode-flash",
+    "image-optimization-pipeline",
     "sync-streaming-schema"
   ]
 }
