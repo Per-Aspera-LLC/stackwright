@@ -165,11 +165,13 @@ export function buildSearchIndex(pagesDir: string, outputPath: string): SearchEn
           // Extract meta info
           const meta = pageContent?.meta || content?.meta || {};
 
-          // Determine the URL path from the filename
-          // e.g., "getting-started.json" -> "/getting-started"
-          // e.g., "collections/blog/_index.json" -> "/collections/blog"
+          // Determine the URL path from the filename, preserving the full parent
+          // directory hierarchy captured in `basePath`.
+          // e.g., "getting-started.json" at root   -> "/getting-started"
+          // e.g., "[id].json" under /dispatch-units -> "/dispatch-units/[id]"
+          // e.g., "_root.json" under /fr            -> "/fr"  (locale root)
           const slug = file.replace(/\.json$/, '');
-          const pagePath = slug === '_root' ? '/' : `/${slug}`;
+          const pagePath = slug === '_root' ? basePath || '/' : `${basePath}/${slug}`;
 
           // Build entry
           const entry: SearchEntry = {
