@@ -1,5 +1,22 @@
 # @stackwright/nextjs
 
+## 0.6.2
+
+### Patch Changes
+
+- 5e6d487: Fix white flash during dark mode page transitions
+
+  The blocking `ColorModeScript` now accepts optional `lightBackground` / `darkBackground` props and sets `document.documentElement.style.backgroundColor` before React hydrates. `StackwrightLayout` reads theme colors from the prebuild output (`_site.json`) and feeds them in automatically.
+
+  At runtime, `ThemeProvider` keeps the `<html>` background in sync when the user toggles color mode or the OS preference changes — preventing the flash during client-side page transitions.
+
+- Updated dependencies [5e6d487]
+- Updated dependencies [5e6d487]
+- Updated dependencies [5e6d487]
+  - @stackwright/themes@0.6.1
+  - @stackwright/types@1.8.0
+  - @stackwright/core@0.10.1
+
 ## 0.6.2-alpha.1
 
 ### Patch Changes

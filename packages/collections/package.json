@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/collections",
-  "version": "0.1.4-alpha.1",
+  "version": "0.1.4",
   "description": "CollectionProvider interface and file-backed implementation for Stackwright",
   "license": "MIT",
   "repository": {
