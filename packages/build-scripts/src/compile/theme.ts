@@ -13,8 +13,14 @@ const THEME_FILE_CANDIDATES = ['stackwright.theme.yml', 'stackwright.theme.yaml'
 /**
  * Top-level keys from `stackwright.yml` that represent theme configuration.
  * Used when extracting a fallback `_theme.json` from the main site config.
+ * These match the keys of `stackwrightThemeFileSchema` — all are optional.
  */
-const THEME_KEYS_FROM_SITE_CONFIG = ['themeName', 'customTheme', 'fonts'] as const;
+const THEME_KEYS_FROM_SITE_CONFIG = [
+  'themeName',
+  'customTheme',
+  'fonts',
+  'defaultColorMode',
+] as const;
 
 /**
  * Find `stackwright.theme.yml` / `.yaml` in the project root.
@@ -59,9 +65,7 @@ export function compileTheme(ctx: CompileContext): void {
     try {
       rawTheme = yaml.load(fs.readFileSync(themeFilePath, 'utf8'));
     } catch (err) {
-      throw new Error(
-        `Failed to parse ${path.basename(themeFilePath)}: ${(err as Error).message}`
-      );
+      throw new Error(`Failed to parse ${path.basename(themeFilePath)}: ${(err as Error).message}`);
     }
 
     const validation = stackwrightThemeFileSchema.safeParse(rawTheme ?? {});

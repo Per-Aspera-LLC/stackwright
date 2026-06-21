@@ -60,8 +60,12 @@ function cleanup(root: string): void {
 describe('stackwright.theme.yml config split', () => {
   let tmpRoot: string;
 
-  beforeEach(() => { tmpRoot = ''; });
-  afterEach(() => { if (tmpRoot) cleanup(tmpRoot); });
+  beforeEach(() => {
+    tmpRoot = '';
+  });
+  afterEach(() => {
+    if (tmpRoot) cleanup(tmpRoot);
+  });
 
   it('runs without errors when no stackwright.theme.yml exists (no regression)', async () => {
     tmpRoot = makeTmpProject();
@@ -90,8 +94,8 @@ describe('stackwright.theme.yml config split', () => {
     expect(theme.themeName).toBe('ocean-dark');
 
     const site = readSiteJson(tmpRoot);
-    expect(site.title).toBe('Test Site');  // base config preserved
-    expect(site.themeName).toBeUndefined();  // NOT merged into site.json
+    expect(site.title).toBe('Test Site'); // base config preserved
+    expect(site.themeName).toBeUndefined(); // NOT merged into site.json
   });
 
   it('writes fonts from stackwright.theme.yml to _theme.json', async () => {
@@ -117,11 +121,11 @@ describe('stackwright.theme.yml config split', () => {
 
     const theme = readThemeJson(tmpRoot);
     expect(theme.themeName).toBe('sand');
-    expect(theme.title).toBeUndefined();  // non-theme key stripped
+    expect(theme.title).toBeUndefined(); // non-theme key stripped
 
     const site = readSiteJson(tmpRoot);
-    expect(site.title).toBe('Test Site');  // NOT overridden
-    expect(site.navigation).toEqual([]);   // NOT overridden
+    expect(site.title).toBe('Test Site'); // NOT overridden
+    expect(site.navigation).toEqual([]); // NOT overridden
   });
 
   it('stackwright.theme.yaml (.yaml extension) is also discovered', async () => {
@@ -157,5 +161,34 @@ describe('stackwright.theme.yml config split', () => {
     // And still in _site.json (Bead 4 will strip it, but not this PR)
     const site = readSiteJson(tmpRoot);
     expect(site.themeName).toBe('sunset');
+  });
+
+  it('carries defaultColorMode through Path 2 (extract from stackwright.yml inline customTheme)', async () => {
+    // No stackwright.theme.yml — defaultColorMode is inside inline customTheme in stackwright.yml.
+    // Path 2 extracts only the known theme keys (themeName, customTheme, fonts) — NOT defaultColorMode
+    // because defaultColorMode lives at the theme-file root, not inside customTheme.
+    // This test documents the current Path 2 behavior: defaultColorMode at YAML root IS extracted.
+    tmpRoot = makeTmpProject(BASE_SITE_CONFIG + `defaultColorMode: "light"\n`);
+    await runPrebuild({ projectRoot: tmpRoot });
+
+    const theme = readThemeJson(tmpRoot);
+    // defaultColorMode passes through _theme.json via siteConfig raw pass-through
+    // (it lives at the root of stackwright.yml, not inside customTheme)
+    // The stackwrightThemeFileSchema includes defaultColorMode at the root level.
+    expect(theme.defaultColorMode).toBe('light');
+  });
+
+  it('defaultColorMode in stackwright.theme.yml overrides any site config value (Path 1)', async () => {
+    tmpRoot = makeTmpProject(BASE_SITE_CONFIG + `defaultColorMode: "light"\n`);
+    // Theme file takes priority — it has dark
+    fs.writeFileSync(
+      path.join(tmpRoot, 'stackwright.theme.yml'),
+      `themeName: "custom"\ndefaultColorMode: "dark"\n`
+    );
+    await runPrebuild({ projectRoot: tmpRoot });
+
+    // Path 1: theme file wins — dark
+    const theme = readThemeJson(tmpRoot);
+    expect(theme.defaultColorMode).toBe('dark');
   });
 });

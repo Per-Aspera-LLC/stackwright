@@ -147,6 +147,13 @@ export default function DynamicPage({ pageContent, siteConfig, slug }: DynamicPa
     theme = ThemeLoader.loadThemeFromFile('corporate');
   }
 
+  // Thread the theme's preferred default color mode through to ThemeProvider.
+  // When present, this makes the initial server render match the ColorModeScript
+  // fallback, avoiding any client-side reconciliation flash.
+  // Consumers that use a dedicated stackwright.theme.yml with defaultColorMode
+  // should pass it via siteConfig.customTheme.defaultColorMode.
+  const initialColorMode = theme.defaultColorMode ?? 'system';
+
   // Build background image styles
   const backgroundImageStyles: React.CSSProperties = siteConfig?.customTheme?.backgroundImage
     ? {
@@ -183,7 +190,7 @@ export default function DynamicPage({ pageContent, siteConfig, slug }: DynamicPa
   const meta = resolvePageMeta(pageContent, siteConfig);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} initialColorMode={initialColorMode}>
       <ThemeStyleInjector>
         <DynamicPageInner
           pageContent={pageContent}
