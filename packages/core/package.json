@@ -59,13 +59,13 @@
         "prepublishOnly": "npm run build"
     },
     "dependencies": {
-        "@radix-ui/react-accordion": "^1.2.13",
+        "@radix-ui/react-accordion": "^1.2.14",
         "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "catalog:",
         "micromark": "^4.0.1",
         "shiki": "^4.2.0",
-        "uuid": "^13.0.0",
+        "uuid": "^14.0.1",
         "zod": "catalog:"
     },
     "optionalDependencies": {
