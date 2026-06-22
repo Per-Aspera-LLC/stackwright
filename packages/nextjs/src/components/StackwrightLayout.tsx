@@ -2,6 +2,7 @@ import React from 'react';
 import fs from 'fs';
 import path from 'path';
 import { ColorModeScript } from '@stackwright/themes/color-mode-script';
+import type { ColorMode } from '@stackwright/themes';
 
 /**
  * Font link data structure matching the _font-links.json output format.
@@ -10,6 +11,35 @@ interface FontLink {
   rel: string;
   href: string;
   crossorigin?: boolean;
+}
+
+/**
+ * Minimal shape we read from `_theme.json` — mirrors `StackwrightThemeFile`
+ * from `@stackwright/types` but typed locally to avoid pulling the full Zod
+ * schema into the server bundle.
+ */
+interface ThemeFileSummary {
+  customTheme?: {
+    colors?: { background?: string };
+    darkColors?: { background?: string };
+  };
+  defaultColorMode?: ColorMode;
+}
+
+/**
+ * Read `_theme.json` written by `compileTheme()` during prebuild.
+ * Returns a partial summary, or null when the file is absent / unreadable.
+ *
+ * This runs as a Server Component — `fs` access is safe here.
+ */
+function getThemeFile(): ThemeFileSummary | null {
+  try {
+    const themePath = path.join(process.cwd(), 'public', 'stackwright-content', '_theme.json');
+    const raw = fs.readFileSync(themePath, 'utf8');
+    return JSON.parse(raw) as ThemeFileSummary;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -41,12 +71,30 @@ interface ThemeBackgrounds {
 }
 
 /**
- * Try to load theme background colors from the prebuild-generated _site.json.
- * Falls back to empty object for backward compatibility.
+ * Resolve theme background colors for the blocking ColorModeScript.
+ *
+ * Resolution order:
+ * 1. `_theme.json` (written by compileTheme) — preferred source post-Bead-1
+ * 2. `_site.json`.customTheme — defensive fallback for legacy setups where
+ *    `_theme.json` may be absent or empty
  *
  * This runs as a Server Component — `fs` access is safe here.
  */
-function getThemeBackgrounds(): ThemeBackgrounds {
+function getThemeBackgrounds(themeFile: ThemeFileSummary | null): ThemeBackgrounds {
+  // Path 1 — dedicated _theme.json
+  const themeCustom = themeFile?.customTheme;
+  if (themeCustom) {
+    const light = themeCustom.colors?.background;
+    const dark = themeCustom.darkColors?.background;
+    if (light || dark) {
+      return {
+        ...(light ? { light } : {}),
+        ...(dark ? { dark } : {}),
+      };
+    }
+  }
+
+  // Path 2 — legacy fallback: read customTheme from _site.json
   try {
     const sitePath = path.join(process.cwd(), 'public', 'stackwright-content', '_site.json');
     const raw = fs.readFileSync(sitePath, 'utf8');
@@ -100,13 +148,15 @@ interface StackwrightLayoutProps {
  * ```
  */
 export function StackwrightLayout({ children, lang = 'en' }: StackwrightLayoutProps) {
+  const themeFile = getThemeFile();
   const fontLinks = getFontLinks();
-  const themeBackgrounds = getThemeBackgrounds();
+  const themeBackgrounds = getThemeBackgrounds(themeFile);
 
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
         <ColorModeScript
+          fallback={themeFile?.defaultColorMode ?? 'system'}
           lightBackground={themeBackgrounds.light}
           darkBackground={themeBackgrounds.dark}
         />

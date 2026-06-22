@@ -136,6 +136,33 @@ export interface PrebuildPlugin {
    * @param context - Plugin context
    */
   afterBuild?: (context: PrebuildPluginContext) => Promise<void> | void;
+
+  /**
+   * Additional compile sinks provided by this plugin.
+   *
+   * Each sink is a named async function that writes one or more files to
+   * `context.contentOutDir`. Sinks run during `compileAll()`, between the
+   * OSS-native compile steps and the `afterBuild` hooks, in declaration order.
+   *
+   * Designed for Pro plugins that emit additional JSON sinks alongside the
+   * OSS-native ones (_site.json, _theme.json, _root.json, etc.).
+   *
+   * @example
+   * ```typescript
+   * additionalSinks: [
+   *   {
+   *     name: 'collections',
+   *     compile: async (ctx) => {
+   *       // write public/stackwright-content/_collections.json
+   *     },
+   *   },
+   * ]
+   * ```
+   */
+  additionalSinks?: ReadonlyArray<{
+    name: string;
+    compile: (context: PrebuildPluginContext) => Promise<void> | void;
+  }>;
 }
 
 /**

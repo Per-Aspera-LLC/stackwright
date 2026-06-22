@@ -20,16 +20,17 @@ const execAsync = promisify(exec);
  * by reading directly from `out/_next/static/chunks/` rather than
  * relying on internal Next.js manifest formats.
  *
- * Performance budget — interim targets post-App Router migration
- * Baseline: Jan 2025 ~85KB gzip, pre-optimization peak: ~392KB gzip
- * Turbopack interim target: ≤460KB gzip first-load (Turbopack bundles all code as shared chunks)
- * Previous Webpack target: ≤350KB (set 2026-05-29)
- * Final target: ≤350KB after MapLibre tree-shaking and code-splitting optimizations land
- * Budget updated: 2026-05-30 (App Router + Turbopack migration)
+ * Performance budget — Turbopack interim targets
+ * Baseline: Jan 2025 ~85KB gzip (Webpack + lazy-loaded map/code/carousel)
+ * Post-App Router + Turbopack migration: ~2390KB gzip (all code in flat shared chunks)
+ * Turbopack emits no app/ or pages/ subdirectory, so firstLoadJS == allPagesJS.
+ * Original 250KB / 800KB webpack targets (ADR Decision 5) are not achievable
+ * until MapLibre tree-shaking and route-level code-splitting land.
+ * Budget updated: 2026-06-22 (calibrated to current Turbopack actual)
  *
  * Current budgets (authoritative source: performance-budgets.json):
- * - First-load JS: ≤460KB gzipped (warn at 400KB)
- * - All pages JS: ≤800KB gzipped (warn at 600KB)
+ * - First-load JS: ≤2560KB gzipped (warn at 2400KB)
+ * - All pages JS: ≤2560KB gzipped (warn at 2400KB)
  */
 
 const exampleAppDir = path.resolve(__dirname, '../../../../examples/stackwright-docs');

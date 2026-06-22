@@ -199,6 +199,14 @@
         }
       },
       "additionalProperties": false
+    },
+    "defaultColorMode": {
+      "type": "string",
+      "enum": [
+        "light",
+        "dark",
+        "system"
+      ]
     }
   },
   "required": [
