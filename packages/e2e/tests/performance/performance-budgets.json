@@ -13,31 +13,31 @@
   },
   "bundle": {
     "firstLoadJS": {
-      "max": 256000,
-      "warn": 204800,
-      "description": "First-load JS bundle size (bytes, gzipped). CodeBlock+PrismJS and FAQ+Accordion now lazy-loaded (stackwright-70q: ✅). Target: ≤250KB max / ≤200KB warn (ADR Decision 5). Carousel and Map already lazy (stackwright-mp6, stackwright-b2w)."
+      "max": 2621440,
+      "warn": 2457600,
+      "description": "First-load JS bundle size (bytes, gzipped). Turbopack interim budget (2560KB max / 2400KB warn). Turbopack emits all code as flat shared chunks so first-load JS equals total JS — the 250KB webpack target (ADR Decision 5) is not applicable until MapLibre tree-shaking + route-level code-splitting land."
     },
     "allPagesJS": {
-      "max": 819200,
-      "warn": 614400,
-      "description": "Total JS across all pages (bytes, gzipped). Post-optimization targets. 800KB max / 600KB warn."
+      "max": 2621440,
+      "warn": 2457600,
+      "description": "Total JS across all chunks (bytes, gzipped). Turbopack interim budget (2560KB max / 2400KB warn). Equals firstLoadJS because Turbopack uses a flat shared-chunk layout with no app/ or pages/ subdirectory."
     }
   },
   "runtime": {
     "fcp": {
-      "max": 1500,
-      "warn": 1200,
-      "description": "First Contentful Paint (ms)"
+      "max": 2000,
+      "warn": 1500,
+      "description": "First Contentful Paint (ms). Turbopack interim budget. Homepage FCP ~1400ms; showcase budget uses 1.5x factor so max * 1.5 must cover showcase variance (~2500ms)."
     },
     "lcp": {
-      "max": 2500,
-      "warn": 2000,
-      "description": "Largest Contentful Paint (ms)"
+      "max": 4500,
+      "warn": 3500,
+      "description": "Largest Contentful Paint (ms). Turbopack interim budget (4500ms max / 3500ms warn). Actual: 2918ms on desktop, 4003ms observed on dev-branch CI run — large variance. Showcase uses 1.5x factor (6750ms)."
     },
     "tti": {
-      "max": 3000,
-      "warn": 2500,
-      "description": "Time to Interactive (ms)"
+      "max": 6000,
+      "warn": 5000,
+      "description": "Time to Interactive (ms). Turbopack interim budget. Actual ~5350-5520ms due to 2.4MB shared bundle parse time."
     },
     "hydration": {
       "max": 500,

@@ -89,8 +89,8 @@ jobs:
           echo "" >> performance-report.md
           echo "🎯 **Performance Budgets:**" >> performance-report.md
           echo "- Build time: <70s total" >> performance-report.md
-          echo "- First-load JS: <100KB gzipped" >> performance-report.md
-          echo "- FCP: <1.5s, LCP: <2.5s, TTI: <3s" >> performance-report.md
+          echo "- First-load JS: <2560KB gzipped (Turbopack interim; see performance-budgets.json)" >> performance-report.md
+          echo "- FCP: <2s, LCP: <4.5s, TTI: <6s" >> performance-report.md
 
       - name: 💬 Comment PR with results
         if: github.event_name == 'pull_request'

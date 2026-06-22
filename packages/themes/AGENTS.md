@@ -71,9 +71,26 @@ All 7 keys are required in `colors`. `darkColors` is optional but uses the same 
 
 ### How it works
 
-1. `ThemeProvider` holds `colorMode` state (default: `'system'`).
+1. `ThemeProvider` holds `colorMode` state (default: `'system'`, overridable via `initialColorMode` prop).
 2. When `colorMode` is `'dark'` (or `'system'` resolves to dark via `matchMedia`), `theme.colors` is replaced with `theme.darkColors`. If no `darkColors` exists, `colors` is used as fallback.
 3. **Components never need to know about dark mode.** They call `useSafeTheme()`, read `theme.colors.*`, and get the correct palette for the active mode.
+
+### `defaultColorMode` — theme-file level preference
+
+The `defaultColorMode` field on `stackwrightThemeFileSchema` (from `@stackwright/types`) lets a project declare its preferred initial color mode:
+
+```yaml
+# stackwright.theme.yml
+defaultColorMode: dark  # 'light' | 'dark' | 'system' (default: 'system')
+```
+
+Resolution chain (highest wins):
+1. **User cookie** (`sw-color-mode`) — explicit user preference
+2. **`data-sw-color-mode` attribute** on `<html>` — set by `ColorModeScript` from the cookie
+3. **`initialColorMode` prop** on `ThemeProvider` — threaded from `_theme.json.defaultColorMode` by `DynamicPage` and `StackwrightLayout`
+4. **OS preference** (`matchMedia`) — only when `colorMode === 'system'`
+
+This means `defaultColorMode: dark` makes dark the default for first-time visitors, but a user who has explicitly set their preference keeps it.
 
 ### Cookie persistence
 
@@ -83,11 +100,21 @@ All 7 keys are required in `colors`. `darkColors` is optional but uses the same 
 
 ### Flash prevention
 
-`ColorModeScript` renders a blocking `<script>` that reads the `sw-color-mode` cookie and sets `data-sw-color-mode` on `<html>` **before** React hydrates. Use via `StackwrightDocument` from `@stackwright/nextjs` or place manually in `_document.tsx` `<Head>`.
+`ColorModeScript` renders a blocking `<script>` that reads the `sw-color-mode` cookie and sets `data-sw-color-mode` on `<html>` **before** React hydrates. The `fallback` prop controls what color mode the script applies when no cookie is found — `StackwrightLayout` now passes `_theme.json.defaultColorMode` as this fallback automatically.
 
-### ThemeProvider context shape
+Use via `StackwrightDocument` from `@stackwright/nextjs` or place manually in `_document.tsx` `<Head>`.
+
+### ThemeProvider props + context shape
 
 ```typescript
+// Props
+interface ThemeProviderProps {
+  theme: Theme;
+  initialColorMode?: ColorMode; // Default: 'system'. Seeded from _theme.json.defaultColorMode.
+  children: React.ReactNode;
+}
+
+// Context
 interface ThemeContextType {
   theme: Theme;                          // Resolved theme (effective colors for current mode)
   rawTheme: Theme;                       // Original theme with both colors and darkColors

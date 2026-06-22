@@ -12,6 +12,7 @@ export * from './scaffold-hook';
 export * from './plugin';
 export * from './secrets';
 export * from './secret-detection';
+export * from './stackwrightThemeFile';
 export * from '../constants';
 
 // Validation utilities (zod-heavy, build/CLI/server only) are intentionally
