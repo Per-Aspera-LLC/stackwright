@@ -10,6 +10,7 @@ const COLLECTIONS_DIR = path.join(CONTENT_DIR, 'collections');
  */
 const RESERVED_FILES = new Set([
   '_site.json',
+  '_theme.json',
   '_font-links.json',
   'search-index.json',
   '_icon-manifest.json',
