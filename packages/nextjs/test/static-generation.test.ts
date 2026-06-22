@@ -249,10 +249,21 @@ describe('generateStackwrightStaticParams', () => {
     expect(slugs).not.toContain('_image-manifest');
   });
 
-  it('excludes other reserved files (_site.json, _icon-manifest.json, etc.)', () => {
+  it('excludes _theme.json so it is never rendered as a page', () => {
+    mockReaddirSync.mockReturnValue([makeDirent('about.json'), makeDirent('_theme.json')]);
+
+    const params = generateStackwrightStaticParams();
+    const slugs = params.map((p) => p.slug.join('/'));
+
+    expect(slugs).toContain('about');
+    expect(slugs).not.toContain('_theme');
+  });
+
+  it('excludes all reserved files (_site.json, _theme.json, _icon-manifest.json, etc.)', () => {
     mockReaddirSync.mockReturnValue([
       makeDirent('home.json'),
       makeDirent('_site.json'),
+      makeDirent('_theme.json'),
       makeDirent('_font-links.json'),
       makeDirent('search-index.json'),
       makeDirent('_icon-manifest.json'),

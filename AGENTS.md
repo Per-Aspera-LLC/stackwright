@@ -134,39 +134,49 @@ public/stackwright-content/
 - `stackwright_get_page` — accepts optional `locale` param; falls back to default with a note if locale file absent
 - `stackwright_list_pages` — shows available locales per page: `  /about  —  About Us  [en, fr]`
 
-### Theme Config File Split (`stackwright.theme.yml`)
+### Theme Config File Split (`stackwright.theme.yml` → `_theme.json`)
 
-The prebuild supports an optional `stackwright.theme.yml` sidecar file for isolating theme configuration from the main `stackwright.yml`.
+The prebuild emits `_theme.json` as a **separate content sink** alongside `_site.json`. Theme config is no longer merged into `_site.json`.
 
-**Purpose:** Prevents multi-otter clobbering. Theme Otter owns `stackwright.theme.yml`; Page Otter owns `stackwright.yml`. They never touch each other's files.
+**Purpose:** Prevents multi-otter clobbering. Theme Otter owns `stackwright.theme.yml`; Page Otter owns `stackwright.yml`. They never touch each other's files. Pro plugins can consume `_theme.json` independently.
 
-**Keys merged from `stackwright.theme.yml`:**
+**Keys in `stackwright.theme.yml` / `_theme.json`:**
 - `themeName` — name of the active theme
-- `customTheme` — full custom theme object (typography, colors, spacing, etc.)
+- `customTheme` — full custom theme object (typography, colors, darkColors, spacing, etc.)
 - `fonts` — font loading strategy
+- `defaultColorMode` — `'light'` | `'dark'` | `'system'` (optional, defaults to `'system'`)
 
-**All other keys in `stackwright.theme.yml` are silently ignored** — only the three theme keys above are merged.
+**Source resolution (Path 1 vs Path 2):**
+- **Path 1** — `stackwright.theme.yml` exists → validate against `stackwrightThemeFileSchema`, emit directly as `_theme.json`
+- **Path 2** — no theme file → extract the four theme keys from `stackwright.yml`, emit as `_theme.json` (silent fallback, no warning)
+- **Path 3** — no theme info anywhere → emit `_theme.json` with `{}`
 
-**Resolution order (higher wins):**
-1. `stackwright.theme.yml` theme keys (override)
-2. `stackwright.yml` theme keys (base)
+`_theme.json` is **always emitted**, so consumers can unconditionally read one sink shape.
 
-**Example:**
+**Example `stackwright.theme.yml`:**
 ```yaml
 # stackwright.theme.yml — owned by Theme Otter
 themeName: "ocean-dark"
+defaultColorMode: "dark"  # first-time visitors get dark mode
 fonts:
   strategy: bundle
 customTheme:
+  colors:
+    primary: "#1a4480"
+    background: "#ffffff"
+    # ... etc
+  darkColors:
+    background: "#0b0c0e"
+    # ... etc
   typography:
     fontFamily:
       primary: "Inter, sans-serif"
       secondary: "JetBrains Mono, monospace"
 ```
 
-**Both files are required to form a valid config** — validation runs on the merged result, so errors in either file surface at build time.
-
 **Extension:** Both `.yml` and `.yaml` extensions are supported.
+
+**`defaultColorMode` threading:** `StackwrightLayout` reads `_theme.json.defaultColorMode` at render time and passes it as the `fallback` prop to `ColorModeScript`. `DynamicPage` passes it as `initialColorMode` to `ThemeProvider`. This ensures the server render matches the blocking script's initial state — no flash.
 
 ### Content Type Reference
 

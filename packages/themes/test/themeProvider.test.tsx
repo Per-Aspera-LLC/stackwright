@@ -682,6 +682,133 @@ describe('Color mode persistence', () => {
 });
 
 // ---------------------------------------------------------------------------
+// initialColorMode — defaultColorMode threading (swp-xyia)
+// ---------------------------------------------------------------------------
+
+describe('initialColorMode (swp-xyia)', () => {
+  const darkTheme = makeTheme({ darkColors: DARK_COLORS });
+
+  beforeEach(() => {
+    document.cookie = 'sw-color-mode=; max-age=0; path=/';
+    document.documentElement.removeAttribute('data-sw-color-mode');
+    document.documentElement.style.backgroundColor = '';
+  });
+
+  it('initialColorMode="dark" with no cookie → resolvedColorMode is dark', async () => {
+    function Reader() {
+      const { resolvedColorMode, colorMode } = useTheme();
+      return (
+        <div>
+          <span data-testid="mode">{colorMode}</span>
+          <span data-testid="resolved">{resolvedColorMode}</span>
+        </div>
+      );
+    }
+
+    await act(async () => {
+      render(
+        <ThemeProvider theme={darkTheme} initialColorMode="dark">
+          <Reader />
+        </ThemeProvider>
+      );
+    });
+
+    expect(screen.getByTestId('mode')).toHaveTextContent('dark');
+    expect(screen.getByTestId('resolved')).toHaveTextContent('dark');
+  });
+
+  it('initialColorMode="dark" with no cookie → theme.colors uses darkColors', async () => {
+    function BgReader() {
+      const { theme } = useTheme();
+      return <span data-testid="bg">{theme.colors.background}</span>;
+    }
+
+    await act(async () => {
+      render(
+        <ThemeProvider theme={darkTheme} initialColorMode="dark">
+          <BgReader />
+        </ThemeProvider>
+      );
+    });
+
+    expect(screen.getByTestId('bg')).toHaveTextContent(DARK_COLORS.background);
+  });
+
+  it('initialColorMode="dark" + cookie="light" → cookie wins, resolvedColorMode is light', async () => {
+    document.cookie = 'sw-color-mode=light; path=/';
+
+    function Reader() {
+      const { resolvedColorMode } = useTheme();
+      return <span data-testid="resolved">{resolvedColorMode}</span>;
+    }
+
+    await act(async () => {
+      render(
+        <ThemeProvider theme={darkTheme} initialColorMode="dark">
+          <Reader />
+        </ThemeProvider>
+      );
+    });
+
+    expect(screen.getByTestId('resolved')).toHaveTextContent('light');
+  });
+
+  it('initialColorMode="light" + cookie="dark" → cookie wins, resolvedColorMode is dark', async () => {
+    document.cookie = 'sw-color-mode=dark; path=/';
+
+    function Reader() {
+      const { resolvedColorMode } = useTheme();
+      return <span data-testid="resolved">{resolvedColorMode}</span>;
+    }
+
+    await act(async () => {
+      render(
+        <ThemeProvider theme={darkTheme} initialColorMode="light">
+          <Reader />
+        </ThemeProvider>
+      );
+    });
+
+    expect(screen.getByTestId('resolved')).toHaveTextContent('dark');
+  });
+
+  it('initialColorMode="system" + data-sw-color-mode="dark" → resolves to dark', async () => {
+    // Simulate what ColorModeScript sets on <html> when defaultColorMode=dark
+    document.documentElement.setAttribute('data-sw-color-mode', 'dark');
+
+    function Reader() {
+      const { resolvedColorMode } = useTheme();
+      return <span data-testid="resolved">{resolvedColorMode}</span>;
+    }
+
+    await act(async () => {
+      render(
+        <ThemeProvider theme={darkTheme} initialColorMode="system">
+          <Reader />
+        </ThemeProvider>
+      );
+    });
+
+    expect(screen.getByTestId('resolved')).toHaveTextContent('dark');
+  });
+
+  it('defaults to system when initialColorMode is not passed (backcompat regression)', () => {
+    function Reader() {
+      const { colorMode } = useTheme();
+      return <span data-testid="mode">{colorMode}</span>;
+    }
+
+    render(
+      <ThemeProvider theme={darkTheme}>
+        <Reader />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByTestId('mode')).toHaveTextContent('system');
+  });
+});
+
+// ---------------------------------------------------------------------------
 // ColorModeScript
 // ---------------------------------------------------------------------------
 

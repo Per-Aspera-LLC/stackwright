@@ -75,6 +75,8 @@ export const themeConfigSchema = z.object({
       footer: componentStyleSchema.optional(),
     })
     .optional(),
+  /** Preferred default color mode for this theme. Consumers fall back to 'system' when absent. */
+  defaultColorMode: z.enum(['light', 'dark', 'system']).optional(),
 });
 
 export const themeSchema = themeConfigSchema;
