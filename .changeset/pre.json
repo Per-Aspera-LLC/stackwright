@@ -24,6 +24,7 @@
   "changesets": [
     "fix-dark-mode-flash",
     "image-optimization-pipeline",
+    "mcp-register-subpath",
     "split-file-config-defaultcolormode",
     "sync-streaming-schema"
   ]
