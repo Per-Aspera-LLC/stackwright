@@ -1,5 +1,13 @@
 # @stackwright/mcp
 
+## 0.6.0-alpha.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @stackwright/build-scripts@0.10.0-alpha.1
+  - @stackwright/cli@0.9.0
+
 ## 0.6.0-alpha.1
 
 ### Minor Changes
