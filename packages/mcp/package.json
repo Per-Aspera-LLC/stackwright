@@ -38,7 +38,7 @@
         "@stackwright/build-scripts": "workspace:*",
         "@stackwright/cli": "workspace:*",
         "@stackwright/types": "workspace:*",
-        "playwright": "^1.60.0",
+        "playwright": "^1.61.1",
         "zod": "catalog:"
     },
     "devDependencies": {
