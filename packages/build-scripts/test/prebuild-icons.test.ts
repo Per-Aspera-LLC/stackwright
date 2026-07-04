@@ -1,8 +1,14 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
-import { collectIconSrcs, lucideExportName, generateIconManifest } from '../src/prebuild';
+import {
+  collectIconSrcs,
+  lucideExportName,
+  generateIconManifest,
+  isValidLucideExport,
+  mapToValidLucideName,
+} from '../src/prebuild';
 
 describe('collectIconSrcs', () => {
   // ── Shape 1: { type: "icon", src: "..." } ─────────────────────────────
@@ -318,5 +324,166 @@ describe('generateIconManifest — kebab-case and lowercase YAML names', () => {
     for (const token of tokens) {
       expect(token).toMatch(/^[A-Za-z][A-Za-z0-9]*$/);
     }
+  });
+});
+
+// ---------------------------------------------------------------------------
+// isValidLucideExport — unit tests (swp-4uwg)
+// ---------------------------------------------------------------------------
+
+describe('isValidLucideExport', () => {
+  it('returns true for a well-known canonical export', () => {
+    expect(isValidLucideExport('Truck')).toBe(true);
+  });
+
+  it('returns true for AlertTriangle (deprecated alias — still exported)', () => {
+    // lucide-react re-exports AlertTriangle as an alias for TriangleAlert.
+    // The allow-list includes aliases, so this must be valid.
+    expect(isValidLucideExport('AlertTriangle')).toBe(true);
+  });
+
+  it('returns true for HelpCircle (deprecated alias for CircleQuestionMark)', () => {
+    expect(isValidLucideExport('HelpCircle')).toBe(true);
+  });
+
+  it('returns false for Bridge (never existed in lucide-react)', () => {
+    expect(isValidLucideExport('Bridge')).toBe(false);
+  });
+
+  it('returns false for a lowercase icon name (allow-list is PascalCase)', () => {
+    expect(isValidLucideExport('truck')).toBe(false);
+  });
+
+  it('returns false for a kebab-case icon name', () => {
+    expect(isValidLucideExport('alert-triangle')).toBe(false);
+  });
+
+  it('returns false for an empty string', () => {
+    expect(isValidLucideExport('')).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// mapToValidLucideName — unit tests (swp-4uwg)
+// ---------------------------------------------------------------------------
+
+describe('mapToValidLucideName', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('passes through a valid PascalCase name unchanged', () => {
+    expect(mapToValidLucideName('Truck')).toBe('Truck');
+  });
+
+  it('normalises kebab-case to PascalCase when the result is valid', () => {
+    expect(mapToValidLucideName('alert-triangle')).toBe('AlertTriangle');
+  });
+
+  it('normalises lowercase single-word when the result is valid', () => {
+    expect(mapToValidLucideName('activity')).toBe('Activity');
+  });
+
+  it('returns HelpCircle and warns for a completely unknown icon (Bridge → Bridge)', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const result = mapToValidLucideName('bridge');
+    expect(result).toBe('HelpCircle');
+    expect(warnSpy).toHaveBeenCalledOnce();
+    // Warning should mention the original YAML name and the fallback
+    expect(warnSpy.mock.calls[0][0]).toContain('bridge');
+    expect(warnSpy.mock.calls[0][0]).toContain('HelpCircle');
+  });
+
+  it('returns HelpCircle for a capitalised-but-nonexistent icon (Bridge)', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(mapToValidLucideName('Bridge')).toBe('HelpCircle');
+  });
+
+  it('applies MUI alias before validation: Speed → Zap (not Speed)', () => {
+    // Speed is a legacy MUI alias → Zap; Zap is a valid lucide export
+    expect(mapToValidLucideName('Speed')).toBe('Zap');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// generateIconManifest — unknown icon fallback tests (swp-4uwg integration guards)
+// ---------------------------------------------------------------------------
+
+describe('generateIconManifest — unknown icon fallback (swp-4uwg)', () => {
+  let contentOutDir: string;
+  let projectRoot: string;
+
+  beforeEach(() => {
+    contentOutDir = fs.mkdtempSync(path.join(os.tmpdir(), 'sw-icons-fallback-'));
+    projectRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'sw-icons-root-fallback-'));
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  function writeContentJson(data: unknown): void {
+    fs.writeFileSync(path.join(contentOutDir, 'content.json'), JSON.stringify(data), 'utf8');
+  }
+
+  function readGeneratedIcons(): string {
+    return fs.readFileSync(path.join(projectRoot, 'stackwright-generated', 'icons.ts'), 'utf8');
+  }
+
+  it('falls back to HelpCircle for an unknown icon (bridge) and emits a warning', () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    writeContentJson({ icon: 'bridge' });
+    generateIconManifest(contentOutDir, projectRoot);
+    const icons = readGeneratedIcons();
+    // Must import HelpCircle, NOT Bridge
+    expect(icons).toMatch(/import \{[^}]*HelpCircle[^}]*\} from 'lucide-react'/);
+    expect(icons).not.toMatch(/import \{[^}]*\bBridge\b[^}]*\} from 'lucide-react'/);
+    // Original YAML key preserved in preset so runtime lookup still works
+    expect(icons).toContain("'bridge': HelpCircle");
+    // Warning emitted
+    const warnCalls = warnSpy.mock.calls.map((c) => c[0] as string);
+    expect(warnCalls.some((msg) => msg.includes('bridge'))).toBe(true);
+  });
+
+  it('generated icons.ts parses as syntactically valid TypeScript (no hyphens in import identifiers)', () => {
+    writeContentJson([{ icon: 'bridge' }, { icon: 'Truck' }, { icon: 'alert-triangle' }]);
+    generateIconManifest(contentOutDir, projectRoot);
+    const icons = readGeneratedIcons();
+    // Extract import tokens and verify no hyphens
+    const importMatch = icons.match(/^import \{([^}]+)\} from 'lucide-react';/m);
+    expect(importMatch).not.toBeNull();
+    const tokens = importMatch![1]
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean);
+    for (const token of tokens) {
+      expect(token).toMatch(/^[A-Za-z][A-Za-z0-9]*$/);
+    }
+  });
+
+  it('idempotent: running generateIconManifest twice produces byte-identical output', () => {
+    writeContentJson([{ icon: 'bridge' }, { icon: 'Truck' }, { icon: 'alert-triangle' }]);
+    generateIconManifest(contentOutDir, projectRoot);
+    const first = readGeneratedIcons();
+    generateIconManifest(contentOutDir, projectRoot);
+    const second = readGeneratedIcons();
+    expect(first).toBe(second);
+  });
+
+  it('valid icons alongside unknown icons produce correct imports for all', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    writeContentJson([{ icon: 'bridge' }, { icon: 'Truck' }, { icon: 'Users' }]);
+    generateIconManifest(contentOutDir, projectRoot);
+    const icons = readGeneratedIcons();
+    // Valid icons must still be imported
+    expect(icons).toMatch(/import \{[^}]*Truck[^}]*\} from 'lucide-react'/);
+    expect(icons).toMatch(/import \{[^}]*Users[^}]*\} from 'lucide-react'/);
+    // HelpCircle fallback is imported for 'bridge'
+    expect(icons).toMatch(/import \{[^}]*HelpCircle[^}]*\} from 'lucide-react'/);
+    // 'bridge' key maps to HelpCircle in preset
+    expect(icons).toContain("'bridge': HelpCircle");
+    // Truck and Users map to themselves (shorthand)
+    expect(icons).toContain('  Truck,');
+    expect(icons).toContain('  Users,');
   });
 });

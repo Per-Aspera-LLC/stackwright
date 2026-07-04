@@ -45,6 +45,8 @@ export {
   collectIconSrcs,
   generateIconManifest,
   lucideExportName,
+  isValidLucideExport,
+  mapToValidLucideName,
 } from './compile';
 
 export {
