@@ -27,7 +27,14 @@ export {
 export { compileFileCollections, generateEntryPages } from './collections';
 export type { FileCollectionsResult } from './collections';
 
-export { compileIcons, collectIconSrcs, generateIconManifest, lucideExportName } from './icons';
+export {
+  compileIcons,
+  collectIconSrcs,
+  generateIconManifest,
+  lucideExportName,
+  isValidLucideExport,
+  mapToValidLucideName,
+} from './icons';
 
 export {
   compileFonts,
