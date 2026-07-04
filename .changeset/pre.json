@@ -23,6 +23,7 @@
   },
   "changesets": [
     "fix-dark-mode-flash",
+    "icon-export-existence-validator",
     "icon-generator-kebab-case-fix",
     "image-optimization-pipeline",
     "mcp-register-subpath",
