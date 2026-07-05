@@ -18,7 +18,7 @@ import type { ImageOptimizationConfig } from '@stackwright/types';
 // ESM environment where `import('sharp')` exposes { default: fn, ... }.
 async function getSharp() {
   const mod = await import('sharp');
-   
+
   return ((mod as any).default ?? mod) as typeof import('sharp');
 }
 
