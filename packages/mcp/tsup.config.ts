@@ -5,9 +5,12 @@ import path from 'path';
 export default defineConfig({
   entry: {
     server: 'src/server.ts',
+    register: 'src/register.ts',
   },
   format: ['cjs'],
-  dts: false,
+  // Only emit .d.ts for register.ts — server.ts is a binary entrypoint and
+  // its Node globals (process, console) upset the DTS type-checker under lib:[es2020].
+  dts: { entry: { register: 'src/register.ts' } },
   splitting: false,
   sourcemap: false,
   clean: true,

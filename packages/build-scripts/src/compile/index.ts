@@ -15,15 +15,26 @@ export type { SiteCompileResult } from './site';
 
 export { compileTheme } from './theme';
 
-export { compilePages, optimizeImages, findContentFiles, normalizePageContent, processPageContent, injectCollectionEntries } from './pages';
-
 export {
-  compileFileCollections,
-  generateEntryPages,
-} from './collections';
+  compilePages,
+  optimizeImages,
+  findContentFiles,
+  normalizePageContent,
+  processPageContent,
+  injectCollectionEntries,
+} from './pages';
+
+export { compileFileCollections, generateEntryPages } from './collections';
 export type { FileCollectionsResult } from './collections';
 
-export { compileIcons, collectIconSrcs, generateIconManifest } from './icons';
+export {
+  compileIcons,
+  collectIconSrcs,
+  generateIconManifest,
+  lucideExportName,
+  isValidLucideExport,
+  mapToValidLucideName,
+} from './icons';
 
 export {
   compileFonts,

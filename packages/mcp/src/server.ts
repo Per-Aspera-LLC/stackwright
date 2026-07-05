@@ -1,16 +1,19 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { registerContentTypeTools } from './tools/content-types.js';
-import { registerPageTools } from './tools/pages.js';
-import { registerSiteTools } from './tools/site.js';
-import { registerProjectTools } from './tools/project.js';
-import { registerGitOpsTools } from './tools/git-ops.js';
-import { registerBoardTools } from './tools/board.js';
-import { registerCollectionTools } from './tools/collections.js';
-import { registerIntegrationTools } from './tools/integrations.js';
-import { registerComposeTools } from './tools/compose.js';
-import { registerRenderTools, closeBrowser } from './tools/render.js';
-import { registerA11yTools } from './tools/a11y.js';
+import {
+  registerContentTypeTools,
+  registerPageTools,
+  registerSiteTools,
+  registerProjectTools,
+  registerGitOpsTools,
+  registerBoardTools,
+  registerCollectionTools,
+  registerIntegrationTools,
+  registerComposeTools,
+  registerRenderTools,
+  registerA11yTools,
+  closeBrowser,
+} from './register.js';
 import { version } from '../package.json';
 
 const server = new McpServer({

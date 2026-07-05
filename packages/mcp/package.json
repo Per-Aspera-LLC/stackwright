@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/mcp",
-    "version": "0.5.2",
+    "version": "0.6.0-alpha.3",
     "description": "MCP server for Stackwright — exposes content types, page management, and validation as agent tools",
     "license": "MIT",
     "repository": {
@@ -16,6 +16,10 @@
         ".": {
             "types": "./dist/server.d.ts",
             "require": "./dist/server.js"
+        },
+        "./register": {
+            "types": "./dist/register.d.ts",
+            "require": "./dist/register.js"
         }
     },
     "files": [

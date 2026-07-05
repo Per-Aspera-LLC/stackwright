@@ -1,5 +1,109 @@
 # @stackwright/build-scripts
 
+## 0.10.0-alpha.2
+
+### Minor Changes
+
+- d1484ca: Add lucide-react export existence validator to `generateIconManifest()`.
+
+  Previously, YAML content could reference icon names that don't exist in
+  `lucide-react` (e.g. `icon: bridge`). The generated `icons.ts` would emit
+  a broken import that caused Turbopack to 500 every route at dev-server start.
+
+  This change ships:
+  - `LUCIDE_REACT_EXPORTS` — a compile-time Set of all importable lucide-react
+    names (canonical exports + deprecated aliases), generated from
+    `lucide-react/dist/lucide-react.d.ts` and committed as
+    `src/compile/lucide-exports.json`.
+  - `isValidLucideExport(name)` — pure exported utility; returns `true` if
+    `name` is a real lucide-react export.
+  - `mapToValidLucideName(yamlSrc)` — exported utility; applies
+    `LEGACY_MUI_ICON_ALIASES` + `lucideExportName()` then validates. On miss,
+    emits a `console.warn` and returns `HelpCircle` (the fallback).
+  - `generateIconManifest()` now validates every resolved icon name against the
+    allow-list. Unknown icons fall back to `HelpCircle` with a per-icon warning
+    and a summary count at the end. The original YAML key is preserved in the
+    `siteIconPreset` object so runtime lookup continues to work. Hard failures
+    are never emitted — a broken icon name should not take down the dev server.
+
+## 0.10.0-alpha.1
+
+### Patch Changes
+
+- Fix icon generator to handle kebab-case and lowercase YAML icon names per
+  lucide.dev's URL-slug naming convention.
+
+  The icon manifest generator previously emitted YAML icon names verbatim into
+  the TypeScript import statement, which fails for kebab-case names (`alert-triangle`
+  parses as `alert minus triangle`) and produces undefined imports for lowercase
+  single-word names (`activity` is valid TS but lucide-react only exports
+  PascalCase `Activity`).
+
+  Generator now normalizes YAML names to lucide-react's PascalCase export
+  convention while preserving the kebab-case keys in the runtime registry
+  (`'alert-triangle': AlertTriangle`). Existing PascalCase YAML names and the
+  LEGACY_MUI_ICON_ALIASES map continue to work unchanged.
+
+  Empirical fixture: kennel drawer 815 (stackwright-pro repo, planning session
+  2026-06-25) — the bxps verification raft generated a full Storm Surge app
+  with YAML using `icon: alert-triangle` etc., which then failed `pnpm dev` on
+  TypeScript parse error in the generated `stackwright-generated/icons.ts`.
+
+## 0.10.0-alpha.0
+
+### Minor Changes
+
+- 98bc1f7: feat: split-file config — compile primitives + defaultColorMode (swp-xyia)
+
+  ## What changed
+
+  ### `@stackwright/types`
+  - New `stackwrightThemeFileSchema` — Zod schema for `stackwright.theme.yml` (`themeName`, `customTheme`, `fonts`, `defaultColorMode`)
+  - New `StackwrightThemeFile` TypeScript type
+  - `PrebuildPlugin` gains optional `additionalSinks` field — array of named compile sinks that Pro plugins use to emit `_collections.json`, `_auth.json`, `_integrations.json`
+
+  ### `@stackwright/themes`
+  - `themeConfigSchema` gains optional `defaultColorMode: z.enum(['light', 'dark', 'system'])`
+  - `ThemeProvider` `initialColorMode` prop (already accepted) is now the documented seeding mechanism for `defaultColorMode`
+
+  ### `@stackwright/build-scripts`
+  - **`_theme.json` emitted as a separate sink** (no longer merged into `_site.json`)
+  - Refactored into `compile/` sub-directory with individually-callable primitives:
+    - `compileSite(ctx)`, `compileTheme(ctx)`, `compilePages(ctx)`, `compilePage(slug, ctx)`, `compileIcons(ctx)`, `compileFonts(ctx)`, `compileFileCollections(ctx)`
+    - `compileAll(ctx)` — runs all in topological order including plugin `additionalSinks`
+    - `createCompileContext(opts)` — builds a `CompileContext` from `PrebuildOptions`
+  - `runPrebuild()` remains as a thin wrapper — no breaking change
+  - Path 1: `stackwright.theme.yml` → validates, emits `_theme.json`
+  - Path 2: no theme file → extracts `{themeName, customTheme, fonts, defaultColorMode}` from `stackwright.yml` root, emits `_theme.json` silently
+  - Path 3: no theme info → emits `_theme.json: {}`
+
+  ### `@stackwright/nextjs`
+  - `StackwrightLayout` reads `_theme.json` at render time via `getThemeFile()`
+  - Passes `_theme.json.defaultColorMode` as `fallback` to `ColorModeScript` (previously hardcoded `'system'`)
+  - Falls back to `_site.json.customTheme` backgrounds when `_theme.json` has no `customTheme` (backcompat for legacy setups)
+
+  ### `@stackwright/core`
+  - `DynamicPage` reads `theme.defaultColorMode` and passes it as `initialColorMode` to `ThemeProvider`
+  - Ensures the initial server render matches the `ColorModeScript` fallback — no color-mode flash for `defaultColorMode: dark` projects
+
+  ## Upgrade guide
+
+  **Projects with `stackwright.theme.yml`:** No action required. `_theme.json` is emitted automatically.
+
+  **Projects with inline `customTheme` in `stackwright.yml`:** No action required. Path 2 extracts theme keys silently. `_site.json` still contains the legacy keys until Bead 4 (a future release) strips them.
+
+  **To opt into a non-system default color mode:**
+
+  ```yaml
+  # stackwright.theme.yml
+  defaultColorMode: dark # first-time visitors see dark mode
+  ```
+
+### Patch Changes
+
+- Updated dependencies [98bc1f7]
+  - @stackwright/types@1.9.0-alpha.0
+
 ## 0.9.0
 
 ### Minor Changes

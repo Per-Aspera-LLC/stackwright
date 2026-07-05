@@ -41,9 +41,12 @@ export {
 export type { FontLink } from './compile';
 
 export {
-  // Icon utilities (prebuild-icons.test.ts imports collectIconSrcs)
+  // Icon utilities (prebuild-icons.test.ts imports these)
   collectIconSrcs,
   generateIconManifest,
+  lucideExportName,
+  isValidLucideExport,
+  mapToValidLucideName,
 } from './compile';
 
 export {
@@ -107,10 +110,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   // Sitemap + robots.txt
   const siteJsonPath = path.join(contentOutDir, '_site.json');
   if (fs.existsSync(siteJsonPath)) {
-    const siteConfig = JSON.parse(fs.readFileSync(siteJsonPath, 'utf8')) as Record<
-      string,
-      unknown
-    >;
+    const siteConfig = JSON.parse(fs.readFileSync(siteJsonPath, 'utf8')) as Record<string, unknown>;
     const siteMetaConfig = siteConfig.meta as Record<string, unknown> | undefined;
     const baseUrl = siteMetaConfig?.base_url as string | undefined;
 
@@ -120,9 +120,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
 
       const sitemapXml = generateSitemap({ pages, baseUrl, buildDate });
       fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml);
-      console.log(
-        `  [OK] sitemap.xml (${pages.filter((p) => !p.meta?.noindex).length} pages)`
-      );
+      console.log(`  [OK] sitemap.xml (${pages.filter((p) => !p.meta?.noindex).length} pages)`);
 
       const robotsTxt = generateRobotsTxt(baseUrl);
       fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt);
@@ -175,8 +173,10 @@ if (require.main === module) {
   const noImageOptimization = process.argv.includes('--no-image-optimization');
 
   if (noSBOM) console.log('[INFO] SBOM generation skipped (--no-sbom flag)');
-  if (sbomStrict) console.log('[INFO] SBOM strict mode enabled -- build will fail if SBOM generation errors');
-  if (noImageOptimization) console.log('[INFO] Image optimization skipped (--no-image-optimization flag)');
+  if (sbomStrict)
+    console.log('[INFO] SBOM strict mode enabled -- build will fail if SBOM generation errors');
+  if (noImageOptimization)
+    console.log('[INFO] Image optimization skipped (--no-image-optimization flag)');
 
   if (watchMode) {
     const { runWatch } = require('./watch');

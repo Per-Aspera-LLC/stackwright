@@ -1,6 +1,6 @@
 {
   "name": "@stackwright/maplibre",
-  "version": "4.0.1",
+  "version": "5.0.0-alpha.0",
   "description": "MapLibre GL adapter for Stackwright maps (free tier, no API keys required)",
   "license": "MIT",
   "repository": {
@@ -45,7 +45,7 @@
     "vitest": "catalog:"
   },
   "peerDependencies": {
-    "@stackwright/core": ">=0.10.1",
+    "@stackwright/core": ">=0.11.0-alpha.0",
     "react": "^18 || ^19",
     "react-dom": "^18 || ^19"
   }

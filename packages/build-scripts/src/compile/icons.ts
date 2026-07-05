@@ -1,6 +1,23 @@
 import fs from 'fs';
 import path from 'path';
 import type { CompileContext } from './context';
+import lucideExportsList from './lucide-exports.json';
+
+// ---------------------------------------------------------------------------
+// Lucide-react export allow-list (generated from lucide-react/dist/lucide-react.d.ts)
+// ---------------------------------------------------------------------------
+
+/**
+ * All names that are importable from `lucide-react` — both canonical exports and
+ * their deprecated aliases (e.g. both TriangleAlert AND AlertTriangle are present).
+ *
+ * Generated at workspace install time from `lucide-react/dist/lucide-react.d.ts`.
+ * To regenerate: `node scripts/generate-lucide-exports.mjs` from packages/build-scripts/.
+ */
+const LUCIDE_REACT_EXPORTS: ReadonlySet<string> = new Set<string>(lucideExportsList as string[]);
+
+/** Safe fallback icon — always present in lucide-react. Used when a YAML icon name is unknown. */
+const ICON_FALLBACK = 'HelpCircle';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -34,8 +51,78 @@ const SYSTEM_ICON_NAMES: readonly string[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Pure utility (exported so tests can import directly if needed)
+// Pure utilities (exported so tests can import directly if needed)
 // ---------------------------------------------------------------------------
+
+/**
+ * Convert a YAML icon name (lucide.dev URL-slug convention) to lucide-react's
+ * PascalCase export name.
+ *
+ * Handles:
+ *   "alert-triangle"   -> "AlertTriangle"   (kebab-case slug)
+ *   "battery-charging" -> "BatteryCharging"  (kebab-case slug)
+ *   "building-2"       -> "Building2"        (kebab with digit)
+ *   "activity"         -> "Activity"         (lowercase single word)
+ *   "AlertTriangle"    -> "AlertTriangle"    (already PascalCase — passthrough)
+ *   "X"                -> "X"               (single char — passthrough)
+ *   ""                 -> ""                (empty — passthrough)
+ *
+ * NOTE: LEGACY_MUI_ICON_ALIASES takes precedence over this normalizer in the
+ * manifest loop (alias lookup is on the raw YAML `src` string). MUI aliases
+ * use PascalCase keys, so only literal MUI uses (e.g. YAML `src: "Speed"`) hit
+ * the alias map. A lowercase or kebab variant (e.g. `src: "speed"`) skips the
+ * alias and is normalized by this function to `Speed` — a different path and
+ * different outcome, which is correct: kebab users are opting into Lucide
+ * URL-slug convention, not legacy MUI names.
+ */
+export function lucideExportName(yamlName: string): string {
+  return yamlName
+    .split('-')
+    .map((part) => (part.length > 0 ? part.charAt(0).toUpperCase() + part.slice(1) : part))
+    .join('');
+}
+
+// ---------------------------------------------------------------------------
+// Lucide export validation utilities (exported for tests + external callers)
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns true if `name` is a real lucide-react export (canonical OR deprecated alias).
+ *
+ * @example
+ * isValidLucideExport('AlertTriangle') // → true  (deprecated alias, still exported)
+ * isValidLucideExport('Bridge')        // → false (never existed)
+ */
+export function isValidLucideExport(name: string): boolean {
+  return LUCIDE_REACT_EXPORTS.has(name);
+}
+
+/**
+ * Resolve a YAML `icon:` value to a valid lucide-react import name.
+ *
+ * Resolution order:
+ *   1. LEGACY_MUI_ICON_ALIASES  (PascalCase keys → new Lucide name)
+ *   2. lucideExportName()        (kebab / lowercase → PascalCase)
+ *   3. isValidLucideExport()     (allow-list check)
+ *   4. ICON_FALLBACK on miss     (+ console.warn)
+ *
+ * The YAML key is preserved in the generated siteIconPreset — callers should
+ * still map the original `yamlSrc` → returned value in the preset object.
+ *
+ * @param yamlSrc  Raw value from the YAML content file, e.g. "bridge" or "AlertTriangle".
+ * @returns A valid lucide-react import identifier, e.g. "HelpCircle".
+ */
+export function mapToValidLucideName(yamlSrc: string): string {
+  const resolved = LEGACY_MUI_ICON_ALIASES[yamlSrc] ?? lucideExportName(yamlSrc);
+  if (isValidLucideExport(resolved)) {
+    return resolved;
+  }
+  console.warn(
+    `  [WARN] Icon '${yamlSrc}' resolved to '${resolved}' — not a known lucide-react export. ` +
+      `Falling back to ${ICON_FALLBACK}. If this icon was renamed, add it to LEGACY_MUI_ICON_ALIASES.`
+  );
+  return ICON_FALLBACK;
+}
 
 /**
  * Recursively walk a value and collect all icon src references.
@@ -73,10 +160,7 @@ export function collectIconSrcs(obj: unknown, srcs: Set<string>): void {
  *
  * Synchronous: all operations are JSON parsing and file writes.
  */
-export function generateIconManifest(
-  contentOutDir: string,
-  projectRoot: string
-): void {
+export function generateIconManifest(contentOutDir: string, projectRoot: string): void {
   const rawSrcs = new Set<string>();
 
   function walkJsonDir(dir: string): void {
@@ -104,10 +188,30 @@ export function generateIconManifest(
     lucideImports.get(sysName)!.add(sysName);
   }
 
+  const unknownIcons: string[] = [];
+
   for (const src of rawSrcs) {
-    const lucideName = LEGACY_MUI_ICON_ALIASES[src] ?? src;
+    // Precedence: explicit MUI legacy alias > kebab/lowercase normalization > allow-list check.
+    const resolved = LEGACY_MUI_ICON_ALIASES[src] ?? lucideExportName(src);
+    let lucideName: string;
+    if (isValidLucideExport(resolved)) {
+      lucideName = resolved;
+    } else {
+      // resolved !== ICON_FALLBACK guard avoids double-counting an explicit 'icon: HelpCircle'
+      console.warn(
+        `  [WARN] Icon '${src}' → '${resolved}' is not a lucide-react export; using ${ICON_FALLBACK}.`
+      );
+      lucideName = ICON_FALLBACK;
+      unknownIcons.push(src);
+    }
     if (!lucideImports.has(lucideName)) lucideImports.set(lucideName, new Set());
     lucideImports.get(lucideName)!.add(src);
+  }
+
+  if (unknownIcons.length > 0) {
+    console.warn(
+      `  [WARN] ${unknownIcons.length} icon(s) fell back to ${ICON_FALLBACK} (check YAML content for typos): ${unknownIcons.join(', ')}`
+    );
   }
 
   fs.writeFileSync(
@@ -151,9 +255,12 @@ export function generateIconManifest(
       if (yamlName === lucideName) {
         lines.push(`  ${lucideName},`);
       } else {
-        lines.push(
-          `  '${yamlName}': ${lucideName}, // legacy MUI alias -- candidate for deprecation`
-        );
+        // yamlName is either a legacy MUI alias (PascalCase → different PascalCase)
+        // or a kebab-case / lowercase Lucide URL-slug (e.g. 'alert-triangle' → AlertTriangle).
+        // Either way: string-keyed entry so runtime lookup by YAML name still works.
+        const isMuiAlias = yamlName in LEGACY_MUI_ICON_ALIASES;
+        const comment = isMuiAlias ? ' // legacy MUI alias -- candidate for deprecation' : '';
+        lines.push(`  '${yamlName}': ${lucideName},${comment}`);
       }
     }
   }
