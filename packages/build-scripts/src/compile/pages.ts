@@ -4,8 +4,16 @@ import yaml from 'js-yaml';
 import { z } from 'zod';
 import { validatePageContent } from '@stackwright/types/validation';
 import type { PrebuildPlugin } from '@stackwright/types';
-import { copyIfNewer, rewritePaths, isColocatablePath, isVideoPath } from './path-utils';
-import { processImageOptimization, type ImageManifest } from '../image-optimizer';
+import {
+  copyIfNewer,
+  rewritePaths,
+  isColocatablePath,
+  isVideoPath,
+} from './path-utils';
+import {
+  processImageOptimization,
+  type ImageManifest,
+} from '../image-optimizer';
 import type { ImageOptimizationConfig } from '@stackwright/types';
 import type { CompileContext } from './context';
 
@@ -40,11 +48,7 @@ export function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
       const subSlug = baseSlug ? `${baseSlug}/${entry.name}` : entry.name;
       results.push(...findContentFiles(path.join(dir, entry.name), subSlug));
     } else if (entry.name === 'content.yml' || entry.name === 'content.yaml') {
-      results.push({
-        slug: baseSlug || null,
-        filePath: path.join(dir, entry.name),
-        contentDir: dir,
-      });
+      results.push({ slug: baseSlug || null, filePath: path.join(dir, entry.name), contentDir: dir });
     } else {
       const localeMatch = entry.name.match(/^content\.([^.]+)\.(yml|yaml)$/);
       if (localeMatch) {
@@ -468,3 +472,4 @@ export async function optimizeImages(
     console.log('  [OK] Enriched content JSONs with blur placeholders');
   }
 }
+

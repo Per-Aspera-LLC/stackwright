@@ -31,10 +31,13 @@ export interface CompileContext {
  * Build a CompileContext from PrebuildOptions.
  * Resolves all path derivations in one place.
  */
-export function createCompileContext(options?: string | PrebuildOptions): CompileContext {
+export function createCompileContext(
+  options?: string | PrebuildOptions
+): CompileContext {
   const projectRoot =
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
-  const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+  const plugins =
+    typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
   const unknownContentTypes =
     typeof options === 'object' && options !== null
       ? (options.unknownContentTypes ?? 'error')

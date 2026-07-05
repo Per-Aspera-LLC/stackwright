@@ -25,7 +25,14 @@ export const IMAGE_EXTENSIONS = new Set([
 ]);
 
 // Keep in sync with VIDEO_EXTENSIONS_ARRAY exported from @stackwright/types
-export const VIDEO_EXTENSIONS = new Set(['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv']);
+export const VIDEO_EXTENSIONS = new Set([
+  '.mp4',
+  '.webm',
+  '.ogg',
+  '.mov',
+  '.avi',
+  '.mkv',
+]);
 
 // ---------------------------------------------------------------------------
 // Predicates

@@ -2,12 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import yaml from 'js-yaml';
 import { collectionConfigSchema } from '@stackwright/types';
-import type {
-  CollectionConfig,
-  EntryPageConfig,
-  PageContent,
-  TypographyVariant,
-} from '@stackwright/types';
+import type { CollectionConfig, EntryPageConfig, PageContent, TypographyVariant } from '@stackwright/types';
 import { copyIfNewer, rewritePaths, isColocatablePath } from './path-utils';
 import type { CompileContext } from './context';
 
@@ -255,9 +250,7 @@ export function generateEntryPages(
     const outFile = path.join(outDir, `${slug}.json`);
     const resolvedOutFile = path.resolve(outFile);
     if (!resolvedOutFile.startsWith(resolvedOutDir + path.sep)) {
-      console.warn(
-        `  WARNING: Skipping entry "${slug}" -- resolved path escapes output directory.`
-      );
+      console.warn(`  WARNING: Skipping entry "${slug}" -- resolved path escapes output directory.`);
       continue;
     }
 
@@ -327,7 +320,9 @@ function processCollectionEntryContent(
 /**
  * Synchronous: all operations are YAML parsing and file writes.
  */
-export function compileFileCollections(ctx: CompileContext): FileCollectionsResult {
+export function compileFileCollections(
+  ctx: CompileContext
+): FileCollectionsResult {
   const { projectRoot, contentOutDir, imagesDir } = ctx;
   const contentDir = path.join(projectRoot, 'content');
 

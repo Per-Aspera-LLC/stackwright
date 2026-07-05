@@ -115,7 +115,7 @@ describe('register subpath — tool surface integration', () => {
     registerA11yTools(server);
 
     // Introspect via the internal registry (plain object, keys = tool names).
-
+     
     registeredToolNames = Object.keys((server as any)._registeredTools);
   });
 
