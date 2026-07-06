@@ -52,7 +52,7 @@
         "@types/fs-extra": "11.0.4",
         "@types/js-yaml": "catalog:",
         "@types/react": "^19.2.17",
-        "fs-extra": "^11.3.5",
+        "fs-extra": "^11.3.6",
         "tsup": "catalog:",
         "tsx": "^4.22.4",
         "vitest": "catalog:"
