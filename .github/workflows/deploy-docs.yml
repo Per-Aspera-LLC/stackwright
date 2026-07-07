@@ -37,7 +37,7 @@ jobs:
       # ============================================
 
       - name: Checkout repository
-        uses: actions/checkout@v5  # was v4, now v5
+        uses: actions/checkout@v7  # was v4, now v5
         with:
           # Full history needed for changeset version detection
           fetch-depth: 0

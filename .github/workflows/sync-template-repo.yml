@@ -14,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout monorepo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Checkout template repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: Per-Aspera-LLC/stackwright-template-nextjs
           path: _template-repo
