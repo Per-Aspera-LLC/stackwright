@@ -118,9 +118,7 @@ export function mapToValidLucideName(yamlSrc: string): string {
   if (isValidLucideExport(resolved)) {
     return resolved;
   }
-  // Note: batch telemetry for invalid icons is emitted from generateIconManifest
-  // (swp-6xr3.1). This pure function stays free of I/O; callers that want
-  // per-icon events should wrap the call and emit themselves.
+  // TODO(swp-6xr3.1): upgrade warn to .stackwright/prebuild-events.ndjson structured event
   console.warn(
     `  [WARN] Icon '${yamlSrc}' resolved to '${resolved}' — not a known lucide-react export. ` +
       `Falling back to ${ICON_FALLBACK}. If this icon was renamed, add it to LEGACY_MUI_ICON_ALIASES.`
@@ -205,6 +203,7 @@ export function generateIconManifest(contentOutDir: string, projectRoot: string)
       lucideName = resolved;
     } else {
       // resolved !== ICON_FALLBACK guard avoids double-counting an explicit 'icon: HelpCircle'
+      // TODO(swp-6xr3.1): upgrade warn to .stackwright/prebuild-events.ndjson structured event
       console.warn(
         `  [WARN] Icon '${src}' → '${resolved}' is not a lucide-react export; using ${ICON_FALLBACK}.`
       );
