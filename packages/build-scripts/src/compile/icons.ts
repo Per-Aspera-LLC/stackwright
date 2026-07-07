@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { CompileContext } from './context';
 import lucideExportsList from './lucide-exports.json';
+import { emit } from '../lib/prebuild-events';
 
 // ---------------------------------------------------------------------------
 // Lucide-react export allow-list (generated from lucide-react/dist/lucide-react.d.ts)
@@ -117,7 +118,9 @@ export function mapToValidLucideName(yamlSrc: string): string {
   if (isValidLucideExport(resolved)) {
     return resolved;
   }
-  // TODO(swp-6xr3.1): upgrade warn to .stackwright/prebuild-events.ndjson structured event
+  // Note: batch telemetry for invalid icons is emitted from generateIconManifest
+  // (swp-6xr3.1). This pure function stays free of I/O; callers that want
+  // per-icon events should wrap the call and emit themselves.
   console.warn(
     `  [WARN] Icon '${yamlSrc}' resolved to '${resolved}' — not a known lucide-react export. ` +
       `Falling back to ${ICON_FALLBACK}. If this icon was renamed, add it to LEGACY_MUI_ICON_ALIASES.`
@@ -162,6 +165,9 @@ export function collectIconSrcs(obj: unknown, srcs: Set<string>): void {
  * Synchronous: all operations are JSON parsing and file writes.
  */
 export function generateIconManifest(contentOutDir: string, projectRoot: string): void {
+  const startTime = Date.now();
+  emit({ type: 'prebuild_start', step: 'icon-scan' }, { projectRoot });
+
   const rawSrcs = new Set<string>();
 
   function walkJsonDir(dir: string): void {
@@ -199,16 +205,26 @@ export function generateIconManifest(contentOutDir: string, projectRoot: string)
       lucideName = resolved;
     } else {
       // resolved !== ICON_FALLBACK guard avoids double-counting an explicit 'icon: HelpCircle'
-      // TODO(swp-6xr3.1): upgrade warn to .stackwright/prebuild-events.ndjson structured event
       console.warn(
         `  [WARN] Icon '${src}' → '${resolved}' is not a lucide-react export; using ${ICON_FALLBACK}.`
       );
       lucideName = ICON_FALLBACK;
       unknownIcons.push(src);
+      emit({ type: 'icon_fallback', src, resolved, fallback: ICON_FALLBACK }, { projectRoot });
     }
     if (!lucideImports.has(lucideName)) lucideImports.set(lucideName, new Set());
     lucideImports.get(lucideName)!.add(src);
   }
+
+  emit(
+    {
+      type: 'icons_summary',
+      totalIcons: rawSrcs.size,
+      unknownCount: unknownIcons.length,
+      unknownIcons: [...unknownIcons],
+    },
+    { projectRoot }
+  );
 
   if (unknownIcons.length > 0) {
     console.warn(
@@ -280,11 +296,17 @@ export function generateIconManifest(contentOutDir: string, projectRoot: string)
   );
 
   fs.writeFileSync(path.join(generatedDir, 'icons.ts'), lines.join('\n'));
+  emit({ type: 'file_generated', path: path.join(generatedDir, 'icons.ts') }, { projectRoot });
 
   console.log(
     `  [OK] Icon manifest: ${rawSrcs.size} site icon(s) + ${SYSTEM_ICON_NAMES.length} system icon(s) -> ${lucideImports.size} unique lucide import(s)`
   );
   console.log(`  [OK] Generated stackwright-generated/icons.ts`);
+
+  emit(
+    { type: 'prebuild_complete', step: 'icon-scan', durationMs: Date.now() - startTime },
+    { projectRoot }
+  );
 }
 
 // ---------------------------------------------------------------------------
