@@ -64,6 +64,12 @@ async function getBrowser(): Promise<Browser> {
         browserInstance = browser;
         launchPromise = null;
         return browser;
+      })
+      .catch((err) => {
+        // Reset so the next getBrowser() call retries fresh instead of
+        // returning this frozen rejection for the rest of the MCP session.
+        launchPromise = null;
+        throw err;
       });
   }
 
