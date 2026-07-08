@@ -39,6 +39,46 @@ describe('closeBrowser', () => {
   });
 });
 
+describe('getBrowser() rejection recovery (swp-nqqp)', () => {
+  it('retries after a rejected launch rather than caching the rejection', async () => {
+    const { chromium } = await import('playwright');
+
+    const launchError = new Error('Chromium binary not found — run npx playwright install');
+    const screenshotBuffer = Buffer.from('fake-png');
+    const mockPage = {
+      setViewportSize: vi.fn(),
+      goto: vi.fn().mockResolvedValue({ status: () => 200 }),
+      close: vi.fn().mockResolvedValue(undefined),
+      waitForTimeout: vi.fn(),
+      screenshot: vi.fn().mockResolvedValue(screenshotBuffer),
+    };
+    const mockBrowser = {
+      isConnected: vi.fn().mockReturnValue(false),
+      newPage: vi.fn().mockResolvedValue(mockPage),
+      close: vi.fn().mockResolvedValue(undefined),
+    };
+
+    // First launch rejects, second resolves
+    vi.mocked(chromium.launch)
+      .mockRejectedValueOnce(launchError)
+      .mockResolvedValueOnce(mockBrowser as any);
+
+    // Start clean
+    await closeBrowser();
+
+    const { renderPage } = await import('../src/renderer/page-renderer');
+
+    // First call must reject with the original error
+    await expect(renderPage({ baseUrl: 'http://localhost:3000', slug: '/' })).rejects.toThrow(
+      'Chromium binary not found'
+    );
+
+    // Second call must retry fresh — without the fix this returns the cached rejection
+    const result = await renderPage({ baseUrl: 'http://localhost:3000', slug: '/' });
+    expect(result.image).toBe(screenshotBuffer.toString('base64'));
+  });
+});
+
 describe('renderPage', () => {
   it('throws when server returns error status', async () => {
     const { chromium } = await import('playwright');
