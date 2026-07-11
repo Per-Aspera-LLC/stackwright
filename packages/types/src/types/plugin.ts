@@ -199,4 +199,29 @@ export interface PrebuildOptions {
    * This flag overrides `imageOptimization.enabled` in stackwright.yml.
    */
   imageOptimization?: boolean;
+
+  /**
+   * Enable or disable automatic plugin discovery from node_modules.
+   *
+   * When `true` (default, i.e. undefined), the prebuild CLI will attempt
+   * to resolve well-known plugin bundles (e.g. @stackwright-pro/build-scripts-plugins)
+   * from the project's node_modules. Set to `false` or use `--no-plugin-discovery`
+   * to disable auto-discovery (useful in environments where the resolution would
+   * be slow or unreliable).
+   *
+   * Has no effect when `plugins` is explicitly provided.
+   */
+  pluginDiscovery?: boolean;
+
+  /**
+   * Explicit list of plugin package names to load (overrides Tier A convention
+   * discovery AND stackwright.yml `prebuild.plugins` config). Mirrors the
+   * `--plugins pkg-a,pkg-b` CLI flag.
+   *
+   * Each name is resolved from the project's node_modules via the same
+   * `createRequire` trick as Tier B config discovery.
+   *
+   * Has no effect when `plugins` is explicitly provided.
+   */
+  pluginOverride?: string[];
 }

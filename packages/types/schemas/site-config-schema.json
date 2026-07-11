@@ -655,6 +655,26 @@
         "supported"
       ],
       "additionalProperties": false
+    },
+    "prebuild": {
+      "type": "object",
+      "properties": {
+        "plugins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unknownContentTypes": {
+          "type": "string",
+          "enum": [
+            "error",
+            "warn",
+            "ignore"
+          ]
+        }
+      },
+      "additionalProperties": false
     }
   },
   "required": [
