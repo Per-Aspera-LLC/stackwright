@@ -46,8 +46,11 @@ export {
 } from './fonts';
 export type { FontLink } from './fonts';
 
-export { createCompileContext, toPluginContext } from './context';
+export { createCompileContext, toPluginContext, discoverAndAttachPlugins } from './context';
 export type { CompileContext } from './context';
+
+export { discoverPlugins, CANONICAL_PRO_BUNDLE } from './discover';
+export type { DiscoverPluginsOptions } from './discover';
 
 // ---------------------------------------------------------------------------
 // compileAll

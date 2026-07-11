@@ -1,5 +1,6 @@
 import path from 'path';
 import type { PrebuildOptions, PrebuildPlugin, PrebuildPluginContext } from '@stackwright/types';
+import { discoverPlugins } from './discover';
 
 /**
  * Internal context threaded through all compile primitives.
@@ -31,13 +32,10 @@ export interface CompileContext {
  * Build a CompileContext from PrebuildOptions.
  * Resolves all path derivations in one place.
  */
-export function createCompileContext(
-  options?: string | PrebuildOptions
-): CompileContext {
+export function createCompileContext(options?: string | PrebuildOptions): CompileContext {
   const projectRoot =
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
-  const plugins =
-    typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+  const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
   const unknownContentTypes =
     typeof options === 'object' && options !== null
       ? (options.unknownContentTypes ?? 'error')
@@ -59,6 +57,38 @@ export function createCompileContext(
     unknownContentTypes,
     imageOptimizationEnabled,
   };
+}
+
+/**
+ * Discover plugins and attach them to an existing CompileContext in-place.
+ *
+ * Called by runPrebuild() immediately after createCompileContext() and before
+ * compileAll(). Skipped entirely when options.plugins is explicitly set
+ * (including an explicit empty array — [] means "I want no plugins").
+ *
+ * Intentionally synchronous — discoverPlugins() uses CJS require() to avoid
+ * introducing an async yield before the synchronous file-write phase of
+ * compileAll(). runWatch() calls runPrebuild() without await, relying on
+ * the invariant that all sync writes precede the first await in runPrebuild.
+ */
+export function discoverAndAttachPlugins(
+  ctx: CompileContext,
+  options?: string | PrebuildOptions
+): void {
+  // Explicit plugins array (including []) → caller owns the list, skip discovery.
+  if (typeof options === 'object' && options !== null && 'plugins' in options) {
+    return;
+  }
+
+  const opts = typeof options === 'object' && options !== null ? options : {};
+
+  const discovered = discoverPlugins(ctx.projectRoot, {
+    enabled: opts.pluginDiscovery,
+    overrideList: opts.pluginOverride,
+  });
+
+  // Mutate in place — ctx is the single instance threaded through compileAll.
+  ctx.plugins = discovered;
 }
 
 /**
