@@ -164,7 +164,7 @@
   defaultColorMode: dark # first-time visitors see dark mode
   ```
 
-### Patch Changes
+### Minor Changes
 
 - 97da06f: Fix icon generator to handle kebab-case and lowercase YAML icon names per
   lucide.dev's URL-slug naming convention.
@@ -187,41 +187,49 @@
 
 - 97da06f: **fix(build-scripts): dedup plugin-declared type warnings + thread prebuild.unknownContentTypes from yml**
 
-  Closes swp-3r93. Wires the #529 leftover.
+  Previously, YAML content could reference icon names that don't exist in
+  `lucide-react` (e.g. `icon: bridge`). The generated `icons.ts` would emit
+  a broken import that caused Turbopack to 500 every route at dev-server start.
 
-  ### Change 1 — swp-3r93: dedup plugin-declared content type warnings
+  This change ships:
+  - `LUCIDE_REACT_EXPORTS` — a compile-time Set of all importable lucide-react
+    names (canonical exports + deprecated aliases), generated from
+    `lucide-react/dist/lucide-react.d.ts` and committed as
+    `src/compile/lucide-exports.json`.
+  - `isValidLucideExport(name)` — pure exported utility; returns `true` if
+    `name` is a real lucide-react export.
+  - `mapToValidLucideName(yamlSrc)` — exported utility; applies
+    `LEGACY_MUI_ICON_ALIASES` + `lucideExportName()` then validates. On miss,
+    emits a `console.warn` and returns `HelpCircle` (the fallback).
+  - `generateIconManifest()` now validates every resolved icon name against the
+    allow-list. Unknown icons fall back to `HelpCircle` with a per-icon warning
+    and a summary count at the end. The original YAML key is preserved in the
+    `siteIconPreset` object so runtime lookup continues to work. Hard failures
+    are never emitted — a broken icon name should not take down the dev server.
 
-  Previously, every page using a plugin-declared content type (e.g. `data_table_pulse`) emitted its own `[WARN]` line — 22 pages × pulse types = 22 identical noisy lines in DHL builds.
+- 4e10537: Image optimization pipeline with sharp in prebuild (ri2)
 
-  **New behaviour:** a single `[INFO]` summary is emitted after all pages are processed:
+  During `stackwright-prebuild`, co-located images are now automatically processed through sharp:
+  - **WebP/AVIF variants** generated alongside originals in `public/images/`
+  - **Blur placeholders** (tiny base64 data URIs) injected into page content JSON as `blurDataURL`
+  - **Image manifest** (`_image-manifest.json`) emitted for tooling/debugging
+  - **Automatic downscaling** when images exceed `maxWidth` (default: 1920px)
 
-  ```
-    [INFO] Plugin-declared content types in use across 3 page(s):
-      - fake_pulse (from: fake-pulse-plugin)
-    App code must call registerContentType() at runtime for each of these types.
-    (Build-time schema validation succeeded via plugin discovery — this is a runtime reminder.)
-  ```
-
-  Key messaging improvements:
-  - Downgraded from `console.warn` to `console.log` with `[INFO]` prefix — this is not an error
-  - Makes clear that build-time validation already passed (via #529 plugin discovery)
-  - The message is a runtime registration reminder, not a build failure
-
-  Genuine validation errors (`[WARN] Invalid content ...`) are unaffected — they still fire per-page.
-
-  ### Change 2 — thread `prebuild.unknownContentTypes` from `stackwright.yml`
-
-  The `prebuild.unknownContentTypes` field was added to the schema in #529 but never wired. It now works:
+  Configuration via `stackwright.yml`:
 
   ```yaml
-  # stackwright.yml
-  prebuild:
-    unknownContentTypes: warn # or 'error' (default) or 'ignore'
+  imageOptimization:
+    enabled: true # default: true
+    formats: [webp] # options: webp, avif
+    quality: 80 # 1-100
+    maxWidth: 1920 # pixels
+    blur: true # generate blur placeholders
+    blurSize: 10 # blur placeholder width in px
   ```
 
-  **Precedence:** explicit `runPrebuild({ unknownContentTypes })` option > yml value > `'error'` default.
+  Disable via CLI: `stackwright-prebuild --no-image-optimization`
 
-  Implementation: `compileAll` peeks at the yml before any sink runs and fills in `ctx.unknownContentTypes` if the caller didn't pass an explicit value. The default in `createCompileContext` was changed from `'error'` to `undefined` so the "was it explicit?" signal is preserved until resolution.
+  The `<Media>` component (core) automatically passes `placeholder="blur"` and `blurDataURL` to `<NextStackwrightImage>` when blur data is present in the content JSON. No user-side changes required — existing sites get blur placeholders automatically.
 
 - Updated dependencies [97da06f]
 - Updated dependencies [97da06f]
@@ -231,7 +239,7 @@
 
 ## 0.10.0
 
-### Minor Changes
+  ## What changed
 
 - 4e10537: Add lucide-react export existence validator to `generateIconManifest()`.
 
