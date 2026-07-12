@@ -22,8 +22,14 @@ export interface CompileContext {
   generatedDir: string;
   /** Registered prebuild plugins. */
   plugins: PrebuildPlugin[];
-  /** How to handle unknown content type errors during page validation. */
-  unknownContentTypes: 'error' | 'warn' | 'ignore';
+  /**
+   * How to handle unknown content type errors during page validation.
+   *
+   * `undefined` means "not yet resolved" — `compileAll` fills in the yml value
+   * or falls back to `'error'` before any sink runs. Direct callers of
+   * `compilePages` should always provide an explicit value.
+   */
+  unknownContentTypes: 'error' | 'warn' | 'ignore' | undefined;
   /** Whether image optimization is enabled (resolved from CLI flag + site config). */
   imageOptimizationEnabled: boolean;
 }
@@ -36,10 +42,13 @@ export function createCompileContext(options?: string | PrebuildOptions): Compil
   const projectRoot =
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
   const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+  // Keep `undefined` when the caller didn't pass an explicit value.
+  // `compileAll` resolves it from `prebuild.unknownContentTypes` in stackwright.yml
+  // (or falls back to `'error'`) before any sink runs.
   const unknownContentTypes =
-    typeof options === 'object' && options !== null
+    typeof options === 'object' && options !== null && 'unknownContentTypes' in options
       ? (options.unknownContentTypes ?? 'error')
-      : 'error';
+      : undefined;
   const imageOptimizationEnabled =
     typeof options === 'object' && options !== null && options.imageOptimization !== undefined
       ? options.imageOptimization
