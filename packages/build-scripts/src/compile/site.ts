@@ -69,10 +69,7 @@ function auditIntegrationAuthSecrets(config: unknown): void {
 /**
  * Validate integration configs against plugin schemas.
  */
-function validateIntegrationConfigs(
-  integrations: unknown[],
-  plugins: PrebuildPlugin[]
-): void {
+function validateIntegrationConfigs(integrations: unknown[], plugins: PrebuildPlugin[]): void {
   for (const integration of integrations) {
     if (!integration || typeof integration !== 'object') continue;
     const item = integration as Record<string, unknown>;
@@ -242,4 +239,3 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
 
   return { processedConfig: configWithEnvResolved };
 }
-
