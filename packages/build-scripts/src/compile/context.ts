@@ -1,5 +1,6 @@
 import path from 'path';
 import type { PrebuildOptions, PrebuildPlugin, PrebuildPluginContext } from '@stackwright/types';
+import { discoverPlugins } from './discover';
 
 /**
  * Internal context threaded through all compile primitives.
@@ -21,8 +22,14 @@ export interface CompileContext {
   generatedDir: string;
   /** Registered prebuild plugins. */
   plugins: PrebuildPlugin[];
-  /** How to handle unknown content type errors during page validation. */
-  unknownContentTypes: 'error' | 'warn' | 'ignore';
+  /**
+   * How to handle unknown content type errors during page validation.
+   *
+   * `undefined` means "not yet resolved" — `compileAll` fills in the yml value
+   * or falls back to `'error'` before any sink runs. Direct callers of
+   * `compilePages` should always provide an explicit value.
+   */
+  unknownContentTypes: 'error' | 'warn' | 'ignore' | undefined;
   /** Whether image optimization is enabled (resolved from CLI flag + site config). */
   imageOptimizationEnabled: boolean;
 }
@@ -31,17 +38,17 @@ export interface CompileContext {
  * Build a CompileContext from PrebuildOptions.
  * Resolves all path derivations in one place.
  */
-export function createCompileContext(
-  options?: string | PrebuildOptions
-): CompileContext {
+export function createCompileContext(options?: string | PrebuildOptions): CompileContext {
   const projectRoot =
     typeof options === 'string' ? options : (options?.projectRoot ?? process.cwd());
-  const plugins =
-    typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+  const plugins = typeof options === 'object' && options !== null ? (options.plugins ?? []) : [];
+  // Keep `undefined` when the caller didn't pass an explicit value.
+  // `compileAll` resolves it from `prebuild.unknownContentTypes` in stackwright.yml
+  // (or falls back to `'error'`) before any sink runs.
   const unknownContentTypes =
-    typeof options === 'object' && options !== null
+    typeof options === 'object' && options !== null && 'unknownContentTypes' in options
       ? (options.unknownContentTypes ?? 'error')
-      : 'error';
+      : undefined;
   const imageOptimizationEnabled =
     typeof options === 'object' && options !== null && options.imageOptimization !== undefined
       ? options.imageOptimization
@@ -59,6 +66,38 @@ export function createCompileContext(
     unknownContentTypes,
     imageOptimizationEnabled,
   };
+}
+
+/**
+ * Discover plugins and attach them to an existing CompileContext in-place.
+ *
+ * Called by runPrebuild() immediately after createCompileContext() and before
+ * compileAll(). Skipped entirely when options.plugins is explicitly set
+ * (including an explicit empty array — [] means "I want no plugins").
+ *
+ * Intentionally synchronous — discoverPlugins() uses CJS require() to avoid
+ * introducing an async yield before the synchronous file-write phase of
+ * compileAll(). runWatch() calls runPrebuild() without await, relying on
+ * the invariant that all sync writes precede the first await in runPrebuild.
+ */
+export function discoverAndAttachPlugins(
+  ctx: CompileContext,
+  options?: string | PrebuildOptions
+): void {
+  // Explicit plugins array (including []) → caller owns the list, skip discovery.
+  if (typeof options === 'object' && options !== null && 'plugins' in options) {
+    return;
+  }
+
+  const opts = typeof options === 'object' && options !== null ? options : {};
+
+  const discovered = discoverPlugins(ctx.projectRoot, {
+    enabled: opts.pluginDiscovery,
+    overrideList: opts.pluginOverride,
+  });
+
+  // Mutate in place — ctx is the single instance threaded through compileAll.
+  ctx.plugins = discovered;
 }
 
 /**

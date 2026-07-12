@@ -88,7 +88,7 @@ async function getSharp(): Promise<typeof sharpType> {
   if (!sharpFn) {
     try {
       const mod = await import('sharp');
-       
+
       sharpFn = ((mod as any).default ?? mod) as typeof sharpType;
     } catch {
       throw new Error(

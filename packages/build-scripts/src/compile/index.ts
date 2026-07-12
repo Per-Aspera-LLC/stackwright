@@ -46,14 +46,19 @@ export {
 } from './fonts';
 export type { FontLink } from './fonts';
 
-export { createCompileContext, toPluginContext } from './context';
+export { createCompileContext, toPluginContext, discoverAndAttachPlugins } from './context';
 export type { CompileContext } from './context';
+
+export { discoverPlugins, CANONICAL_PRO_BUNDLE } from './discover';
+export type { DiscoverPluginsOptions } from './discover';
 
 // ---------------------------------------------------------------------------
 // compileAll
 // ---------------------------------------------------------------------------
 
+import fs from 'fs';
 import path from 'path';
+import yaml from 'js-yaml';
 import { compileSite } from './site';
 import { compileTheme } from './theme';
 import { compileFileCollections } from './collections';
@@ -62,6 +67,34 @@ import { compileIcons } from './icons';
 import { compileFonts } from './fonts';
 import { toPluginContext } from './context';
 import type { CompileContext } from './context';
+
+/**
+ * Peek at `stackwright.yml` (without full schema validation) to extract the
+ * `prebuild.unknownContentTypes` value. Used by `compileAll` to resolve the
+ * default before any sink runs, when the caller didn't pass an explicit value.
+ *
+ * Returns `undefined` if the field is absent, the file doesn't exist, or the
+ * value isn't one of the three valid enum strings.
+ */
+function peekYmlUCT(projectRoot: string): 'error' | 'warn' | 'ignore' | undefined {
+  const candidates = ['stackwright.yml', 'stackwright.yaml'];
+  for (const candidate of candidates) {
+    const ymlPath = path.join(projectRoot, candidate);
+    if (!fs.existsSync(ymlPath)) continue;
+    try {
+      const raw = yaml.load(fs.readFileSync(ymlPath, 'utf8'));
+      if (!raw || typeof raw !== 'object') return undefined;
+      const prebuild = (raw as Record<string, unknown>).prebuild;
+      if (!prebuild || typeof prebuild !== 'object') return undefined;
+      const uct = (prebuild as Record<string, unknown>).unknownContentTypes;
+      if (uct === 'error' || uct === 'warn' || uct === 'ignore') return uct;
+    } catch {
+      // Malformed yml — compileSite will give a proper error later
+    }
+    return undefined;
+  }
+  return undefined;
+}
 
 /**
  * Run all compile steps in the correct order.
@@ -78,6 +111,12 @@ import type { CompileContext } from './context';
  * 9. afterBuild plugin hooks
  */
 export async function compileAll(ctx: CompileContext): Promise<void> {
+  // Resolve unknownContentTypes if the caller didn't pass an explicit value.
+  // Precedence: explicit option > stackwright.yml prebuild.unknownContentTypes > 'error'
+  if (ctx.unknownContentTypes === undefined) {
+    ctx.unknownContentTypes = peekYmlUCT(ctx.projectRoot) ?? 'error';
+  }
+
   // 1. Site config (must run first; plugins need siteConfig in beforeBuild)
   // Synchronous — file I/O only.
   const { processedConfig } = compileSite(ctx);

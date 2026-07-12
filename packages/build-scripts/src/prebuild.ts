@@ -23,6 +23,7 @@ import fs from 'fs';
 import path from 'path';
 import type { PrebuildOptions } from '@stackwright/types';
 import { createCompileContext, compileAll } from './compile';
+import { discoverAndAttachPlugins } from './compile/context';
 import { generateSitemap, generateRobotsTxt, collectPageMeta } from './seo';
 
 // ---------------------------------------------------------------------------
@@ -89,6 +90,11 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   console.log('Stackwright prebuild starting...');
 
   const ctx = createCompileContext(options);
+
+  // Auto-discover plugins from project node_modules (skipped when options.plugins is set).
+  // Synchronous — must run before compileAll so plugins are wired before page validation.
+  discoverAndAttachPlugins(ctx, options);
+
   // compileAll runs sync file-writes immediately (before any await),
   // then awaits async operations (fonts, image optimization, plugin hooks).
   // This preserves the original behavior where _site.json, _root.json, etc.
@@ -171,12 +177,26 @@ if (require.main === module) {
   const noSBOM = process.argv.includes('--no-sbom');
   const sbomStrict = process.argv.includes('--sbom-strict');
   const noImageOptimization = process.argv.includes('--no-image-optimization');
+  const noPluginDiscovery = process.argv.includes('--no-plugin-discovery');
+
+  // --plugins pkg-a,pkg-b  (comma-separated override list)
+  const pluginsArgIdx = process.argv.findIndex((a) => a === '--plugins');
+  const pluginsArg = pluginsArgIdx !== -1 ? process.argv[pluginsArgIdx + 1] : undefined;
+  const pluginOverride = pluginsArg
+    ? pluginsArg
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : undefined;
 
   if (noSBOM) console.log('[INFO] SBOM generation skipped (--no-sbom flag)');
   if (sbomStrict)
     console.log('[INFO] SBOM strict mode enabled -- build will fail if SBOM generation errors');
   if (noImageOptimization)
     console.log('[INFO] Image optimization skipped (--no-image-optimization flag)');
+  if (noPluginDiscovery)
+    console.log('[INFO] Plugin auto-discovery disabled (--no-plugin-discovery flag)');
+  if (pluginOverride) console.log(`[INFO] Plugin discovery override: ${pluginOverride.join(', ')}`);
 
   if (watchMode) {
     const { runWatch } = require('./watch');
@@ -186,6 +206,8 @@ if (require.main === module) {
       try {
         await runPrebuild({
           imageOptimization: noImageOptimization ? false : undefined,
+          pluginDiscovery: noPluginDiscovery ? false : undefined,
+          pluginOverride,
         });
       } catch (err) {
         console.error(`ERROR: ${(err as Error).message}`);

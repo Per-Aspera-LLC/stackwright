@@ -14,7 +14,7 @@ import { runPrebuild } from '../src/prebuild';
  */
 async function getSharp() {
   const mod = await import('sharp');
-   
+
   return ((mod as any).default ?? mod) as typeof import('sharp');
 }
 

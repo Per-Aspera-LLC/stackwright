@@ -4,16 +4,8 @@ import yaml from 'js-yaml';
 import { z } from 'zod';
 import { validatePageContent } from '@stackwright/types/validation';
 import type { PrebuildPlugin } from '@stackwright/types';
-import {
-  copyIfNewer,
-  rewritePaths,
-  isColocatablePath,
-  isVideoPath,
-} from './path-utils';
-import {
-  processImageOptimization,
-  type ImageManifest,
-} from '../image-optimizer';
+import { copyIfNewer, rewritePaths, isColocatablePath, isVideoPath } from './path-utils';
+import { processImageOptimization, type ImageManifest } from '../image-optimizer';
 import type { ImageOptimizationConfig } from '@stackwright/types';
 import type { CompileContext } from './context';
 
@@ -48,7 +40,11 @@ export function findContentFiles(dir: string, baseSlug = ''): ContentFile[] {
       const subSlug = baseSlug ? `${baseSlug}/${entry.name}` : entry.name;
       results.push(...findContentFiles(path.join(dir, entry.name), subSlug));
     } else if (entry.name === 'content.yml' || entry.name === 'content.yaml') {
-      results.push({ slug: baseSlug || null, filePath: path.join(dir, entry.name), contentDir: dir });
+      results.push({
+        slug: baseSlug || null,
+        filePath: path.join(dir, entry.name),
+        contentDir: dir,
+      });
     } else {
       const localeMatch = entry.name.match(/^content\.([^.]+)\.(yml|yaml)$/);
       if (localeMatch) {
@@ -357,6 +353,12 @@ export function compilePages(
     console.warn('  WARNING: No content.yml files found in pages/');
   }
 
+  // Accumulator for the single post-loop summary (swp-3r93)
+  // type → set of plugin names declaring it
+  const pluginTypeUsageByType = new Map<string, Set<string>>();
+  // page labels that used any plugin type (for page count in summary)
+  const pagesUsingPluginTypes = new Set<string>();
+
   for (const { slug, filePath, contentDir, locale } of contentFiles) {
     const label = slug ?? '(root)';
     const rawContent = yaml.load(fs.readFileSync(filePath, 'utf8'));
@@ -381,18 +383,20 @@ export function compilePages(
       }
     }
 
-    // Warn when plugin-declared types appear in pages
+    // Accumulate plugin-declared type usage for the single post-loop summary (swp-3r93).
+    // Build-time schema validation already succeeded; this is a runtime-registration reminder.
     if (pageValidation.valid && pluginKnownTypes.length > 0) {
       const usedTypes = collectContentTypes(normalizedContent);
       const pluginTypesUsed = [...usedTypes].filter((t) => pluginKnownTypes.includes(t));
       if (pluginTypesUsed.length > 0) {
-        const declaringPlugins = plugins
-          .filter((p) => (p.knownContentTypeKeys ?? []).some((k) => pluginTypesUsed.includes(k)))
-          .map((p) => p.name);
-        console.warn(
-          `  [WARN] ${label}: uses ${pluginTypesUsed.length} plugin-declared type(s) [${declaringPlugins.join(', ')}]: ${pluginTypesUsed.join(', ')}\n` +
-            `     Ensure registerContentType() is called in your app for each of these types.`
-        );
+        pagesUsingPluginTypes.add(label);
+        for (const type of pluginTypesUsed) {
+          if (!pluginTypeUsageByType.has(type)) {
+            pluginTypeUsageByType.set(type, new Set());
+          }
+          const declaring = plugins.filter((p) => (p.knownContentTypeKeys ?? []).includes(type));
+          for (const p of declaring) pluginTypeUsageByType.get(type)!.add(p.name);
+        }
       }
     }
 
@@ -418,6 +422,21 @@ export function compilePages(
     const logPath = locale ? `${locale}/${outFile}` : outFile;
     const logLabel = locale ? `${label} [${locale}]` : label;
     console.log(`  OK ${logPath}  (${logLabel})`);
+  }
+
+  // Post-loop: emit a single runtime-reminder summary for plugin-declared types (swp-3r93).
+  // If the accumulator is empty, zero pages used plugin types — nothing to say.
+  if (pluginTypeUsageByType.size > 0) {
+    const typesGrouped = [...pluginTypeUsageByType.entries()]
+      .map(([type, declaringSet]) => `${type} (from: ${[...declaringSet].sort().join(', ')})`)
+      .sort();
+    console.log(
+      `\n  [INFO] Plugin-declared content types in use across ${pagesUsingPluginTypes.size} page(s):\n` +
+        typesGrouped.map((line) => `    - ${line}`).join('\n') +
+        '\n' +
+        `  App code must call registerContentType() at runtime for each of these types.\n` +
+        `  (Build-time schema validation succeeded via plugin discovery — this is a runtime reminder.)`
+    );
   }
 
   // Return resolved imageOptConfig so compileAll can run the async image pass
@@ -472,4 +491,3 @@ export async function optimizeImages(
     console.log('  [OK] Enriched content JSONs with blur placeholders');
   }
 }
-

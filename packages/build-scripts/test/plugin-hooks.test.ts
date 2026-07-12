@@ -122,7 +122,7 @@ describe('content type warnings and unknownContentTypes option', () => {
     vi.restoreAllMocks();
   });
 
-  it('Gap 1: plugin-declared types trigger a warning', async () => {
+  it('Gap 1: plugin-declared types emit [INFO] summary (swp-3r93: deduped, not per-page warn)', async () => {
     const projectRoot = makeTempProject();
     const plugin = {
       name: 'pro-content',
@@ -139,16 +139,22 @@ describe('content type warnings and unknownContentTypes option', () => {
 `
     );
 
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     await runPrebuild({ projectRoot, plugins: [plugin] });
 
-    const warnCalls = warnSpy.mock.calls.map((args) => String(args[0]));
-    expect(warnCalls.some((msg) => msg.includes('custom_widget'))).toBe(true);
-    expect(warnCalls.some((msg) => msg.includes('registerContentType'))).toBe(true);
+    // New behavior: single [INFO] summary via console.log, NOT per-page console.warn
+    const logCalls = logSpy.mock.calls.map((args) => String(args[0]));
+    const infoSummary = logCalls.filter((msg) =>
+      msg.includes('[INFO] Plugin-declared content types')
+    );
+    expect(infoSummary.length).toBe(1);
+    expect(infoSummary[0]).toContain('custom_widget');
+    expect(infoSummary[0]).toContain('registerContentType');
   });
 
-  it('Gap 1: core types do NOT trigger the plugin warning', async () => {
+  it('Gap 1: core types do NOT trigger the plugin [INFO] summary', async () => {
     const projectRoot = makeTempProject();
     const plugin = {
       name: 'pro-content',
@@ -166,12 +172,15 @@ describe('content type warnings and unknownContentTypes option', () => {
 `
     );
 
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     await runPrebuild({ projectRoot, plugins: [plugin] });
 
-    const warnCalls = warnSpy.mock.calls.map((args) => String(args[0]));
-    expect(warnCalls.some((msg) => msg.includes('registerContentType'))).toBe(false);
+    const logCalls = logSpy.mock.calls.map((args) => String(args[0]));
+    expect(logCalls.some((msg) => msg.includes('[INFO] Plugin-declared content types'))).toBe(
+      false
+    );
   });
 
   it('Gap 2: unknownContentTypes "warn" logs but does not throw', async () => {

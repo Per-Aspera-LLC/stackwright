@@ -214,6 +214,29 @@ export const localesConfigSchema = z.object({
   supported: z.array(z.string()).min(1),
 });
 
+/**
+ * Prebuild pipeline configuration (optional section in stackwright.yml).
+ *
+ * Controls build-time plugin discovery and validation behavior.
+ * The `unknownContentTypes` field is schema-only in this release —
+ * behavior threading is tracked separately.
+ */
+export const prebuildConfigSchema = z
+  .object({
+    /**
+     * Additional plugin package names to load during prebuild (Tier B discovery).
+     * Each name must be resolvable from the project's node_modules.
+     * Typos here are hard errors — the build fails loudly.
+     */
+    plugins: z.array(z.string()).optional(),
+    /**
+     * How to handle unknown content types encountered during validation.
+     * Schema-only — behavior threading is out of scope for this release.
+     */
+    unknownContentTypes: z.enum(['error', 'warn', 'ignore']).optional(),
+  })
+  .optional();
+
 export const siteConfigSchema = z.object({
   title: z.string(),
   meta: siteMetaSchema.optional(),
@@ -235,6 +258,8 @@ export const siteConfigSchema = z.object({
   imageOptimization: imageOptimizationConfigSchema.optional(),
   /** Optional locale configuration for multi-language content support. */
   locales: localesConfigSchema.optional(),
+  /** Optional prebuild pipeline configuration for plugin discovery and validation. */
+  prebuild: prebuildConfigSchema,
 });
 
 export type SiteMeta = z.infer<typeof siteMetaSchema>;
@@ -247,4 +272,5 @@ export type SearchConfig = z.infer<typeof searchConfigSchema>;
 export type FontsConfig = z.infer<typeof fontsConfigSchema>;
 export type ImageOptimizationConfig = z.infer<typeof imageOptimizationConfigSchema>;
 export type LocalesConfig = z.infer<typeof localesConfigSchema>;
+export type PrebuildConfig = z.infer<typeof prebuildConfigSchema>;
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
