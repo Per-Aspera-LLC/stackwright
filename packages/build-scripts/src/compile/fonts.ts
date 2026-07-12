@@ -44,9 +44,7 @@ export function extractGoogleFontNames(fontFamily: string): string[] {
  */
 export function generateGoogleFontsUrl(fonts: string[]): string {
   if (!fonts || fonts.length === 0) return '';
-  const familyParams = fonts
-    .map((font) => `family=${font.replace(/ /g, '+')}:wght@400`)
-    .join('&');
+  const familyParams = fonts.map((font) => `family=${font.replace(/ /g, '+')}:wght@400`).join('&');
   return `https://fonts.googleapis.com/css2?${familyParams}&display=swap`;
 }
 
@@ -214,9 +212,10 @@ export async function compileFonts(ctx: CompileContext): Promise<void> {
   const themeData = fs.existsSync(themeJsonPath)
     ? (JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')) as Record<string, unknown>)
     : {};
-  const configForFontNames = Object.keys(themeData).length > 0
-    ? { ...configWithEnvResolved, ...themeData }
-    : configWithEnvResolved;
+  const configForFontNames =
+    Object.keys(themeData).length > 0
+      ? { ...configWithEnvResolved, ...themeData }
+      : configWithEnvResolved;
 
   if (fontStrategy === 'bundle') {
     const allFonts = getAllGoogleFontNames(configForFontNames);
