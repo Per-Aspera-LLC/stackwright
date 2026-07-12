@@ -29,6 +29,7 @@
     "mcp-register-subpath",
     "prebuild-events-ndjson-swp-6xr3-1",
     "prebuild-plugin-discovery",
+    "prebuild-warning-dedup-and-uct-config",
     "split-file-config-defaultcolormode",
     "swp-nqqp-mcp-getbrowser-catch-reset",
     "sync-streaming-schema"
