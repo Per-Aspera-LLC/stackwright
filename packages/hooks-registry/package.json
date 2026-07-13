@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/hooks-registry",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "description": "Singleton registry for scaffold hooks - survives module boundary crossings",
     "license": "MIT",
     "repository": {

@@ -1,5 +1,234 @@
 # @stackwright/build-scripts
 
+## 0.11.0
+
+### Minor Changes
+
+- 97da06f: Add lucide-react export existence validator to `generateIconManifest()`.
+
+  Previously, YAML content could reference icon names that don't exist in
+  `lucide-react` (e.g. `icon: bridge`). The generated `icons.ts` would emit
+  a broken import that caused Turbopack to 500 every route at dev-server start.
+
+  This change ships:
+  - `LUCIDE_REACT_EXPORTS` — a compile-time Set of all importable lucide-react
+    names (canonical exports + deprecated aliases), generated from
+    `lucide-react/dist/lucide-react.d.ts` and committed as
+    `src/compile/lucide-exports.json`.
+  - `isValidLucideExport(name)` — pure exported utility; returns `true` if
+    `name` is a real lucide-react export.
+  - `mapToValidLucideName(yamlSrc)` — exported utility; applies
+    `LEGACY_MUI_ICON_ALIASES` + `lucideExportName()` then validates. On miss,
+    emits a `console.warn` and returns `HelpCircle` (the fallback).
+  - `generateIconManifest()` now validates every resolved icon name against the
+    allow-list. Unknown icons fall back to `HelpCircle` with a per-icon warning
+    and a summary count at the end. The original YAML key is preserved in the
+    `siteIconPreset` object so runtime lookup continues to work. Hard failures
+    are never emitted — a broken icon name should not take down the dev server.
+
+- 97da06f: Image optimization pipeline with sharp in prebuild (ri2)
+
+  During `stackwright-prebuild`, co-located images are now automatically processed through sharp:
+  - **WebP/AVIF variants** generated alongside originals in `public/images/`
+  - **Blur placeholders** (tiny base64 data URIs) injected into page content JSON as `blurDataURL`
+  - **Image manifest** (`_image-manifest.json`) emitted for tooling/debugging
+  - **Automatic downscaling** when images exceed `maxWidth` (default: 1920px)
+
+  Configuration via `stackwright.yml`:
+
+  ```yaml
+  imageOptimization:
+    enabled: true # default: true
+    formats: [webp] # options: webp, avif
+    quality: 80 # 1-100
+    maxWidth: 1920 # pixels
+    blur: true # generate blur placeholders
+    blurSize: 10 # blur placeholder width in px
+  ```
+
+  Disable via CLI: `stackwright-prebuild --no-image-optimization`
+
+  The `<Media>` component (core) automatically passes `placeholder="blur"` and `blurDataURL` to `<NextStackwrightImage>` when blur data is present in the content JSON. No user-side changes required — existing sites get blur placeholders automatically.
+
+- 97da06f: Add structured NDJSON prebuild telemetry sink (swp-6xr3.1, child of swp-6xr3).
+
+  `generateIconManifest()` now emits structured events to
+  `.stackwright/prebuild-events.ndjson` alongside the existing `console.warn`
+  human-readable output. The file is machine-readable and forward-compatible —
+  useful for QA otter introspection and downstream tooling without having to
+  parse stderr.
+
+  **Event types emitted:**
+  - `prebuild_start` — step lifecycle open (includes `step` name)
+  - `prebuild_complete` — step lifecycle close (includes `step` + `durationMs`)
+  - `icon_fallback` — per-icon: original `src`, `resolved` name after alias mapping, and `fallback` used
+  - `icons_summary` — batch summary: `totalIcons`, `unknownCount`, `unknownIcons[]`
+  - `file_generated` — `path` of each artifact written to disk
+
+  **Schema versioning:** every event carries `schemaVersion: 1` — consumers
+  should gate on this field for forward compatibility.
+
+  **Env var controls:**
+
+  | Var                                | Effect                                                  |
+  | ---------------------------------- | ------------------------------------------------------- |
+  | `STACKWRIGHT_TELEMETRY_DISABLED=1` | all emits are no-ops; sink file not created             |
+  | `STACKWRIGHT_TELEMETRY_DEBUG=1`    | emit failures are written to stderr                     |
+  | `STACKWRIGHT_PROJECT_ROOT`         | override the project root used to resolve the sink path |
+
+  **Design notes:**
+  - Zero new runtime dependencies — stdlib (`fs`, `path`) only.
+  - Telemetry failure is non-fatal: the `emit()` call swallows all errors so a
+    broken sink path never fails the prebuild.
+  - `mapToValidLucideName()` (Site A) stays pure — batch telemetry is the
+    caller's responsibility, documented inline.
+  - First `emit()` per process truncates the sink file so stale runs don't
+    accrete across builds.
+
+  Complements (does not replace) the existing `console.warn` output.
+
+- 97da06f: Add three-tier plugin auto-discovery to `stackwright-prebuild` so Pro content types (`data_table_pulse`, `metric_card_pulse`, etc.) validate correctly during prebuild — matching the fidelity of `next dev` runtime.
+
+  **Root cause fixed:** the CLI binary previously invoked `runPrebuild()` with an empty `plugins` array, so `validatePageContent()` saw no schemas for Pro types and emitted `[WARN] Unknown content type data_table_pulse` even when `@stackwright-pro/build-scripts-plugins` was correctly installed. Prebuild is a distinct runtime from the Next.js app process — `registerContentType()` calls in app code never reached it. This PR adds the missing build-time discovery layer.
+
+  ## Discovery tiers
+  1. **Convention** — attempts `require('@stackwright-pro/build-scripts-plugins')` from the project's `node_modules`. Silent soft-fail if absent (normal OSS case).
+  2. **Config** — reads `prebuild.plugins: string[]` from `stackwright.yml`. Hard-fails with a clear error naming any missing package (typo guard).
+  3. **Explicit override** — `runPrebuild({ plugins })` bypasses discovery entirely. Preserves existing programmatic wrappers and test injection.
+
+  ## CLI flags
+  - `--no-plugin-discovery` — disable all auto-discovery
+  - `--plugins pkg-a,pkg-b` — comma-separated override list, skips Tier A/B
+
+  ## Type changes (`@stackwright/types`)
+  - `PrebuildOptions` gains optional `pluginDiscovery?: boolean` and `pluginOverride?: string[]`
+  - `siteConfigSchema` gains optional `prebuild: { plugins?: string[]; unknownContentTypes?: 'error' | 'warn' | 'ignore' }` block (behavior wiring for `unknownContentTypes` is a follow-up)
+
+  ## Backward compatibility
+  - `runPrebuild({ plugins: [...] })` → unchanged (explicit array wins over discovery)
+  - `runPrebuild({ plugins: [] })` → unchanged (empty array = "explicitly no plugins")
+  - `runPrebuild()` with no `plugins` field → **new behavior**: discovery runs
+
+  ## Implementation notes
+  - Discovery is **synchronous** (uses CJS `require()` via `createRequire`, not `await import()`) to preserve the `runWatch()` invariant that all sync file writes happen before the first `await` in `runPrebuild`. All Pro plugins are CJS per the project rule "no `type: module` in packages/\*", so this covers all production cases.
+  - The canonical Pro bundle name (`@stackwright-pro/build-scripts-plugins`) is an intentional soft-coupling from OSS to Pro — resolved dynamically, never imported.
+  - CLI logging follows existing convention: `[INFO]` fires only when the user deviates from the default (mirrors `--no-sbom` etc.).
+
+  ## Testing
+
+  12 integration tests with real fixtures under `packages/build-scripts/test/fixtures/discovery/` — real temp dirs, real fake CJS plugin packages with real Zod schemas. No mocks. Full suite 278/278 green. Manual empty-folder smoke test confirmed silent Tier A soft-fail on vanilla OSS projects.
+
+- 97da06f: feat: split-file config — compile primitives + defaultColorMode (swp-xyia)
+
+  ## What changed
+
+  ### `@stackwright/types`
+  - New `stackwrightThemeFileSchema` — Zod schema for `stackwright.theme.yml` (`themeName`, `customTheme`, `fonts`, `defaultColorMode`)
+  - New `StackwrightThemeFile` TypeScript type
+  - `PrebuildPlugin` gains optional `additionalSinks` field — array of named compile sinks that Pro plugins use to emit `_collections.json`, `_auth.json`, `_integrations.json`
+
+  ### `@stackwright/themes`
+  - `themeConfigSchema` gains optional `defaultColorMode: z.enum(['light', 'dark', 'system'])`
+  - `ThemeProvider` `initialColorMode` prop (already accepted) is now the documented seeding mechanism for `defaultColorMode`
+
+  ### `@stackwright/build-scripts`
+  - **`_theme.json` emitted as a separate sink** (no longer merged into `_site.json`)
+  - Refactored into `compile/` sub-directory with individually-callable primitives:
+    - `compileSite(ctx)`, `compileTheme(ctx)`, `compilePages(ctx)`, `compilePage(slug, ctx)`, `compileIcons(ctx)`, `compileFonts(ctx)`, `compileFileCollections(ctx)`
+    - `compileAll(ctx)` — runs all in topological order including plugin `additionalSinks`
+    - `createCompileContext(opts)` — builds a `CompileContext` from `PrebuildOptions`
+  - `runPrebuild()` remains as a thin wrapper — no breaking change
+  - Path 1: `stackwright.theme.yml` → validates, emits `_theme.json`
+  - Path 2: no theme file → extracts `{themeName, customTheme, fonts, defaultColorMode}` from `stackwright.yml` root, emits `_theme.json` silently
+  - Path 3: no theme info → emits `_theme.json: {}`
+
+  ### `@stackwright/nextjs`
+  - `StackwrightLayout` reads `_theme.json` at render time via `getThemeFile()`
+  - Passes `_theme.json.defaultColorMode` as `fallback` to `ColorModeScript` (previously hardcoded `'system'`)
+  - Falls back to `_site.json.customTheme` backgrounds when `_theme.json` has no `customTheme` (backcompat for legacy setups)
+
+  ### `@stackwright/core`
+  - `DynamicPage` reads `theme.defaultColorMode` and passes it as `initialColorMode` to `ThemeProvider`
+  - Ensures the initial server render matches the `ColorModeScript` fallback — no color-mode flash for `defaultColorMode: dark` projects
+
+  ## Upgrade guide
+
+  **Projects with `stackwright.theme.yml`:** No action required. `_theme.json` is emitted automatically.
+
+  **Projects with inline `customTheme` in `stackwright.yml`:** No action required. Path 2 extracts theme keys silently. `_site.json` still contains the legacy keys until Bead 4 (a future release) strips them.
+
+  **To opt into a non-system default color mode:**
+
+  ```yaml
+  # stackwright.theme.yml
+  defaultColorMode: dark # first-time visitors see dark mode
+  ```
+
+### Patch Changes
+
+- 97da06f: Fix icon generator to handle kebab-case and lowercase YAML icon names per
+  lucide.dev's URL-slug naming convention.
+
+  The icon manifest generator previously emitted YAML icon names verbatim into
+  the TypeScript import statement, which fails for kebab-case names (`alert-triangle`
+  parses as `alert minus triangle`) and produces undefined imports for lowercase
+  single-word names (`activity` is valid TS but lucide-react only exports
+  PascalCase `Activity`).
+
+  Generator now normalizes YAML names to lucide-react's PascalCase export
+  convention while preserving the kebab-case keys in the runtime registry
+  (`'alert-triangle': AlertTriangle`). Existing PascalCase YAML names and the
+  LEGACY_MUI_ICON_ALIASES map continue to work unchanged.
+
+  Empirical fixture: kennel drawer 815 (stackwright-pro repo, planning session
+  2026-06-25) — the bxps verification raft generated a full Storm Surge app
+  with YAML using `icon: alert-triangle` etc., which then failed `pnpm dev` on
+  TypeScript parse error in the generated `stackwright-generated/icons.ts`.
+
+- 97da06f: **fix(build-scripts): dedup plugin-declared type warnings + thread prebuild.unknownContentTypes from yml**
+
+  Closes swp-3r93. Wires the #529 leftover.
+
+  ### Change 1 — swp-3r93: dedup plugin-declared content type warnings
+
+  Previously, every page using a plugin-declared content type (e.g. `data_table_pulse`) emitted its own `[WARN]` line — 22 pages × pulse types = 22 identical noisy lines in DHL builds.
+
+  **New behaviour:** a single `[INFO]` summary is emitted after all pages are processed:
+
+  ```
+    [INFO] Plugin-declared content types in use across 3 page(s):
+      - fake_pulse (from: fake-pulse-plugin)
+    App code must call registerContentType() at runtime for each of these types.
+    (Build-time schema validation succeeded via plugin discovery — this is a runtime reminder.)
+  ```
+
+  Key messaging improvements:
+  - Downgraded from `console.warn` to `console.log` with `[INFO]` prefix — this is not an error
+  - Makes clear that build-time validation already passed (via #529 plugin discovery)
+  - The message is a runtime registration reminder, not a build failure
+
+  Genuine validation errors (`[WARN] Invalid content ...`) are unaffected — they still fire per-page.
+
+  ### Change 2 — thread `prebuild.unknownContentTypes` from `stackwright.yml`
+
+  The `prebuild.unknownContentTypes` field was added to the schema in #529 but never wired. It now works:
+
+  ```yaml
+  # stackwright.yml
+  prebuild:
+    unknownContentTypes: warn # or 'error' (default) or 'ignore'
+  ```
+
+  **Precedence:** explicit `runPrebuild({ unknownContentTypes })` option > yml value > `'error'` default.
+
+  Implementation: `compileAll` peeks at the yml before any sink runs and fills in `ctx.unknownContentTypes` if the caller didn't pass an explicit value. The default in `createCompileContext` was changed from `'error'` to `undefined` so the "was it explicit?" signal is preserved until resolution.
+
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+  - @stackwright/types@1.10.0
+
 ## 0.10.0
 
 ### Minor Changes

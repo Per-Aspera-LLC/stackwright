@@ -1,5 +1,48 @@
 # @stackwright/mcp
 
+## 0.7.0
+
+### Minor Changes
+
+- 97da06f: feat(mcp): expose register\*Tools and closeBrowser via /register subpath for downstream composition (fixes swp-hbdx)
+
+  Adds a new `@stackwright/mcp/register` subpath export that re-exports all
+  tool registrar functions and `closeBrowser` without any side effects (no
+  McpServer instantiation, no transport binding). Downstream packages (Pro,
+  third-party MCP composers) can now import and compose OSS tools onto their
+  own McpServer instances.
+
+  Changes:
+  - New `src/register.ts` — pure re-export module, no side effects
+  - `src/server.ts` — refactored to import from `register.ts` (single source of truth)
+  - `package.json` — `./register` added to exports map
+  - `tsup.config.ts` — `register` entry added; DTS enabled for `register` only
+  - `tsconfig.json` — `types: ["node"]` added (required for DTS generation)
+  - `vitest.config.ts` — alias for `@stackwright/build-scripts` (Vite 7 CJS resolution workaround)
+  - `test/register-subpath.test.ts` — integration test asserting full tool surface on a real McpServer
+
+### Patch Changes
+
+- 97da06f: Fix `getBrowser()` in the MCP server caching a rejected `chromium.launch()` promise forever.
+
+  Previously, if the first browser launch rejected (e.g. before `npx playwright install` had completed the chromium binary download), the rejected promise was stored in the module-level `launchPromise` cache and never reset, causing every subsequent `stackwright_render_page` / `stackwright_test_a11y` call for the lifetime of the MCP session to return the frozen rejection. The only recovery was restarting the host process.
+
+  Added a `.catch` reset that clears `launchPromise` on rejection and re-throws, so the next call retries fresh.
+
+  Same "fail-loudly at the seam" family as the four P0 launcher bugs (swp-eezo/85mm/ohvg/j2cq). Discovered during post-dhl-opus-012 arc validation when a fresh QA re-run against the disaster-health-logistics artifact hit the cached rejection and could not recover without a Claude Code restart.
+
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+- Updated dependencies [97da06f]
+  - @stackwright/build-scripts@0.11.0
+  - @stackwright/types@1.10.0
+  - @stackwright/cli@0.9.0
+
 ## 0.6.0
 
 ### Minor Changes
