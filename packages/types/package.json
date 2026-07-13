@@ -48,13 +48,13 @@
         "zod": "catalog:"
     },
     "devDependencies": {
-        "@faker-js/faker": "^10.4.0",
+        "@faker-js/faker": "^10.5.0",
         "@types/fs-extra": "11.0.4",
         "@types/js-yaml": "catalog:",
         "@types/react": "^19.2.17",
         "fs-extra": "^11.3.5",
         "tsup": "catalog:",
-        "tsx": "^4.22.4",
+        "tsx": "^4.23.0",
         "vitest": "catalog:"
     }
 }

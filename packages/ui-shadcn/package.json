@@ -37,10 +37,10 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.3.0",
+    "@tailwindcss/cli": "^4.3.2",
     "@types/react": "^19.2.17",
     "react": "^19",
-    "tailwindcss": "^4.3.0",
+    "tailwindcss": "^4.3.2",
     "tsup": "catalog:"
   },
   "peerDependencies": {
