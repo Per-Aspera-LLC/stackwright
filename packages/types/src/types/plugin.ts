@@ -165,6 +165,69 @@ export interface PrebuildPlugin {
   }>;
 }
 
+// ---------------------------------------------------------------------------
+// Provided-schema declaration contract
+//
+// Generic mechanism for plugins to declare the content-type schemas they
+// provide, upstreamed from the Pro schema-registry package. A registry entry
+// provides schema shape via ONE of:
+//  - `schema`: a static Zod schema, same for every project
+//  - `schemaFactory`: resolved at request time from project context
+//
+// Exactly one must be present. Both-or-neither is a runtime error.
+// Consumers cast to `z.ZodTypeAny` / concrete factory signature on use.
+// ---------------------------------------------------------------------------
+
+export interface ProvidedSchemaEntry {
+  /** Static Zod schema — same for every project. Typed as `unknown` to keep
+   *  zod out of the public type surface (see ZodLike rationale above);
+   *  consumers cast to `z.ZodTypeAny` on use. */
+  schema?: unknown;
+  /**
+   * Factory schema — resolved at request time from project context.
+   * Exactly one of `schema` or `schemaFactory` must be present.
+   * Consumers cast to concrete factory signature as needed.
+   */
+  schemaFactory?: (ctx: unknown) => unknown;
+  /** Correct field name → common wrong names agents try. Used for
+   *  "did you mean?" hints. */
+  synonyms?: Record<string, string[]>;
+  /** Pipeline phases where this schema is relevant. Used for prompt injection
+   *  and phase-scoped tooling. */
+  phaseAffinity?: string[];
+}
+
+export type ProvidedSchemas = Record<string, ProvidedSchemaEntry>;
+
+/**
+ * A PrebuildPlugin that also declares the schemas it provides.
+ *
+ * `providedSchemas` is richer than the flat `contentItemSchemas` /
+ * `knownContentTypeKeys` fields: entries carry synonyms and phase affinity,
+ * and support request-time factory resolution. Use
+ * `toPrebuildPluginFields()` (from `@stackwright/types/validation`) to
+ * project a ProvidedSchemas map down onto the flat plugin fields.
+ */
+export type PrebuildPluginWithSchemas = PrebuildPlugin & {
+  providedSchemas?: ProvidedSchemas;
+};
+
+/**
+ * Assert an entry has a static `schema` (not factory-only). Callers using
+ * the flat PrebuildPlugin path need this; factory entries are for runtime
+ * resolution only.
+ */
+export function assertHasSchema(
+  entry: ProvidedSchemaEntry,
+  key: string
+): asserts entry is ProvidedSchemaEntry & { schema: unknown } {
+  if (entry.schema === undefined) {
+    throw new Error(
+      `Registry entry "${key}" has no static schema (factory-only). Use factory resolution path.`
+    );
+  }
+}
+
 /**
  * Options for runPrebuild
  */
