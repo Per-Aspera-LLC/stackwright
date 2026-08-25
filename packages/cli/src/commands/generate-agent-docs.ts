@@ -14,14 +14,14 @@ import {
 } from '@stackwright/types';
 import { pageContentSchema } from '../utils/schema-loader';
 import { outputResult } from '../utils/json-output';
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-type AnyDef = Record<string, any>;
-
-type AnySchema = { def: AnyDef };
+import {
+  type AnySchema,
+  type FieldInfo,
+  buildContentTypeModels,
+  extractFields,
+  resolveSchema,
+} from '../agent-docs/introspect';
+import { OSS_SCHEMA_NAMES } from '../agent-docs/skill';
 
 export interface GenerateAgentDocsResult {
   filesUpdated: string[];
@@ -40,107 +40,10 @@ const INTERFACE_START_MARKER = '<!-- stackwright:interface-table:start -->';
 const INTERFACE_END_MARKER = '<!-- stackwright:interface-table:end -->';
 
 // ---------------------------------------------------------------------------
-// Schema name registry — maps Zod schema object references to display names.
-// When zodSchemaToTypeString encounters one of these schemas (after resolving
-// optional/lazy wrappers), it returns the human-readable name instead of
-// the raw Zod type string (e.g. "object", "object | object | object").
+// Introspection — shared core lives in ../agent-docs/introspect. The schema
+// display-name registry (OSS_SCHEMA_NAMES) lives in ../agent-docs/skill and
+// is shared with the generate-skills emitter.
 // ---------------------------------------------------------------------------
-
-const SCHEMA_NAMES = new Map<object, string>([
-  [textBlockSchema as object, 'TextBlock'],
-  [buttonContentSchema as object, 'ButtonContent'],
-  [mediaItemSchema as object, 'MediaItem'],
-  [imageContentSchema as object, 'ImageContent'],
-  [iconContentSchema as object, 'IconContent'],
-  [carouselItemSchema as object, 'CarouselItem'],
-  [timelineItemSchema as object, 'TimelineItem'],
-  [gridColumnSchema as object, 'GridColumn'],
-  [typographyVariantSchema as object, 'TypographyVariant'],
-]);
-
-// ---------------------------------------------------------------------------
-// Zod v4 runtime schema introspection helpers
-// ---------------------------------------------------------------------------
-
-function resolveSchema(schema: AnySchema): AnySchema {
-  let s = schema;
-  // Run combined loop to handle nested wrappers like optional(lazy(...))
-  let changed = true;
-  while (changed) {
-    changed = false;
-    if (s.def.type === 'lazy') {
-      s = s.def.getter() as AnySchema;
-      changed = true;
-    }
-    if (s.def.type === 'optional') {
-      s = s.def.innerType as AnySchema;
-      changed = true;
-    }
-  }
-  return s;
-}
-
-function zodSchemaToTypeString(schema: AnySchema): string {
-  // Check direct reference against name registry (before and after resolving)
-  if (SCHEMA_NAMES.has(schema as object)) return SCHEMA_NAMES.get(schema as object)!;
-  const resolved = resolveSchema(schema);
-  if (SCHEMA_NAMES.has(resolved as object)) return SCHEMA_NAMES.get(resolved as object)!;
-
-  const def = resolved.def;
-  switch (def.type) {
-    case 'string':
-      return 'string';
-    case 'number':
-      return 'number';
-    case 'boolean':
-      return 'boolean';
-    case 'optional':
-      return zodSchemaToTypeString(def.innerType as AnySchema);
-    case 'lazy':
-      return zodSchemaToTypeString(def.getter() as AnySchema);
-    case 'enum': {
-      const values: string[] = def.entries ? Object.keys(def.entries) : [];
-      return values.map((v) => `\`${v}\``).join(' | ');
-    }
-    case 'literal': {
-      const val = def.values ? (def.values as unknown[])[0] : def.value;
-      return `"${String(val)}"`;
-    }
-    case 'array':
-      return `${zodSchemaToTypeString(def.element as AnySchema)}[]`;
-    case 'union':
-    case 'discriminated_union': {
-      const members = (def.options as AnySchema[]).map((o) => {
-        const r = resolveSchema(o);
-        if (SCHEMA_NAMES.has(r as object)) return SCHEMA_NAMES.get(r as object)!;
-        // Recurse so primitives (number, string, etc.) resolve correctly
-        return zodSchemaToTypeString(r);
-      });
-      return members.join(' | ');
-    }
-    case 'object':
-      return 'object';
-    default:
-      return def.type ?? 'unknown';
-  }
-}
-
-interface FieldInfo {
-  name: string;
-  type: string;
-  required: boolean;
-}
-
-function extractFields(schema: AnySchema): FieldInfo[] {
-  const resolved = resolveSchema(schema);
-  if (resolved.def.type !== 'object') return [];
-  const shape = resolved.def.shape as Record<string, AnySchema>;
-  return Object.entries(shape).map(([name, fieldSchema]) => ({
-    name,
-    type: zodSchemaToTypeString(fieldSchema),
-    required: fieldSchema.def.type !== 'optional',
-  }));
-}
 
 function fmtField(field: FieldInfo, showOptMark = false): string {
   const namePart = showOptMark && !field.required ? `\`${field.name}\`?` : `\`${field.name}\``;
@@ -152,46 +55,15 @@ function fmtField(field: FieldInfo, showOptMark = false): string {
 // ---------------------------------------------------------------------------
 
 function generateContentTypeTable(): string {
-  const root = resolveSchema(pageContentSchema as unknown as AnySchema);
-  if (root.def.type !== 'object') return '';
-
-  const contentField = (root.def.shape as Record<string, AnySchema>).content;
-  const contentResolved = resolveSchema(contentField);
-  if (contentResolved.def.type !== 'object') return '';
-
-  const contentItemsField = (contentResolved.def.shape as Record<string, AnySchema>).content_items;
-  let itemSchema: AnySchema | null = null;
-  if (contentItemsField.def.type === 'array') {
-    itemSchema = resolveSchema(contentItemsField.def.element as AnySchema);
-  }
-  if (!itemSchema) return '';
-
-  // ContentItem is a union of content type schemas (each with a `type` literal).
-  const variants: AnySchema[] =
-    itemSchema.def.type === 'union' || itemSchema.def.type === 'discriminated_union'
-      ? (itemSchema.def.options as AnySchema[])
-      : itemSchema.def.type === 'object'
-        ? [itemSchema]
-        : [];
-
-  if (variants.length === 0) return '';
+  const models = buildContentTypeModels(
+    pageContentSchema as unknown as AnySchema,
+    OSS_SCHEMA_NAMES
+  );
+  if (models.length === 0) return '';
 
   const lines = ['| YAML key | Required fields | Optional fields |', '|---|---|---|'];
 
-  for (const variant of variants) {
-    const resolved = resolveSchema(variant);
-    if (resolved.def.type !== 'object') continue;
-    const shape = resolved.def.shape as Record<string, AnySchema>;
-    // Extract the `type` literal to get the YAML key
-    const typeField = shape.type ? resolveSchema(shape.type) : null;
-    let yamlKey: string | null = null;
-    if (typeField?.def.type === 'literal') {
-      yamlKey =
-        typeField.def.value ??
-        (Array.isArray(typeField.def.values) ? typeField.def.values[0] : null);
-    }
-    if (!yamlKey) continue;
-    const fields = extractFields(variant);
+  for (const { key, fields } of models) {
     const required = fields
       .filter((f) => f.required && f.name !== 'type')
       .map((f) => fmtField(f))
@@ -200,7 +72,7 @@ function generateContentTypeTable(): string {
       .filter((f) => !f.required)
       .map((f) => fmtField(f))
       .join(', ');
-    lines.push(`| \`${yamlKey}\` | ${required} | ${optional || '—'} |`);
+    lines.push(`| \`${key}\` | ${required} | ${optional || '—'} |`);
   }
 
   return lines.join('\n');
@@ -227,7 +99,7 @@ function generateSubTypeTable(): string {
       // e.g. MediaItem — show discriminator values from each member's `type` literal field
       const members = (resolved.def.options as AnySchema[]).map((o) => {
         const r = resolveSchema(o);
-        if (SCHEMA_NAMES.has(r as object)) return `\`${SCHEMA_NAMES.get(r as object)!}\``;
+        if (OSS_SCHEMA_NAMES.has(r as object)) return `\`${OSS_SCHEMA_NAMES.get(r as object)!}\``;
         const typeField = (r.def.shape as Record<string, AnySchema> | undefined)?.type;
         if (typeField) {
           const tf = resolveSchema(typeField);
@@ -242,7 +114,7 @@ function generateSubTypeTable(): string {
         `| \`${name}\` | Discriminated union: ${members.join(' \\| ')}. \`type\` field is required and acts as discriminator. |`
       );
     } else {
-      const fields = extractFields(schema);
+      const fields = extractFields(schema, OSS_SCHEMA_NAMES);
       const fieldList = fields.map((f) => fmtField(f, true)).join(', ');
       lines.push(`| \`${name}\` | ${fieldList} |`);
     }
