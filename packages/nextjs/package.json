@@ -1,6 +1,6 @@
 {
     "name": "@stackwright/nextjs",
-    "version": "0.8.0",
+    "version": "0.9.0",
     "description": "Next.js implementations for Stackwright components",
     "license": "MIT",
     "repository": {

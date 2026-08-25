@@ -1,5 +1,125 @@
 # @stackwright/types
 
+## 1.11.0
+
+### Minor Changes
+
+- 42fc358: Image optimization pipeline with sharp in prebuild (ri2)
+
+  During `stackwright-prebuild`, co-located images are now automatically processed through sharp:
+  - **WebP/AVIF variants** generated alongside originals in `public/images/`
+  - **Blur placeholders** (tiny base64 data URIs) injected into page content JSON as `blurDataURL`
+  - **Image manifest** (`_image-manifest.json`) emitted for tooling/debugging
+  - **Automatic downscaling** when images exceed `maxWidth` (default: 1920px)
+
+  Configuration via `stackwright.yml`:
+
+  ```yaml
+  imageOptimization:
+    enabled: true # default: true
+    formats: [webp] # options: webp, avif
+    quality: 80 # 1-100
+    maxWidth: 1920 # pixels
+    blur: true # generate blur placeholders
+    blurSize: 10 # blur placeholder width in px
+  ```
+
+  Disable via CLI: `stackwright-prebuild --no-image-optimization`
+
+  The `<Media>` component (core) automatically passes `placeholder="blur"` and `blurDataURL` to `<NextStackwrightImage>` when blur data is present in the content JSON. No user-side changes required — existing sites get blur placeholders automatically.
+
+- b724662: Add three-tier plugin auto-discovery to `stackwright-prebuild` so Pro content types (`data_table_pulse`, `metric_card_pulse`, etc.) validate correctly during prebuild — matching the fidelity of `next dev` runtime.
+
+  **Root cause fixed:** the CLI binary previously invoked `runPrebuild()` with an empty `plugins` array, so `validatePageContent()` saw no schemas for Pro types and emitted `[WARN] Unknown content type data_table_pulse` even when `@stackwright-pro/build-scripts-plugins` was correctly installed. Prebuild is a distinct runtime from the Next.js app process — `registerContentType()` calls in app code never reached it. This PR adds the missing build-time discovery layer.
+
+  ## Discovery tiers
+  1. **Convention** — attempts `require('@stackwright-pro/build-scripts-plugins')` from the project's `node_modules`. Silent soft-fail if absent (normal OSS case).
+  2. **Config** — reads `prebuild.plugins: string[]` from `stackwright.yml`. Hard-fails with a clear error naming any missing package (typo guard).
+  3. **Explicit override** — `runPrebuild({ plugins })` bypasses discovery entirely. Preserves existing programmatic wrappers and test injection.
+
+  ## CLI flags
+  - `--no-plugin-discovery` — disable all auto-discovery
+  - `--plugins pkg-a,pkg-b` — comma-separated override list, skips Tier A/B
+
+  ## Type changes (`@stackwright/types`)
+  - `PrebuildOptions` gains optional `pluginDiscovery?: boolean` and `pluginOverride?: string[]`
+  - `siteConfigSchema` gains optional `prebuild: { plugins?: string[]; unknownContentTypes?: 'error' | 'warn' | 'ignore' }` block (behavior wiring for `unknownContentTypes` is a follow-up)
+
+  ## Backward compatibility
+  - `runPrebuild({ plugins: [...] })` → unchanged (explicit array wins over discovery)
+  - `runPrebuild({ plugins: [] })` → unchanged (empty array = "explicitly no plugins")
+  - `runPrebuild()` with no `plugins` field → **new behavior**: discovery runs
+
+  ## Implementation notes
+  - Discovery is **synchronous** (uses CJS `require()` via `createRequire`, not `await import()`) to preserve the `runWatch()` invariant that all sync file writes happen before the first `await` in `runPrebuild`. All Pro plugins are CJS per the project rule "no `type: module` in packages/\*", so this covers all production cases.
+  - The canonical Pro bundle name (`@stackwright-pro/build-scripts-plugins`) is an intentional soft-coupling from OSS to Pro — resolved dynamically, never imported.
+  - CLI logging follows existing convention: `[INFO]` fires only when the user deviates from the default (mirrors `--no-sbom` etc.).
+
+  ## Testing
+
+  12 integration tests with real fixtures under `packages/build-scripts/test/fixtures/discovery/` — real temp dirs, real fake CJS plugin packages with real Zod schemas. No mocks. Full suite 278/278 green. Manual empty-folder smoke test confirmed silent Tier A soft-fail on vanilla OSS projects.
+
+- 799ddf7: Add the generic provided-schema declaration contract for prebuild plugins, upstreamed from the Pro schema-registry package.
+  - `ProvidedSchemaEntry` / `ProvidedSchemas` (main entry, zod-free): a registry entry declares its schema via exactly one of `schema` (static Zod schema) or `schemaFactory` (resolved at request time from project context), plus optional `synonyms` ("did you mean?" hints) and `phaseAffinity` metadata.
+  - `PrebuildPluginWithSchemas` (main entry): `PrebuildPlugin & { providedSchemas?: ProvidedSchemas }` — a plugin that declares the schemas it provides in the richer registry shape.
+  - `assertHasSchema` (main entry): assertion guard for the static-schema invariant.
+  - `toPrebuildPluginFields` (`@stackwright/types/validation`, zod-heavy): projects a `ProvidedSchemas` map onto the flat `contentItemSchemas` + `knownContentTypeKeys` PrebuildPlugin fields — wraps props-only ZodObjects with a `type` literal discriminant, passes through schemas that already carry one, and skips factory-only entries.
+
+  Downstream (Pro schema-registry) will replace its local copies of these definitions with re-exports once this releases.
+
+- 54a490b: feat: split-file config — compile primitives + defaultColorMode (swp-xyia)
+
+  ## What changed
+
+  ### `@stackwright/types`
+  - New `stackwrightThemeFileSchema` — Zod schema for `stackwright.theme.yml` (`themeName`, `customTheme`, `fonts`, `defaultColorMode`)
+  - New `StackwrightThemeFile` TypeScript type
+  - `PrebuildPlugin` gains optional `additionalSinks` field — array of named compile sinks that Pro plugins use to emit `_collections.json`, `_auth.json`, `_integrations.json`
+
+  ### `@stackwright/themes`
+  - `themeConfigSchema` gains optional `defaultColorMode: z.enum(['light', 'dark', 'system'])`
+  - `ThemeProvider` `initialColorMode` prop (already accepted) is now the documented seeding mechanism for `defaultColorMode`
+
+  ### `@stackwright/build-scripts`
+  - **`_theme.json` emitted as a separate sink** (no longer merged into `_site.json`)
+  - Refactored into `compile/` sub-directory with individually-callable primitives:
+    - `compileSite(ctx)`, `compileTheme(ctx)`, `compilePages(ctx)`, `compilePage(slug, ctx)`, `compileIcons(ctx)`, `compileFonts(ctx)`, `compileFileCollections(ctx)`
+    - `compileAll(ctx)` — runs all in topological order including plugin `additionalSinks`
+    - `createCompileContext(opts)` — builds a `CompileContext` from `PrebuildOptions`
+  - `runPrebuild()` remains as a thin wrapper — no breaking change
+  - Path 1: `stackwright.theme.yml` → validates, emits `_theme.json`
+  - Path 2: no theme file → extracts `{themeName, customTheme, fonts, defaultColorMode}` from `stackwright.yml` root, emits `_theme.json` silently
+  - Path 3: no theme info → emits `_theme.json: {}`
+
+  ### `@stackwright/nextjs`
+  - `StackwrightLayout` reads `_theme.json` at render time via `getThemeFile()`
+  - Passes `_theme.json.defaultColorMode` as `fallback` to `ColorModeScript` (previously hardcoded `'system'`)
+  - Falls back to `_site.json.customTheme` backgrounds when `_theme.json` has no `customTheme` (backcompat for legacy setups)
+
+  ### `@stackwright/core`
+  - `DynamicPage` reads `theme.defaultColorMode` and passes it as `initialColorMode` to `ThemeProvider`
+  - Ensures the initial server render matches the `ColorModeScript` fallback — no color-mode flash for `defaultColorMode: dark` projects
+
+  ## Upgrade guide
+
+  **Projects with `stackwright.theme.yml`:** No action required. `_theme.json` is emitted automatically.
+
+  **Projects with inline `customTheme` in `stackwright.yml`:** No action required. Path 2 extracts theme keys silently. `_site.json` still contains the legacy keys until Bead 4 (a future release) strips them.
+
+  **To opt into a non-system default color mode:**
+
+  ```yaml
+  # stackwright.theme.yml
+  defaultColorMode: dark # first-time visitors see dark mode
+  ```
+
+### Patch Changes
+
+- b170a47: Sync site-config JSON schema with websocket and SSE TypeScript type additions
+- Updated dependencies [ad123cd]
+- Updated dependencies [54a490b]
+  - @stackwright/themes@0.9.0
+
 ## 1.10.0
 
 ### Minor Changes
