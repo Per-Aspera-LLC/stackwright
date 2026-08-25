@@ -1,27 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Command } from 'commander';
-import {
-  textBlockSchema,
-  buttonContentSchema,
-  mediaItemSchema,
-  imageContentSchema,
-  iconContentSchema,
-  carouselItemSchema,
-  timelineItemSchema,
-  gridColumnSchema,
-  typographyVariantSchema,
-} from '@stackwright/types';
 import { pageContentSchema } from '../utils/schema-loader';
 import { outputResult } from '../utils/json-output';
-import {
-  type AnySchema,
-  type FieldInfo,
-  buildContentTypeModels,
-  extractFields,
-  resolveSchema,
-} from '../agent-docs/introspect';
-import { OSS_SCHEMA_NAMES } from '../agent-docs/skill';
+import { type AnySchema, buildContentTypeModels } from '../agent-docs/introspect';
+import { PAGE_AUTHORING_SKILL_NAME } from '../agent-docs/skill';
 
 export interface GenerateAgentDocsResult {
   filesUpdated: string[];
@@ -40,94 +23,15 @@ const INTERFACE_START_MARKER = '<!-- stackwright:interface-table:start -->';
 const INTERFACE_END_MARKER = '<!-- stackwright:interface-table:end -->';
 
 // ---------------------------------------------------------------------------
-// Introspection — shared core lives in ../agent-docs/introspect. The schema
-// display-name registry (OSS_SCHEMA_NAMES) lives in ../agent-docs/skill and
-// is shared with the generate-skills emitter.
+// Content-type pointer block (execution-plan Phase 2.3)
+//
+// The full content-type reference tables moved into the generated
+// `stackwright-page-authoring` skill (Phase 2.1) — keeping them inline in
+// AGENTS.md was always-in-context prompt mass. The generator now emits a
+// short pointer. The valid-key inventory stays schema-derived so the CI
+// drift check still fails when a content type is added/removed without
+// regenerating docs AND skill.
 // ---------------------------------------------------------------------------
-
-function fmtField(field: FieldInfo, showOptMark = false): string {
-  const namePart = showOptMark && !field.required ? `\`${field.name}\`?` : `\`${field.name}\``;
-  return `${namePart} (${field.type})`;
-}
-
-// ---------------------------------------------------------------------------
-// Table generators
-// ---------------------------------------------------------------------------
-
-function generateContentTypeTable(): string {
-  const models = buildContentTypeModels(
-    pageContentSchema as unknown as AnySchema,
-    OSS_SCHEMA_NAMES
-  );
-  if (models.length === 0) return '';
-
-  const lines = ['| YAML key | Required fields | Optional fields |', '|---|---|---|'];
-
-  for (const { key, fields } of models) {
-    const required = fields
-      .filter((f) => f.required && f.name !== 'type')
-      .map((f) => fmtField(f))
-      .join(', ');
-    const optional = fields
-      .filter((f) => !f.required)
-      .map((f) => fmtField(f))
-      .join(', ');
-    lines.push(`| \`${key}\` | ${required} | ${optional || '—'} |`);
-  }
-
-  return lines.join('\n');
-}
-
-function generateSubTypeTable(): string {
-  const subTypes: Array<{ name: string; schema: AnySchema }> = [
-    { name: 'TextBlock', schema: textBlockSchema as unknown as AnySchema },
-    { name: 'ButtonContent', schema: buttonContentSchema as unknown as AnySchema },
-    { name: 'MediaItem', schema: mediaItemSchema as unknown as AnySchema },
-    { name: 'ImageContent', schema: imageContentSchema as unknown as AnySchema },
-    { name: 'IconContent', schema: iconContentSchema as unknown as AnySchema },
-    { name: 'CarouselItem', schema: carouselItemSchema as unknown as AnySchema },
-    { name: 'TimelineItem', schema: timelineItemSchema as unknown as AnySchema },
-    { name: 'GridColumn', schema: gridColumnSchema as unknown as AnySchema },
-  ];
-
-  const lines = ['| Type | Fields |', '|---|---|'];
-
-  for (const { name, schema } of subTypes) {
-    const resolved = resolveSchema(schema);
-    const isUnion = resolved.def.type === 'discriminated_union' || resolved.def.type === 'union';
-    if (isUnion && resolved.def.options) {
-      // e.g. MediaItem — show discriminator values from each member's `type` literal field
-      const members = (resolved.def.options as AnySchema[]).map((o) => {
-        const r = resolveSchema(o);
-        if (OSS_SCHEMA_NAMES.has(r as object)) return `\`${OSS_SCHEMA_NAMES.get(r as object)!}\``;
-        const typeField = (r.def.shape as Record<string, AnySchema> | undefined)?.type;
-        if (typeField) {
-          const tf = resolveSchema(typeField);
-          if (tf.def.type === 'literal') {
-            const v = tf.def.values ? (tf.def.values as unknown[])[0] : tf.def.value;
-            return `\`type: "${String(v)}"\``;
-          }
-        }
-        return 'object';
-      });
-      lines.push(
-        `| \`${name}\` | Discriminated union: ${members.join(' \\| ')}. \`type\` field is required and acts as discriminator. |`
-      );
-    } else {
-      const fields = extractFields(schema, OSS_SCHEMA_NAMES);
-      const fieldList = fields.map((f) => fmtField(f, true)).join(', ');
-      lines.push(`| \`${name}\` | ${fieldList} |`);
-    }
-  }
-
-  return lines.join('\n');
-}
-
-function generateTypographyLine(): string {
-  const def = (typographyVariantSchema as unknown as AnySchema).def;
-  const values: string[] = def.entries ? Object.keys(def.entries) : [];
-  return `**TypographyVariant values:** ${values.map((v) => `\`${v}\``).join(' ')}`;
-}
 
 // ---------------------------------------------------------------------------
 // Interface contracts table — documents the TypeScript interface contracts
@@ -276,20 +180,15 @@ function generateInterfaceTable(): string {
 // ---------------------------------------------------------------------------
 
 function buildGeneratedBlock(): string {
-  const contentTable = generateContentTypeTable();
-  const subTypeTable = generateSubTypeTable();
-  const typographyLine = generateTypographyLine();
+  const models = buildContentTypeModels(pageContentSchema as unknown as AnySchema, new Map());
+  const keys = models.map((m) => `\`${m.key}\``).join(', ');
 
   return [
-    'The YAML key is the key used inside `content_items` entries. All types inherit `label` (required), `color` (optional), and `background` (optional) from `BaseContent`.',
+    `This reference now lives in the generated \`${PAGE_AUTHORING_SKILL_NAME}\` skill — activate that skill instead of reading tables here.`,
     '',
-    contentTable,
-    '',
-    '**Sub-type reference:**',
-    '',
-    subTypeTable,
-    '',
-    typographyLine,
+    `- **Skill:** \`${PAGE_AUTHORING_SKILL_NAME}\` (\`skills/${PAGE_AUTHORING_SKILL_NAME}/SKILL.md\`; regenerate with \`pnpm stackwright -- generate-skills\`)`,
+    '- **Covers:** per-content-type required/optional fields, enum values, sub-type shapes (TextBlock, ButtonContent, MediaItem, …), TypographyVariant values, and minimal YAML examples.',
+    `- **Valid \`type\` keys:** ${keys}`,
   ].join('\n');
 }
 
