@@ -29,7 +29,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.6.0",
     "react-map-gl": "^8.1.0"
   },
   "devDependencies": {
