@@ -1,27 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Command } from 'commander';
-import {
-  textBlockSchema,
-  buttonContentSchema,
-  mediaItemSchema,
-  imageContentSchema,
-  iconContentSchema,
-  carouselItemSchema,
-  timelineItemSchema,
-  gridColumnSchema,
-  typographyVariantSchema,
-} from '@stackwright/types';
 import { pageContentSchema } from '../utils/schema-loader';
 import { outputResult } from '../utils/json-output';
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-type AnyDef = Record<string, any>;
-
-type AnySchema = { def: AnyDef };
+import { type AnySchema, buildContentTypeModels } from '../agent-docs/introspect';
+import { PAGE_AUTHORING_SKILL_NAME } from '../agent-docs/skill';
 
 export interface GenerateAgentDocsResult {
   filesUpdated: string[];
@@ -40,222 +23,15 @@ const INTERFACE_START_MARKER = '<!-- stackwright:interface-table:start -->';
 const INTERFACE_END_MARKER = '<!-- stackwright:interface-table:end -->';
 
 // ---------------------------------------------------------------------------
-// Schema name registry — maps Zod schema object references to display names.
-// When zodSchemaToTypeString encounters one of these schemas (after resolving
-// optional/lazy wrappers), it returns the human-readable name instead of
-// the raw Zod type string (e.g. "object", "object | object | object").
+// Content-type pointer block (execution-plan Phase 2.3)
+//
+// The full content-type reference tables moved into the generated
+// `stackwright-page-authoring` skill (Phase 2.1) — keeping them inline in
+// AGENTS.md was always-in-context prompt mass. The generator now emits a
+// short pointer. The valid-key inventory stays schema-derived so the CI
+// drift check still fails when a content type is added/removed without
+// regenerating docs AND skill.
 // ---------------------------------------------------------------------------
-
-const SCHEMA_NAMES = new Map<object, string>([
-  [textBlockSchema as object, 'TextBlock'],
-  [buttonContentSchema as object, 'ButtonContent'],
-  [mediaItemSchema as object, 'MediaItem'],
-  [imageContentSchema as object, 'ImageContent'],
-  [iconContentSchema as object, 'IconContent'],
-  [carouselItemSchema as object, 'CarouselItem'],
-  [timelineItemSchema as object, 'TimelineItem'],
-  [gridColumnSchema as object, 'GridColumn'],
-  [typographyVariantSchema as object, 'TypographyVariant'],
-]);
-
-// ---------------------------------------------------------------------------
-// Zod v4 runtime schema introspection helpers
-// ---------------------------------------------------------------------------
-
-function resolveSchema(schema: AnySchema): AnySchema {
-  let s = schema;
-  // Run combined loop to handle nested wrappers like optional(lazy(...))
-  let changed = true;
-  while (changed) {
-    changed = false;
-    if (s.def.type === 'lazy') {
-      s = s.def.getter() as AnySchema;
-      changed = true;
-    }
-    if (s.def.type === 'optional') {
-      s = s.def.innerType as AnySchema;
-      changed = true;
-    }
-  }
-  return s;
-}
-
-function zodSchemaToTypeString(schema: AnySchema): string {
-  // Check direct reference against name registry (before and after resolving)
-  if (SCHEMA_NAMES.has(schema as object)) return SCHEMA_NAMES.get(schema as object)!;
-  const resolved = resolveSchema(schema);
-  if (SCHEMA_NAMES.has(resolved as object)) return SCHEMA_NAMES.get(resolved as object)!;
-
-  const def = resolved.def;
-  switch (def.type) {
-    case 'string':
-      return 'string';
-    case 'number':
-      return 'number';
-    case 'boolean':
-      return 'boolean';
-    case 'optional':
-      return zodSchemaToTypeString(def.innerType as AnySchema);
-    case 'lazy':
-      return zodSchemaToTypeString(def.getter() as AnySchema);
-    case 'enum': {
-      const values: string[] = def.entries ? Object.keys(def.entries) : [];
-      return values.map((v) => `\`${v}\``).join(' | ');
-    }
-    case 'literal': {
-      const val = def.values ? (def.values as unknown[])[0] : def.value;
-      return `"${String(val)}"`;
-    }
-    case 'array':
-      return `${zodSchemaToTypeString(def.element as AnySchema)}[]`;
-    case 'union':
-    case 'discriminated_union': {
-      const members = (def.options as AnySchema[]).map((o) => {
-        const r = resolveSchema(o);
-        if (SCHEMA_NAMES.has(r as object)) return SCHEMA_NAMES.get(r as object)!;
-        // Recurse so primitives (number, string, etc.) resolve correctly
-        return zodSchemaToTypeString(r);
-      });
-      return members.join(' | ');
-    }
-    case 'object':
-      return 'object';
-    default:
-      return def.type ?? 'unknown';
-  }
-}
-
-interface FieldInfo {
-  name: string;
-  type: string;
-  required: boolean;
-}
-
-function extractFields(schema: AnySchema): FieldInfo[] {
-  const resolved = resolveSchema(schema);
-  if (resolved.def.type !== 'object') return [];
-  const shape = resolved.def.shape as Record<string, AnySchema>;
-  return Object.entries(shape).map(([name, fieldSchema]) => ({
-    name,
-    type: zodSchemaToTypeString(fieldSchema),
-    required: fieldSchema.def.type !== 'optional',
-  }));
-}
-
-function fmtField(field: FieldInfo, showOptMark = false): string {
-  const namePart = showOptMark && !field.required ? `\`${field.name}\`?` : `\`${field.name}\``;
-  return `${namePart} (${field.type})`;
-}
-
-// ---------------------------------------------------------------------------
-// Table generators
-// ---------------------------------------------------------------------------
-
-function generateContentTypeTable(): string {
-  const root = resolveSchema(pageContentSchema as unknown as AnySchema);
-  if (root.def.type !== 'object') return '';
-
-  const contentField = (root.def.shape as Record<string, AnySchema>).content;
-  const contentResolved = resolveSchema(contentField);
-  if (contentResolved.def.type !== 'object') return '';
-
-  const contentItemsField = (contentResolved.def.shape as Record<string, AnySchema>).content_items;
-  let itemSchema: AnySchema | null = null;
-  if (contentItemsField.def.type === 'array') {
-    itemSchema = resolveSchema(contentItemsField.def.element as AnySchema);
-  }
-  if (!itemSchema) return '';
-
-  // ContentItem is a union of content type schemas (each with a `type` literal).
-  const variants: AnySchema[] =
-    itemSchema.def.type === 'union' || itemSchema.def.type === 'discriminated_union'
-      ? (itemSchema.def.options as AnySchema[])
-      : itemSchema.def.type === 'object'
-        ? [itemSchema]
-        : [];
-
-  if (variants.length === 0) return '';
-
-  const lines = ['| YAML key | Required fields | Optional fields |', '|---|---|---|'];
-
-  for (const variant of variants) {
-    const resolved = resolveSchema(variant);
-    if (resolved.def.type !== 'object') continue;
-    const shape = resolved.def.shape as Record<string, AnySchema>;
-    // Extract the `type` literal to get the YAML key
-    const typeField = shape.type ? resolveSchema(shape.type) : null;
-    let yamlKey: string | null = null;
-    if (typeField?.def.type === 'literal') {
-      yamlKey =
-        typeField.def.value ??
-        (Array.isArray(typeField.def.values) ? typeField.def.values[0] : null);
-    }
-    if (!yamlKey) continue;
-    const fields = extractFields(variant);
-    const required = fields
-      .filter((f) => f.required && f.name !== 'type')
-      .map((f) => fmtField(f))
-      .join(', ');
-    const optional = fields
-      .filter((f) => !f.required)
-      .map((f) => fmtField(f))
-      .join(', ');
-    lines.push(`| \`${yamlKey}\` | ${required} | ${optional || '—'} |`);
-  }
-
-  return lines.join('\n');
-}
-
-function generateSubTypeTable(): string {
-  const subTypes: Array<{ name: string; schema: AnySchema }> = [
-    { name: 'TextBlock', schema: textBlockSchema as unknown as AnySchema },
-    { name: 'ButtonContent', schema: buttonContentSchema as unknown as AnySchema },
-    { name: 'MediaItem', schema: mediaItemSchema as unknown as AnySchema },
-    { name: 'ImageContent', schema: imageContentSchema as unknown as AnySchema },
-    { name: 'IconContent', schema: iconContentSchema as unknown as AnySchema },
-    { name: 'CarouselItem', schema: carouselItemSchema as unknown as AnySchema },
-    { name: 'TimelineItem', schema: timelineItemSchema as unknown as AnySchema },
-    { name: 'GridColumn', schema: gridColumnSchema as unknown as AnySchema },
-  ];
-
-  const lines = ['| Type | Fields |', '|---|---|'];
-
-  for (const { name, schema } of subTypes) {
-    const resolved = resolveSchema(schema);
-    const isUnion = resolved.def.type === 'discriminated_union' || resolved.def.type === 'union';
-    if (isUnion && resolved.def.options) {
-      // e.g. MediaItem — show discriminator values from each member's `type` literal field
-      const members = (resolved.def.options as AnySchema[]).map((o) => {
-        const r = resolveSchema(o);
-        if (SCHEMA_NAMES.has(r as object)) return `\`${SCHEMA_NAMES.get(r as object)!}\``;
-        const typeField = (r.def.shape as Record<string, AnySchema> | undefined)?.type;
-        if (typeField) {
-          const tf = resolveSchema(typeField);
-          if (tf.def.type === 'literal') {
-            const v = tf.def.values ? (tf.def.values as unknown[])[0] : tf.def.value;
-            return `\`type: "${String(v)}"\``;
-          }
-        }
-        return 'object';
-      });
-      lines.push(
-        `| \`${name}\` | Discriminated union: ${members.join(' \\| ')}. \`type\` field is required and acts as discriminator. |`
-      );
-    } else {
-      const fields = extractFields(schema);
-      const fieldList = fields.map((f) => fmtField(f, true)).join(', ');
-      lines.push(`| \`${name}\` | ${fieldList} |`);
-    }
-  }
-
-  return lines.join('\n');
-}
-
-function generateTypographyLine(): string {
-  const def = (typographyVariantSchema as unknown as AnySchema).def;
-  const values: string[] = def.entries ? Object.keys(def.entries) : [];
-  return `**TypographyVariant values:** ${values.map((v) => `\`${v}\``).join(' ')}`;
-}
 
 // ---------------------------------------------------------------------------
 // Interface contracts table — documents the TypeScript interface contracts
@@ -404,20 +180,15 @@ function generateInterfaceTable(): string {
 // ---------------------------------------------------------------------------
 
 function buildGeneratedBlock(): string {
-  const contentTable = generateContentTypeTable();
-  const subTypeTable = generateSubTypeTable();
-  const typographyLine = generateTypographyLine();
+  const models = buildContentTypeModels(pageContentSchema as unknown as AnySchema, new Map());
+  const keys = models.map((m) => `\`${m.key}\``).join(', ');
 
   return [
-    'The YAML key is the key used inside `content_items` entries. All types inherit `label` (required), `color` (optional), and `background` (optional) from `BaseContent`.',
+    `This reference now lives in the generated \`${PAGE_AUTHORING_SKILL_NAME}\` skill — activate that skill instead of reading tables here.`,
     '',
-    contentTable,
-    '',
-    '**Sub-type reference:**',
-    '',
-    subTypeTable,
-    '',
-    typographyLine,
+    `- **Skill:** \`${PAGE_AUTHORING_SKILL_NAME}\` (\`skills/${PAGE_AUTHORING_SKILL_NAME}/SKILL.md\`; regenerate with \`pnpm stackwright -- generate-skills\`)`,
+    '- **Covers:** per-content-type required/optional fields, enum values, sub-type shapes (TextBlock, ButtonContent, MediaItem, …), TypographyVariant values, and minimal YAML examples.',
+    `- **Valid \`type\` keys:** ${keys}`,
   ].join('\n');
 }
 

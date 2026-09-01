@@ -261,12 +261,12 @@ Versioning and publishing are **fully automated**. When `dev` is merged to `main
 
 **When modifying `packages/types/src/types/` — adding, removing, or changing any content type, field, or enum — you MUST:**
 
-1. Run `pnpm stackwright -- generate-agent-docs` to regenerate AGENTS.md tables in both `/AGENTS.md` and `examples/stackwright-docs/AGENTS.md`
+1. Run `pnpm stackwright -- generate-skills` to regenerate `skills/stackwright-page-authoring/SKILL.md` — the skill is the canonical content-type reference (CI runs `generate-skills --check` and fails on drift). Then run `pnpm stackwright -- generate-agent-docs` to refresh the AGENTS.md pointer blocks in both `/AGENTS.md` and `examples/stackwright-docs/AGENTS.md` (the pointer includes the schema-derived list of valid `type` keys, so it drifts too)
 2. Regenerate JSON schemas: `cd packages/types && pnpm generate-schemas`
 3. Update or add unit tests in `packages/core/test/` for the affected component
 4. Verify E2E tests still pass (`pnpm test:e2e`) — add example usage in `examples/hellostackwrightnext/` for new content types so E2E coverage includes them
 
-The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the tables are out of sync.
+The AGENTS.md marker blocks are auto-generated. Since Phase 2.3 the content-type block is a POINTER to the `stackwright-page-authoring` skill, not full tables — the skill is where the reference content lives. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the pointer or the generated skill is out of sync.
 
 ## Priority Labels & Product Board
 

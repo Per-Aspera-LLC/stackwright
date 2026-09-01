@@ -15,6 +15,36 @@ export { runPrebuildCommand } from './commands/prebuild';
 export { listThemes } from './commands/theme';
 export { getInfo } from './commands/info';
 export { generateAgentDocs } from './commands/generate-agent-docs';
+export { generateSkills } from './commands/generate-skills';
+
+// Agent-docs shared core — Zod introspection + skill rendering. Consumed by
+// the Pro skill-extension emitter (stackwright-pro) to compose the extended
+// page-authoring skill without forking the OSS content.
+export {
+  resolveSchema,
+  zodSchemaToTypeString,
+  extractFields,
+  literalTypeKey,
+  getContentItemVariants,
+  buildContentTypeModels,
+  synthValue,
+} from './agent-docs/introspect';
+export type {
+  AnySchema,
+  SchemaNameMap,
+  FieldInfo,
+  ContentTypeModel,
+} from './agent-docs/introspect';
+export {
+  OSS_SCHEMA_NAMES,
+  PAGE_AUTHORING_SKILL_NAME,
+  PAGE_AUTHORING_SKILL_VERSION,
+  renderSkillMd,
+  synthYamlExample,
+  buildOssPageAuthoringSections,
+  buildOssPageAuthoringSkill,
+} from './agent-docs/skill';
+export type { SkillFrontmatter } from './agent-docs/skill';
 export { stageChanges, openPr } from './commands/git-ops';
 export { getBoard, parseBoard } from './commands/board';
 export { listCollections, addCollection, resolveContentDir } from './commands/collection';
@@ -47,6 +77,7 @@ export type { PrebuildResult } from './commands/prebuild';
 export type { ThemeListResult } from './commands/theme';
 export type { InfoResult, PackageVersions } from './commands/info';
 export type { GenerateAgentDocsResult } from './commands/generate-agent-docs';
+export type { GenerateSkillsResult, GenerateSkillsOptions } from './commands/generate-skills';
 export type {
   StageChangesResult,
   StageChangesOptions,
