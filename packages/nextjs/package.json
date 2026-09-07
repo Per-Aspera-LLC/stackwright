@@ -45,13 +45,13 @@
         "js-yaml": "catalog:"
     },
     "devDependencies": {
-        "@swc/core": "^1.15.40",
-        "@testing-library/jest-dom": "^6.6",
+        "@swc/core": "^1.16.1",
+        "@testing-library/jest-dom": "^7.0",
         "@testing-library/react": "^16.3",
         "@types/js-yaml": "catalog:",
         "@types/react": "^19.2.17",
         "@types/react-dom": "^19.2.3",
-        "jsdom": "^29.1.1",
+        "jsdom": "^30.0.1",
         "next": "^16.1.6",
         "react": "^19",
         "react-dom": "^19",
