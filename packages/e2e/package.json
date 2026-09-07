@@ -11,8 +11,8 @@
     "sync-screenshots": "bash scripts/sync-screenshots.sh"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.3",
-    "@playwright/test": "^1.60.0",
-    "lighthouse": "^13.3.0"
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
+    "lighthouse": "^13.4.1"
   }
 }
