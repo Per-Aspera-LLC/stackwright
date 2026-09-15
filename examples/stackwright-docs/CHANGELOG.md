@@ -1,5 +1,15 @@
 # stackwright-docs
 
+## 0.1.14
+
+### Patch Changes
+
+- Updated dependencies [4e45579]
+- Updated dependencies [8632e98]
+  - @stackwright/nextjs@0.10.0
+  - @stackwright/core@0.13.1
+  - @stackwright/types@1.11.1
+
 ## 0.1.13
 
 ### Patch Changes

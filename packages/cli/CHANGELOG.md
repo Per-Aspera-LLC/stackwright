@@ -1,5 +1,26 @@
 # @stackwright/cli
 
+## 0.10.0
+
+### Minor Changes
+
+- 053f627: Fix a11y runner login-bounce false-pass (stackwright-8v2 / swp-kwv8): `runA11yAudit`
+  opened a cookie-less browser context per slug x mode and reported `A11yPageResult.url`
+  before navigation, so an auth redirect to /login scanned clean under axe and was
+  reported as an indistinguishable `pass: true`. Every scan now carries `requestedUrl`,
+  `finalUrl`, `redirected`, `redirectedToLogin`, and a `status` (`'audited' | 'redirected'
+| 'error'`) -- `pass` is only meaningful when `status === 'audited'`, and a redirected
+  scan is never reported as a pass. Overall `result.pass` is false whenever any scan
+  redirected unless the caller opts in via the new `allowRedirects: true` option (default
+  false); redirects are auth-coverage evidence, not audit coverage. `A11yViolation` now
+  carries `nodes[]` (axe's per-node `target` selectors + `failureSummary`, capped at 10
+  per violation) so callers can root-cause a failure directly from the DOM instead of
+  hand-writing a diagnostic script. New `cookies`/`extraHTTPHeaders` runner options let a
+  caller authenticate the browser context directly. `stackwright test:a11y` gains a
+  `--allow-redirects` flag and prints redirected/errored scans distinctly (never as a pass).
+- 4ed0649: Extract the AGENTS.md table generator's Zod introspection into a shared agent-docs core (`packages/cli/src/agent-docs/`) and add a `stackwright generate-skills` command that emits the generated `stackwright-page-authoring` code-puppy skill from live schemas (deterministic output, `--check` drift mode wired into CI). The core and skill builders are exported from `@stackwright/cli` so downstream (Pro) emitters can compose extended skills without forking. `generate-agent-docs` output is byte-identical to before.
+- 2184e58: `generate-agent-docs` now emits a short pointer to the generated `stackwright-page-authoring` skill between the AGENTS.md content-type markers instead of the full reference tables (execution-plan Phase 2.3). The pointer keeps a schema-derived list of valid `type` keys so the CI drift check remains live. The interface-contracts table is unchanged (its content is not covered by any skill).
+
 ## 0.9.0
 
 ### Minor Changes

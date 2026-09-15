@@ -1,5 +1,24 @@
 # @stackwright/mcp
 
+## 0.8.1
+
+### Patch Changes
+
+- 053f627: `stackwright_test_a11y`'s formatter now prints `finalUrl` on every scan line, marks
+  redirected scans distinctly (`REDIRECTED -> finalUrl, not audited`, never a pass), and
+  prints up to 3 axe node target selectors per failing violation so callers can root-cause
+  directly from the DOM. Adds a `allowRedirects` tool parameter (forwarded to the CLI
+  runner, default false) and a machine-readable JSON trailer (`scans[]` +
+  `summary.audited/redirected/failed`) so wrapper/otter callers can parse per-scan status
+  without regexing prose (stackwright-8v2 / swp-kwv8).
+- Updated dependencies [053f627]
+- Updated dependencies [4ed0649]
+- Updated dependencies [2184e58]
+- Updated dependencies [8632e98]
+  - @stackwright/cli@0.10.0
+  - @stackwright/build-scripts@0.12.1
+  - @stackwright/types@1.11.1
+
 ## 0.8.0
 
 ### Minor Changes
