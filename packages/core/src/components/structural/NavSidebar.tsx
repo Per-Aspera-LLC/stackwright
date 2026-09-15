@@ -387,7 +387,7 @@ export default function NavSidebar({
     ? resolveColor(backgroundColor, theme.colors)
     : theme.colors.surface || theme.colors.background;
   const textColorResolved = textColor
-    ? resolveColor(textColor, theme.colors)
+    ? resolveColor(textColor, theme.colors, { background: bgColor })
     : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, bgColor);
   const activeColor = theme.colors.primary;
 

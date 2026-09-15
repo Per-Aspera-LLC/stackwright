@@ -189,7 +189,9 @@ export function CollectionList({
   const bgColor = background ? resolveColor(background, theme.colors) : 'transparent';
 
   const headingColor = heading?.textColor
-    ? resolveColor(heading.textColor, theme.colors)
+    ? resolveColor(heading.textColor, theme.colors, {
+        background: bgColor === 'transparent' ? theme.colors.background : bgColor,
+      })
     : theme.colors.primary;
 
   let entries = _entries;

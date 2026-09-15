@@ -30,6 +30,7 @@
     },
     "dependencies": {
         "@stackwright/sbom-generator": "workspace:*",
+        "@stackwright/themes": "workspace:*",
         "@stackwright/types": "workspace:*",
         "js-yaml": "catalog:",
         "zod": "catalog:"

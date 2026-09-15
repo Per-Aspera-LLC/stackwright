@@ -1,5 +1,12 @@
 // Color utility functions for accessibility and readability
 
+import {
+  KEBAB_COLOR_ALIASES,
+  FOREGROUND_THEME_COLOR_KEYS,
+  withDerivedForegrounds,
+  type ThemeColors,
+} from '@stackwright/themes';
+
 /**
  * Convert hex color to RGB values
  */
@@ -97,10 +104,36 @@ export function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`;
 }
 
+const FOREGROUND_KEY_SET = new Set<string>(FOREGROUND_THEME_COLOR_KEYS);
+
+/** Tracks which unknown tokens we've already warned about (warn-once). */
+const warnedUnknownTokens = new Set<string>();
+
+export interface ResolveColorOptions {
+  /**
+   * The (already-resolved, hex) background the returned color will render
+   * against. When the requested token is unknown, this makes the fallback
+   * contrast-safe instead of an arbitrary guess.
+   */
+  background?: string;
+}
+
 /**
- * Resolve theme color names to hex values
+ * Resolve a theme color reference (hex, ThemeColors key, or kebab-case
+ * alias of one) to a real, CSS-parseable hex value.
+ *
+ * Contract (stackwright-819 / swp-rlih): this function must NEVER return
+ * a raw, non-hex string that isn't a real CSS color. A token outside the
+ * schema is a schema-as-security-boundary violation waiting to happen —
+ * silently emitting `style="color:primary-foreground"` breaks the browser's
+ * CSS parser and text disappears against its background. Unknown tokens
+ * are warned once and resolved to a contrast-safe hex fallback instead.
  */
-export function resolveColor(colorValue: string, themeColors: Record<string, string>): string {
+export function resolveColor(
+  colorValue: string,
+  themeColors: Record<string, string>,
+  opts: ResolveColorOptions = {}
+): string {
   if (typeof colorValue !== 'string') {
     console.warn(`Invalid color value: ${colorValue}. Defaulting to 'transparent'.`);
     return 'transparent';
@@ -109,7 +142,44 @@ export function resolveColor(colorValue: string, themeColors: Record<string, str
   if (colorValue.startsWith('#')) {
     return colorValue; // Already a hex code
   }
-  return themeColors[colorValue] || colorValue;
+
+  if (themeColors[colorValue] !== undefined) {
+    return themeColors[colorValue];
+  }
+
+  // Kebab-case alias ('primary-foreground' -> 'primaryForeground', 'bg' -> 'background', ...)
+  const aliasKey = KEBAB_COLOR_ALIASES[colorValue];
+  const canonicalKey = aliasKey ?? (colorValue as string);
+
+  if (themeColors[canonicalKey] !== undefined) {
+    return themeColors[canonicalKey];
+  }
+
+  // Foreground slot named (by alias or directly) but absent from this
+  // particular theme object — derive it rather than falling through.
+  if (FOREGROUND_KEY_SET.has(canonicalKey)) {
+    const derived = withDerivedForegrounds(themeColors as ThemeColors);
+    return derived[canonicalKey as keyof typeof derived] as string;
+  }
+
+  // Truly unknown token: never emit it as a literal CSS value.
+  const fallback = opts.background
+    ? getHighContrastTextColor(
+        opts.background,
+        [themeColors.text, themeColors.textSecondary, '#ffffff', '#000000'].filter(
+          (c): c is string => Boolean(c)
+        )
+      )
+    : (themeColors.text ?? '#000000');
+
+  if (!warnedUnknownTokens.has(colorValue)) {
+    warnedUnknownTokens.add(colorValue);
+    console.warn(
+      `[stackwright] unknown color token "${colorValue}" — not in ThemeColors; falling back to ${fallback}`
+    );
+  }
+
+  return fallback;
 }
 
 /**

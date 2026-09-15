@@ -19,6 +19,8 @@ export {
   compileIcons,
   compileFonts,
   createCompileContext,
+  validateSiteColorRefs,
+  extractThemeCssTokenNames,
 } from './compile';
 export type { CompileContext, SiteCompileResult, FileCollectionsResult } from './compile';
 

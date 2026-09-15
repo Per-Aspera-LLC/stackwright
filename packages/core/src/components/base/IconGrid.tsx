@@ -18,16 +18,18 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
   const theme = useSafeTheme();
   const resolvedColorMode = useSafeColorMode();
 
+  const sectionBackground = resolveBackground(background, theme, resolvedColorMode === 'dark');
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
-    theme.colors
+    theme.colors,
+    { background: sectionBackground }
   );
 
   return (
     <div
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
+        background: sectionBackground,
         margin: theme.spacing.xl,
       }}
     >
@@ -46,7 +48,7 @@ export function IconGrid({ heading, icons, background }: IconGridContent) {
       >
         {icons.map((icon, index) => {
           const iconColor = icon.color
-            ? resolveColor(icon.color, theme.colors)
+            ? resolveColor(icon.color, theme.colors, { background: sectionBackground })
             : theme.colors.primary;
           const sizePx = typeof icon.height === 'number' ? icon.height : 48;
 

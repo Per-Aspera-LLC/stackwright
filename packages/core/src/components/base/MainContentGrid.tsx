@@ -14,9 +14,15 @@ export function MainContentGrid(content: MainContent) {
   const textPercent = content.textToGraphic ?? 58;
   const graphicPercent = 100 - textPercent;
 
+  const sectionBackground = resolveBackground(
+    content?.background,
+    theme,
+    resolvedColorMode === 'dark'
+  );
   const headerColor = resolveColor(
     content.heading.textColor ? content.heading.textColor : theme.colors.primary,
-    theme.colors
+    theme.colors,
+    { background: sectionBackground }
   );
 
   const imageGrid = content.media && (
@@ -74,7 +80,7 @@ export function MainContentGrid(content: MainContent) {
     <div
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: resolveBackground(content?.background, theme, resolvedColorMode === 'dark'),
+        background: sectionBackground,
         margin: theme.spacing.xl,
       }}
     >

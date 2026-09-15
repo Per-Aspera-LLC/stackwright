@@ -13,6 +13,8 @@
 export { compileSite, processSiteConfig, findLocaleConfigFiles } from './site';
 export type { SiteCompileResult } from './site';
 
+export { validateSiteColorRefs, extractThemeCssTokenNames } from './validateColorRefs';
+
 export { compileTheme } from './theme';
 
 export {

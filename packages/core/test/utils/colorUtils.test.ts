@@ -130,7 +130,11 @@ describe('resolveColor', () => {
   const themeColors = {
     primary: '#f59e0b',
     secondary: '#334155',
+    accent: '#b45309',
+    background: '#ffffff',
+    surface: '#f8fafc',
     text: '#1f2937',
+    textSecondary: '#6b7280',
   };
 
   it('returns hex colors unchanged', () => {
@@ -144,15 +148,66 @@ describe('resolveColor', () => {
     expect(resolveColor('text', themeColors)).toBe('#1f2937');
   });
 
-  it('returns the original string for unknown theme keys (passthrough)', () => {
-    expect(resolveColor('unknownKey', themeColors)).toBe('unknownKey');
-  });
-
   it('warns and returns transparent for non-string input', () => {
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     // Cast to bypass TypeScript so we can test the runtime guard
     expect(resolveColor(123 as unknown as string, themeColors)).toBe('transparent');
     expect(consoleSpy).toHaveBeenCalled();
+    consoleSpy.mockRestore();
+  });
+
+  // -------------------------------------------------------------------
+  // stackwright-819 / swp-rlih regression coverage
+  // -------------------------------------------------------------------
+
+  it('resolves kebab-case aliases to their camelCase ThemeColors key', () => {
+    const colors = { ...themeColors, textSecondary: '#6b7280' };
+    expect(resolveColor('text-secondary', colors)).toBe(colors.textSecondary);
+    expect(resolveColor('bg', colors)).toBe(colors.background);
+  });
+
+  it('derives primary-foreground when the slot is absent from themeColors', () => {
+    const result = resolveColor('primary-foreground', themeColors);
+    expect(result).toMatch(/^#[0-9a-f]{6}$/i);
+    expect(result).not.toBe('primary-foreground');
+  });
+
+  it('derives backgroundForeground via both the "bg-foreground" and camelCase aliases', () => {
+    const viaKebab = resolveColor('bg-foreground', themeColors);
+    const viaCamel = resolveColor('backgroundForeground', themeColors);
+    expect(viaKebab).toMatch(/^#[0-9a-f]{6}$/i);
+    expect(viaKebab).toBe(viaCamel);
+  });
+
+  it('prefers an explicit foreground slot over the derived default', () => {
+    const withExplicit = { ...themeColors, primaryForeground: '#123456' };
+    expect(resolveColor('primary-foreground', withExplicit)).toBe('#123456');
+  });
+
+  it('never returns a raw unknown token — falls back to a hex and warns once', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const first = resolveColor('totally-unknown-token', themeColors);
+    const second = resolveColor('totally-unknown-token', themeColors);
+
+    expect(first).toMatch(/^#[0-9a-f]{6}$/i);
+    expect(first).not.toBe('totally-unknown-token');
+    expect(second).toBe(first);
+
+    const warnCalls = consoleSpy.mock.calls.filter((call) =>
+      String(call[0]).includes('totally-unknown-token')
+    );
+    expect(warnCalls).toHaveLength(1); // warn-once per token
+    expect(String(warnCalls[0][0])).toMatch(/unknown color token/);
+
+    consoleSpy.mockRestore();
+  });
+
+  it('uses opts.background for a contrast-safe fallback on unknown tokens', () => {
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    // A dark background — the fallback should be light, not themeColors.text (#1f2937, dark).
+    const result = resolveColor('another-unknown-token', themeColors, { background: '#000000' });
+    expect(result).toBe('#ffffff');
     consoleSpy.mockRestore();
   });
 });

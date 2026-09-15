@@ -10,15 +10,13 @@
  * In dark mode with a theme background image, a semi-transparent dark
  * overlay is applied to ensure text contrast.
  */
-const THEME_COLOR_KEYS = new Set([
-  'primary',
-  'secondary',
-  'accent',
-  'background',
-  'surface',
-  'text',
-  'textSecondary',
-]);
+import { THEME_COLOR_KEYS as THEME_COLOR_KEY_LIST } from '@stackwright/themes';
+
+// Single source of truth is @stackwright/themes's THEME_COLOR_KEYS —
+// includes the *Foreground slots too, so `background: primary-foreground`
+// (unusual, but not invalid) resolves through theme.colors rather than
+// leaking through as a literal, unparseable `background` CSS value.
+const THEME_COLOR_KEYS = new Set<string>(THEME_COLOR_KEY_LIST);
 
 /** Minimal shape — only needs `colors` from the theme. */
 interface ThemeWithColors {

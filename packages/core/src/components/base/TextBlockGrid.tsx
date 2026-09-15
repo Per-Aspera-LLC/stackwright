@@ -10,16 +10,18 @@ export function TextBlockGrid({ heading, textBlocks, buttons, background }: Text
   const theme = useSafeTheme();
   const resolvedColorMode = useSafeColorMode();
 
+  const sectionBackground = resolveBackground(background, theme, resolvedColorMode === 'dark');
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
-    theme.colors
+    theme.colors,
+    { background: sectionBackground }
   );
 
   return (
     <section
       style={{
         padding: `${theme.spacing.md} 0`,
-        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
+        background: sectionBackground,
         margin: theme.spacing.xl,
       }}
     >
