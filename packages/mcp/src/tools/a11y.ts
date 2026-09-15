@@ -31,8 +31,18 @@ export function registerA11yTools(server: McpServer): void {
         .enum(['minor', 'moderate', 'serious', 'critical'])
         .optional()
         .describe('Minimum impact level that fails the audit (default: serious)'),
+      allowRedirects: z
+        .boolean()
+        .optional()
+        .describe(
+          'When true, a scan that bounced off its requested route (e.g. an auth ' +
+            'redirect to /login) no longer sinks the overall pass/fail verdict on ' +
+            'its own. The bounced scan is still never reported as audited or as a ' +
+            'pass — redirects are auth-coverage evidence, not audit coverage ' +
+            '(default: false, swp-kwv8).'
+        ),
     },
-    async ({ projectRoot, baseUrl, slugs, darkMode, tags, failOn }) => {
+    async ({ projectRoot, baseUrl, slugs, darkMode, tags, failOn, allowRedirects }) => {
       try {
         const result = await testA11y(projectRoot, {
           baseUrl,
@@ -40,6 +50,7 @@ export function registerA11yTools(server: McpServer): void {
           darkMode,
           tags: tags?.join(','),
           failOn,
+          allowRedirects,
         });
 
         const text = formatA11yResultForMcp(result);
@@ -73,6 +84,8 @@ export function registerA11yTools(server: McpServer): void {
 // Text formatter for MCP output
 // ---------------------------------------------------------------------------
 
+const MAX_TARGETS_PER_VIOLATION = 3;
+
 function formatA11yResultForMcp(result: A11yAuditResult): string {
   const { summary } = result;
   const lines: string[] = [];
@@ -83,7 +96,10 @@ function formatA11yResultForMcp(result: A11yAuditResult): string {
   lines.push(
     `Pages: ${summary.total} scans (${result.slugs.length} page${result.slugs.length !== 1 ? 's' : ''} × ${result.modes.length} mode${result.modes.length !== 1 ? 's' : ''})`
   );
-  lines.push(`Results: ${summary.passed} passed, ${summary.failed} failed`);
+  lines.push(
+    `Results: ${summary.passed} passed, ${summary.failed} failed` +
+      (summary.redirected > 0 ? `, ${summary.redirected} redirected (not audited)` : '')
+  );
 
   if (summary.violations > 0) {
     lines.push(`Total violations: ${summary.violations}`);
@@ -92,8 +108,25 @@ function formatA11yResultForMcp(result: A11yAuditResult): string {
   lines.push('');
 
   for (const pageResult of result.results) {
+    if (pageResult.status === 'redirected') {
+      // Never ✓ — a bounced scan is auth-coverage evidence, not an audit
+      // result (R2.6 / swp-hyvg doctrine). It is structurally indistinguishable
+      // from a real clean pass unless we say so explicitly, right here.
+      lines.push(
+        `↪ ${pageResult.slug} [${pageResult.mode}] REDIRECTED → ${pageResult.finalUrl} (not audited — auth coverage only)`
+      );
+      continue;
+    }
+
+    if (pageResult.status === 'error') {
+      lines.push(
+        `! ${pageResult.slug} [${pageResult.mode}] ERROR: ${pageResult.error ?? 'unknown error'}`
+      );
+      continue;
+    }
+
     const icon = pageResult.pass ? '✓' : '✗';
-    lines.push(`${icon} ${pageResult.slug} [${pageResult.mode}]`);
+    lines.push(`${icon} ${pageResult.slug} [${pageResult.mode}] → ${pageResult.finalUrl}`);
 
     if (!pageResult.pass) {
       for (const v of pageResult.failingViolations) {
@@ -101,14 +134,47 @@ function formatA11yResultForMcp(result: A11yAuditResult): string {
           `  [${v.impact ?? 'unknown'}] ${v.id}: ${v.help} (${v.nodeCount} node${v.nodeCount !== 1 ? 's' : ''})`
         );
         lines.push(`    ${v.helpUrl}`);
+        const targets = v.nodes.slice(0, MAX_TARGETS_PER_VIOLATION);
+        for (const node of targets) {
+          lines.push(`    · ${node.target.join(' ')}`);
+        }
       }
     }
+  }
+
+  if (summary.redirected > 0) {
+    lines.push('');
+    lines.push(
+      'Redirected scans are not coverage — they prove auth-bounce behavior, not that ' +
+        'the requested page was measured. Investigate the redirect before trusting any ' +
+        '"clean" result on these routes.'
+    );
   }
 
   if (!result.pass) {
     lines.push('');
     lines.push('Fix the violations above, then re-run stackwright_test_a11y to verify.');
   }
+
+  lines.push('');
+  lines.push('```json');
+  lines.push(
+    JSON.stringify({
+      scans: result.results.map((r) => ({
+        slug: r.slug,
+        mode: r.mode,
+        status: r.status,
+        finalUrl: r.finalUrl,
+        violations: r.violations.length,
+      })),
+      summary: {
+        audited: summary.passed + summary.failed,
+        redirected: summary.redirected,
+        failed: summary.failed,
+      },
+    })
+  );
+  lines.push('```');
 
   return lines.join('\n');
 }

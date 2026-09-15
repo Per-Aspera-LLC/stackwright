@@ -15,6 +15,8 @@ export interface TestA11yOptions {
   tags?: string; // comma-separated axe rule tags
   failOn?: string; // 'minor' | 'moderate' | 'serious' | 'critical'
   json?: boolean;
+  /** See A11yRunnerOptions.allowRedirects (default false, swp-kwv8). */
+  allowRedirects?: boolean;
 }
 
 /**
@@ -54,7 +56,14 @@ export async function testA11y(
 
   const failOn = (opts.failOn as A11yRunnerOptions['failOn']) ?? 'serious';
 
-  return runA11yAudit({ baseUrl, slugs, modes, tags, failOn });
+  return runA11yAudit({
+    baseUrl,
+    slugs,
+    modes,
+    tags,
+    failOn,
+    allowRedirects: opts.allowRedirects ?? false,
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -71,8 +80,22 @@ function formatAuditResult(result: A11yAuditResult): void {
   console.log('');
 
   for (const pageResult of result.results) {
-    const icon = pageResult.pass ? chalk.green('✓') : chalk.red('✗');
     const modeLabel = chalk.dim(`[${pageResult.mode}]`);
+
+    if (pageResult.status === 'redirected') {
+      const label = `${chalk.yellow('↪')} ${chalk.bold(pageResult.slug)} ${modeLabel}`;
+      console.log(`  ${label} ${chalk.yellow(`REDIRECTED → ${pageResult.finalUrl}`)}`);
+      console.log(chalk.dim('      not audited — auth coverage only, not an a11y result'));
+      continue;
+    }
+
+    if (pageResult.status === 'error') {
+      const label = `${chalk.red('!')} ${chalk.bold(pageResult.slug)} ${modeLabel}`;
+      console.log(`  ${label} ${chalk.red(`ERROR: ${pageResult.error ?? 'unknown error'}`)}`);
+      continue;
+    }
+
+    const icon = pageResult.pass ? chalk.green('✓') : chalk.red('✗');
     const label = `${icon} ${chalk.bold(pageResult.slug)} ${modeLabel}`;
 
     if (pageResult.pass) {
@@ -92,7 +115,11 @@ function formatAuditResult(result: A11yAuditResult): void {
   }
 
   console.log('');
-  const summaryLine = `  ${summary.total} scan${summary.total !== 1 ? 's' : ''} — ${chalk.green(`${summary.passed} passed`)}, ${summary.failed > 0 ? chalk.red(`${summary.failed} failed`) : chalk.green('0 failed')}`;
+  const redirectedSuffix =
+    summary.redirected > 0
+      ? `, ${chalk.yellow(`${summary.redirected} redirected (not audited)`)}`
+      : '';
+  const summaryLine = `  ${summary.total} scan${summary.total !== 1 ? 's' : ''} — ${chalk.green(`${summary.passed} passed`)}, ${summary.failed > 0 ? chalk.red(`${summary.failed} failed`) : chalk.green('0 failed')}${redirectedSuffix}`;
   console.log(summaryLine);
 
   if (summary.violations > 0) {
@@ -141,6 +168,12 @@ export function registerTestA11y(program: Command): void {
       'serious'
     )
     .option('--json', 'Output machine-readable JSON')
+    .option(
+      '--allow-redirects',
+      'A scan that bounces off its requested route (e.g. an auth redirect to /login) no ' +
+        "longer fails the overall audit on its own. It's still never reported as audited " +
+        'or as a pass (default: false, swp-kwv8)'
+    )
     .action(async (slug: string | undefined, opts: TestA11yOptions & { darkMode?: boolean }) => {
       // If a positional slug was given, treat it as --pages
       if (slug) {

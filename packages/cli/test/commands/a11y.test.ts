@@ -35,7 +35,7 @@ function makePassingResult(slugs: string[] = ['/']): A11yAuditResult {
     slugs,
     modes: ['light', 'dark'],
     results: [],
-    summary: { total: 0, passed: 0, failed: 0, violations: 0 },
+    summary: { total: 0, passed: 0, failed: 0, redirected: 0, violations: 0 },
   };
 }
 
