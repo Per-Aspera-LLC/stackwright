@@ -257,6 +257,8 @@ pnpm changeset          # Create a changeset (required per PR)
 
 Versioning and publishing are **fully automated**. When `dev` is merged to `main`, CI exits prerelease mode, consumes all pending changesets, publishes stable versions to npm, and back-merges the version bumps into `dev`. No manual `version-packages` or `release` steps needed.
 
+`changeset publish` tags each published package as `<name>@<version>` (e.g. `@stackwright/themes@0.10.0`) but only creates those tags locally — `pnpm release` now chains `git push --follow-tags` afterward so the tags actually land on `origin` instead of quietly rotting in someone's local clone. If npm prompts for a one-time password (2FA is required on this org), pass it straight through non-interactively with `changeset publish --otp=123456` (or `npm_config_otp=123456 pnpm release` in CI) rather than letting the publish hang waiting on stdin. Publishing is package-by-package, so a run that dies partway through (network blip, expired OTP, whatever) is safe to just re-run: already-published versions are skipped and only the stragglers get pushed to npm, and `changeset tag`/`--follow-tags` are idempotent so re-running won't double-tag or fail on existing tags.
+
 ## Content Type Maintenance Rule
 
 **When modifying `packages/types/src/types/` — adding, removing, or changing any content type, field, or enum — you MUST:**
