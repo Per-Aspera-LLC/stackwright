@@ -1,10 +1,13 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { testA11y } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 import type { A11yAuditResult } from '@stackwright/cli';
 
 export function registerA11yTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_test_a11y',
     'stackwright_test_a11y',
     [
       'Run a WCAG 2.1 AA accessibility audit against a running Stackwright dev server.',
@@ -187,7 +190,7 @@ function formatA11yResultForMcp(result: A11yAuditResult): string {
 
   if (!result.pass) {
     lines.push('');
-    lines.push('Fix the violations above, then re-run stackwright_test_a11y to verify.');
+    lines.push('Fix the violations above, then re-run sw_test_a11y to verify.');
   }
 
   lines.push('');

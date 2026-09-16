@@ -395,10 +395,10 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md#troubleshooting) for common issues and s
 Stackwright includes visual rendering tools that let AI agents and developers see rendered pages as screenshots. This closes the feedback loop between content authoring and visual verification.
 
 **MCP tools** (in `@stackwright/mcp`):
-- `stackwright_check_dev_server` — verify dev server is running
-- `stackwright_render_page` — screenshot any page (returns base64 PNG/JPEG)
-- `stackwright_render_diff` — capture "before" state for visual comparison
-- `stackwright_render_yaml` — render raw YAML without saving permanently (ephemeral preview)
+- `sw_check_dev_server` — verify dev server is running
+- `sw_render_page` — screenshot any page (returns base64 PNG/JPEG)
+- `sw_render_diff` — capture "before" state for visual comparison
+- `sw_render_yaml` — render raw YAML without saving permanently (ephemeral preview)
 
 **CLI command**: `stackwright preview [slug]` renders a page to a screenshot file.
 

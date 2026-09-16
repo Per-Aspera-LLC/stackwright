@@ -3,6 +3,7 @@ import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
 import { composeSite } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 /**
  * Resolve the list of existing collection names in a project.
@@ -23,13 +24,15 @@ function detectCollections(projectRoot: string): string[] {
 }
 
 export function registerComposeTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_compose_site',
     'stackwright_compose_site',
     `Validate and write an entire Stackwright site atomically — site config + all pages in one operation.
 
 Use this tool when generating a complete new site or making sweeping changes across multiple pages. It provides:
-- Per-page schema validation (same as stackwright_write_page)
-- Site config schema validation (same as stackwright_write_site_config)
+- Per-page schema validation (same as sw_write_page)
+- Site config schema validation (same as sw_write_site_config)
 - PLUS cross-page semantic validation that individual tools cannot perform:
   • Navigation hrefs must point to pages that exist (error — blocks write)
   • Orphan pages without navigation entries (warning)
@@ -40,7 +43,7 @@ Use this tool when generating a complete new site or making sweeping changes acr
 
 If ANY error is found, NOTHING is written. Warnings are reported but don't block the write.
 
-For editing individual pages on an existing site, use stackwright_write_page instead.`,
+For editing individual pages on an existing site, use sw_write_page instead.`,
     {
       projectRoot: z
         .string()

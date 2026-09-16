@@ -1,5 +1,5 @@
 /**
- * stackwright_test_a11y MCP formatter (swp-kwv8 / stackwright-8v2).
+ * sw_test_a11y MCP formatter (swp-kwv8 / stackwright-8v2).
  *
  * The underlying CLI runner used to report a login-bounce scan as a clean
  * pass — structurally indistinguishable from a real audit. Once the runner
@@ -37,7 +37,7 @@ function registerAndCapture(): ToolCb {
     },
   } as unknown as McpServer;
   registerA11yTools(fakeServer);
-  if (!captured) throw new Error('stackwright_test_a11y was not registered');
+  if (!captured) throw new Error('sw_test_a11y was not registered');
   return captured;
 }
 
@@ -57,7 +57,7 @@ function baseResult(overrides: Partial<A11yAuditResult> = {}): A11yAuditResult {
   };
 }
 
-describe('stackwright_test_a11y — redirected scan formatting', () => {
+describe('sw_test_a11y — redirected scan formatting', () => {
   beforeEach(() => {
     mockTestA11y.mockReset();
   });

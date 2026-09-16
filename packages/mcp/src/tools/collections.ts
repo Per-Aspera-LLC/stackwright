@@ -2,9 +2,12 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import path from 'path';
 import { z } from 'zod';
 import { listCollections, addCollection, resolveContentDir } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 export function registerCollectionTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_list_collections',
     'stackwright_list_collections',
     'List all collections in a Stackwright project. Shows collection names, entry counts, and whether entry page generation is configured.',
     {
@@ -20,7 +23,7 @@ export function registerCollectionTools(server: McpServer): void {
           content: [
             {
               type: 'text' as const,
-              text: 'No collections found. Create one with stackwright_create_collection.',
+              text: 'No collections found. Create one with sw_create_collection.',
             },
           ],
         };
@@ -42,7 +45,9 @@ export function registerCollectionTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_create_collection',
     'stackwright_create_collection',
     'Create a new collection directory with _collection.yaml config and a sample entry. Use --entry-page to enable automatic page generation for each entry.',
     {
@@ -105,7 +110,7 @@ export function registerCollectionTools(server: McpServer): void {
               type: 'text' as const,
               text:
                 code === 'COLLECTION_EXISTS'
-                  ? `Collection "${name}" already exists. Use stackwright_list_collections to see existing collections.`
+                  ? `Collection "${name}" already exists. Use sw_list_collections to see existing collections.`
                   : code === 'INVALID_NAME'
                     ? `Invalid collection name "${name}". Use only alphanumeric characters, hyphens, and underscores.`
                     : `Error creating collection: ${(err as Error).message}`,

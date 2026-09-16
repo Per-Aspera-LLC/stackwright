@@ -15,3 +15,6 @@ export { registerIntegrationTools } from './tools/integrations.js';
 export { registerComposeTools } from './tools/compose.js';
 export { registerRenderTools, closeBrowser } from './tools/render.js';
 export { registerA11yTools } from './tools/a11y.js';
+
+// Tool-naming convention + compat-alias machinery (docs/TOOL-NAMING.md).
+export { SW_TOOL_ALIASES, canonicalToolName, registerWithAlias } from './tool-aliases.js';

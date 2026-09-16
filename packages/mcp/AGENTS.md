@@ -22,7 +22,7 @@ The server communicates via stdio and implements the MCP SDK protocol.
 | `tools/content-types.ts` | Introspect content type schemas, list registered types, get field definitions |
 | `tools/pages.ts` | List pages, read page content, create/update pages |
 | `tools/site.ts` | Read/update site configuration |
-| `tools/board.ts` | `stackwright_get_board` — read the beads product board from `.beads/issues.jsonl` |
+| `tools/board.ts` | `sw_get_board` — read the beads product board from `.beads/issues.jsonl` |
 | `tools/git-ops.ts` | Git workflow helpers (branch, commit, status) |
 | `tools/project.ts` | Project info, package versions, build status |
 | `tools/render.ts` | Visual rendering — screenshot pages, check dev server, capture before/after diffs |
@@ -44,10 +44,10 @@ The render tools (`tools/render.ts`) give AI agents visual feedback on their con
 **Prerequisites**: A Stackwright dev server must be running (`pnpm dev` in the project directory). The render tools connect to it and screenshot pages via headless Chromium.
 
 **Workflow for brand-focused authoring**:
-1. `stackwright_check_dev_server` — verify the server is reachable
-2. `stackwright_render_diff` — capture the "before" state
-3. `stackwright_write_page` / `stackwright_compose_site` — make changes
-4. `stackwright_render_page` — see the "after" state
+1. `sw_check_dev_server` — verify the server is reachable
+2. `sw_render_diff` — capture the "before" state
+3. `sw_write_page` / `sw_compose_site` — make changes
+4. `sw_render_page` — see the "after" state
 5. Compare visually — does it match the brand? Iterate if needed.
 
 ---

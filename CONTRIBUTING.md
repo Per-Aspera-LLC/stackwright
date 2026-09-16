@@ -246,6 +246,10 @@ pnpm format:check    # Exits non-zero if any file needs formatting
 - Component names: PascalCase (`MainContentGrid`)
 - YAML files: kebab-case (`about-us.yaml`)
 - CLI command names: kebab-case (`generate-content`)
+- MCP tool names: `sw_<verb>_<object>` — see
+  [`docs/TOOL-NAMING.md`](docs/TOOL-NAMING.md) for the full convention, the
+  compat-alias policy, and why the wire-level prefix code-puppy/Claude Code
+  add makes a short, non-redundant tool name matter.
 
 ## Changeset Requirement
 
@@ -290,7 +294,7 @@ pnpm stackwright -- board
 pnpm stackwright -- board --json
 ```
 
-Agents can call `stackwright_get_board` via MCP for the same data.
+Agents can call `sw_get_board` via MCP for the same data.
 
 The architect sets priority tiers. Contributors and agents should pick work from `priority:now` first, then `priority:next`. When a PR closes an issue, GitHub handles it automatically.
 

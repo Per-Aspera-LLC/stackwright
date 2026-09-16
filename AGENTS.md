@@ -130,9 +130,9 @@ public/stackwright-content/
 - `getStackwrightPageData(pageSlug, locale)` — reads the locale-specific JSON, falls back silently
 
 **MCP tool updates:**
-- `stackwright_write_page` — accepts optional `locale` param; writes `content.<locale>.yml`; full schema validation applied
-- `stackwright_get_page` — accepts optional `locale` param; falls back to default with a note if locale file absent
-- `stackwright_list_pages` — shows available locales per page: `  /about  —  About Us  [en, fr]`
+- `sw_write_page` — accepts optional `locale` param; writes `content.<locale>.yml`; full schema validation applied
+- `sw_get_page` — accepts optional `locale` param; falls back to default with a note if locale file absent
+- `sw_list_pages` — shows available locales per page: `  /about  —  About Us  [en, fr]`
 
 ### Theme Config File Split (`stackwright.theme.yml` → `_theme.json`)
 

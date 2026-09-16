@@ -44,53 +44,23 @@ import {
   registerRenderTools,
   registerA11yTools,
   closeBrowser,
+  SW_TOOL_ALIASES,
+  canonicalToolName,
 } from '../src/register';
 
 // ---------------------------------------------------------------------------
-// All tool names that must be present on the composed server.
-// Sourced by reading every tools/*.ts file — update here when adding new tools.
+// Expected tool surface, derived from SW_TOOL_ALIASES (src/tool-aliases.ts)
+// rather than hardcoded here a second time. Each tool is registered twice —
+// once under its canonical `sw_*` name, once under its legacy `stackwright_*`
+// alias — via `registerWithAlias()` inside the individual tools/*.ts files.
+// Those call sites hand-type both name strings independently of this map, so
+// comparing against SW_TOOL_ALIASES still catches drift (a new tool added to
+// a tools file but forgotten in the alias map, or vice versa).
 // ---------------------------------------------------------------------------
 
-const EXPECTED_TOOLS = [
-  // content-types.ts
-  'stackwright_get_content_types',
-  'stackwright_preview_component',
-  // pages.ts
-  'stackwright_list_pages',
-  'stackwright_get_page',
-  'stackwright_write_page',
-  'stackwright_add_page',
-  'stackwright_validate_pages',
-  // site.ts
-  'stackwright_get_site_config',
-  'stackwright_write_site_config',
-  'stackwright_list_themes',
-  'stackwright_validate_site',
-  // project.ts
-  'stackwright_get_project_info',
-  'stackwright_scaffold_project',
-  // git-ops.ts
-  'stackwright_stage_changes',
-  'stackwright_open_pr',
-  // board.ts
-  'stackwright_get_board',
-  // collections.ts
-  'stackwright_list_collections',
-  'stackwright_create_collection',
-  // integrations.ts
-  'stackwright_list_integrations',
-  'stackwright_get_integration',
-  'stackwright_add_integration',
-  // compose.ts
-  'stackwright_compose_site',
-  // render.ts
-  'stackwright_check_dev_server',
-  'stackwright_render_page',
-  'stackwright_render_diff',
-  'stackwright_render_yaml',
-  // a11y.ts
-  'stackwright_test_a11y',
-] as const;
+const LEGACY_TOOLS = Object.keys(SW_TOOL_ALIASES);
+const CANONICAL_TOOLS = Object.values(SW_TOOL_ALIASES);
+const EXPECTED_TOOLS = [...CANONICAL_TOOLS, ...LEGACY_TOOLS] as const;
 
 // ---------------------------------------------------------------------------
 
@@ -143,5 +113,72 @@ describe('register subpath — tool surface integration', () => {
 
   it('total tool count matches expected list', () => {
     expect(registeredToolNames).toHaveLength(EXPECTED_TOOLS.length);
+  });
+
+  it('every legacy alias shares its handler with the canonical tool', () => {
+    const registry = (server as any)._registeredTools;
+    for (const [legacy, canonical] of Object.entries(SW_TOOL_ALIASES)) {
+      expect(registry[legacy].handler, `${legacy} handler !== ${canonical} handler`).toBe(
+        registry[canonical].handler
+      );
+    }
+  });
+
+  it('every legacy alias description carries a deprecation note', () => {
+    const registry = (server as any)._registeredTools;
+    for (const legacy of LEGACY_TOOLS) {
+      expect(registry[legacy].description, `${legacy} missing deprecation note`).toMatch(
+        /deprecated/i
+      );
+    }
+  });
+});
+
+describe('canonicalToolName()', () => {
+  it('resolves a bare legacy name to its canonical name', () => {
+    expect(canonicalToolName('stackwright_render_page')).toBe('sw_render_page');
+  });
+
+  it('leaves an already-canonical name unchanged', () => {
+    expect(canonicalToolName('sw_render_page')).toBe('sw_render_page');
+  });
+
+  it('strips a leading cp_ wire prefix', () => {
+    expect(canonicalToolName('cp_stackwright_render_page')).toBe('sw_render_page');
+  });
+
+  it('strips a leading cp_<server>_ wire prefix for a known server name', () => {
+    expect(canonicalToolName('cp_stackwright-mcp_stackwright_render_page')).toBe('sw_render_page');
+  });
+
+  it('strips a leading cp_sw_ wire prefix for an already-canonical tool', () => {
+    // The composed server is itself named 'sw', so canonical OSS tool names
+    // collide with the server-name prefix on the wire (cp_sw_sw_render_page).
+    expect(canonicalToolName('cp_sw_sw_render_page')).toBe('sw_render_page');
+  });
+
+  it('does not mangle a pro-prefixed tool name that merely starts with sw', () => {
+    expect(canonicalToolName('cp_sw_swp_write_page')).toBe('swp_write_page');
+  });
+
+  it('returns unrecognized names unchanged', () => {
+    expect(canonicalToolName('totally_unknown_tool')).toBe('totally_unknown_tool');
+  });
+
+  it('strips an unambiguous bare server prefix with no cp_ layer', () => {
+    // Real-world shape from otter-viz fixtures: some MCP clients (e.g.
+    // raft-puppy) qualify tool names by server without a cp_ wire layer.
+    // 'stackwright-pro-mcp' is unambiguous (no real tool name starts with
+    // it), so it strips even without cp_. The pro tool name underneath
+    // (stackwright_pro_get_pipeline_state) isn't in this package's alias
+    // map — pro's own rename is a separate task — so it comes back
+    // unchanged past the server-prefix strip.
+    expect(canonicalToolName('stackwright-pro-mcp_stackwright_pro_get_pipeline_state')).toBe(
+      'stackwright_pro_get_pipeline_state'
+    );
+  });
+
+  it('does not strip the ambiguous sw server prefix without a cp_ layer', () => {
+    expect(canonicalToolName('sw_sw_render_page')).toBe('sw_sw_render_page');
   });
 });
