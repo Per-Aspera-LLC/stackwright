@@ -41,8 +41,40 @@ export function registerA11yTools(server: McpServer): void {
             'pass — redirects are auth-coverage evidence, not audit coverage ' +
             '(default: false, swp-kwv8).'
         ),
+      cookies: z
+        .array(
+          z.object({
+            name: z.string(),
+            value: z.string(),
+            domain: z.string().optional(),
+            path: z.string().optional(),
+          })
+        )
+        .optional()
+        .describe(
+          'Cookies to seed into every browser context before navigating (e.g. a ' +
+            'persona/auth cookie), so a caller can authenticate the context directly ' +
+            'instead of rewriting slugs through an app-specific login route. Passing ' +
+            'a cookie here means requestedUrl === finalUrl for a successful scan, so ' +
+            'it is classified audited (not redirected) and axe-core actually runs ' +
+            '(swp-0k73).'
+        ),
+      extraHTTPHeaders: z
+        .record(z.string(), z.string())
+        .optional()
+        .describe('Extra HTTP headers to send with every request in every context (swp-0k73).'),
     },
-    async ({ projectRoot, baseUrl, slugs, darkMode, tags, failOn, allowRedirects }) => {
+    async ({
+      projectRoot,
+      baseUrl,
+      slugs,
+      darkMode,
+      tags,
+      failOn,
+      allowRedirects,
+      cookies,
+      extraHTTPHeaders,
+    }) => {
       try {
         const result = await testA11y(projectRoot, {
           baseUrl,
@@ -51,6 +83,8 @@ export function registerA11yTools(server: McpServer): void {
           tags: tags?.join(','),
           failOn,
           allowRedirects,
+          cookies,
+          extraHTTPHeaders,
         });
 
         const text = formatA11yResultForMcp(result);

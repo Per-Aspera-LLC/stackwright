@@ -17,6 +17,17 @@ export interface TestA11yOptions {
   json?: boolean;
   /** See A11yRunnerOptions.allowRedirects (default false, swp-kwv8). */
   allowRedirects?: boolean;
+  /**
+   * Cookies to seed into every browser context (e.g. a persona/auth cookie)
+   * so a caller can authenticate the context directly instead of rewriting
+   * slugs through an app-specific login route. Added alongside
+   * A11yRunnerOptions.cookies in 0.10.0 but never wired through this command
+   * function until now (swp-0k73): callers had no supported way to reach
+   * runA11yAudit's cookie support, since runA11yAudit itself isn't exported.
+   */
+  cookies?: A11yRunnerOptions['cookies'];
+  /** See A11yRunnerOptions.extraHTTPHeaders (swp-0k73). */
+  extraHTTPHeaders?: A11yRunnerOptions['extraHTTPHeaders'];
 }
 
 /**
@@ -63,6 +74,8 @@ export async function testA11y(
     tags,
     failOn,
     allowRedirects: opts.allowRedirects ?? false,
+    cookies: opts.cookies,
+    extraHTTPHeaders: opts.extraHTTPHeaders,
   });
 }
 

@@ -177,6 +177,30 @@ describe('testA11y — options passthrough', () => {
     const opts = mockRunA11yAudit.mock.calls[0][0];
     expect(opts.failOn).toBe('serious');
   });
+
+  // swp-0k73: cookies/extraHTTPHeaders were added to A11yRunnerOptions in
+  // 0.10.0 but silently dropped by this command function — callers had no
+  // supported way to authenticate a scan's browser context directly.
+  it('passes cookies through to runA11yAudit', async () => {
+    const cookies = [{ name: 'session', value: 'abc123', domain: 'localhost', path: '/' }];
+    await testA11y('/fake/project', { pages: '/', cookies });
+    const opts = mockRunA11yAudit.mock.calls[0][0];
+    expect(opts.cookies).toEqual(cookies);
+  });
+
+  it('passes extraHTTPHeaders through to runA11yAudit', async () => {
+    const extraHTTPHeaders = { 'x-mock-auth': 'team' };
+    await testA11y('/fake/project', { pages: '/', extraHTTPHeaders });
+    const opts = mockRunA11yAudit.mock.calls[0][0];
+    expect(opts.extraHTTPHeaders).toEqual(extraHTTPHeaders);
+  });
+
+  it('passes undefined cookies/extraHTTPHeaders through when not given (no crash)', async () => {
+    await testA11y('/fake/project', { pages: '/' });
+    const opts = mockRunA11yAudit.mock.calls[0][0];
+    expect(opts.cookies).toBeUndefined();
+    expect(opts.extraHTTPHeaders).toBeUndefined();
+  });
 });
 
 // ---------------------------------------------------------------------------

@@ -106,6 +106,30 @@ describe('stackwright_test_a11y — redirected scan formatting', () => {
     );
   });
 
+  // swp-0k73: cookies/extraHTTPHeaders let a caller authenticate the scan's
+  // browser context directly (context.addCookies) instead of rewriting
+  // slugs through an app's own login route, which the runner's own
+  // requestedUrl-vs-finalUrl check would otherwise classify as 'redirected'
+  // even though the scan landed on the intended route.
+  it('cookies are forwarded to testA11y', async () => {
+    mockTestA11y.mockResolvedValue(baseResult());
+    const tool = registerAndCapture();
+    const cookies = [{ name: 'stackwright_mock_persona', value: 'team', path: '/' }];
+    await tool({ projectRoot: '/fake', cookies });
+    expect(mockTestA11y).toHaveBeenCalledWith('/fake', expect.objectContaining({ cookies }));
+  });
+
+  it('extraHTTPHeaders are forwarded to testA11y', async () => {
+    mockTestA11y.mockResolvedValue(baseResult());
+    const tool = registerAndCapture();
+    const extraHTTPHeaders = { 'x-mock-auth': 'team' };
+    await tool({ projectRoot: '/fake', extraHTTPHeaders });
+    expect(mockTestA11y).toHaveBeenCalledWith(
+      '/fake',
+      expect.objectContaining({ extraHTTPHeaders })
+    );
+  });
+
   it('a passing audited scan prints finalUrl on the scan line', async () => {
     const result = baseResult({
       pass: true,
