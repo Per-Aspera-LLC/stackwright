@@ -8,6 +8,15 @@ Stackwright is a typed DSL that compiles YAML content files into production-read
 
 Because the YAML schema defines a bounded set of expressible behaviors, every application built on Stackwright is **verifiably safe by construction**. You don't audit individual apps — you audit the platform. Then every app built on it inherits those guarantees.
 
+> **See this framework's schema-boundary claim tested against a real app,
+> with evidence:** the Pro-tier demo guide
+> ([`../pro/docs/DEMO.md`](../pro/docs/DEMO.md) in the full checkout) walks
+> through three real bugs a verification gate caught in this codebase and
+> its Pro-tier extensions — each with the artifact path to check it
+> yourself — plus 5- and 20-minute demo scripts and a numbers table across
+> gate rounds R6→R14. MCP tool naming convention for this repo and its
+> Pro-tier sibling: [`docs/TOOL-NAMING.md`](./docs/TOOL-NAMING.md).
+
 AI coding tools amplify whatever architectural decisions are already in place — good ones and bad ones equally. They're reliable at fixing syntax errors and equally reliable at propagating bad structural choices across an entire codebase at scale. Without a constrained framework, the quality floor on AI-generated code is effectively set by the least-experienced person on the team, and that floor gets re-negotiated from scratch on every project. Stackwright embeds expert judgment into the schema itself. The quality floor is set once, at the framework level, and every project built on it inherits it.
 
 ## Why Stackwright?
@@ -205,6 +214,8 @@ pnpm stackwright-mcp
 **Git workflow tools**: Stage content changes, open PRs for human review — the full editorial loop from natural language to reviewed, merged content.
 
 This enables a workflow where non-developers describe changes in natural language and the AI agent produces validated, visually verified, reviewable content changes.
+
+**Tool names**: all MCP tools in this repo use the `sw_<verb>_<object>` prefix (e.g. `sw_render_page`, `sw_test_a11y`); the composed MCP server is registered as `sw`. Legacy `stackwright_*` names remain as deprecated aliases for one release. Full rationale and the alias-resolution mechanism: [`docs/TOOL-NAMING.md`](./docs/TOOL-NAMING.md).
 
 ## CLI
 
