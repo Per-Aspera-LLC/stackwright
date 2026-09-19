@@ -1,5 +1,12 @@
 # @stackwright/hooks-registry
 
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [0d6765a]
+  - @stackwright/types@1.11.2
+
 ## 0.1.8
 
 ### Patch Changes

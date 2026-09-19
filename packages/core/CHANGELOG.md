@@ -1,5 +1,12 @@
 # @stackwright/core
 
+## 0.13.2
+
+### Patch Changes
+
+- Updated dependencies [0d6765a]
+  - @stackwright/types@1.11.2
+
 ## 0.13.1
 
 ### Patch Changes

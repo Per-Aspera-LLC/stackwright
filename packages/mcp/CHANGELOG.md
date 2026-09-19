@@ -1,5 +1,47 @@
 # @stackwright/mcp
 
+## 0.9.0
+
+### Minor Changes
+
+- e2259cd: Rename all MCP tools from `stackwright_<verb>_<object>` to `sw_<verb>_<object>` (swp-aj1o.2.1). This drops the redundant `stackwright` prefix now that the composed server itself is named `sw`, and shortens the wire-level name code-puppy/Claude Code produce (`cp_sw_sw_render_page` instead of `cp_stackwright-mcp_stackwright_render_page`).
+
+  All 27 old `stackwright_*` names remain registered as compat aliases for one release — same handler, same schema, with a one-line deprecation note appended to the tool description. They will be removed in the next minor after this one.
+
+  `registerWithAlias()` now also logs a one-time-per-alias deprecation warning to **stderr** (never stdout — this is an MCP stdio server, and stdout is reserved for JSON-RPC framing per swp-w00k) the first time each legacy name is actually invoked, naming the canonical replacement and stating that aliases are removed after the next release. Subsequent hits of the same alias in the same server process are silent.
+
+  New exports from both `@stackwright/mcp` (package root) and `@stackwright/mcp/register`:
+  - `SW_TOOL_ALIASES: Record<string, string>` — exhaustive legacy-name -> canonical-name map.
+  - `canonicalToolName(name: string): string` — resolves any tool name (wire-prefixed by code-puppy/Claude Code, or bare, legacy or current) to its canonical name. Never throws.
+  - `registerWithAlias(server, canonical, legacy, description, schema, handler)` — the helper every tool file now uses internally to register both names against one handler.
+
+  See `docs/TOOL-NAMING.md` for the full naming convention, the alias policy, and the wire-prefix explanation.
+
+### Patch Changes
+
+- 0d6765a: swp-w00k: fix MCP stdio JSON-RPC framing corruption caused by build-scripts progress output.
+
+  **Root cause:** `runPrebuild()` and the `compile*` primitives wrote progress lines (e.g. `  [OK] _site.json`) via `console.log`, which targets `process.stdout`. That's correct for the `stackwright-prebuild` CLI, but when `sw_render_page` / `sw_render_diff` / `sw_render_yaml` call `runPrebuild()` in-process (whenever a `projectRoot` is supplied), those plain-text lines land on the same stdout stream the MCP stdio transport uses exclusively for newline-delimited JSON-RPC frames — corrupting message framing for the client (`Failed to parse JSONRPC message from server`, 552x in one gate run).
+
+  **`@stackwright/build-scripts` (minor):**
+  - New `src/log.ts` — a small configurable sink (`'stdout' | 'stderr' | 'silent'`, defaults to `'stdout'`) wrapping `console.log`/`console.error` (preserves exact prior stdout behavior for CLI users and for any test suite spying on `console.log`).
+  - `setLogSink()` / `getLogSink()` exported from the package root — the explicit API for callers that share a process with an MCP stdio transport.
+  - `PrebuildOptions.logSink` — convenience field so `runPrebuild({ projectRoot, logSink: 'stderr' })` sets the sink in one call.
+  - `STACKWRIGHT_LOG_STREAM` env var — belt-and-braces fallback (`stdout` | `stderr` | `silent`).
+  - All 62 `console.log` call sites across `prebuild.ts`, `watch.ts`, `build-searchIndex.ts`, `image-optimizer.ts`, and `compile/*.ts` now route through `log()`. Message text is unchanged (gate reports grep some of these lines). `console.warn`/`console.error` call sites were left as-is — they already write to stderr by Node.js default and were never part of this bug.
+
+  **`@stackwright/mcp` (patch):**
+  - `sw_render_page`, `sw_render_diff`, `sw_render_yaml` now call `runPrebuild({ projectRoot, logSink: 'stderr' })` instead of `runPrebuild(projectRoot)`, so build-scripts' progress output goes to stderr (which MCP stdio servers may write to freely) instead of stdout.
+
+  **`@stackwright/types` (patch):**
+  - `PrebuildOptions` gains the optional `logSink?: 'stdout' | 'stderr' | 'silent'` field described above.
+
+- Updated dependencies [35c4979]
+- Updated dependencies [0d6765a]
+  - @stackwright/cli@0.10.2
+  - @stackwright/build-scripts@0.13.0
+  - @stackwright/types@1.11.2
+
 ## 0.8.2
 
 ### Patch Changes
