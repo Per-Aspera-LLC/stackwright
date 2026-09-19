@@ -1,5 +1,118 @@
 # @stackwright/themes
 
+## 0.10.0
+
+### Minor Changes
+
+- 8632e98: Foreground color slots, alias-safe `resolveColor()`, and a build-time guard
+  against unresolvable `stackwright.yml` color references (stackwright-819 /
+  swp-rlih).
+
+  Root cause: `colorsSchema` was a strict 7-key object, so a legal
+  Pro-generated token like `appBar.textColor: primary-foreground` was
+  silently stripped during validation instead of being rejected or resolved.
+  `resolveColor()` then fell through (`themeColors[colorValue] || colorValue`)
+  and returned the raw, unparseable string, which the browser ignored —
+  producing inherited/default text color on top of a themed background (a
+  1.43:1 contrast failure on every authenticated route in the field case).
+
+  **`@stackwright/themes` (minor — new optional schema fields, non-breaking):**
+  - `colorsSchema` gains 5 optional foreground slots: `primaryForeground`,
+    `secondaryForeground`, `accentForeground`, `surfaceForeground`,
+    `backgroundForeground`. Existing 7-key configs continue to validate
+    unchanged.
+  - New `withDerivedForegrounds(colors)` fills in any missing foreground slot
+    with a WCAG-AA-contrast-safe default computed against its base color
+    (`primary` -> `primaryForeground`, etc.), without overriding explicit
+    slots.
+  - `ThemeProvider`'s `themeToCSSVars` now emits 5 additional CSS custom
+    properties (`--sw-color-primary-foreground`, `--sw-color-bg-foreground`,
+    etc.) for both light and dark palettes.
+  - New single-source-of-truth exports: `THEME_COLOR_KEYS`,
+    `REQUIRED_THEME_COLOR_KEYS`, `FOREGROUND_THEME_COLOR_KEYS`,
+    `FOREGROUND_TO_BASE_KEY`, `KEBAB_COLOR_ALIASES`.
+
+  **`@stackwright/core` (patch):**
+  - `resolveColor(colorValue, themeColors, opts?)` now accepts kebab-case
+    aliases (`primary-foreground`, `bg`, `text-secondary`, ...), derives
+    absent foreground slots on the fly, and — critically — **never returns
+    the raw input string for an unrecognized token**. It warns once per
+    token and falls back to a contrast-safe hex, using `opts.background`
+    when the caller has one.
+  - All internal callers (`TopAppBar`, `BottomAppBar`, `NavSidebar`,
+    `CollectionList`, `ThemedButton`, and the base content-block grids) now
+    pass their resolved background through `opts.background` so the
+    contrast-safe fallback is actually informed by what's behind the text.
+
+  **`@stackwright/build-scripts` (patch):**
+  - New build-time guard: `stackwright.yml`'s `appBar`/`footer`/`sidebar`
+    `textColor`/`backgroundColor` fields are validated against hex colors,
+    `ThemeColors` keys + kebab aliases, and any additional `--sw-color-*`
+    tokens declared in the project's compiled `_theme-tokens.css` (if one
+    exists). An unrecognized token is now a **BUILD-FATAL** error naming the
+    offending config path, the value, and the full allowed list — instead of
+    silently reaching the browser as invalid CSS. Runs from `compileSite()`,
+    so it covers both `stackwright-prebuild` and `stackwright-prebuild
+--watch`.
+
+## 0.9.0
+
+### Minor Changes
+
+- 54a490b: feat: split-file config — compile primitives + defaultColorMode (swp-xyia)
+
+  ## What changed
+
+  ### `@stackwright/types`
+  - New `stackwrightThemeFileSchema` — Zod schema for `stackwright.theme.yml` (`themeName`, `customTheme`, `fonts`, `defaultColorMode`)
+  - New `StackwrightThemeFile` TypeScript type
+  - `PrebuildPlugin` gains optional `additionalSinks` field — array of named compile sinks that Pro plugins use to emit `_collections.json`, `_auth.json`, `_integrations.json`
+
+  ### `@stackwright/themes`
+  - `themeConfigSchema` gains optional `defaultColorMode: z.enum(['light', 'dark', 'system'])`
+  - `ThemeProvider` `initialColorMode` prop (already accepted) is now the documented seeding mechanism for `defaultColorMode`
+
+  ### `@stackwright/build-scripts`
+  - **`_theme.json` emitted as a separate sink** (no longer merged into `_site.json`)
+  - Refactored into `compile/` sub-directory with individually-callable primitives:
+    - `compileSite(ctx)`, `compileTheme(ctx)`, `compilePages(ctx)`, `compilePage(slug, ctx)`, `compileIcons(ctx)`, `compileFonts(ctx)`, `compileFileCollections(ctx)`
+    - `compileAll(ctx)` — runs all in topological order including plugin `additionalSinks`
+    - `createCompileContext(opts)` — builds a `CompileContext` from `PrebuildOptions`
+  - `runPrebuild()` remains as a thin wrapper — no breaking change
+  - Path 1: `stackwright.theme.yml` → validates, emits `_theme.json`
+  - Path 2: no theme file → extracts `{themeName, customTheme, fonts, defaultColorMode}` from `stackwright.yml` root, emits `_theme.json` silently
+  - Path 3: no theme info → emits `_theme.json: {}`
+
+  ### `@stackwright/nextjs`
+  - `StackwrightLayout` reads `_theme.json` at render time via `getThemeFile()`
+  - Passes `_theme.json.defaultColorMode` as `fallback` to `ColorModeScript` (previously hardcoded `'system'`)
+  - Falls back to `_site.json.customTheme` backgrounds when `_theme.json` has no `customTheme` (backcompat for legacy setups)
+
+  ### `@stackwright/core`
+  - `DynamicPage` reads `theme.defaultColorMode` and passes it as `initialColorMode` to `ThemeProvider`
+  - Ensures the initial server render matches the `ColorModeScript` fallback — no color-mode flash for `defaultColorMode: dark` projects
+
+  ## Upgrade guide
+
+  **Projects with `stackwright.theme.yml`:** No action required. `_theme.json` is emitted automatically.
+
+  **Projects with inline `customTheme` in `stackwright.yml`:** No action required. Path 2 extracts theme keys silently. `_site.json` still contains the legacy keys until Bead 4 (a future release) strips them.
+
+  **To opt into a non-system default color mode:**
+
+  ```yaml
+  # stackwright.theme.yml
+  defaultColorMode: dark # first-time visitors see dark mode
+  ```
+
+### Patch Changes
+
+- ad123cd: Fix white flash during dark mode page transitions
+
+  The blocking `ColorModeScript` now accepts optional `lightBackground` / `darkBackground` props and sets `document.documentElement.style.backgroundColor` before React hydrates. `StackwrightLayout` reads theme colors from the prebuild output (`_site.json`) and feeds them in automatically.
+
+  At runtime, `ThemeProvider` keeps the `<html>` background in sync when the user toggles color mode or the OS preference changes — preventing the flash during client-side page transitions.
+
 ## 0.8.0
 
 ### Minor Changes

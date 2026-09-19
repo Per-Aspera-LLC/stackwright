@@ -3,6 +3,7 @@ import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
 import { stageChanges, openPr, resolvePagesDir } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 function resolveSiteConfig(projectRoot: string): string {
   const candidates = ['stackwright.yml', 'stackwright.yaml'];
@@ -14,7 +15,9 @@ function resolveSiteConfig(projectRoot: string): string {
 }
 
 export function registerGitOpsTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_stage_changes',
     'stackwright_stage_changes',
     'Stage modified or new Stackwright content files (page YAML, site config, co-located images) for commit. Only content files are staged — arbitrary files are ignored for safety.',
     {
@@ -49,7 +52,9 @@ export function registerGitOpsTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_open_pr',
     'stackwright_open_pr',
     'Validate all staged YAML, commit changes, push to a new branch, and return a pull-request creation URL. Works with GitHub, GitLab, Gitea, Codeberg, or any git host — no external CLI tools required. Aborts if validation fails — invalid YAML is never committed.',
     {
@@ -98,7 +103,7 @@ export function registerGitOpsTools(server: McpServer): void {
         if (code === 'VALIDATION_FAILED') {
           text = `Cannot open PR — validation failed:\n${message}`;
         } else if (code === 'NO_STAGED_CHANGES') {
-          text = 'No staged changes to commit. Use stackwright_stage_changes first.';
+          text = 'No staged changes to commit. Use sw_stage_changes first.';
         } else {
           text = `Error opening PR: ${message}`;
         }

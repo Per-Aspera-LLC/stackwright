@@ -25,6 +25,7 @@
  */
 
 import path from 'path';
+import { log } from '../log';
 import fs from 'fs';
 import { createRequire } from 'module';
 import { pathToFileURL } from 'url';
@@ -185,7 +186,7 @@ function deduplicatePlugins(plugins: PrebuildPlugin[]): PrebuildPlugin[] {
   const result: PrebuildPlugin[] = [];
   for (const plugin of plugins) {
     if (seen.has(plugin.name)) {
-      console.log(`  [DEBUG] Skipping duplicate plugin: ${plugin.name}`);
+      log(`  [DEBUG] Skipping duplicate plugin: ${plugin.name}`);
       continue;
     }
     seen.add(plugin.name);
@@ -231,7 +232,7 @@ export function discoverPlugins(
     for (const packageName of options.overrideList) {
       const loaded = loadPackageSync(packageName, projectRequire, /* hardFail */ true);
       if (loaded) {
-        console.log(`  [OK] Discovered plugin: ${packageName} (override)`);
+        log(`  [OK] Discovered plugin: ${packageName} (override)`);
         discovered.push(...loaded);
       }
     }
@@ -241,7 +242,7 @@ export function discoverPlugins(
   // --- Tier A: Convention --------------------------------------------------
   const tierAPlugins = loadPackageSync(CANONICAL_PRO_BUNDLE, projectRequire, /* hardFail */ false);
   if (tierAPlugins) {
-    console.log(`  [OK] Discovered plugins: ${CANONICAL_PRO_BUNDLE} (convention)`);
+    log(`  [OK] Discovered plugins: ${CANONICAL_PRO_BUNDLE} (convention)`);
     discovered.push(...tierAPlugins);
   }
 
@@ -250,7 +251,7 @@ export function discoverPlugins(
   for (const packageName of configPluginNames) {
     const loaded = loadPackageSync(packageName, projectRequire, /* hardFail */ true);
     if (loaded) {
-      console.log(`  [OK] Discovered plugin: ${packageName} (config)`);
+      log(`  [OK] Discovered plugin: ${packageName} (config)`);
       discovered.push(...loaded);
     }
   }

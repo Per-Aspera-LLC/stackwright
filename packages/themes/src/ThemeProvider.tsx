@@ -10,6 +10,7 @@ import React, {
   CSSProperties,
 } from 'react';
 import { Theme, ColorMode, ThemeColors } from './types';
+import { withDerivedForegrounds } from './foregrounds';
 
 // ---------------------------------------------------------------------------
 // Context
@@ -228,14 +229,25 @@ export const useThemeOptional = (): ThemeContextType | undefined => {
  * Inject these via ThemeStyleInjector or a `<style>` tag.
  */
 export function themeToCSSVars(theme: Theme): Record<string, string> {
+  // Fills in any *Foreground slot the theme didn't explicitly set with a
+  // computed contrast-safe default — see stackwright-819 / swp-rlih. Runs
+  // against theme.colors, which ThemeProvider has already swapped for
+  // darkColors when resolvedColorMode === 'dark', so dark themes get their
+  // own derived (or explicit) foregrounds for free.
+  const colors = withDerivedForegrounds(theme.colors);
   return {
-    '--sw-color-primary': theme.colors.primary,
-    '--sw-color-secondary': theme.colors.secondary,
-    '--sw-color-accent': theme.colors.accent,
-    '--sw-color-bg': theme.colors.background,
-    '--sw-color-surface': theme.colors.surface,
-    '--sw-color-text': theme.colors.text,
-    '--sw-color-text-secondary': theme.colors.textSecondary,
+    '--sw-color-primary': colors.primary,
+    '--sw-color-secondary': colors.secondary,
+    '--sw-color-accent': colors.accent,
+    '--sw-color-bg': colors.background,
+    '--sw-color-surface': colors.surface,
+    '--sw-color-text': colors.text,
+    '--sw-color-text-secondary': colors.textSecondary,
+    '--sw-color-primary-foreground': colors.primaryForeground,
+    '--sw-color-secondary-foreground': colors.secondaryForeground,
+    '--sw-color-accent-foreground': colors.accentForeground,
+    '--sw-color-surface-foreground': colors.surfaceForeground,
+    '--sw-color-bg-foreground': colors.backgroundForeground,
     '--sw-font-primary': theme.typography?.fontFamily?.primary ?? 'sans-serif',
     '--sw-font-secondary': theme.typography?.fontFamily?.secondary ?? 'sans-serif',
     '--sw-spacing-xs': theme.spacing?.xs ?? '0.25rem',

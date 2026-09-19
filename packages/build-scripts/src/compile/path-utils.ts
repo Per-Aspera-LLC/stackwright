@@ -7,6 +7,7 @@
  */
 
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 
 // ---------------------------------------------------------------------------
@@ -63,7 +64,7 @@ export function copyIfNewer(src: string, dest: string, rootDir: string): void {
 
   if (!fs.existsSync(dest) || fs.statSync(src).mtimeMs > fs.statSync(dest).mtimeMs) {
     fs.copyFileSync(src, dest);
-    console.log(`  asset: ${path.relative(rootDir, src)} -> ${path.relative(rootDir, dest)}`);
+    log(`  asset: ${path.relative(rootDir, src)} -> ${path.relative(rootDir, dest)}`);
   }
 }
 

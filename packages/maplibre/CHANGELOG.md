@@ -1,5 +1,13 @@
 # @stackwright/maplibre
 
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies [42fc358]
+- Updated dependencies [54a490b]
+  - @stackwright/core@0.13.0
+
 ## 6.0.0
 
 ### Patch Changes

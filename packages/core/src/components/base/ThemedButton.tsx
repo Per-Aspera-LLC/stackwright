@@ -39,7 +39,7 @@ export function ThemedButton({ button, className }: ThemedButtonProps) {
     ? resolveColor(button.bgColor, theme.colors)
     : theme.colors.primary;
   const buttonTextColor = button.textColor
-    ? resolveColor(button.textColor, theme.colors)
+    ? resolveColor(button.textColor, theme.colors, { background: buttonColor })
     : button.variant === undefined || button.variant === 'contained'
       ? getBetterTextColor('#FFFFFF', '#1A1A1A', buttonColor)
       : theme.colors.text;

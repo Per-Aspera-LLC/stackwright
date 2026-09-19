@@ -22,7 +22,7 @@
         "build:hellostackwright": "pnpm --filter stackwright-example-app build",
         "changeset": "changeset",
         "version-packages": "changeset version",
-        "release": "pnpm build && changeset publish",
+        "release": "pnpm build && changeset publish && git push --follow-tags",
         "test": "pnpm -r --filter='!@stackwright/e2e' --filter='!launch-stackwright' --filter='!@stackwright/ui-shadcn' test",
         "test:core": "pnpm --filter @stackwright/core test",
         "test:e2e": "pnpm --filter @stackwright/e2e test",

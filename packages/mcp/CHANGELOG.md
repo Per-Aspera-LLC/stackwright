@@ -1,5 +1,129 @@
 # @stackwright/mcp
 
+## 0.9.0
+
+### Minor Changes
+
+- e2259cd: Rename all MCP tools from `stackwright_<verb>_<object>` to `sw_<verb>_<object>` (swp-aj1o.2.1). This drops the redundant `stackwright` prefix now that the composed server itself is named `sw`, and shortens the wire-level name code-puppy/Claude Code produce (`cp_sw_sw_render_page` instead of `cp_stackwright-mcp_stackwright_render_page`).
+
+  All 27 old `stackwright_*` names remain registered as compat aliases for one release — same handler, same schema, with a one-line deprecation note appended to the tool description. They will be removed in the next minor after this one.
+
+  `registerWithAlias()` now also logs a one-time-per-alias deprecation warning to **stderr** (never stdout — this is an MCP stdio server, and stdout is reserved for JSON-RPC framing per swp-w00k) the first time each legacy name is actually invoked, naming the canonical replacement and stating that aliases are removed after the next release. Subsequent hits of the same alias in the same server process are silent.
+
+  New exports from both `@stackwright/mcp` (package root) and `@stackwright/mcp/register`:
+  - `SW_TOOL_ALIASES: Record<string, string>` — exhaustive legacy-name -> canonical-name map.
+  - `canonicalToolName(name: string): string` — resolves any tool name (wire-prefixed by code-puppy/Claude Code, or bare, legacy or current) to its canonical name. Never throws.
+  - `registerWithAlias(server, canonical, legacy, description, schema, handler)` — the helper every tool file now uses internally to register both names against one handler.
+
+  See `docs/TOOL-NAMING.md` for the full naming convention, the alias policy, and the wire-prefix explanation.
+
+### Patch Changes
+
+- 0d6765a: swp-w00k: fix MCP stdio JSON-RPC framing corruption caused by build-scripts progress output.
+
+  **Root cause:** `runPrebuild()` and the `compile*` primitives wrote progress lines (e.g. `  [OK] _site.json`) via `console.log`, which targets `process.stdout`. That's correct for the `stackwright-prebuild` CLI, but when `sw_render_page` / `sw_render_diff` / `sw_render_yaml` call `runPrebuild()` in-process (whenever a `projectRoot` is supplied), those plain-text lines land on the same stdout stream the MCP stdio transport uses exclusively for newline-delimited JSON-RPC frames — corrupting message framing for the client (`Failed to parse JSONRPC message from server`, 552x in one gate run).
+
+  **`@stackwright/build-scripts` (minor):**
+  - New `src/log.ts` — a small configurable sink (`'stdout' | 'stderr' | 'silent'`, defaults to `'stdout'`) wrapping `console.log`/`console.error` (preserves exact prior stdout behavior for CLI users and for any test suite spying on `console.log`).
+  - `setLogSink()` / `getLogSink()` exported from the package root — the explicit API for callers that share a process with an MCP stdio transport.
+  - `PrebuildOptions.logSink` — convenience field so `runPrebuild({ projectRoot, logSink: 'stderr' })` sets the sink in one call.
+  - `STACKWRIGHT_LOG_STREAM` env var — belt-and-braces fallback (`stdout` | `stderr` | `silent`).
+  - All 62 `console.log` call sites across `prebuild.ts`, `watch.ts`, `build-searchIndex.ts`, `image-optimizer.ts`, and `compile/*.ts` now route through `log()`. Message text is unchanged (gate reports grep some of these lines). `console.warn`/`console.error` call sites were left as-is — they already write to stderr by Node.js default and were never part of this bug.
+
+  **`@stackwright/mcp` (patch):**
+  - `sw_render_page`, `sw_render_diff`, `sw_render_yaml` now call `runPrebuild({ projectRoot, logSink: 'stderr' })` instead of `runPrebuild(projectRoot)`, so build-scripts' progress output goes to stderr (which MCP stdio servers may write to freely) instead of stdout.
+
+  **`@stackwright/types` (patch):**
+  - `PrebuildOptions` gains the optional `logSink?: 'stdout' | 'stderr' | 'silent'` field described above.
+
+- Updated dependencies [35c4979]
+- Updated dependencies [0d6765a]
+  - @stackwright/cli@0.10.2
+  - @stackwright/build-scripts@0.13.0
+  - @stackwright/types@1.11.2
+
+## 0.8.2
+
+### Patch Changes
+
+- b00f79a: Wire the `cookies`/`extraHTTPHeaders` runner options (added to `A11yRunnerOptions` in
+  0.10.0, `stackwright-8v2` / `swp-kwv8`) through the two public entry points that were
+  still dropping them on the floor (`swp-0k73`): `testA11y()`'s `TestA11yOptions` now
+  declares `cookies`/`extraHTTPHeaders` and forwards them to `runA11yAudit`, and the
+  `stackwright_test_a11y` MCP tool's schema now exposes both params and forwards them to
+  `testA11y`. Previously the only supported way to authenticate a scan was rewriting each
+  slug through an app's own login route, which makes `requestedUrl` differ from `finalUrl`
+  by construction -- the runner's own redirect classifier then marks every such scan
+  `status: 'redirected'` (never `'audited'`, axe-core never runs) even when the scan
+  landed exactly on the intended route. Passing a persona/auth cookie directly instead
+  means `requestedUrl === finalUrl` for a successful scan, so it is correctly classified
+  `'audited'` and actually gets measured.
+- Updated dependencies [b00f79a]
+  - @stackwright/cli@0.10.1
+
+## 0.8.1
+
+### Patch Changes
+
+- 053f627: `stackwright_test_a11y`'s formatter now prints `finalUrl` on every scan line, marks
+  redirected scans distinctly (`REDIRECTED -> finalUrl, not audited`, never a pass), and
+  prints up to 3 axe node target selectors per failing violation so callers can root-cause
+  directly from the DOM. Adds a `allowRedirects` tool parameter (forwarded to the CLI
+  runner, default false) and a machine-readable JSON trailer (`scans[]` +
+  `summary.audited/redirected/failed`) so wrapper/otter callers can parse per-scan status
+  without regexing prose (stackwright-8v2 / swp-kwv8).
+- Updated dependencies [053f627]
+- Updated dependencies [4ed0649]
+- Updated dependencies [2184e58]
+- Updated dependencies [8632e98]
+  - @stackwright/cli@0.10.0
+  - @stackwright/build-scripts@0.12.1
+  - @stackwright/types@1.11.1
+
+## 0.8.0
+
+### Minor Changes
+
+- a54be91: feat(mcp): expose register\*Tools and closeBrowser via /register subpath for downstream composition (fixes swp-hbdx)
+
+  Adds a new `@stackwright/mcp/register` subpath export that re-exports all
+  tool registrar functions and `closeBrowser` without any side effects (no
+  McpServer instantiation, no transport binding). Downstream packages (Pro,
+  third-party MCP composers) can now import and compose OSS tools onto their
+  own McpServer instances.
+
+  Changes:
+  - New `src/register.ts` — pure re-export module, no side effects
+  - `src/server.ts` — refactored to import from `register.ts` (single source of truth)
+  - `package.json` — `./register` added to exports map
+  - `tsup.config.ts` — `register` entry added; DTS enabled for `register` only
+  - `tsconfig.json` — `types: ["node"]` added (required for DTS generation)
+  - `vitest.config.ts` — alias for `@stackwright/build-scripts` (Vite 7 CJS resolution workaround)
+  - `test/register-subpath.test.ts` — integration test asserting full tool surface on a real McpServer
+
+### Patch Changes
+
+- 1683526: Fix `getBrowser()` in the MCP server caching a rejected `chromium.launch()` promise forever.
+
+  Previously, if the first browser launch rejected (e.g. before `npx playwright install` had completed the chromium binary download), the rejected promise was stored in the module-level `launchPromise` cache and never reset, causing every subsequent `stackwright_render_page` / `stackwright_test_a11y` call for the lifetime of the MCP session to return the frozen rejection. The only recovery was restarting the host process.
+
+  Added a `.catch` reset that clears `launchPromise` on rejection and re-throws, so the next call retries fresh.
+
+  Same "fail-loudly at the seam" family as the four P0 launcher bugs (swp-eezo/85mm/ohvg/j2cq). Discovered during post-dhl-opus-012 arc validation when a fresh QA re-run against the disaster-health-logistics artifact hit the cached rejection and could not recover without a Claude Code restart.
+
+- Updated dependencies [3dd0630]
+- Updated dependencies [0d2c3b8]
+- Updated dependencies [42fc358]
+- Updated dependencies [b6e3572]
+- Updated dependencies [b724662]
+- Updated dependencies [2c1e586]
+- Updated dependencies [799ddf7]
+- Updated dependencies [54a490b]
+- Updated dependencies [b170a47]
+  - @stackwright/build-scripts@0.12.0
+  - @stackwright/types@1.11.0
+  - @stackwright/cli@0.9.0
+
 ## 0.7.0
 
 ### Minor Changes

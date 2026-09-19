@@ -90,10 +90,10 @@ describe('MCP Tools Integration', () => {
 
       // Verify tool was registered by checking the internal registry
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_get_content_types');
+      expect(tools).toContain('sw_get_content_types');
 
       // Test the tool handler directly
-      const tool = (server as any)._registeredTools['stackwright_get_content_types'];
+      const tool = (server as any)._registeredTools['sw_get_content_types'];
       const result = await tool.handler({});
 
       expect(result.content).toBeDefined();
@@ -103,7 +103,7 @@ describe('MCP Tools Integration', () => {
       const textContent = result.content[0].text;
       expect(textContent).toContain('CONTENT TYPES');
       expect(textContent).toContain('SUB-TYPES');
-      expect(textContent).toContain('stackwright_preview_component');
+      expect(textContent).toContain('sw_preview_component');
 
       // Verify it matches actual CLI types
       const types = getTypes();
@@ -116,14 +116,14 @@ describe('MCP Tools Integration', () => {
       registerContentTypeTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_preview_component');
+      expect(tools).toContain('sw_preview_component');
     });
 
     it('preview_component rejects unknown content types', async () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerContentTypeTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_preview_component'];
+      const tool = (server as any)._registeredTools['sw_preview_component'];
       const result = await tool.handler({ content_type: 'nonexistent' });
 
       expect(result.isError).toBe(true);
@@ -134,7 +134,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerContentTypeTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_preview_component'];
+      const tool = (server as any)._registeredTools['sw_preview_component'];
       // Temporarily rename the screenshot if it exists to test the missing path
       const screenshotsDir = path.resolve(__dirname, '../screenshots');
       const screenshotPath = path.join(screenshotsDir, 'main-desktop.png');
@@ -161,7 +161,7 @@ describe('MCP Tools Integration', () => {
       const fakePng = Buffer.from('fake-png-data');
       fs.writeFileSync(path.join(screenshotsDir, 'faq-desktop.png'), fakePng);
 
-      const tool = (server as any)._registeredTools['stackwright_preview_component'];
+      const tool = (server as any)._registeredTools['sw_preview_component'];
       const result = await tool.handler({ content_type: 'faq' });
 
       expect(result.content).toHaveLength(2);
@@ -182,16 +182,16 @@ describe('MCP Tools Integration', () => {
       registerPageTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_list_pages');
-      expect(tools).toContain('stackwright_add_page');
-      expect(tools).toContain('stackwright_validate_pages');
+      expect(tools).toContain('sw_list_pages');
+      expect(tools).toContain('sw_add_page');
+      expect(tools).toContain('sw_validate_pages');
     });
 
     it('list_pages returns empty list when no pages exist', async () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_list_pages'];
+      const tool = (server as any)._registeredTools['sw_list_pages'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.content[0].text).toContain('No pages found');
@@ -206,7 +206,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_list_pages'];
+      const tool = (server as any)._registeredTools['sw_list_pages'];
       const result = await tool.handler({ projectRoot: testDir });
 
       const textContent = result.content[0].text;
@@ -218,7 +218,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_add_page'];
+      const tool = (server as any)._registeredTools['sw_add_page'];
       const result = await tool.handler({
         projectRoot: testDir,
         slug: 'new-page',
@@ -242,7 +242,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_get_page'];
+      const tool = (server as any)._registeredTools['sw_get_page'];
       const result = await tool.handler({
         projectRoot: testDir,
         slug: 'about',
@@ -257,7 +257,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_get_page'];
+      const tool = (server as any)._registeredTools['sw_get_page'];
       const result = await tool.handler({
         projectRoot: testDir,
         slug: 'nonexistent',
@@ -271,7 +271,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_write_page'];
+      const tool = (server as any)._registeredTools['sw_write_page'];
       const yamlContent = makePageYaml('new-page', 'New Page Title');
       const result = await tool.handler({
         projectRoot: testDir,
@@ -296,7 +296,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_write_page'];
+      const tool = (server as any)._registeredTools['sw_write_page'];
       const result = await tool.handler({
         projectRoot: testDir,
         slug: 'existing',
@@ -311,7 +311,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_write_page'];
+      const tool = (server as any)._registeredTools['sw_write_page'];
       const result = await tool.handler({
         projectRoot: testDir,
         slug: 'bad-page',
@@ -334,7 +334,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_validate_pages'];
+      const tool = (server as any)._registeredTools['sw_validate_pages'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.content[0].text).toContain('✓ Validation passed for all pages');
@@ -349,7 +349,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerPageTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_validate_pages'];
+      const tool = (server as any)._registeredTools['sw_validate_pages'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.isError).toBe(true);
@@ -363,8 +363,8 @@ describe('MCP Tools Integration', () => {
       registerProjectTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_get_project_info');
-      expect(tools).toContain('stackwright_scaffold_project');
+      expect(tools).toContain('sw_get_project_info');
+      expect(tools).toContain('sw_scaffold_project');
     });
 
     it('get_project_info returns project information', async () => {
@@ -374,7 +374,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerProjectTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_get_project_info'];
+      const tool = (server as any)._registeredTools['sw_get_project_info'];
       const result = await tool.handler({ projectRoot: testDir });
 
       const textContent = result.content[0].text;
@@ -391,7 +391,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerProjectTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_scaffold_project'];
+      const tool = (server as any)._registeredTools['sw_scaffold_project'];
       const result = await tool.handler({
         targetDir: targetDir,
         name: 'my-new-site',
@@ -411,9 +411,9 @@ describe('MCP Tools Integration', () => {
       registerSiteTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_validate_site');
-      expect(tools).toContain('stackwright_list_themes');
-      expect(tools).toContain('stackwright_write_site_config');
+      expect(tools).toContain('sw_validate_site');
+      expect(tools).toContain('sw_list_themes');
+      expect(tools).toContain('sw_write_site_config');
     });
 
     it('get_site_config returns site config YAML', async () => {
@@ -423,7 +423,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerSiteTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_get_site_config'];
+      const tool = (server as any)._registeredTools['sw_get_site_config'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.content[0].text).toContain('Site config');
@@ -436,7 +436,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerSiteTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_get_site_config'];
+      const tool = (server as any)._registeredTools['sw_get_site_config'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.isError).toBe(true);
@@ -450,7 +450,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerSiteTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_validate_site'];
+      const tool = (server as any)._registeredTools['sw_validate_site'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.content[0].text).toContain('✓ Site config is valid');
@@ -461,7 +461,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerSiteTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_list_themes'];
+      const tool = (server as any)._registeredTools['sw_list_themes'];
       const result = await tool.handler({});
 
       const textContent = result.content[0].text;
@@ -475,7 +475,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerSiteTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const tool = (server as any)._registeredTools['sw_write_site_config'];
       const result = await tool.handler({
         projectRoot: testDir,
         content: makeValidSiteConfig(),
@@ -500,7 +500,7 @@ describe('MCP Tools Integration', () => {
 
       // Write updated config with different title
       const updatedConfig = makeValidSiteConfig().replaceAll('Test Site', 'Updated Site');
-      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const tool = (server as any)._registeredTools['sw_write_site_config'];
       const result = await tool.handler({
         projectRoot: testDir,
         content: updatedConfig,
@@ -519,7 +519,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerSiteTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const tool = (server as any)._registeredTools['sw_write_site_config'];
       const result = await tool.handler({
         projectRoot: testDir,
         content: 'invalid: yaml: [[broken',
@@ -537,7 +537,7 @@ describe('MCP Tools Integration', () => {
       registerSiteTools(server);
 
       // Missing required fields (title, navigation, appBar)
-      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const tool = (server as any)._registeredTools['sw_write_site_config'];
       const result = await tool.handler({
         projectRoot: testDir,
         content: 'something_wrong: true\n',
@@ -557,7 +557,7 @@ describe('MCP Tools Integration', () => {
       const yamlContent = makeValidSiteConfig();
 
       // Write
-      const writeTool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const writeTool = (server as any)._registeredTools['sw_write_site_config'];
       const writeResult = await writeTool.handler({
         projectRoot: testDir,
         content: yamlContent,
@@ -565,7 +565,7 @@ describe('MCP Tools Integration', () => {
       expect(writeResult.isError).toBeFalsy();
 
       // Read back
-      const readTool = (server as any)._registeredTools['stackwright_get_site_config'];
+      const readTool = (server as any)._registeredTools['sw_get_site_config'];
       const readResult = await readTool.handler({ projectRoot: testDir });
       expect(readResult.isError).toBeFalsy();
       expect(readResult.content[0].text).toContain('Test Site');
@@ -581,7 +581,7 @@ describe('MCP Tools Integration', () => {
       registerSiteTools(server);
 
       const updatedConfig = makeValidSiteConfig().replace('Test Site', 'YAML Extension Site');
-      const tool = (server as any)._registeredTools['stackwright_write_site_config'];
+      const tool = (server as any)._registeredTools['sw_write_site_config'];
       const result = await tool.handler({
         projectRoot: testDir,
         content: updatedConfig,
@@ -609,8 +609,8 @@ describe('MCP Tools Integration', () => {
       registerGitOpsTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_stage_changes');
-      expect(tools).toContain('stackwright_open_pr');
+      expect(tools).toContain('sw_stage_changes');
+      expect(tools).toContain('sw_open_pr');
     });
 
     it('stage_changes returns empty when no changes exist', async () => {
@@ -619,7 +619,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerGitOpsTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_stage_changes'];
+      const tool = (server as any)._registeredTools['sw_stage_changes'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.content[0].text).toContain('No Stackwright content changes');
@@ -634,7 +634,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerGitOpsTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_stage_changes'];
+      const tool = (server as any)._registeredTools['sw_stage_changes'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.content[0].text).toContain('Staged 1 file(s)');
@@ -647,7 +647,7 @@ describe('MCP Tools Integration', () => {
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerGitOpsTools(server);
 
-      const tool = (server as any)._registeredTools['stackwright_open_pr'];
+      const tool = (server as any)._registeredTools['sw_open_pr'];
       const result = await tool.handler({ projectRoot: testDir });
 
       expect(result.isError).toBe(true);
@@ -661,7 +661,7 @@ describe('MCP Tools Integration', () => {
       registerComposeTools(server);
 
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_compose_site');
+      expect(tools).toContain('sw_compose_site');
     });
 
     it('compose_site creates site config and pages on success', async () => {
@@ -678,7 +678,7 @@ appBar:
   titleText: "Composed Site"
 `;
 
-      const tool = (server as any)._registeredTools['stackwright_compose_site'];
+      const tool = (server as any)._registeredTools['sw_compose_site'];
       const result = await tool.handler({
         projectRoot: testDir,
         siteConfig,
@@ -712,7 +712,7 @@ appBar:
   titleText: "Test"
 `;
 
-      const tool = (server as any)._registeredTools['stackwright_compose_site'];
+      const tool = (server as any)._registeredTools['sw_compose_site'];
       const result = await tool.handler({
         projectRoot: testDir,
         siteConfig,
@@ -743,7 +743,7 @@ appBar:
   titleText: "Test"
 `;
 
-      const tool = (server as any)._registeredTools['stackwright_compose_site'];
+      const tool = (server as any)._registeredTools['sw_compose_site'];
       const result = await tool.handler({
         projectRoot: testDir,
         siteConfig,
@@ -770,17 +770,17 @@ appBar:
       const server = new McpServer({ name: 'test', version: '1.0.0' });
       registerIntegrationTools(server);
       const tools = Object.keys((server as any)._registeredTools);
-      expect(tools).toContain('stackwright_list_integrations');
-      expect(tools).toContain('stackwright_get_integration');
-      expect(tools).toContain('stackwright_add_integration');
+      expect(tools).toContain('sw_list_integrations');
+      expect(tools).toContain('sw_get_integration');
+      expect(tools).toContain('sw_add_integration');
     });
 
-    describe('stackwright_list_integrations', () => {
+    describe('sw_list_integrations', () => {
       it('returns "No integrations configured." when stackwright.yml has no integrations', async () => {
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const tool = (server as any)._registeredTools['sw_list_integrations'];
         const result = await tool.handler({ projectRoot: testDir });
         expect(result.content[0].text).toBe('No integrations configured.');
         expect(result.isError).toBeFalsy();
@@ -790,7 +790,7 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const tool = (server as any)._registeredTools['sw_list_integrations'];
         const result = await tool.handler({ projectRoot: testDir });
         const text = result.content[0].text;
         expect(text).toContain('Integrations (2)');
@@ -804,7 +804,7 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const tool = (server as any)._registeredTools['sw_list_integrations'];
         const result = await tool.handler({ projectRoot: testDir });
         const text = result.content[0].text;
         expect(text).toContain('spec: ./specs/api.yaml');
@@ -814,18 +814,18 @@ appBar:
       it('returns isError when projectRoot does not exist', async () => {
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const tool = (server as any)._registeredTools['sw_list_integrations'];
         const result = await tool.handler({ projectRoot: '/definitely/does/not/exist/sw-test' });
         expect(result.isError).toBe(true);
       });
     });
 
-    describe('stackwright_get_integration', () => {
+    describe('sw_get_integration', () => {
       it('returns JSON details for a known integration', async () => {
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_get_integration'];
+        const tool = (server as any)._registeredTools['sw_get_integration'];
         const result = await tool.handler({ projectRoot: testDir, name: 'logistics' });
         expect(result.isError).toBeFalsy();
         const parsed = JSON.parse(result.content[0].text);
@@ -837,7 +837,7 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_get_integration'];
+        const tool = (server as any)._registeredTools['sw_get_integration'];
         const result = await tool.handler({ projectRoot: testDir, name: 'nonexistent' });
         expect(result.isError).toBe(true);
         expect(result.content[0].text).toContain('not found');
@@ -847,7 +847,7 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_get_integration'];
+        const tool = (server as any)._registeredTools['sw_get_integration'];
         const result = await tool.handler({ projectRoot: testDir, name: 'inventory' });
         expect(result.isError).toBeFalsy();
         const parsed = JSON.parse(result.content[0].text);
@@ -856,12 +856,12 @@ appBar:
       });
     });
 
-    describe('stackwright_add_integration', () => {
+    describe('sw_add_integration', () => {
       it('adds a new integration and returns "Added integration" message', async () => {
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_add_integration'];
+        const tool = (server as any)._registeredTools['sw_add_integration'];
         const result = await tool.handler({
           projectRoot: testDir,
           name: 'new-api',
@@ -876,7 +876,7 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), configWithIntegrations(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const tool = (server as any)._registeredTools['stackwright_add_integration'];
+        const tool = (server as any)._registeredTools['sw_add_integration'];
         const result = await tool.handler({
           projectRoot: testDir,
           name: 'logistics',
@@ -891,14 +891,14 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const addTool = (server as any)._registeredTools['stackwright_add_integration'];
+        const addTool = (server as any)._registeredTools['sw_add_integration'];
         await addTool.handler({
           projectRoot: testDir,
           name: 'brand-new',
           type: 'rest',
           endpoint: 'https://brand-new.example.com',
         });
-        const listTool = (server as any)._registeredTools['stackwright_list_integrations'];
+        const listTool = (server as any)._registeredTools['sw_list_integrations'];
         const result = await listTool.handler({ projectRoot: testDir });
         expect(result.content[0].text).toContain('brand-new');
         expect(result.content[0].text).toContain('rest');
@@ -908,14 +908,14 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const addTool = (server as any)._registeredTools['stackwright_add_integration'];
+        const addTool = (server as any)._registeredTools['sw_add_integration'];
         await addTool.handler({
           projectRoot: testDir,
           name: 'spec-api',
           type: 'openapi',
           spec: './specs/spec-api.yaml',
         });
-        const getTool = (server as any)._registeredTools['stackwright_get_integration'];
+        const getTool = (server as any)._registeredTools['sw_get_integration'];
         const result = await getTool.handler({ projectRoot: testDir, name: 'spec-api' });
         const parsed = JSON.parse(result.content[0].text);
         expect(parsed.spec).toBe('./specs/spec-api.yaml');
@@ -925,14 +925,14 @@ appBar:
         fs.writeFileSync(path.join(testDir, 'stackwright.yml'), makeValidSiteConfig(), 'utf8');
         const server = new McpServer({ name: 'test', version: '1.0.0' });
         registerIntegrationTools(server);
-        const addTool = (server as any)._registeredTools['stackwright_add_integration'];
+        const addTool = (server as any)._registeredTools['sw_add_integration'];
         await addTool.handler({
           projectRoot: testDir,
           name: 'endpoint-api',
           type: 'rest',
           endpoint: 'https://endpoint.example.com/v1',
         });
-        const getTool = (server as any)._registeredTools['stackwright_get_integration'];
+        const getTool = (server as any)._registeredTools['sw_get_integration'];
         const result = await getTool.handler({ projectRoot: testDir, name: 'endpoint-api' });
         const parsed = JSON.parse(result.content[0].text);
         expect(parsed.endpoint).toBe('https://endpoint.example.com/v1');
@@ -955,28 +955,29 @@ appBar:
       const tools = Object.keys((server as any)._registeredTools);
 
       // Verify all expected tools are registered
-      expect(tools).toContain('stackwright_get_content_types');
-      expect(tools).toContain('stackwright_preview_component');
-      expect(tools).toContain('stackwright_list_pages');
-      expect(tools).toContain('stackwright_get_page');
-      expect(tools).toContain('stackwright_write_page');
-      expect(tools).toContain('stackwright_add_page');
-      expect(tools).toContain('stackwright_validate_pages');
-      expect(tools).toContain('stackwright_get_project_info');
-      expect(tools).toContain('stackwright_scaffold_project');
-      expect(tools).toContain('stackwright_get_site_config');
-      expect(tools).toContain('stackwright_validate_site');
-      expect(tools).toContain('stackwright_list_themes');
-      expect(tools).toContain('stackwright_write_site_config');
-      expect(tools).toContain('stackwright_stage_changes');
-      expect(tools).toContain('stackwright_open_pr');
-      expect(tools).toContain('stackwright_compose_site');
-      expect(tools).toContain('stackwright_list_integrations');
-      expect(tools).toContain('stackwright_get_integration');
-      expect(tools).toContain('stackwright_add_integration');
+      expect(tools).toContain('sw_get_content_types');
+      expect(tools).toContain('sw_preview_component');
+      expect(tools).toContain('sw_list_pages');
+      expect(tools).toContain('sw_get_page');
+      expect(tools).toContain('sw_write_page');
+      expect(tools).toContain('sw_add_page');
+      expect(tools).toContain('sw_validate_pages');
+      expect(tools).toContain('sw_get_project_info');
+      expect(tools).toContain('sw_scaffold_project');
+      expect(tools).toContain('sw_get_site_config');
+      expect(tools).toContain('sw_validate_site');
+      expect(tools).toContain('sw_list_themes');
+      expect(tools).toContain('sw_write_site_config');
+      expect(tools).toContain('sw_stage_changes');
+      expect(tools).toContain('sw_open_pr');
+      expect(tools).toContain('sw_compose_site');
+      expect(tools).toContain('sw_list_integrations');
+      expect(tools).toContain('sw_get_integration');
+      expect(tools).toContain('sw_add_integration');
 
-      // Should have exactly 19 tools
-      expect(tools.length).toBe(19);
+      // 19 canonical tools, each also registered under its legacy stackwright_*
+      // alias name (registerWithAlias) — 38 total until the alias is dropped.
+      expect(tools.length).toBe(38);
     });
   });
 });

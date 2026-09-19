@@ -36,15 +36,16 @@ export function LayoutGrid({ heading, columns, gap, stackBelow, background }: Gr
   // Build grid-template-columns from width ratios (default 1 each → equal width)
   const templateColumns = isStacked ? '1fr' : columns.map((col) => `${col.width ?? 1}fr`).join(' ');
 
+  const sectionBackground = resolveBackground(background, theme, resolvedColorMode === 'dark');
   const headingColor = heading?.textColor
-    ? resolveColor(heading.textColor, theme.colors)
+    ? resolveColor(heading.textColor, theme.colors, { background: sectionBackground })
     : theme.colors.primary;
 
   return (
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
+        background: sectionBackground,
       }}
     >
       {heading?.text && (

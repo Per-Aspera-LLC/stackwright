@@ -1,9 +1,11 @@
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import yaml from 'js-yaml';
 import { siteConfigSchema, resolveEnvVarsDeep, checkForPlaintextSecret } from '@stackwright/types';
 import type { PrebuildPlugin } from '@stackwright/types';
 import { copyIfNewer, rewritePaths, isColocatablePath } from './path-utils';
+import { validateSiteColorRefs } from './validateColorRefs';
 import type { CompileContext } from './context';
 
 // ---------------------------------------------------------------------------
@@ -178,7 +180,7 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
     throw new Error(`Site config not found. Expected stackwright.yml in: ${projectRoot}`);
   }
 
-  console.log('\nProcessing site config...');
+  log('\nProcessing site config...');
   const rawSiteConfig = yaml.load(fs.readFileSync(siteConfigFile, 'utf8'));
 
   const siteValidation = siteConfigSchema.safeParse(rawSiteConfig);
@@ -197,13 +199,20 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
   auditIntegrationAuthSecrets(processedConfig);
 
   const configWithEnvResolved = resolveEnvVarsDeep(processedConfig) as Record<string, unknown>;
-  console.log('  [OK] Resolved environment variable references in integrations');
+  log('  [OK] Resolved environment variable references in integrations');
+
+  // stackwright-819 / swp-rlih: appBar/footer/sidebar textColor/backgroundColor
+  // must reference a color the runtime can resolve. Build-fatal, not a warning
+  // — a silently-stripped/unresolved token used to reach the browser as
+  // invalid, unparseable CSS (see ADJUDICATION.md).
+  validateSiteColorRefs(configWithEnvResolved, projectRoot);
+  log('  [OK] Validated appBar/footer/sidebar color references');
 
   if (plugins.length > 0) {
     const integrations = configWithEnvResolved.integrations;
     if (Array.isArray(integrations)) {
       validateIntegrationConfigs(integrations, plugins);
-      console.log('  [OK] Validated integration configurations against plugin schemas');
+      log('  [OK] Validated integration configurations against plugin schemas');
     }
   }
 
@@ -211,7 +220,7 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
     path.join(contentOutDir, '_site.json'),
     JSON.stringify(configWithEnvResolved, null, 2)
   );
-  console.log('  OK _site.json');
+  log('  OK _site.json');
 
   // Locale variants
   const localeConfigFiles = findLocaleConfigFiles(projectRoot);
@@ -229,12 +238,24 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
       continue;
     }
     const processedLocaleConfig = processSiteConfig(rawLocaleConfig, projectRoot, imagesDir);
-    const localeConfigWithEnvResolved = resolveEnvVarsDeep(processedLocaleConfig);
+    const localeConfigWithEnvResolved = resolveEnvVarsDeep(processedLocaleConfig) as Record<
+      string,
+      unknown
+    >;
+    try {
+      validateSiteColorRefs(localeConfigWithEnvResolved, projectRoot);
+    } catch (err) {
+      // Locale variants use the same soft-fail-and-skip precedent as their
+      // schema validation above — one locale's bad color token shouldn't
+      // take down the whole build when the default locale is otherwise fine.
+      console.warn(`  WARNING: stackwright.${locale}.yml -- skipping: ${(err as Error).message}`);
+      continue;
+    }
     fs.writeFileSync(
       path.join(contentOutDir, `_site.${locale}.json`),
       JSON.stringify(localeConfigWithEnvResolved, null, 2)
     );
-    console.log(`  OK _site.${locale}.json`);
+    log(`  OK _site.${locale}.json`);
   }
 
   return { processedConfig: configWithEnvResolved };

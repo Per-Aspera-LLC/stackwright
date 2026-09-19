@@ -124,7 +124,7 @@ Content-as-code means the repository is the content management system. This is n
 - Diffing: see exactly what changed between any two versions of any page
 - Rollback: revert any change with a single command
 
-**The non-developer access problem**: The legitimate objection is that non-technical users cannot open a YAML file in a text editor and contribute content. The answer to this is not to abandon the model — it is to build better interfaces on top of it. The MCP server roadmap item exists for this reason: an AI agent with access to `stackwright_create_page`, `stackwright_validate_yaml`, and `stackwright_open_pr` tools gives a non-technical user a natural language interface to the git-backed content model. They describe what they want, the agent writes valid YAML, validates it, and opens a PR. The developer reviews and merges.
+**The non-developer access problem**: The legitimate objection is that non-technical users cannot open a YAML file in a text editor and contribute content. The answer to this is not to abandon the model — it is to build better interfaces on top of it. The MCP server roadmap item exists for this reason: an AI agent with access to `sw_add_page`, `sw_validate_pages`, and `sw_open_pr` tools gives a non-technical user a natural language interface to the git-backed content model. They describe what they want, the agent writes valid YAML, validates it, and opens a PR. The developer reviews and merges.
 
 This is a better workflow than a CMS dashboard, not a worse one. It produces reviewable, auditable, rollbackable content changes as a natural output of the authoring process.
 
@@ -170,7 +170,7 @@ This is not a workaround for not having built a GUI. It is a deliberate product 
 
 AI agents that generate content without seeing the result are flying blind. Stackwright's visual rendering infrastructure closes this loop.
 
-**The render tools** (MCP server): `stackwright_render_page` screenshots any page, `stackwright_render_diff` captures before/after comparisons, `stackwright_render_yaml` renders raw YAML without saving permanently. AI agents can iterate visually — write content, render it, evaluate the result, adjust, and converge.
+**The render tools** (MCP server): `sw_render_page` screenshots any page, `sw_render_diff` captures before/after comparisons, `sw_render_yaml` renders raw YAML without saving permanently. AI agents can iterate visually — write content, render it, evaluate the result, adjust, and converge.
 
 **The CLI**: `stackwright preview` renders pages to screenshot files for human review.
 

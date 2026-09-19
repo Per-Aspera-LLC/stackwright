@@ -23,16 +23,18 @@ export function Faq({ heading, items, background }: FaqContent) {
   const resolvedColorMode = useSafeColorMode();
   const [openItems, setOpenItems] = React.useState<string[]>([]);
 
+  const sectionBackground = resolveBackground(background, theme, resolvedColorMode === 'dark');
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
-    theme.colors
+    theme.colors,
+    { background: sectionBackground }
   );
 
   return (
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
+        background: sectionBackground,
       }}
     >
       {heading?.text && (

@@ -1,9 +1,12 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { getBoard } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 export function registerBoardTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_get_board',
     'stackwright_get_board',
     'Get the priority-tiered product board from .beads/issues.jsonl. Returns open issues organized by priority: now (p1) / next (p2) / later (p3) / vision (p4).',
     {

@@ -16,6 +16,11 @@ import {
 } from './register.js';
 import { version } from '../package.json';
 
+// Re-exported at the package root so consumers can `import { canonicalToolName }
+// from '@stackwright/mcp'` without reaching into the `./register` subpath.
+// Pure re-export — no side effects, does not affect the stdio-server bin below.
+export { SW_TOOL_ALIASES, canonicalToolName, registerWithAlias } from './tool-aliases.js';
+
 const server = new McpServer({
   name: 'stackwright',
   version,

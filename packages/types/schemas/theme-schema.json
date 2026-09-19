@@ -242,6 +242,21 @@
         },
         "textSecondary": {
           "type": "string"
+        },
+        "primaryForeground": {
+          "type": "string"
+        },
+        "secondaryForeground": {
+          "type": "string"
+        },
+        "accentForeground": {
+          "type": "string"
+        },
+        "surfaceForeground": {
+          "type": "string"
+        },
+        "backgroundForeground": {
+          "type": "string"
         }
       },
       "required": [

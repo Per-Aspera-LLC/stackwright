@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import type { CompileContext } from './context';
 
@@ -159,7 +160,7 @@ export async function downloadAndBundleFonts(
   }
 
   fs.writeFileSync(path.join(fontsDir, 'fonts.css'), rewrittenCss, 'utf8');
-  console.log(`  [OK] Bundled ${woff2Urls.length} font file(s) to public/fonts/`);
+  log(`  [OK] Bundled ${woff2Urls.length} font file(s) to public/fonts/`);
 
   return [{ rel: 'stylesheet', href: '/fonts/fonts.css' }];
 }
@@ -220,14 +221,14 @@ export async function compileFonts(ctx: CompileContext): Promise<void> {
   if (fontStrategy === 'bundle') {
     const allFonts = getAllGoogleFontNames(configForFontNames);
     if (allFonts.length > 0) {
-      console.log('  Bundling fonts locally (strategy: bundle)...');
+      log('  Bundling fonts locally (strategy: bundle)...');
       fontLinks = await downloadAndBundleFonts(allFonts, publicDir);
     }
   } else if (fontStrategy === 'local') {
     const localPath = fontsConfig?.local_path;
     if (localPath) {
       fontLinks = [{ rel: 'stylesheet', href: localPath }];
-      console.log(`  Using local fonts (strategy: local): ${localPath}`);
+      log(`  Using local fonts (strategy: local): ${localPath}`);
     } else {
       console.warn(
         '  WARNING: fonts.strategy is "local" but local_path is not set. No fonts will be loaded.'
@@ -242,6 +243,6 @@ export async function compileFonts(ctx: CompileContext): Promise<void> {
       path.join(contentOutDir, '_font-links.json'),
       JSON.stringify({ links: fontLinks }, null, 2)
     );
-    console.log('  OK _font-links.json');
+    log('  OK _font-links.json');
   }
 }

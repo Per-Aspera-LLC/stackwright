@@ -10,9 +10,12 @@ import {
   writePage,
   resolvePagesDir,
 } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 export function registerPageTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_list_pages',
     'stackwright_list_pages',
     'List all pages in a Stackwright project. Returns each page slug and its heading.',
     {
@@ -43,7 +46,9 @@ export function registerPageTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_get_page',
     'stackwright_get_page',
     'Read the raw YAML content of an existing page by slug. Returns the full YAML source.',
     {
@@ -95,7 +100,7 @@ export function registerPageTools(server: McpServer): void {
             content: [
               {
                 type: 'text',
-                text: `Page not found: "${slug}". Use stackwright_list_pages to see available pages.`,
+                text: `Page not found: "${slug}". Use sw_list_pages to see available pages.`,
               },
             ],
             isError: true,
@@ -120,7 +125,7 @@ export function registerPageTools(server: McpServer): void {
               type: 'text',
               text:
                 code === 'PAGE_NOT_FOUND'
-                  ? `Page not found: "${slug}". Use stackwright_list_pages to see available pages.`
+                  ? `Page not found: "${slug}". Use sw_list_pages to see available pages.`
                   : `Error reading page: ${String((err as Error).message)}`,
             },
           ],
@@ -130,7 +135,9 @@ export function registerPageTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_write_page',
     'stackwright_write_page',
     "Write or update a page's YAML content. Validates against the content schema before writing — invalid YAML is rejected with field-level errors.",
     {
@@ -219,7 +226,9 @@ export function registerPageTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_add_page',
     'stackwright_add_page',
     'Create a new page in a Stackwright project. Writes a boilerplate content.yml at the given slug path.',
     {
@@ -240,7 +249,9 @@ export function registerPageTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_validate_pages',
     'stackwright_validate_pages',
     'Validate page YAML files against the Stackwright content schema. Returns field-level errors if validation fails.',
     {

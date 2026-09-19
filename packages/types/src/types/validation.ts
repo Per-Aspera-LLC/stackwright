@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod';
+import type { PrebuildPlugin, ProvidedSchemas } from './plugin';
 import { contentItemSchema, KNOWN_CONTENT_TYPE_KEYS, type GridColumn } from './content';
 import { pageContentSchema, buildExtendedPageContentSchema } from './layout';
 import { CONTENT_TYPE_HINTS, getContentTypeHints, suggestContentType } from './validation-hints';
@@ -464,5 +465,67 @@ export function toJsonFormat(result: ValidationResult): ValidationResultJson {
       hint: err.hint,
       suggestion: err.suggestion,
     })),
+  };
+}
+
+// ============================================================================
+// Provided-schema bridge — ProvidedSchemas → flat PrebuildPlugin fields
+//
+// Lives here (not in the main entry) because it is zod-heavy at runtime;
+// the main `@stackwright/types` entry stays zod-free for client bundles.
+// The declaration types (ProvidedSchemaEntry, ProvidedSchemas,
+// PrebuildPluginWithSchemas, assertHasSchema) live in `./plugin`.
+// ============================================================================
+
+/**
+ * Convert a `ProvidedSchemas` map into the `contentItemSchemas` +
+ * `knownContentTypeKeys` fields that `compilePages()` reads.
+ *
+ * For each entry:
+ *  - If the schema already has a `type` field in its shape (detected via
+ *    `.shape`), use it as-is (schema already carries its own discriminant)
+ *  - Otherwise (props-only), wrap with `SCHEMA.extend({ type: z.literal(key) })`
+ *  - Factory-only entries are skipped — they have no static schema and don't
+ *    belong in the build-time validator
+ *
+ * @returns { contentItemSchemas, knownContentTypeKeys } ready to spread onto a PrebuildPlugin
+ */
+export function toPrebuildPluginFields(
+  providedSchemas: ProvidedSchemas
+): Pick<PrebuildPlugin, 'contentItemSchemas' | 'knownContentTypeKeys'> {
+  const contentItemSchemas: unknown[] = [];
+  const knownContentTypeKeys: string[] = [];
+
+  for (const [key, entry] of Object.entries(providedSchemas)) {
+    // Skip factory-only entries — they have no static schema and don't belong
+    // in the validator (which needs a concrete Zod schema at build time).
+    if (entry.schema === undefined) continue;
+
+    const schema = entry.schema as z.ZodTypeAny;
+    const shape = (schema as z.ZodObject<z.ZodRawShape>).shape as
+      | Record<string, unknown>
+      | undefined;
+
+    let effectiveSchema: z.ZodTypeAny;
+    if (shape && 'type' in shape) {
+      // Schema already carries a type discriminant — use as-is
+      effectiveSchema = schema;
+    } else if (typeof (schema as z.ZodObject<z.ZodRawShape>).extend === 'function') {
+      // Props-only ZodObject — inject the type discriminant the validator needs
+      effectiveSchema = (schema as z.ZodObject<z.ZodRawShape>).extend({
+        type: z.literal(key),
+      }) as z.ZodTypeAny;
+    } else {
+      // Fallback for any non-ZodObject schema shape
+      effectiveSchema = z.intersection(schema, z.object({ type: z.literal(key) }));
+    }
+
+    contentItemSchemas.push(effectiveSchema);
+    knownContentTypeKeys.push(key);
+  }
+
+  return {
+    contentItemSchemas: contentItemSchemas as PrebuildPlugin['contentItemSchemas'],
+    knownContentTypeKeys,
   };
 }

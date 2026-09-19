@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import type { CompileContext } from './context';
 import lucideExportsList from './lucide-exports.json';
@@ -297,10 +298,10 @@ export function generateIconManifest(contentOutDir: string, projectRoot: string)
   fs.writeFileSync(path.join(generatedDir, 'icons.ts'), lines.join('\n'));
   emit({ type: 'file_generated', path: path.join(generatedDir, 'icons.ts') }, { projectRoot });
 
-  console.log(
+  log(
     `  [OK] Icon manifest: ${rawSrcs.size} site icon(s) + ${SYSTEM_ICON_NAMES.length} system icon(s) -> ${lucideImports.size} unique lucide import(s)`
   );
-  console.log(`  [OK] Generated stackwright-generated/icons.ts`);
+  log(`  [OK] Generated stackwright-generated/icons.ts`);
 
   emit(
     { type: 'prebuild_complete', step: 'icon-scan', durationMs: Date.now() - startTime },
@@ -318,6 +319,6 @@ export function generateIconManifest(contentOutDir: string, projectRoot: string)
  * Synchronous: all operations are JSON parsing and file writes.
  */
 export function compileIcons(ctx: CompileContext): void {
-  console.log('\nGenerating icon manifest...');
+  log('\nGenerating icon manifest...');
   generateIconManifest(ctx.contentOutDir, ctx.projectRoot);
 }

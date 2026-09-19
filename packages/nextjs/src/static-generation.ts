@@ -28,6 +28,91 @@ function isReservedFile(filename: string): boolean {
   return false;
 }
 
+// ---------------------------------------------------------------------------
+// Dynamic segments — `[param]` content dirs/files (App-Router convention)
+// ---------------------------------------------------------------------------
+
+/** Matches a single dynamic segment name like `[id]` and captures `id`. */
+const DYNAMIC_SEGMENT = /^\[([^/[\]]+)\]$/;
+
+/** Returns the param name for a dynamic segment (`[id]` → `id`), else null. */
+export function dynamicParamName(segment: string): string | null {
+  const match = DYNAMIC_SEGMENT.exec(segment);
+  return match ? match[1]! : null;
+}
+
+/** Safe readdir with Dirents; empty on missing dir or fs errors. */
+function readEntries(dir: string): fs.Dirent[] {
+  try {
+    if (!fs.existsSync(dir)) return [];
+    return fs.readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+}
+
+export interface DynamicContentResolution {
+  /** Absolute path of the matched content JSON file. */
+  filePath: string;
+  /** Param bindings collected along the path, e.g. `{ id: '11' }`. */
+  params: Record<string, string>;
+}
+
+/**
+ * Resolve a slug against dynamic-segment content paths under `base`.\
+ * Literal matches always win; a `[param]` dir/file only binds when the\
+ * literal segment is absent. Exactly ONE dynamic candidate may exist per\
+ * level — zero is a miss, two or more is ambiguous and refuses to resolve\
+ * (build-time validation should have rejected that layout).\
+ *
+ * `['contacts', '11']` + `contacts/[id].json` → `{ filePath: …/contacts/[id].json, params: { id: '11' } }`
+ */
+export function resolveDynamicContentPath(
+  base: string,
+  segments: string[]
+): DynamicContentResolution | null {
+  const resolve = (
+    dir: string,
+    segs: string[],
+    params: Record<string, string>
+  ): DynamicContentResolution | null => {
+    const [head, ...rest] = segs;
+    if (head === undefined) return null;
+
+    if (rest.length === 0) {
+      const literal = path.join(dir, `${head}.json`);
+      if (fs.existsSync(literal)) return { filePath: literal, params };
+      const candidates = readEntries(dir).filter(
+        (e) =>
+          e.isFile() &&
+          e.name.endsWith('.json') &&
+          dynamicParamName(e.name.replace(/\.json$/, '')) !== null
+      );
+      if (candidates.length !== 1) return null;
+      const name = candidates[0]!.name;
+      const param = dynamicParamName(name.replace(/\.json$/, ''))!;
+      return { filePath: path.join(dir, name), params: { ...params, [param]: head } };
+    }
+
+    const literalDir = path.join(dir, head);
+    if (fs.existsSync(literalDir)) {
+      const hit = resolve(literalDir, rest, params);
+      if (hit) return hit;
+    }
+    const dirCandidates = readEntries(dir).filter(
+      (e) => e.isDirectory() && dynamicParamName(e.name) !== null
+    );
+    if (dirCandidates.length !== 1) return null;
+    const dirName = dirCandidates[0]!.name;
+    return resolve(path.join(dir, dirName), rest, {
+      ...params,
+      [dynamicParamName(dirName)!]: head,
+    });
+  };
+
+  return resolve(base, segments, {});
+}
+
 /**
  * Generate static params for all Stackwright slug pages.
  *
@@ -60,6 +145,8 @@ function walkContentDir(dir: string, prefix: string[]): Array<{ slug: string[] }
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     if (entry.isDirectory()) {
       if (entry.name === 'collections') continue;
+      // Dynamic-segment dirs ([id]/…) are resolved per-request, not prerendered
+      if (dynamicParamName(entry.name) !== null) continue;
       results.push(...walkContentDir(path.join(dir, entry.name), [...prefix, entry.name]));
     } else if (entry.isFile() && entry.name.endsWith('.json')) {
       if (isReservedFile(entry.name)) continue;
@@ -68,6 +155,11 @@ function walkContentDir(dir: string, prefix: string[]): Array<{ slug: string[] }
         if (prefix.length > 0) results.push({ slug: prefix });
       } else {
         const slugPart = entry.name.replace(/\.json$/, '');
+        // Dynamic-segment files ([id].json) must NOT become literal slugs —
+        // emitting { slug: ['contacts', '[id]'] } creates an unroutable junk
+        // page AND (with dynamicParams=false) pins the route table so the
+        // real /contacts/11 can never resolve (qa-006 class).
+        if (dynamicParamName(slugPart) !== null) continue;
         results.push({ slug: [...prefix, slugPart] });
       }
     }
@@ -105,27 +197,33 @@ export async function getStackwrightPageData(
 ): Promise<unknown | null> {
   const supportedLocales = getStackwrightSiteLocales();
   const defaultLocale = supportedLocales[0] ?? 'en';
+  const segments = !slug ? [] : Array.isArray(slug) ? slug : [slug];
 
-  /** Build the absolute file path for a given optional subdir. */
-  const buildPath = (subdir?: string): string => {
+  /**
+   * Read the page file for an optional locale subdir: exact path first,
+   * then dynamic-segment resolution (`contacts/11` → `contacts/[id].json`
+   * with `params: { id: '11' }`). Exact matches carry no params.
+   */
+  const readPage = (subdir?: string): { data: unknown; params: Record<string, string> } | null => {
     const base = subdir ? path.join(CONTENT_DIR, subdir) : CONTENT_DIR;
-    if (!slug || (Array.isArray(slug) && slug.length === 0)) {
-      return path.join(base, '_root.json');
-    }
-    const slugPath = Array.isArray(slug) ? slug.join('/') : slug;
-    return path.join(base, `${slugPath}.json`);
+    const exactPath =
+      segments.length === 0
+        ? path.join(base, '_root.json')
+        : path.join(base, `${segments.join('/')}.json`);
+    const exact = readJsonFile(exactPath);
+    if (exact !== null) return { data: exact, params: {} };
+    if (segments.length === 0) return null;
+    const dynamic = resolveDynamicContentPath(base, segments);
+    if (!dynamic) return null;
+    const data = readJsonFile(dynamic.filePath);
+    return data !== null ? { data, params: dynamic.params } : null;
   };
 
-  let pageData: unknown;
-  if (locale && locale !== defaultLocale) {
-    // Try locale-specific file first; fall back silently to default locale
-    const localePath = buildPath(locale);
-    pageData = fs.existsSync(localePath) ? readJsonFile(localePath) : readJsonFile(buildPath());
-  } else {
-    pageData = readJsonFile(buildPath());
-  }
+  // Locale-specific file first; fall back silently to default locale
+  const hit = locale && locale !== defaultLocale ? (readPage(locale) ?? readPage()) : readPage();
+  if (!hit) return null;
 
-  return pageData !== null ? injectCollectionEntries(pageData) : null;
+  return injectRouteParams(injectCollectionEntries(hit.data), hit.params);
 }
 
 // ---------------------------------------------------------------------------
@@ -150,26 +248,62 @@ export function injectCollectionEntries(pageData: unknown): unknown {
   return pageData;
 }
 
-function walkContentItems(items: Record<string, unknown>[]): void {
+/**
+ * Depth-first visitor over content items, following every child container
+ * shape (`content_items`, grid `columns[].content_items`,
+ * `tabs[].content_items`). Single traversal shared by entry injection and
+ * route-param injection — one walker, no copies.
+ */
+function visitContentItems(
+  items: Record<string, unknown>[],
+  visit: (item: Record<string, unknown>) => void
+): void {
   for (const item of items) {
     if (!item || typeof item !== 'object') continue;
+    visit(item);
 
-    if (item.type === 'collection_list') {
-      injectEntries(item);
-    } else if (item.type === 'grid' && Array.isArray(item.columns)) {
-      for (const col of item.columns as Record<string, unknown>[]) {
-        if (Array.isArray(col.content_items)) {
-          walkContentItems(col.content_items as Record<string, unknown>[]);
-        }
-      }
-    } else if (item.type === 'tabbed_content' && Array.isArray(item.tabs)) {
-      for (const tab of item.tabs as Record<string, unknown>[]) {
-        if (Array.isArray(tab.content_items)) {
-          walkContentItems(tab.content_items as Record<string, unknown>[]);
+    if (Array.isArray(item.content_items)) {
+      visitContentItems(item.content_items as Record<string, unknown>[], visit);
+    }
+    for (const containerKey of ['columns', 'tabs'] as const) {
+      const container = item[containerKey];
+      if (!Array.isArray(container)) continue;
+      for (const child of container as Record<string, unknown>[]) {
+        if (child && typeof child === 'object' && Array.isArray(child.content_items)) {
+          visitContentItems(child.content_items as Record<string, unknown>[], visit);
         }
       }
     }
   }
+}
+
+function walkContentItems(items: Record<string, unknown>[]): void {
+  visitContentItems(items, (item) => {
+    if (item.type === 'collection_list') injectEntries(item);
+  });
+}
+
+/**
+ * Inject resolved dynamic-route params (`_routeParams`) into the page data
+ * AND every content item, so param-consuming components (e.g. Pro's
+ * `detail_view`) receive the row identity as a prop when the content
+ * renderer spreads item keys (qa-006: the `[id]` value must reach the
+ * page's data binding).
+ */
+export function injectRouteParams(pageData: unknown, params: Record<string, string>): unknown {
+  if (Object.keys(params).length === 0) return pageData;
+  if (!pageData || typeof pageData !== 'object') return pageData;
+
+  const data = pageData as Record<string, unknown>;
+  data._routeParams = params;
+
+  const content = data.content as Record<string, unknown> | undefined;
+  if (content && Array.isArray(content.content_items)) {
+    visitContentItems(content.content_items as Record<string, unknown>[], (item) => {
+      item._routeParams = params;
+    });
+  }
+  return pageData;
 }
 
 function injectEntries(node: Record<string, unknown>): void {

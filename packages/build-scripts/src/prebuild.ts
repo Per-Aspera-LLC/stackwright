@@ -20,6 +20,7 @@
  */
 
 import fs from 'fs';
+import { log, setLogSink } from './log';
 import path from 'path';
 import type { PrebuildOptions } from '@stackwright/types';
 import { createCompileContext, compileAll } from './compile';
@@ -87,7 +88,11 @@ export type { CompileContext } from './compile';
  * @param options - Project root path (string) or PrebuildOptions object
  */
 export async function runPrebuild(options?: string | PrebuildOptions): Promise<void> {
-  console.log('Stackwright prebuild starting...');
+  if (typeof options === 'object' && options !== null && options.logSink) {
+    setLogSink(options.logSink);
+  }
+
+  log('Stackwright prebuild starting...');
 
   const ctx = createCompileContext(options);
 
@@ -108,7 +113,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
   try {
     const { buildSearchIndex } = require('./build-searchIndex');
     const entries = buildSearchIndex(contentOutDir, searchIndexPath);
-    console.log('\n  [OK] Search index: ' + entries.length + ' pages indexed');
+    log('\n  [OK] Search index: ' + entries.length + ' pages indexed');
   } catch (err) {
     console.warn('\n  [WARN] Search index generation skipped: ' + (err as Error).message);
   }
@@ -126,13 +131,13 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
 
       const sitemapXml = generateSitemap({ pages, baseUrl, buildDate });
       fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapXml);
-      console.log(`  [OK] sitemap.xml (${pages.filter((p) => !p.meta?.noindex).length} pages)`);
+      log(`  [OK] sitemap.xml (${pages.filter((p) => !p.meta?.noindex).length} pages)`);
 
       const robotsTxt = generateRobotsTxt(baseUrl);
       fs.writeFileSync(path.join(publicDir, 'robots.txt'), robotsTxt);
-      console.log('  [OK] robots.txt');
+      log('  [OK] robots.txt');
     } else {
-      console.log(
+      log(
         '  [INFO] Skipping sitemap.xml/robots.txt -- set meta.base_url in stackwright.yml to enable'
       );
     }
@@ -152,7 +157,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
         outputDir: sbomOutputDir,
       });
       await sbom.writeTo(sbomOutputDir);
-      console.log('\n  [OK] SBOM generated: .stackwright/sbom/');
+      log('\n  [OK] SBOM generated: .stackwright/sbom/');
     } catch (error) {
       if (sbomStrict) {
         throw new Error(
@@ -165,7 +170,7 @@ export async function runPrebuild(options?: string | PrebuildOptions): Promise<v
     }
   }
 
-  console.log('\nStackwright prebuild complete.\n');
+  log('\nStackwright prebuild complete.\n');
 }
 
 // ---------------------------------------------------------------------------
@@ -189,14 +194,12 @@ if (require.main === module) {
         .filter(Boolean)
     : undefined;
 
-  if (noSBOM) console.log('[INFO] SBOM generation skipped (--no-sbom flag)');
+  if (noSBOM) log('[INFO] SBOM generation skipped (--no-sbom flag)');
   if (sbomStrict)
-    console.log('[INFO] SBOM strict mode enabled -- build will fail if SBOM generation errors');
-  if (noImageOptimization)
-    console.log('[INFO] Image optimization skipped (--no-image-optimization flag)');
-  if (noPluginDiscovery)
-    console.log('[INFO] Plugin auto-discovery disabled (--no-plugin-discovery flag)');
-  if (pluginOverride) console.log(`[INFO] Plugin discovery override: ${pluginOverride.join(', ')}`);
+    log('[INFO] SBOM strict mode enabled -- build will fail if SBOM generation errors');
+  if (noImageOptimization) log('[INFO] Image optimization skipped (--no-image-optimization flag)');
+  if (noPluginDiscovery) log('[INFO] Plugin auto-discovery disabled (--no-plugin-discovery flag)');
+  if (pluginOverride) log(`[INFO] Plugin discovery override: ${pluginOverride.join(', ')}`);
 
   if (watchMode) {
     const { runWatch } = require('./watch');

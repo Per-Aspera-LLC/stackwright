@@ -216,38 +216,38 @@ Foreman: "Dashboard Otter not installed. Falling back to
 
 ## MCP Tool Usage by Otter
 
-**Important**: Foreman Otter uses MCP tools (`stackwright_scaffold_project`) instead of shell commands for project scaffolding. This ensures it works without requiring a globally installed CLI.
+**Important**: Foreman Otter uses MCP tools (`sw_scaffold_project`) instead of shell commands for project scaffolding. This ensures it works without requiring a globally installed CLI.
 
 ### Tool Categories
 
 All MCP tools are organized into these categories:
 
 **PROJECT TOOLS**
-- `stackwright_get_project_info` — Get project info (versions, theme, pages)
-- `stackwright_scaffold_project` — Scaffold new Stackwright project
+- `sw_get_project_info` — Get project info (versions, theme, pages)
+- `sw_scaffold_project` — Scaffold new Stackwright project
 
 **SITE TOOLS**
-- `stackwright_get_site_config` — Read stackwright.yml content
-- `stackwright_write_site_config` — Write/update stackwright.yml
-- `stackwright_validate_site` — Validate stackwright.yml schema
-- `stackwright_list_themes` — List available built-in themes
+- `sw_get_site_config` — Read stackwright.yml content
+- `sw_write_site_config` — Write/update stackwright.yml
+- `sw_validate_site` — Validate stackwright.yml schema
+- `sw_list_themes` — List available built-in themes
 
 **PAGE TOOLS**
-- `stackwright_list_pages` — List all pages in project
-- `stackwright_get_page` — Read page YAML content
-- `stackwright_write_page` — Write/update page YAML
-- `stackwright_add_page` — Create new page with boilerplate
-- `stackwright_validate_pages` — Validate page YAML against schema
+- `sw_list_pages` — List all pages in project
+- `sw_get_page` — Read page YAML content
+- `sw_write_page` — Write/update page YAML
+- `sw_add_page` — Create new page with boilerplate
+- `sw_validate_pages` — Validate page YAML against schema
 
 **CONTENT TOOLS**
-- `stackwright_get_content_types` — List all content types with fields
-- `stackwright_preview_component` — Show screenshot preview of component
+- `sw_get_content_types` — List all content types with fields
+- `sw_preview_component` — Show screenshot preview of component
 
 **RENDER TOOLS**
-- `stackwright_check_dev_server` — Verify dev server is running
-- `stackwright_render_page` — Screenshot a page
-- `stackwright_render_yaml` — Preview YAML without saving (temporary)
-- `stackwright_render_diff` — Before/after comparison
+- `sw_check_dev_server` — Verify dev server is running
+- `sw_render_page` — Screenshot a page
+- `sw_render_yaml` — Preview YAML without saving (temporary)
+- `sw_render_diff` — Before/after comparison
 
 ### MCP Tools by Otter
 
@@ -259,25 +259,25 @@ All MCP tools are organized into these categories:
 │                 │ • Browser tools (research)                                 │
 │                 │ • File creation (BRAND_BRIEF.md)                           │
 ├─────────────────┼────────────────────────────────────────────────────────────┤
-│ Theme Otter     │ • stackwright_get_site_config                              │
-│                 │ • stackwright_write_site_config                            │
-│                 │ • stackwright_validate_site                                │
-│                 │ • stackwright_list_themes                                  │
-│                 │ • stackwright_render_yaml (preview before commit)           │
+│ Theme Otter     │ • sw_get_site_config                              │
+│                 │ • sw_write_site_config                            │
+│                 │ • sw_validate_site                                │
+│                 │ • sw_list_themes                                  │
+│                 │ • sw_render_yaml (preview before commit)           │
 ├─────────────────┼────────────────────────────────────────────────────────────┤
-│ Page Otter      │ • stackwright_get_content_types                            │
-│                 │ • stackwright_list_pages                                   │
-│                 │ • stackwright_write_page                                   │
-│                 │ • stackwright_validate_pages                               │
-│                 │ • stackwright_preview_component                             │
-│                 │ • stackwright_render_page                                  │
-│                 │ • stackwright_render_yaml (preview before commit)           │
+│ Page Otter      │ • sw_get_content_types                            │
+│                 │ • sw_list_pages                                   │
+│                 │ • sw_write_page                                   │
+│                 │ • sw_validate_pages                               │
+│                 │ • sw_preview_component                             │
+│                 │ • sw_render_page                                  │
+│                 │ • sw_render_yaml (preview before commit)           │
 ├─────────────────┼────────────────────────────────────────────────────────────┤
-│ Foreman Otter   │ • stackwright_get_project_info                             │
-│                 │ • stackwright_scaffold_project                             │
-│                 │ • stackwright_validate_site                                │
-│                 │ • stackwright_validate_pages                               │
-│                 │ • stackwright_check_dev_server                             │
+│ Foreman Otter   │ • sw_get_project_info                             │
+│                 │ • sw_scaffold_project                             │
+│                 │ • sw_validate_site                                │
+│                 │ • sw_validate_pages                               │
+│                 │ • sw_check_dev_server                             │
 │                 │ • list_agents (dynamic discovery)                          │
 │                 │ • invoke_agent (coordination)                              │
 └─────────────────┴────────────────────────────────────────────────────────────┘
