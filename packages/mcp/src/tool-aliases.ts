@@ -128,10 +128,40 @@ export function canonicalToolName(name: string): string {
 type ToolCallback = (...args: any[]) => any;
 
 /**
+ * Legacy alias names that have already logged their one-time deprecation
+ * warning this process. Module-level so it's shared across every
+ * `registerWithAlias()` call site — each legacy name warns exactly once per
+ * server process, not once per call.
+ *
+ * Exported for tests only (to reset state between cases); not part of the
+ * package's public API surface.
+ */
+export const _warnedAliases = new Set<string>();
+
+/**
+ * Log a one-time-per-alias deprecation warning for a legacy `stackwright_*`
+ * tool hit. MUST go to stderr, never stdout — this is an MCP stdio server,
+ * and stdout is reserved exclusively for JSON-RPC framing (see swp-w00k /
+ * `docs/TOOL-NAMING.md`). `console.error` writes to stderr by Node.js
+ * default, same pattern already used for build-scripts' logSink.
+ */
+function warnLegacyAliasOnce(legacy: string, canonical: string): void {
+  if (_warnedAliases.has(legacy)) {
+    return;
+  }
+  _warnedAliases.add(legacy);
+  console.error(
+    `[stackwright-mcp] DEPRECATED: tool '${legacy}' has been renamed to '${canonical}'. ` +
+      `'${legacy}' is a compat alias that will be removed after the next release — switch callers to '${canonical}'.`
+  );
+}
+
+/**
  * Register a tool under its canonical name, plus a legacy alias name that
  * calls the exact same handler. The legacy registration gets a one-line
  * deprecation note appended to its description so it's visible in tool
- * listings without needing to consult docs.
+ * listings without needing to consult docs, and logs a one-time-per-alias
+ * deprecation warning to stderr the first time it's actually invoked.
  *
  * Both registrations are real, independent MCP tools (the SDK has no notion
  * of "the same tool under two names") — they just happen to share a handler
@@ -146,10 +176,21 @@ export function registerWithAlias(
   handler: ToolCallback
 ): void {
   server.tool(canonical, description, schema, handler);
+
+  const legacyHandler = (...args: any[]) => {
+    warnLegacyAliasOnce(legacy, canonical);
+    return handler(...args);
+  };
+  // Expose the underlying shared handler for introspection/tests — the
+  // wrapper only ever adds the warning side effect, it never changes
+  // behavior, so anything that needs to confirm "no drift between canonical
+  // and legacy" can compare against this instead of the wrapper itself.
+  legacyHandler.canonicalHandler = handler;
+
   server.tool(
     legacy,
     `${description}\n\nDEPRECATED: this tool has been renamed to '${canonical}'. '${legacy}' is kept as a compat alias for one release and will be removed after that.`,
     schema,
-    handler
+    legacyHandler
   );
 }

@@ -116,11 +116,20 @@ describe('register subpath — tool surface integration', () => {
   });
 
   it('every legacy alias shares its handler with the canonical tool', () => {
+    // swp-ndvv: the legacy registration's handler is a thin wrapper that logs
+    // a one-time-per-alias deprecation warning to stderr before delegating —
+    // see registerWithAlias() / warnLegacyAliasOnce() in tool-aliases.ts. It
+    // is no longer the *same function reference* as the canonical handler,
+    // but it exposes the original via `.canonicalHandler` specifically so
+    // this "no drift" guarantee can still be asserted without executing
+    // every tool's side effects here.
     const registry = (server as any)._registeredTools;
     for (const [legacy, canonical] of Object.entries(SW_TOOL_ALIASES)) {
-      expect(registry[legacy].handler, `${legacy} handler !== ${canonical} handler`).toBe(
-        registry[canonical].handler
-      );
+      const legacyHandler = registry[legacy].handler as { canonicalHandler?: unknown };
+      expect(
+        legacyHandler.canonicalHandler,
+        `${legacy} handler does not delegate to ${canonical} handler`
+      ).toBe(registry[canonical].handler);
     }
   });
 

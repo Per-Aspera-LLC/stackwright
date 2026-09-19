@@ -6,6 +6,8 @@ Rename all MCP tools from `stackwright_<verb>_<object>` to `sw_<verb>_<object>` 
 
 All 27 old `stackwright_*` names remain registered as compat aliases for one release — same handler, same schema, with a one-line deprecation note appended to the tool description. They will be removed in the next minor after this one.
 
+`registerWithAlias()` now also logs a one-time-per-alias deprecation warning to **stderr** (never stdout — this is an MCP stdio server, and stdout is reserved for JSON-RPC framing per swp-w00k) the first time each legacy name is actually invoked, naming the canonical replacement and stating that aliases are removed after the next release. Subsequent hits of the same alias in the same server process are silent.
+
 New exports from both `@stackwright/mcp` (package root) and `@stackwright/mcp/register`:
 
 - `SW_TOOL_ALIASES: Record<string, string>` — exhaustive legacy-name -> canonical-name map.

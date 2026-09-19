@@ -69,12 +69,10 @@ export function log(message: string): void {
     case 'silent':
       return;
     case 'stderr':
-       
       console.error(message);
       return;
     case 'stdout':
     default:
-       
       console.log(message);
       return;
   }
