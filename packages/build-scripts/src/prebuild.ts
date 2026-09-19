@@ -90,6 +90,23 @@ export type { CompileContext } from './compile';
 export async function runPrebuild(options?: string | PrebuildOptions): Promise<void> {
   if (typeof options === 'object' && options !== null && options.logSink) {
     setLogSink(options.logSink);
+    // swp-ndvv.13: this call's setLogSink() only ever affects THIS package's
+    // own module-scoped `currentSink` in the exact bundle chunk this code
+    // runs in. discoverAndAttachPlugins() below dynamic-imports Pro prebuild
+    // plugins (e.g. @stackwright-pro/openapi) from the calling project's own
+    // node_modules -- a SEPARATE bundle entry point (tsup `splitting: false`
+    // means each package export has its own inlined copy of every module it
+    // imports, including that package's own log.ts) that this setLogSink()
+    // call can never reach directly, no matter how many packages adopt the
+    // "own log.ts + setLogSink" convention this module documents. The
+    // `STACKWRIGHT_LOG_STREAM` env var each of those log.ts modules already
+    // reads as its documented fallback IS process-global regardless of
+    // bundle/module-instance duplication, so mirror the explicit choice into
+    // it here -- the one signal that actually crosses that boundary. Fixes
+    // the G3 geo gate's 249 JSON-RPC parse failures (was: sw_render_page ->
+    // runPrebuild({ logSink: 'stderr' }) -> discovered OpenAPIPlugin's own
+    // bundle never heard about it -> its log() calls defaulted to stdout).
+    process.env.STACKWRIGHT_LOG_STREAM = options.logSink;
   }
 
   log('Stackwright prebuild starting...');
