@@ -19,6 +19,7 @@
  */
 
 import fs from 'fs';
+import { log } from './log';
 import http from 'http';
 import path from 'path';
 import { runPrebuild } from './prebuild';
@@ -68,7 +69,7 @@ function startReloadServer(port: number): http.Server {
   });
 
   server.listen(port, () => {
-    console.log(`Content reload server on port ${port}`);
+    log(`Content reload server on port ${port}`);
   });
 
   server.on('error', (err: NodeJS.ErrnoException) => {
@@ -107,7 +108,7 @@ export function runWatch(projectRoot = process.cwd()): void {
     runPrebuild(projectRoot);
   } catch (err) {
     console.error(`ERROR: ${(err as Error).message}`);
-    console.log('Watching for content changes (will retry on next change)...\n');
+    log('Watching for content changes (will retry on next change)...\n');
   }
 
   // Start SSE server for browser auto-reload
@@ -122,10 +123,10 @@ export function runWatch(projectRoot = process.cwd()): void {
       try {
         await runPrebuild(projectRoot);
         notifyContentChange();
-        console.log(`Rebuilt (${reason})\n`);
+        log(`Rebuilt (${reason})\n`);
       } catch (err) {
         console.error(`ERROR: ${(err as Error).message}`);
-        console.log('Watching for content changes (will retry on next change)...\n');
+        log('Watching for content changes (will retry on next change)...\n');
       }
     }, DEBOUNCE_MS);
   }
@@ -162,7 +163,7 @@ export function runWatch(projectRoot = process.cwd()): void {
     watchers.push(configWatcher);
   }
 
-  console.log('Watching for content changes...\n');
+  log('Watching for content changes...\n');
 
   // Clean shutdown
   function cleanup() {
@@ -170,7 +171,7 @@ export function runWatch(projectRoot = process.cwd()): void {
     for (const w of watchers) w.close();
     reloadServer.close();
     sseClients = [];
-    console.log('\nWatcher stopped.');
+    log('\nWatcher stopped.');
     process.exit(0);
   }
 

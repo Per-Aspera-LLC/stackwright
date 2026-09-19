@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import yaml from 'js-yaml';
 import { siteConfigSchema, resolveEnvVarsDeep, checkForPlaintextSecret } from '@stackwright/types';
@@ -179,7 +180,7 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
     throw new Error(`Site config not found. Expected stackwright.yml in: ${projectRoot}`);
   }
 
-  console.log('\nProcessing site config...');
+  log('\nProcessing site config...');
   const rawSiteConfig = yaml.load(fs.readFileSync(siteConfigFile, 'utf8'));
 
   const siteValidation = siteConfigSchema.safeParse(rawSiteConfig);
@@ -198,20 +199,20 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
   auditIntegrationAuthSecrets(processedConfig);
 
   const configWithEnvResolved = resolveEnvVarsDeep(processedConfig) as Record<string, unknown>;
-  console.log('  [OK] Resolved environment variable references in integrations');
+  log('  [OK] Resolved environment variable references in integrations');
 
   // stackwright-819 / swp-rlih: appBar/footer/sidebar textColor/backgroundColor
   // must reference a color the runtime can resolve. Build-fatal, not a warning
   // — a silently-stripped/unresolved token used to reach the browser as
   // invalid, unparseable CSS (see ADJUDICATION.md).
   validateSiteColorRefs(configWithEnvResolved, projectRoot);
-  console.log('  [OK] Validated appBar/footer/sidebar color references');
+  log('  [OK] Validated appBar/footer/sidebar color references');
 
   if (plugins.length > 0) {
     const integrations = configWithEnvResolved.integrations;
     if (Array.isArray(integrations)) {
       validateIntegrationConfigs(integrations, plugins);
-      console.log('  [OK] Validated integration configurations against plugin schemas');
+      log('  [OK] Validated integration configurations against plugin schemas');
     }
   }
 
@@ -219,7 +220,7 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
     path.join(contentOutDir, '_site.json'),
     JSON.stringify(configWithEnvResolved, null, 2)
   );
-  console.log('  OK _site.json');
+  log('  OK _site.json');
 
   // Locale variants
   const localeConfigFiles = findLocaleConfigFiles(projectRoot);
@@ -254,7 +255,7 @@ export function compileSite(ctx: CompileContext): SiteCompileResult {
       path.join(contentOutDir, `_site.${locale}.json`),
       JSON.stringify(localeConfigWithEnvResolved, null, 2)
     );
-    console.log(`  OK _site.${locale}.json`);
+    log(`  OK _site.${locale}.json`);
   }
 
   return { processedConfig: configWithEnvResolved };

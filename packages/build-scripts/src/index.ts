@@ -9,6 +9,12 @@
 export { runPrebuild } from './prebuild';
 export { runWatch } from './watch';
 
+// Logging sink control (swp-w00k) — MCP tool handlers that invoke
+// runPrebuild/compile* in-process MUST call setLogSink('stderr') first,
+// since MCP stdio transport reserves stdout for JSON-RPC framing.
+export { setLogSink, getLogSink } from './log';
+export type { LogSink } from './log';
+
 // Compile primitives (new in swp-xyia — available for Pro plugin integration)
 export {
   compileAll,

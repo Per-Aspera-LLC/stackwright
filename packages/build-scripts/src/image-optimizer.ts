@@ -16,6 +16,7 @@
  */
 
 import fs from 'fs';
+import { log } from './log';
 import path from 'path';
 import type sharpType from 'sharp';
 import type { ImageOptimizationConfig } from '@stackwright/types';
@@ -265,7 +266,7 @@ export async function processImageOptimization(
 
   try {
     const entry = await optimizeImage(srcPath, destDir, publicPrefix, config);
-    console.log(`  optimized: ${relativePath} → ${entry.variants.length} variant(s)`);
+    log(`  optimized: ${relativePath} → ${entry.variants.length} variant(s)`);
     return entry;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

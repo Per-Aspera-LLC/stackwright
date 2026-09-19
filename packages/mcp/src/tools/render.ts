@@ -151,7 +151,9 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
       // If projectRoot is provided, run prebuild to ensure content is up-to-date
       if (projectRoot) {
         try {
-          await runPrebuild(projectRoot);
+          // swp-w00k: MCP stdio reserves stdout for JSON-RPC frames -- route
+          // build-scripts' progress output to stderr, not stdout.
+          await runPrebuild({ projectRoot, logSink: 'stderr' });
         } catch (prebuildErr) {
           console.warn(`[sw_render_page] prebuild warning: ${errorMessage(prebuildErr)}`);
         }
@@ -256,7 +258,9 @@ Use this for brand-critical changes where visual regression matters.`,
       // If projectRoot is provided, run prebuild to ensure content is up-to-date
       if (projectRoot) {
         try {
-          await runPrebuild(projectRoot);
+          // swp-w00k: MCP stdio reserves stdout for JSON-RPC frames -- route
+          // build-scripts' progress output to stderr, not stdout.
+          await runPrebuild({ projectRoot, logSink: 'stderr' });
         } catch (prebuildErr) {
           console.warn(`[sw_render_diff] prebuild warning: ${errorMessage(prebuildErr)}`);
         }
@@ -369,7 +373,9 @@ This is the "try before you buy" tool — see exactly how your YAML will look wi
         // Explicitly run prebuild so co-located images are processed
         // regardless of whether the watcher daemon is running.
         try {
-          await runPrebuild(projectRoot);
+          // swp-w00k: MCP stdio reserves stdout for JSON-RPC frames -- route
+          // build-scripts' progress output to stderr, not stdout.
+          await runPrebuild({ projectRoot, logSink: 'stderr' });
         } catch (prebuildErr) {
           // Non-fatal: watcher may handle it; log and continue
           console.warn(`[sw_render_yaml] prebuild warning: ${errorMessage(prebuildErr)}`);

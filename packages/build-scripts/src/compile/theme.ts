@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import yaml from 'js-yaml';
 import { stackwrightThemeFileSchema } from '@stackwright/types';
@@ -59,7 +60,7 @@ export function compileTheme(ctx: CompileContext): void {
 
   if (themeFilePath) {
     // --- Path 1: dedicated stackwright.theme.yml -------------------------
-    console.log('\nCompiling theme (stackwright.theme.yml)...');
+    log('\nCompiling theme (stackwright.theme.yml)...');
 
     let rawTheme: unknown;
     try {
@@ -80,7 +81,7 @@ export function compileTheme(ctx: CompileContext): void {
       path.join(contentOutDir, '_theme.json'),
       JSON.stringify(validation.data, null, 2)
     );
-    console.log('  OK _theme.json (from stackwright.theme.yml)');
+    log('  OK _theme.json (from stackwright.theme.yml)');
     return;
   }
 
@@ -92,7 +93,7 @@ export function compileTheme(ctx: CompileContext): void {
   const siteConfigFile = siteConfigCandidates.find((p) => fs.existsSync(p));
 
   if (siteConfigFile) {
-    console.log('\nCompiling theme (extracted from stackwright.yml)...');
+    log('\nCompiling theme (extracted from stackwright.yml)...');
 
     let rawSite: unknown;
     try {
@@ -126,11 +127,11 @@ export function compileTheme(ctx: CompileContext): void {
       path.join(contentOutDir, '_theme.json'),
       JSON.stringify(validation.data, null, 2)
     );
-    console.log('  OK _theme.json (extracted from stackwright.yml)');
+    log('  OK _theme.json (extracted from stackwright.yml)');
     return;
   }
 
   // --- Path 3: nothing to work with ----------------------------------------
   fs.writeFileSync(path.join(contentOutDir, '_theme.json'), JSON.stringify({}, null, 2));
-  console.log('  OK _theme.json (empty — no theme config found)');
+  log('  OK _theme.json (empty — no theme config found)');
 }

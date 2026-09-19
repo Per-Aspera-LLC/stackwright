@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import yaml from 'js-yaml';
 import { z } from 'zod';
@@ -335,18 +336,18 @@ export function compilePages(
   }
 
   if (imageOptConfig.enabled) {
-    console.log(
+    log(
       `\n  Image optimization: ON (formats: ${imageOptConfig.formats.join(', ')}, quality: ${imageOptConfig.quality}, maxWidth: ${imageOptConfig.maxWidth}, blur: ${imageOptConfig.blur})`
     );
   } else {
-    console.log('\n  Image optimization: OFF');
+    log('\n  Image optimization: OFF');
   }
 
   // Collect plugin schemas + known types for validation
   const extraContentSchemas = plugins.flatMap((p) => p.contentItemSchemas ?? []) as z.ZodTypeAny[];
   const pluginKnownTypes = plugins.flatMap((p) => p.knownContentTypeKeys ?? []);
 
-  console.log('\nProcessing pages...');
+  log('\nProcessing pages...');
   const contentFiles = findContentFiles(pagesDir);
 
   if (contentFiles.length === 0) {
@@ -421,7 +422,7 @@ export function compilePages(
     fs.writeFileSync(outPath, JSON.stringify(expandedContent, null, 2));
     const logPath = locale ? `${locale}/${outFile}` : outFile;
     const logLabel = locale ? `${label} [${locale}]` : label;
-    console.log(`  OK ${logPath}  (${logLabel})`);
+    log(`  OK ${logPath}  (${logLabel})`);
   }
 
   // Post-loop: emit a single runtime-reminder summary for plugin-declared types (swp-3r93).
@@ -430,7 +431,7 @@ export function compilePages(
     const typesGrouped = [...pluginTypeUsageByType.entries()]
       .map(([type, declaringSet]) => `${type} (from: ${[...declaringSet].sort().join(', ')})`)
       .sort();
-    console.log(
+    log(
       `\n  [INFO] Plugin-declared content types in use across ${pagesUsingPluginTypes.size} page(s):\n` +
         typesGrouped.map((line) => `    - ${line}`).join('\n') +
         '\n' +
@@ -456,7 +457,7 @@ export async function optimizeImages(
 
   if (!imageOptConfig.enabled) return;
 
-  console.log('\nOptimizing images...');
+  log('\nOptimizing images...');
   const imageFiles = collectAllCopiedImages(imagesDir);
   const imageManifest: ImageManifest = {};
   let optimizedCount = 0;
@@ -478,16 +479,16 @@ export async function optimizeImages(
     }
   }
 
-  console.log(
+  log(
     `  [OK] Optimized ${optimizedCount} image(s), ${Object.keys(imageManifest).length} manifest entries`
   );
 
   const manifestPath = path.join(contentOutDir, '_image-manifest.json');
   fs.writeFileSync(manifestPath, JSON.stringify(imageManifest, null, 2));
-  console.log('  [OK] Written _image-manifest.json');
+  log('  [OK] Written _image-manifest.json');
 
   if (Object.keys(imageManifest).length > 0) {
     enrichContentJsonsWithBlur(contentOutDir, imageManifest);
-    console.log('  [OK] Enriched content JSONs with blur placeholders');
+    log('  [OK] Enriched content JSONs with blur placeholders');
   }
 }

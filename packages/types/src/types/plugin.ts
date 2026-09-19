@@ -287,4 +287,24 @@ export interface PrebuildOptions {
    * Has no effect when `plugins` is explicitly provided.
    */
   pluginOverride?: string[];
+
+  /**
+   * Where build-scripts' human-readable progress output ("[OK] _site.json",
+   * etc.) should be written.
+   *
+   * - `'stdout'` (default): correct for the `stackwright-prebuild` CLI --
+   *   a human or log collector is watching stdout.
+   * - `'stderr'`: REQUIRED for any caller that shares a process with an MCP
+   *   stdio transport (e.g. an MCP tool handler invoking `runPrebuild()`
+   *   in-process) -- MCP stdio reserves stdout exclusively for JSON-RPC
+   *   frames, and plain-text writes there corrupt message framing.
+   * - `'silent'`: suppress progress output entirely.
+   *
+   * Equivalent to calling `setLogSink()` from `@stackwright/build-scripts`
+   * before invoking `runPrebuild()`; provided here as a convenience so
+   * callers can set it in the same options object. A `STACKWRIGHT_LOG_STREAM`
+   * env var is also honored as a fallback (see `@stackwright/build-scripts`'s
+   * `src/log.ts`).
+   */
+  logSink?: 'stdout' | 'stderr' | 'silent';
 }

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import yaml from 'js-yaml';
 import { collectionConfigSchema } from '@stackwright/types';
@@ -345,7 +346,7 @@ export function compileFileCollections(ctx: CompileContext): FileCollectionsResu
     return { indexes: collectionIndexes, entryPagePaths: [] };
   }
 
-  console.log('\nProcessing collections...');
+  log('\nProcessing collections...');
 
   for (const dir of collectionsDirs) {
     const collectionName = dir.name;
@@ -361,7 +362,7 @@ export function compileFileCollections(ctx: CompileContext): FileCollectionsResu
       .filter((f) => isYamlFile(f) && !isCollectionConfig(f));
 
     if (entryFiles.length === 0) {
-      console.log(`  - ${collectionName}: 0 entries`);
+      log(`  - ${collectionName}: 0 entries`);
       continue;
     }
 
@@ -413,11 +414,11 @@ export function compileFileCollections(ctx: CompileContext): FileCollectionsResu
     );
 
     collectionIndexes.set(collectionName, sortedIndex);
-    console.log(`  OK ${collectionName}: ${allEntries.length} entries`);
+    log(`  OK ${collectionName}: ${allEntries.length} entries`);
 
     if (config.entryPage) {
       if (!config.entryPage.template) {
-        console.log(
+        log(
           `  [INFO] "${collectionName}" is using the default entry page template.\n` +
             `     Define a custom template in _collection.yaml for full control over layout.`
         );
@@ -431,7 +432,7 @@ export function compileFileCollections(ctx: CompileContext): FileCollectionsResu
         contentOutDir
       );
       allEntryPagePaths.push(...entryPaths);
-      console.log(`  OK ${collectionName}: ${entryPaths.length} entry pages generated`);
+      log(`  OK ${collectionName}: ${entryPaths.length} entry pages generated`);
     }
   }
 
