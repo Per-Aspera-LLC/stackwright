@@ -10,7 +10,7 @@ import type React from 'react';
  *     lng: -122.4194
  *     label: "San Francisco"
  *     popup: "Golden Gate City"
- *     icon: "map-pin"
+ *     icon: "circle"
  * ```
  */
 export interface MapMarker {
@@ -22,7 +22,13 @@ export interface MapMarker {
   label: string;
   /** Optional popup content (HTML or plain text) */
   popup?: string;
-  /** Optional icon name (registered via icon registry) */
+  /**
+   * Optional marker shape, used by providers (e.g. `@stackwright/maplibre`,
+   * `@stackwright-pro/cesium`) to convey status by more than color alone
+   * (WCAG SC 1.4.1). One of `'pin' | 'circle' | 'triangle' | 'diamond' |
+   * 'square'` — unknown/absent values fall back to `'pin'`. Providers must
+   * never throw on an unrecognized value.
+   */
   icon?: string;
   /** Optional altitude (meters) - for 3D providers like Cesium */
   altitude?: number;

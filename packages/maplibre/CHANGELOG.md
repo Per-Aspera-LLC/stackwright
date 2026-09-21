@@ -1,5 +1,31 @@
 # @stackwright/maplibre
 
+## 7.1.0
+
+### Minor Changes
+
+- Render `MapMarker.icon` as a distinguishable shape (`pin` | `circle` |
+  `triangle` | `diamond` | `square`) instead of a static pin glyph, so status
+  can be conveyed by shape in addition to color — WCAG SC 1.4.1 (Use of
+  Color).
+
+  `@stackwright-pro/pulse` already resolves `map_pulse`'s per-status
+  `markerMapping.iconMap`/`defaultIcon` onto `MapMarker.icon`
+  (`@stackwright-pro/cesium` has rendered these 5 shapes since swp-ndvv.17's
+  Phase 2A); this closes the matching gap on the free/OSS 2D `maplibre`
+  provider so status is not color-only when an app uses `@stackwright/maplibre`
+  instead of the pro Cesium globe.
+  - New `MarkerIcon` component (`src/marker-icon.tsx`, exported from the
+    package root) renders the shape as an inline SVG, matching the shapes
+    `@stackwright-pro/cesium`'s `createMarkerCanvas()` draws so switching
+    providers doesn't change what a marker's status looks like.
+  - Unknown/missing `icon` values fall back to `pin` — this never throws on
+    an unrecognized shape name.
+  - `marker.color` still controls the fill; defaults to `#ef4444` when unset
+    (previously unused by this provider, which only rendered a fixed emoji).
+
+  See bead `swp-ndvv.17`.
+
 ## 7.0.0
 
 ### Patch Changes

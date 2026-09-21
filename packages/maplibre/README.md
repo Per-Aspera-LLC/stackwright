@@ -198,9 +198,32 @@ Your maps stay identical — the underlying rendering engine changes.
 
 If you see hydration mismatches, make sure you're using a recent version of React (^18 or ^19). This package is SSR-safe and includes client-side guards.
 
-### Marker Icons
+### Marker Shapes (status without relying on color alone)
 
-By default, markers use the 📍 emoji. To use custom icons, you'll need to extend the provider or use the icon registry (see `@stackwright/icons`).
+Each marker can set `icon` to one of five shape names: `pin` (default), `circle`,
+`triangle`, `diamond`, or `square`. This lets content authors (or generated
+content like `map_pulse`) convey status via shape *and* color instead of color
+alone — WCAG SC 1.4.1 (Use of Color). Unknown or missing `icon` values render
+as `pin`; the provider never throws on an unrecognized shape name.
+
+```yaml
+markers:
+  - lat: 37.7749
+    lng: -122.4194
+    label: "Vessel A"
+    color: "#22c55e"
+    icon: "circle"   # underway
+  - lat: 37.8044
+    lng: -122.2712
+    label: "Vessel B"
+    color: "#ef4444"
+    icon: "triangle" # moored
+```
+
+Shapes are rendered as small SVGs (`MarkerIcon`, exported from this package)
+and kept visually consistent with the shapes `@stackwright-pro/cesium` renders
+for the same `marker.icon` value, so swapping providers doesn't change what a
+marker's status looks like.
 
 ## License
 
@@ -222,6 +245,7 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) in the repository root.
 
 ## Roadmap
 
+- [x] Per-marker shapes for non-color status conveyance (`marker.icon`, swp-ndvv.17)
 - [ ] Custom marker icons (via icon registry)
 - [ ] Clustering for large marker sets
 - [ ] Heatmap layers

@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import MapGL, { Marker, Popup, Source, Layer, NavigationControl } from 'react-map-gl/maplibre';
 import type { MapProviderProps, MapMarker } from '@stackwright/core';
 import type { LayerProps } from 'react-map-gl/maplibre';
+import { MarkerIcon, DEFAULT_MARKER_COLOR } from './marker-icon.js';
 
 /**
  * MapLibreProvider — Free tier map adapter using MapLibre GL.
@@ -9,6 +10,9 @@ import type { LayerProps } from 'react-map-gl/maplibre';
  * **Features:**
  * - 2D interactive maps with pan/zoom
  * - Markers with click-to-show popups
+ * - Per-marker shape via `marker.icon` (`pin` | `circle` | `triangle` | `diamond` | `square`,
+ *   unknown/absent falls back to `pin`) so status can be conveyed by more than color alone
+ *   (WCAG SC 1.4.1 — swp-ndvv.17). See `./marker-icon.tsx`.
  * - Polyline and polygon layers
  * - GeoJSON support
  * - Free MapLibre demo tiles (no API key required)
@@ -105,12 +109,11 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
             <div
               style={{
                 cursor: 'pointer',
-                fontSize: '24px',
                 transform: 'translate(-50%, -100%)',
               }}
               title={marker.label}
             >
-              📍
+              <MarkerIcon shape={marker.icon} color={marker.color ?? DEFAULT_MARKER_COLOR} />
             </div>
           </Marker>
         ))}

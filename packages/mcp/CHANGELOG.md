@@ -1,5 +1,13 @@
 # @stackwright/mcp
 
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [1202590]
+  - @stackwright/build-scripts@0.13.1
+  - @stackwright/cli@0.10.2
+
 ## 0.9.0
 
 ### Minor Changes
