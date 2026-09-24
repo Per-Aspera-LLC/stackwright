@@ -31,7 +31,7 @@ The server starts and listens on stdin/stdout for MCP protocol messages.
 
 ### Content Type Tools
 
-#### `stackwright_get_content_types`
+#### `sw_get_content_types`
 
 List all available Stackwright content types with their fields.
 
@@ -41,7 +41,7 @@ List all available Stackwright content types with their fields.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_get_content_types', {});
+const result = await server.callTool('sw_get_content_types', {});
 // Returns: CONTENT TYPES (use as keys inside content_items[]):
 //   main (main)
 //     label: string
@@ -53,7 +53,7 @@ const result = await server.callTool('stackwright_get_content_types', {});
 
 ### Page Tools
 
-#### `stackwright_list_pages`
+#### `sw_list_pages`
 
 List all pages in a Stackwright project.
 
@@ -64,7 +64,7 @@ List all pages in a Stackwright project.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_list_pages', {
+const result = await server.callTool('sw_list_pages', {
   projectRoot: '/path/to/project'
 });
 // Returns: Pages (3):
@@ -73,7 +73,7 @@ const result = await server.callTool('stackwright_list_pages', {
 //   team/leadership
 ```
 
-#### `stackwright_add_page`
+#### `sw_add_page`
 
 Create a new page in a Stackwright project.
 
@@ -86,7 +86,7 @@ Create a new page in a Stackwright project.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_add_page', {
+const result = await server.callTool('sw_add_page', {
   projectRoot: '/path/to/project',
   slug: 'about',
   heading: 'About Us'
@@ -94,7 +94,7 @@ const result = await server.callTool('stackwright_add_page', {
 // Returns: Created page "about" at /path/to/project/content/pages/about/content.yml
 ```
 
-#### `stackwright_validate_pages`
+#### `sw_validate_pages`
 
 Validate page YAML files against the Stackwright content schema.
 
@@ -106,7 +106,7 @@ Validate page YAML files against the Stackwright content schema.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_validate_pages', {
+const result = await server.callTool('sw_validate_pages', {
   projectRoot: '/path/to/project'
 });
 // Returns: ✓ Validation passed for all pages.
@@ -116,7 +116,7 @@ const result = await server.callTool('stackwright_validate_pages', {
 
 ### Site Tools
 
-#### `stackwright_validate_site`
+#### `sw_validate_site`
 
 Validate the stackwright.yml site configuration file.
 
@@ -127,13 +127,13 @@ Validate the stackwright.yml site configuration file.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_validate_site', {
+const result = await server.callTool('sw_validate_site', {
   projectRoot: '/path/to/project'
 });
 // Returns: ✓ Site config is valid (/path/to/project/stackwright.yml).
 ```
 
-#### `stackwright_get_site_config`
+#### `sw_get_site_config`
 
 Read the raw YAML content of the stackwright.yml site configuration file.
 
@@ -142,7 +142,7 @@ Read the raw YAML content of the stackwright.yml site configuration file.
 
 **Returns**: Text with the full YAML content of the site configuration
 
-#### `stackwright_write_site_config`
+#### `sw_write_site_config`
 
 Write or update the stackwright.yml site configuration. Validates against the site config Zod schema before writing — invalid YAML is rejected with field-level errors.
 
@@ -154,7 +154,7 @@ Write or update the stackwright.yml site configuration. Validates against the si
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_write_site_config', {
+const result = await server.callTool('sw_write_site_config', {
   projectRoot: '/path/to/project',
   content: `title: "My Site"
 navigation:
@@ -169,7 +169,7 @@ footer:
 // Returns: Updated site config at /path/to/project/stackwright.yml
 ```
 
-#### `stackwright_list_themes`
+#### `sw_list_themes`
 
 List all built-in Stackwright themes.
 
@@ -179,7 +179,7 @@ List all built-in Stackwright themes.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_list_themes', {});
+const result = await server.callTool('sw_list_themes', {});
 // Returns: Built-in themes (3):
 //   default  —  Default Theme
 //   dark  —  Dark Theme: Dark mode theme
@@ -188,7 +188,7 @@ const result = await server.callTool('stackwright_list_themes', {});
 
 ### Project Tools
 
-#### `stackwright_get_project_info`
+#### `sw_get_project_info`
 
 Get information about a Stackwright project.
 
@@ -199,7 +199,7 @@ Get information about a Stackwright project.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_get_project_info', {
+const result = await server.callTool('sw_get_project_info', {
   projectRoot: '/path/to/project'
 });
 // Returns: Project root: /path/to/project
@@ -211,7 +211,7 @@ const result = await server.callTool('stackwright_get_project_info', {
 //             @stackwright/nextjs: 0.1.0-alpha.0
 ```
 
-#### `stackwright_scaffold_project`
+#### `sw_scaffold_project`
 
 Scaffold a new Stackwright Next.js project.
 
@@ -225,7 +225,7 @@ Scaffold a new Stackwright Next.js project.
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_scaffold_project', {
+const result = await server.callTool('sw_scaffold_project', {
   targetDir: '/path/to/new-project',
   name: 'my-stackwright-site',
   title: 'My Site',
@@ -238,7 +238,7 @@ const result = await server.callTool('stackwright_scaffold_project', {
 
 ### Git Operations Tools
 
-#### `stackwright_stage_changes`
+#### `sw_stage_changes`
 
 Stage modified or new Stackwright content files (page YAML, site config, co-located images) for commit. Only content files are staged — arbitrary files like `.env` or `package.json` are ignored for safety.
 
@@ -255,7 +255,7 @@ Stage modified or new Stackwright content files (page YAML, site config, co-loca
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_stage_changes', {
+const result = await server.callTool('sw_stage_changes', {
   projectRoot: '/path/to/project'
 });
 // Returns: Staged 2 file(s):
@@ -266,7 +266,7 @@ const result = await server.callTool('stackwright_stage_changes', {
 //   - package.json
 ```
 
-#### `stackwright_open_pr`
+#### `sw_open_pr`
 
 Validate all staged YAML, commit changes, push to a new branch, and open a GitHub pull request. Requires the GitHub CLI (`gh`) to be installed and authenticated. Aborts if validation fails — invalid YAML is never committed.
 
@@ -283,11 +283,11 @@ Validate all staged YAML, commit changes, push to a new branch, and open a GitHu
 **Prerequisites**:
 - Git repository initialized with a remote named `origin`
 - [GitHub CLI](https://cli.github.com/) installed and authenticated (`gh auth login`)
-- Content changes staged via `stackwright_stage_changes`
+- Content changes staged via `sw_stage_changes`
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_open_pr', {
+const result = await server.callTool('sw_open_pr', {
   projectRoot: '/path/to/project',
   title: 'Add services page',
   baseBranch: 'dev'
@@ -301,7 +301,7 @@ const result = await server.callTool('stackwright_open_pr', {
 
 ### Visual Rendering Tools
 
-#### `stackwright_check_dev_server`
+#### `sw_check_dev_server`
 
 Check if a Stackwright dev server is running and reachable. Call this before using render tools.
 
@@ -312,11 +312,11 @@ Check if a Stackwright dev server is running and reachable. Call this before usi
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_check_dev_server', {});
-// Returns: ✓ Dev server is running at http://localhost:3000. You can now use stackwright_render_page to see your pages.
+const result = await server.callTool('sw_check_dev_server', {});
+// Returns: ✓ Dev server is running at http://localhost:3000. You can now use sw_render_page to see your pages.
 ```
 
-#### `stackwright_render_page`
+#### `sw_render_page`
 
 Render a Stackwright page and return a screenshot image. Use this to visually verify how a page looks after writing or editing content. Requires a running dev server.
 
@@ -331,7 +331,7 @@ Render a Stackwright page and return a screenshot image. Use this to visually ve
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_render_page', {
+const result = await server.callTool('sw_render_page', {
   slug: '/about',
   viewport: { width: 375, height: 667 }
 });
@@ -339,9 +339,9 @@ const result = await server.callTool('stackwright_render_page', {
 // [image: screenshot of the rendered page]
 ```
 
-#### `stackwright_render_diff`
+#### `sw_render_diff`
 
-Capture a "before" screenshot of a page for visual comparison. After capturing, make your YAML changes and call `stackwright_render_page` to see the "after" state.
+Capture a "before" screenshot of a page for visual comparison. After capturing, make your YAML changes and call `sw_render_page` to see the "after" state.
 
 **Parameters**:
 - `baseUrl` (string, optional): Base URL of the running dev server (default: http://localhost:3000)
@@ -352,15 +352,15 @@ Capture a "before" screenshot of a page for visual comparison. After capturing, 
 **Returns**: Text with snapshot metadata plus a "before" PNG screenshot
 
 **Workflow**:
-1. Call `stackwright_render_diff` to capture the current state
-2. Write your YAML changes (`stackwright_write_page` or `stackwright_compose_site`)
+1. Call `sw_render_diff` to capture the current state
+2. Write your YAML changes (`sw_write_page` or `sw_compose_site`)
 3. Wait for the dev server to hot-reload
-4. Call `stackwright_render_page` to see the "after" state
+4. Call `sw_render_page` to see the "after" state
 5. Compare the two images to evaluate your changes
 
 **Example Usage**:
 ```typescript
-const result = await server.callTool('stackwright_render_diff', {
+const result = await server.callTool('sw_render_diff', {
   slug: '/pricing'
 });
 // Returns: 📸 "Before" snapshot captured for "/pricing" (1280x720, 987ms).
@@ -384,17 +384,17 @@ try {
   const projectRoot = '/path/to/project';
 
   // 1. Understand available content types
-  const contentTypes = await client.callTool('stackwright_get_content_types', {});
+  const contentTypes = await client.callTool('sw_get_content_types', {});
 
   // 2. Create a new page
-  await client.callTool('stackwright_add_page', {
+  await client.callTool('sw_add_page', {
     projectRoot,
     slug: 'services',
     heading: 'Our Services',
   });
 
   // 3. Validate
-  const validation = await client.callTool('stackwright_validate_pages', {
+  const validation = await client.callTool('sw_validate_pages', {
     projectRoot,
     slug: 'services',
   });
@@ -405,11 +405,11 @@ try {
   }
 
   // 4. Stage content changes (only content files are staged)
-  const staged = await client.callTool('stackwright_stage_changes', { projectRoot });
+  const staged = await client.callTool('sw_stage_changes', { projectRoot });
   console.log(staged.content[0].text);
 
   // 5. Open a PR for human review
-  const pr = await client.callTool('stackwright_open_pr', {
+  const pr = await client.callTool('sw_open_pr', {
     projectRoot,
     title: 'Add services page',
     baseBranch: 'dev',
@@ -422,13 +422,13 @@ try {
 
 ## Best Practices
 
-1. **Always validate after creating or modifying content** — call `stackwright_validate_pages` after `stackwright_add_page`.
-2. **Use `stackwright_get_content_types` to ground your YAML** — the tool returns the live Zod-derived schema, so field names and required/optional status are always current.
+1. **Always validate after creating or modifying content** — call `sw_validate_pages` after `sw_add_page`.
+2. **Use `sw_get_content_types` to ground your YAML** — the tool returns the live Zod-derived schema, so field names and required/optional status are always current.
 3. **Check `isError` on every response** — tools signal errors via the `isError` flag rather than throwing, so a successful HTTP-level call can still represent a domain error.
 4. **Use absolute paths** — all `projectRoot` and `targetDir` parameters must be absolute paths.
 5. **Disconnect in a finally block** — always call `client.disconnect()` to avoid leaving the server process orphaned.
-6. **Render after editing** — call `stackwright_render_page` after making content changes to visually verify the result. This catches layout, spacing, and brand consistency issues that schema validation alone cannot detect.
-7. **Check the dev server first** — always call `stackwright_check_dev_server` before any render tool. If the server isn't running, render tools will fail with a clear error.
+6. **Render after editing** — call `sw_render_page` after making content changes to visually verify the result. This catches layout, spacing, and brand consistency issues that schema validation alone cannot detect.
+7. **Check the dev server first** — always call `sw_check_dev_server` before any render tool. If the server isn't running, render tools will fail with a clear error.
 
 ## Development
 
@@ -490,9 +490,9 @@ Tools return structured responses with:
 
 **Server not responding** — ensure the server is running with `pnpm stackwright-mcp` and that stdin/stdout are properly connected to the client.
 
-**Tool not found** — verify the tool name is correct (all tool names are prefixed with `stackwright_`).
+**Tool not found** — verify the tool name is correct (all tool names are prefixed with `sw_`; the old `stackwright_` names still work as deprecated compat aliases for one release — see `docs/TOOL-NAMING.md`).
 
-**Validation failures** — check the structured error text for specific field issues; use `stackwright_get_content_types` to confirm required fields.
+**Validation failures** — check the structured error text for specific field issues; use `sw_get_content_types` to confirm required fields.
 
 **Permission errors on file operations** — use absolute paths and ensure the server process has write access to the target directory.
 

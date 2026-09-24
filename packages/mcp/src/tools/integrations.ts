@@ -3,6 +3,7 @@ import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
 import { listIntegrations, getIntegration, addIntegration } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 function resolveSiteConfig(projectRoot: string): string {
   const candidates = ['stackwright.yml', 'stackwright.yaml'];
@@ -14,7 +15,9 @@ function resolveSiteConfig(projectRoot: string): string {
 }
 
 export function registerIntegrationTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_list_integrations',
     'stackwright_list_integrations',
     'List all integrations configured in stackwright.yml (OpenAPI, GraphQL, REST).',
     {
@@ -49,7 +52,9 @@ export function registerIntegrationTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_get_integration',
     'stackwright_get_integration',
     'Get details for a specific integration by name from stackwright.yml.',
     {
@@ -78,7 +83,9 @@ export function registerIntegrationTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_add_integration',
     'stackwright_add_integration',
     'Add or update an integration in stackwright.yml. Supports OpenAPI, GraphQL, and REST integrations.',
     {

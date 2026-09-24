@@ -139,9 +139,11 @@ export function Form({
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const sectionBackground = resolveBackground(background, theme, resolvedColorMode === 'dark');
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
-    theme.colors
+    theme.colors,
+    { background: sectionBackground }
   );
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
@@ -171,7 +173,7 @@ export function Form({
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
+        background: sectionBackground,
       }}
     >
       <div style={{ maxWidth: '600px', margin: '0 auto' }}>

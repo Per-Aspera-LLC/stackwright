@@ -3,6 +3,7 @@ import { z } from 'zod';
 import path from 'path';
 import fs from 'fs';
 import { validateSite, listThemes, readSiteConfig, writeSiteConfig } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 function resolveSiteConfig(projectRoot: string): string {
   const candidates = ['stackwright.yml', 'stackwright.yaml'];
@@ -14,7 +15,9 @@ function resolveSiteConfig(projectRoot: string): string {
 }
 
 export function registerSiteTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_get_site_config',
     'stackwright_get_site_config',
     'Read the raw YAML content of the stackwright.yml site configuration file.',
     {
@@ -46,7 +49,9 @@ export function registerSiteTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_validate_site',
     'stackwright_validate_site',
     'Validate the stackwright.yml site configuration file against the Stackwright site config schema.',
     {
@@ -71,7 +76,9 @@ export function registerSiteTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_list_themes',
     'stackwright_list_themes',
     'List all built-in Stackwright themes with their IDs, names, and descriptions.',
     {},
@@ -88,7 +95,9 @@ export function registerSiteTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_write_site_config',
     'stackwright_write_site_config',
     'Write or update the stackwright.yml site configuration. Validates against the site config Zod schema before writing — invalid YAML is rejected with field-level errors.',
     {

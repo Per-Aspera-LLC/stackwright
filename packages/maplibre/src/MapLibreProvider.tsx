@@ -1,7 +1,34 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import MapGL, { Marker, Popup, Source, Layer, NavigationControl } from 'react-map-gl/maplibre';
 import type { MapProviderProps, MapMarker } from '@stackwright/core';
 import type { LayerProps } from 'react-map-gl/maplibre';
+import { MarkerIcon, DEFAULT_MARKER_COLOR } from './marker-icon.js';
+import { toCssColor, resolveTokenColor, describeColorError } from './colors.js';
+
+/**
+ * Resolves a layer color (`style.color`/`style.fillColor`) against the
+ * `--sw-color-*` custom properties, mirroring cesium's per-call-site
+ * try/catch (swp-0ifi): an unresolvable token never crashes the map, it
+ * falls back to `fallback` and reports through `onError` (console.error +
+ * the error-strip overlay) instead.
+ */
+export function resolveLayerColor(
+  raw: string | undefined,
+  fallback: string,
+  context: string,
+  el: Element | undefined,
+  onError: (message: string) => void
+): string {
+  if (!raw) return fallback;
+  try {
+    return resolveTokenColor(raw, { el, context });
+  } catch (err) {
+    const message = describeColorError(context, err);
+    console.error(`[@stackwright/maplibre] ${message}`);
+    onError(message);
+    return fallback;
+  }
+}
 
 /**
  * MapLibreProvider — Free tier map adapter using MapLibre GL.
@@ -9,6 +36,9 @@ import type { LayerProps } from 'react-map-gl/maplibre';
  * **Features:**
  * - 2D interactive maps with pan/zoom
  * - Markers with click-to-show popups
+ * - Per-marker shape via `marker.icon` (`pin` | `circle` | `triangle` | `diamond` | `square`,
+ *   unknown/absent falls back to `pin`) so status can be conveyed by more than color alone
+ *   (WCAG SC 1.4.1 — swp-ndvv.17). See `./marker-icon.tsx`.
  * - Polyline and polygon layers
  * - GeoJSON support
  * - Free MapLibre demo tiles (no API key required)
@@ -38,6 +68,11 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
 }) => {
   const [popupInfo, setPopupInfo] = useState<MapMarker | null>(null);
   const [isClient, setIsClient] = useState(false);
+  // Element custom-property colors (layers) are read against, via
+  // resolveLayerColor -> resolveTokenColor. Falls back to
+  // document.documentElement (where @stackwright/themes injects
+  // --sw-color-* vars) until the ref attaches after first client render.
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   // SSR safety: Only render map on client
   useEffect(() => {
@@ -79,8 +114,20 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
   // MapLibre demo tile server (free, no API key needed)
   const mapStyle = 'https://demotiles.maplibre.org/style.json';
 
+  // Reset per render: layer color resolution below (config.layers?.map)
+  // pushes into this array before the error-strip JSX reads it — plain
+  // local state (not React state), since it's produced and consumed
+  // synchronously within this single render pass. See colors.ts docblock
+  // for why layers (unlike markers) need eager resolution instead of var().
+  const colorErrors: string[] = [];
+  const containerEl = containerRef.current ?? undefined;
+
   return (
-    <div className={className} style={{ ...style, width, height, position: 'relative' }}>
+    <div
+      ref={containerRef}
+      className={className}
+      style={{ ...style, width, height, position: 'relative' }}
+    >
       <MapGL
         initialViewState={{
           latitude: config.center.lat,
@@ -105,12 +152,14 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
             <div
               style={{
                 cursor: 'pointer',
-                fontSize: '24px',
                 transform: 'translate(-50%, -100%)',
               }}
               title={marker.label}
             >
-              📍
+              <MarkerIcon
+                shape={marker.icon}
+                color={toCssColor(marker.color) ?? DEFAULT_MARKER_COLOR}
+              />
             </div>
           </Marker>
         ))}
@@ -151,7 +200,13 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
               id: `polyline-${index}`,
               type: 'line',
               paint: {
-                'line-color': layer.style?.color || '#FF5733',
+                'line-color': resolveLayerColor(
+                  layer.style?.color,
+                  '#FF5733',
+                  `layer polyline-${index} style.color`,
+                  containerEl,
+                  (message) => colorErrors.push(message)
+                ),
                 'line-width': layer.style?.width || 3,
                 'line-opacity': layer.style?.opacity || 1,
               },
@@ -179,9 +234,21 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
               id: `polygon-${index}`,
               type: 'fill',
               paint: {
-                'fill-color': layer.style?.fillColor || layer.style?.color || '#3388ff',
+                'fill-color': resolveLayerColor(
+                  layer.style?.fillColor || layer.style?.color,
+                  '#3388ff',
+                  `layer polygon-${index} style.fillColor`,
+                  containerEl,
+                  (message) => colorErrors.push(message)
+                ),
                 'fill-opacity': layer.style?.fillOpacity || 0.4,
-                'fill-outline-color': layer.style?.color || '#3388ff',
+                'fill-outline-color': resolveLayerColor(
+                  layer.style?.color,
+                  '#3388ff',
+                  `layer polygon-${index} style.color (outline)`,
+                  containerEl,
+                  (message) => colorErrors.push(message)
+                ),
               },
             };
 
@@ -198,7 +265,13 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
               id: `geojson-${index}`,
               type: 'fill',
               paint: {
-                'fill-color': layer.style?.fillColor || layer.style?.color || '#3388ff',
+                'fill-color': resolveLayerColor(
+                  layer.style?.fillColor || layer.style?.color,
+                  '#3388ff',
+                  `layer geojson-${index} style.fillColor`,
+                  containerEl,
+                  (message) => colorErrors.push(message)
+                ),
                 'fill-opacity': layer.style?.fillOpacity || 0.4,
               },
             };
@@ -213,6 +286,33 @@ export const MapLibreProvider: React.FC<MapProviderProps> = ({
           return null;
         })}
       </MapGL>
+
+      {/* Color-token resolution error strip (G7 pivot fix) — an unresolvable
+          layer token never crashes the map; it falls back to a visible
+          default color and surfaces here, mirroring cesium's layerErrors
+          overlay (swp-0ifi). Markers can't land here: toCssColor() never
+          throws (see colors.ts). */}
+      {colorErrors.length > 0 && (
+        <div
+          role="alert"
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            background: 'rgba(185, 28, 28, 0.92)',
+            color: 'white',
+            fontSize: '12px',
+            padding: '8px 12px',
+            zIndex: 20,
+            fontFamily: 'monospace',
+          }}
+        >
+          {colorErrors.map((message, i) => (
+            <div key={i}>{message}</div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

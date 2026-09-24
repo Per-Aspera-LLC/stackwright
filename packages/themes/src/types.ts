@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { REQUIRED_THEME_COLOR_KEYS, FOREGROUND_THEME_COLOR_KEYS } from './colorKeys';
 
 export const componentStyleSchema = z
   .object({
@@ -12,17 +13,33 @@ export const componentStyleSchema = z
   })
   .catchall(z.string().optional());
 
+// Built from the shared key arrays in ./colorKeys — single source of truth,
+// so the alias/derivation logic in @stackwright/core's resolveColor() can
+// never drift out of sync with what this schema actually accepts.
+const requiredColorShape = Object.fromEntries(
+  REQUIRED_THEME_COLOR_KEYS.map((key) => [key, z.string()])
+) as Record<(typeof REQUIRED_THEME_COLOR_KEYS)[number], z.ZodString>;
+
+// Optional "foreground" (contrast-color) slots — see stackwright-819 /
+// swp-rlih. Additive/non-breaking: existing ThemeColors consumers and
+// theme YAML/JSON that only set the original 7 keys are unaffected.
+const foregroundColorShape = Object.fromEntries(
+  FOREGROUND_THEME_COLOR_KEYS.map((key) => [key, z.string().optional()])
+) as Record<(typeof FOREGROUND_THEME_COLOR_KEYS)[number], z.ZodOptional<z.ZodString>>;
+
 export const colorsSchema = z.object({
-  primary: z.string(),
-  secondary: z.string(),
-  accent: z.string(),
-  background: z.string(),
-  surface: z.string(),
-  text: z.string(),
-  textSecondary: z.string(),
+  ...requiredColorShape,
+  ...foregroundColorShape,
 });
 
 export type ThemeColors = z.infer<typeof colorsSchema>;
+
+// NOTE: runtime values (THEME_COLOR_KEYS, withDerivedForegrounds, ...) are
+// intentionally NOT re-exported from this file. types.ts imports zod (for
+// colorsSchema), and index.ts exports from types.ts as `export type` only
+// to keep zod out of client bundles — see the comment at the top of
+// index.ts. Runtime consumers import directly from './colorKeys' /
+// './foregrounds', which have zero dependencies.
 
 export type ColorMode = 'light' | 'dark' | 'system';
 

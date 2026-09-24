@@ -17,7 +17,7 @@ export default function BottomAppBar({ footer }: BottomAppBarProps) {
     : theme.colors.primary;
 
   const textColor = footer?.textColor
-    ? resolveColor(footer.textColor, theme.colors)
+    ? resolveColor(footer.textColor, theme.colors, { background: backgroundColor })
     : getHighContrastTextColor(backgroundColor, [
         theme.colors.text,
         theme.colors.textSecondary,

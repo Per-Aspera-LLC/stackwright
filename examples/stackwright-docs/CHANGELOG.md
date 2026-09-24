@@ -1,5 +1,38 @@
 # stackwright-docs
 
+## 0.1.15
+
+### Patch Changes
+
+- Updated dependencies [0d6765a]
+  - @stackwright/types@1.11.2
+  - @stackwright/core@0.13.2
+  - @stackwright/nextjs@0.10.1
+
+## 0.1.14
+
+### Patch Changes
+
+- Updated dependencies [4e45579]
+- Updated dependencies [8632e98]
+  - @stackwright/nextjs@0.10.0
+  - @stackwright/core@0.13.1
+  - @stackwright/types@1.11.1
+
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [ad123cd]
+- Updated dependencies [42fc358]
+- Updated dependencies [b724662]
+- Updated dependencies [799ddf7]
+- Updated dependencies [54a490b]
+- Updated dependencies [b170a47]
+  - @stackwright/nextjs@0.9.0
+  - @stackwright/types@1.11.0
+  - @stackwright/core@0.13.0
+
 ## 0.1.12
 
 ### Patch Changes

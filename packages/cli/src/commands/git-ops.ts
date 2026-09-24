@@ -198,7 +198,7 @@ export async function openPr(
   const stagedFiles = stagedOutput.trim().split('\n').filter(Boolean);
 
   if (stagedFiles.length === 0) {
-    const err = new Error('No staged changes to commit. Run stackwright_stage_changes first.');
+    const err = new Error('No staged changes to commit. Run sw_stage_changes first.');
     (err as NodeJS.ErrnoException).code = 'NO_STAGED_CHANGES';
     throw err;
   }

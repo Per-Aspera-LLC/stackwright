@@ -13,16 +13,18 @@ export function FeatureList({
 }: FeatureListContent) {
   const theme = useSafeTheme();
 
+  const sectionBackground = resolveBackground(background, theme);
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
-    theme.colors
+    theme.colors,
+    { background: sectionBackground }
   );
 
   return (
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme),
+        background: sectionBackground,
       }}
     >
       {heading?.text && (

@@ -1,5 +1,111 @@
 # @stackwright/nextjs
 
+## 0.10.1
+
+### Patch Changes
+
+- Updated dependencies [0d6765a]
+  - @stackwright/types@1.11.2
+  - @stackwright/core@0.13.2
+
+## 0.10.0
+
+### Minor Changes
+
+- 4e45579: Dynamic-segment content resolution in `getStackwrightPageData` (qa-006 class).
+
+  Previously the resolver only did exact path joins, so a dynamic content dir
+  like `contacts/[id]/` was unreachable at runtime: `/contacts/11` returned
+  null (→ 404) while `generateStackwrightStaticParams()` emitted the junk
+  literal slug `['contacts', '[id]']`.
+  - `getStackwrightPageData(['contacts','11'])` now falls back to
+    dynamic-segment resolution (`contacts/[id].json`), with literal matches
+    always winning and ambiguous layouts (two dynamic siblings) refusing to
+    resolve.
+  - Resolved params are injected as `_routeParams` on the page data AND every
+    content item, so param-consuming components receive the row identity as a
+    prop.
+  - `generateStackwrightStaticParams()` no longer emits `[param]` slugs —
+    dynamic routes render on demand (`dynamicParams` must not be `false` in
+    the catch-all when dynamic content dirs exist).
+  - New exports: `resolveDynamicContentPath`, `dynamicParamName`,
+    `injectRouteParams`.
+
+### Patch Changes
+
+- Updated dependencies [8632e98]
+  - @stackwright/themes@0.10.0
+  - @stackwright/core@0.13.1
+  - @stackwright/types@1.11.1
+
+## 0.9.0
+
+### Minor Changes
+
+- 54a490b: feat: split-file config — compile primitives + defaultColorMode (swp-xyia)
+
+  ## What changed
+
+  ### `@stackwright/types`
+  - New `stackwrightThemeFileSchema` — Zod schema for `stackwright.theme.yml` (`themeName`, `customTheme`, `fonts`, `defaultColorMode`)
+  - New `StackwrightThemeFile` TypeScript type
+  - `PrebuildPlugin` gains optional `additionalSinks` field — array of named compile sinks that Pro plugins use to emit `_collections.json`, `_auth.json`, `_integrations.json`
+
+  ### `@stackwright/themes`
+  - `themeConfigSchema` gains optional `defaultColorMode: z.enum(['light', 'dark', 'system'])`
+  - `ThemeProvider` `initialColorMode` prop (already accepted) is now the documented seeding mechanism for `defaultColorMode`
+
+  ### `@stackwright/build-scripts`
+  - **`_theme.json` emitted as a separate sink** (no longer merged into `_site.json`)
+  - Refactored into `compile/` sub-directory with individually-callable primitives:
+    - `compileSite(ctx)`, `compileTheme(ctx)`, `compilePages(ctx)`, `compilePage(slug, ctx)`, `compileIcons(ctx)`, `compileFonts(ctx)`, `compileFileCollections(ctx)`
+    - `compileAll(ctx)` — runs all in topological order including plugin `additionalSinks`
+    - `createCompileContext(opts)` — builds a `CompileContext` from `PrebuildOptions`
+  - `runPrebuild()` remains as a thin wrapper — no breaking change
+  - Path 1: `stackwright.theme.yml` → validates, emits `_theme.json`
+  - Path 2: no theme file → extracts `{themeName, customTheme, fonts, defaultColorMode}` from `stackwright.yml` root, emits `_theme.json` silently
+  - Path 3: no theme info → emits `_theme.json: {}`
+
+  ### `@stackwright/nextjs`
+  - `StackwrightLayout` reads `_theme.json` at render time via `getThemeFile()`
+  - Passes `_theme.json.defaultColorMode` as `fallback` to `ColorModeScript` (previously hardcoded `'system'`)
+  - Falls back to `_site.json.customTheme` backgrounds when `_theme.json` has no `customTheme` (backcompat for legacy setups)
+
+  ### `@stackwright/core`
+  - `DynamicPage` reads `theme.defaultColorMode` and passes it as `initialColorMode` to `ThemeProvider`
+  - Ensures the initial server render matches the `ColorModeScript` fallback — no color-mode flash for `defaultColorMode: dark` projects
+
+  ## Upgrade guide
+
+  **Projects with `stackwright.theme.yml`:** No action required. `_theme.json` is emitted automatically.
+
+  **Projects with inline `customTheme` in `stackwright.yml`:** No action required. Path 2 extracts theme keys silently. `_site.json` still contains the legacy keys until Bead 4 (a future release) strips them.
+
+  **To opt into a non-system default color mode:**
+
+  ```yaml
+  # stackwright.theme.yml
+  defaultColorMode: dark # first-time visitors see dark mode
+  ```
+
+### Patch Changes
+
+- ad123cd: Fix white flash during dark mode page transitions
+
+  The blocking `ColorModeScript` now accepts optional `lightBackground` / `darkBackground` props and sets `document.documentElement.style.backgroundColor` before React hydrates. `StackwrightLayout` reads theme colors from the prebuild output (`_site.json`) and feeds them in automatically.
+
+  At runtime, `ThemeProvider` keeps the `<html>` background in sync when the user toggles color mode or the OS preference changes — preventing the flash during client-side page transitions.
+
+- Updated dependencies [ad123cd]
+- Updated dependencies [42fc358]
+- Updated dependencies [b724662]
+- Updated dependencies [799ddf7]
+- Updated dependencies [54a490b]
+- Updated dependencies [b170a47]
+  - @stackwright/themes@0.9.0
+  - @stackwright/types@1.11.0
+  - @stackwright/core@0.13.0
+
 ## 0.8.0
 
 ### Minor Changes

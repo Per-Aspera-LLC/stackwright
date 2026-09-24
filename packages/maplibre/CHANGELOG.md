@@ -1,5 +1,49 @@
 # @stackwright/maplibre
 
+## 7.2.0
+
+### Minor Changes
+
+- Resolve theme tokens (`status-ok`, `brand-primary`, `--sw-color-*`, `var(...)`) for both marker colors and layer paint colors, closing the G3/G7 failure signature where a MapLibre pivot forced raw hex into `colorMap`.
+  - Markers (`MapMarker.color`) now go through `toCssColor()`, rewriting a bare token into `var(--sw-color-<kebab>)`; literal colors and existing `var()` references pass through unchanged.
+  - Layers (`polyline`/`polygon`/`geojson` `style.color`/`style.fillColor`) now go through `resolveTokenColor()`, which reads the token's `--sw-color-*` custom property via `getComputedStyle` at layer-build time — maplibre-gl paint properties can't consume `var()`, so this resolves to a literal color instead.
+  - An unresolvable token never crashes the map: layers fall back to a visible default color and report through `console.error` plus a new small red error strip over the map (mirrors `@stackwright-pro/cesium`'s `layerErrors` overlay).
+  - New exports: `toCssColor`, `resolveTokenColor`, `describeColorError`, `MapLibreColorError` from `@stackwright/maplibre`.
+
+## 7.1.0
+
+### Minor Changes
+
+- Render `MapMarker.icon` as a distinguishable shape (`pin` | `circle` |
+  `triangle` | `diamond` | `square`) instead of a static pin glyph, so status
+  can be conveyed by shape in addition to color — WCAG SC 1.4.1 (Use of
+  Color).
+
+  `@stackwright-pro/pulse` already resolves `map_pulse`'s per-status
+  `markerMapping.iconMap`/`defaultIcon` onto `MapMarker.icon`
+  (`@stackwright-pro/cesium` has rendered these 5 shapes since swp-ndvv.17's
+  Phase 2A); this closes the matching gap on the free/OSS 2D `maplibre`
+  provider so status is not color-only when an app uses `@stackwright/maplibre`
+  instead of the pro Cesium globe.
+  - New `MarkerIcon` component (`src/marker-icon.tsx`, exported from the
+    package root) renders the shape as an inline SVG, matching the shapes
+    `@stackwright-pro/cesium`'s `createMarkerCanvas()` draws so switching
+    providers doesn't change what a marker's status looks like.
+  - Unknown/missing `icon` values fall back to `pin` — this never throws on
+    an unrecognized shape name.
+  - `marker.color` still controls the fill; defaults to `#ef4444` when unset
+    (previously unused by this provider, which only rendered a fixed emoji).
+
+  See bead `swp-ndvv.17`.
+
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies [42fc358]
+- Updated dependencies [54a490b]
+  - @stackwright/core@0.13.0
+
 ## 6.0.0
 
 ### Patch Changes

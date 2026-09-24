@@ -13,6 +13,8 @@
 export { compileSite, processSiteConfig, findLocaleConfigFiles } from './site';
 export type { SiteCompileResult } from './site';
 
+export { validateSiteColorRefs, extractThemeCssTokenNames } from './validateColorRefs';
+
 export { compileTheme } from './theme';
 
 export {
@@ -57,6 +59,7 @@ export type { DiscoverPluginsOptions } from './discover';
 // ---------------------------------------------------------------------------
 
 import fs from 'fs';
+import { log } from '../log';
 import path from 'path';
 import yaml from 'js-yaml';
 import { compileSite } from './site';
@@ -126,12 +129,12 @@ export async function compileAll(ctx: CompileContext): Promise<void> {
 
   // 3. beforeBuild hooks (siteConfig is now available)
   if (ctx.plugins.length > 0) {
-    console.log('\nRunning beforeBuild plugins...');
+    log('\nRunning beforeBuild plugins...');
     const pluginCtx = toPluginContext(ctx, processedConfig);
     for (const plugin of ctx.plugins) {
       if (!plugin.beforeBuild) continue;
       try {
-        console.log(`  Running ${plugin.name} (beforeBuild)...`);
+        log(`  Running ${plugin.name} (beforeBuild)...`);
         await Promise.resolve(plugin.beforeBuild(pluginCtx));
       } catch (err) {
         throw new Error(
@@ -177,7 +180,7 @@ export async function compileAll(ctx: CompileContext): Promise<void> {
     for (const plugin of ctx.plugins) {
       for (const sink of plugin.additionalSinks ?? []) {
         try {
-          console.log(`  Running additional sink: ${sink.name}...`);
+          log(`  Running additional sink: ${sink.name}...`);
           await Promise.resolve(sink.compile(pluginCtx));
         } catch (err) {
           throw new Error(`Plugin sink "${sink.name}" failed: ${(err as Error).message}`);
@@ -188,12 +191,12 @@ export async function compileAll(ctx: CompileContext): Promise<void> {
 
   // 10. afterBuild hooks
   if (ctx.plugins.length > 0) {
-    console.log('\nRunning afterBuild plugins...');
+    log('\nRunning afterBuild plugins...');
     const pluginCtx = toPluginContext(ctx, processedConfig);
     for (const plugin of ctx.plugins) {
       if (!plugin.afterBuild) continue;
       try {
-        console.log(`  Running ${plugin.name} (afterBuild)...`);
+        log(`  Running ${plugin.name} (afterBuild)...`);
         await Promise.resolve(plugin.afterBuild(pluginCtx));
       } catch (err) {
         throw new Error(

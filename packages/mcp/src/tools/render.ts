@@ -5,6 +5,7 @@ import fs from 'fs';
 import { resolvePagesDir } from '@stackwright/cli';
 import { runPrebuild } from '@stackwright/build-scripts';
 import { renderPage, probeServer } from '../renderer/page-renderer.js';
+import { registerWithAlias } from '../tool-aliases.js';
 
 const DEFAULT_BASE_URL = 'http://localhost:3000';
 
@@ -32,8 +33,10 @@ function errorMessage(err: unknown): string {
 }
 
 export function registerRenderTools(server: McpServer): void {
-  // --- stackwright_check_dev_server ---
-  server.tool(
+  // --- sw_check_dev_server ---
+  registerWithAlias(
+    server,
+    'sw_check_dev_server',
     'stackwright_check_dev_server',
     'Check if a Stackwright dev server is running and reachable. Call this before using render tools. If the server is not running, tell the user to start it with `pnpm dev` in their project directory.',
     {
@@ -59,7 +62,7 @@ export function registerRenderTools(server: McpServer): void {
           content: [
             {
               type: 'text' as const,
-              text: `✓ Dev server is running at ${baseUrl}. You can now use stackwright_render_page to see your pages.`,
+              text: `✓ Dev server is running at ${baseUrl}. You can now use sw_render_page to see your pages.`,
             },
           ],
         };
@@ -76,12 +79,14 @@ export function registerRenderTools(server: McpServer): void {
     }
   );
 
-  // --- stackwright_render_page ---
-  server.tool(
+  // --- sw_render_page ---
+  registerWithAlias(
+    server,
+    'sw_render_page',
     'stackwright_render_page',
     `Render a Stackwright page and return a screenshot image. Use this to visually verify how a page looks after writing or editing content.
 
-IMPORTANT: A dev server must be running (check with stackwright_check_dev_server first). After writing/editing page YAML, the dev server's hot reload will pick up changes automatically.
+IMPORTANT: A dev server must be running (check with sw_check_dev_server first). After writing/editing page YAML, the dev server's hot reload will pick up changes automatically.
 
 Returns a PNG screenshot of the rendered page. Use this to verify:
 - Brand consistency (colors, typography, spacing match the theme)
@@ -146,9 +151,11 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
       // If projectRoot is provided, run prebuild to ensure content is up-to-date
       if (projectRoot) {
         try {
-          await runPrebuild(projectRoot);
+          // swp-w00k: MCP stdio reserves stdout for JSON-RPC frames -- route
+          // build-scripts' progress output to stderr, not stdout.
+          await runPrebuild({ projectRoot, logSink: 'stderr' });
         } catch (prebuildErr) {
-          console.warn(`[stackwright_render_page] prebuild warning: ${errorMessage(prebuildErr)}`);
+          console.warn(`[sw_render_page] prebuild warning: ${errorMessage(prebuildErr)}`);
         }
       }
 
@@ -188,16 +195,18 @@ Returns a PNG screenshot of the rendered page. Use this to verify:
     }
   );
 
-  // --- stackwright_render_diff ---
-  server.tool(
+  // --- sw_render_diff ---
+  registerWithAlias(
+    server,
+    'sw_render_diff',
     'stackwright_render_diff',
-    `Render a before/after comparison of a page. Takes a screenshot of the current page, then the caller should write the new YAML and call stackwright_render_page again to see the "after" state.
+    `Render a before/after comparison of a page. Takes a screenshot of the current page, then the caller should write the new YAML and call sw_render_page again to see the "after" state.
 
 This tool captures the "before" snapshot. Workflow:
-1. Call stackwright_render_diff to capture the current state
-2. Write your YAML changes (stackwright_write_page or stackwright_compose_site)
+1. Call sw_render_diff to capture the current state
+2. Write your YAML changes (sw_write_page or sw_compose_site)
 3. Wait a moment for the dev server to hot-reload
-4. Call stackwright_render_page to see the "after" state
+4. Call sw_render_page to see the "after" state
 5. Compare the two images to evaluate your changes
 
 Use this for brand-critical changes where visual regression matters.`,
@@ -249,9 +258,11 @@ Use this for brand-critical changes where visual regression matters.`,
       // If projectRoot is provided, run prebuild to ensure content is up-to-date
       if (projectRoot) {
         try {
-          await runPrebuild(projectRoot);
+          // swp-w00k: MCP stdio reserves stdout for JSON-RPC frames -- route
+          // build-scripts' progress output to stderr, not stdout.
+          await runPrebuild({ projectRoot, logSink: 'stderr' });
         } catch (prebuildErr) {
-          console.warn(`[stackwright_render_diff] prebuild warning: ${errorMessage(prebuildErr)}`);
+          console.warn(`[sw_render_diff] prebuild warning: ${errorMessage(prebuildErr)}`);
         }
       }
 
@@ -268,7 +279,7 @@ Use this for brand-critical changes where visual regression matters.`,
           content: [
             {
               type: 'text' as const,
-              text: `📸 "Before" snapshot captured for "${slug}" (${result.viewport.width}x${result.viewport.height}, ${result.renderTimeMs}ms).\n\nNow make your YAML changes, wait for hot-reload, then call stackwright_render_page to capture the "after" state.`,
+              text: `📸 "Before" snapshot captured for "${slug}" (${result.viewport.width}x${result.viewport.height}, ${result.renderTimeMs}ms).\n\nNow make your YAML changes, wait for hot-reload, then call sw_render_page to capture the "after" state.`,
             },
             {
               type: 'image' as const,
@@ -291,8 +302,10 @@ Use this for brand-critical changes where visual regression matters.`,
     }
   );
 
-  // --- stackwright_render_yaml ---
-  server.tool(
+  // --- sw_render_yaml ---
+  registerWithAlias(
+    server,
+    'sw_render_yaml',
     'stackwright_render_yaml',
     `Render raw YAML content as a page screenshot WITHOUT saving it permanently. Use this to preview content before committing.
 
@@ -360,10 +373,12 @@ This is the "try before you buy" tool — see exactly how your YAML will look wi
         // Explicitly run prebuild so co-located images are processed
         // regardless of whether the watcher daemon is running.
         try {
-          await runPrebuild(projectRoot);
+          // swp-w00k: MCP stdio reserves stdout for JSON-RPC frames -- route
+          // build-scripts' progress output to stderr, not stdout.
+          await runPrebuild({ projectRoot, logSink: 'stderr' });
         } catch (prebuildErr) {
           // Non-fatal: watcher may handle it; log and continue
-          console.warn(`[stackwright_render_yaml] prebuild warning: ${errorMessage(prebuildErr)}`);
+          console.warn(`[sw_render_yaml] prebuild warning: ${errorMessage(prebuildErr)}`);
         }
         // Short wait for Next.js hot-reload to pick up the new page route
         await new Promise((resolve) => setTimeout(resolve, 1000));

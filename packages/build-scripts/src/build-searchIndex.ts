@@ -7,6 +7,7 @@
  */
 
 import fs from 'fs';
+import { log } from './log';
 import path from 'path';
 
 export interface SearchEntry {
@@ -212,5 +213,5 @@ if (require.main === module) {
   const outputPath = path.join(process.cwd(), 'public/stackwright-content/search-index.json');
 
   const entries = buildSearchIndex(pagesDir, outputPath);
-  console.log(`✅ Search index built: ${entries.length} pages indexed`);
+  log(`✅ Search index built: ${entries.length} pages indexed`);
 }

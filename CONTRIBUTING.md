@@ -246,6 +246,10 @@ pnpm format:check    # Exits non-zero if any file needs formatting
 - Component names: PascalCase (`MainContentGrid`)
 - YAML files: kebab-case (`about-us.yaml`)
 - CLI command names: kebab-case (`generate-content`)
+- MCP tool names: `sw_<verb>_<object>` — see
+  [`docs/TOOL-NAMING.md`](docs/TOOL-NAMING.md) for the full convention, the
+  compat-alias policy, and why the wire-level prefix code-puppy/Claude Code
+  add makes a short, non-redundant tool name matter.
 
 ## Changeset Requirement
 
@@ -257,16 +261,20 @@ pnpm changeset          # Create a changeset (required per PR)
 
 Versioning and publishing are **fully automated**. When `dev` is merged to `main`, CI exits prerelease mode, consumes all pending changesets, publishes stable versions to npm, and back-merges the version bumps into `dev`. No manual `version-packages` or `release` steps needed.
 
+`changeset publish` tags each published package as `<name>@<version>` (e.g. `@stackwright/themes@0.10.0`) but only creates those tags locally — `pnpm release` now chains `git push --follow-tags` afterward so the tags actually land on `origin` instead of quietly rotting in someone's local clone. If npm prompts for a one-time password (2FA is required on this org), pass it straight through non-interactively with `changeset publish --otp=123456` (or `npm_config_otp=123456 pnpm release` in CI) rather than letting the publish hang waiting on stdin. Publishing is package-by-package, so a run that dies partway through (network blip, expired OTP, whatever) is safe to just re-run: already-published versions are skipped and only the stragglers get pushed to npm, and `changeset tag`/`--follow-tags` are idempotent so re-running won't double-tag or fail on existing tags.
+
+**In practice, releases are currently cut directly from `dev`** — not `main`, despite `.changeset/config.json` setting `baseBranch: "main"` (that setting only affects what `changeset status` diffs against; it does not gate `changeset publish`). If `changeset publish` reports nothing to publish, don't assume the tree is up to date — check `git branch --show-current` first. Running it from the wrong branch, or assuming `main` is where publishing happens, is a common source of confusion here.
+
 ## Content Type Maintenance Rule
 
 **When modifying `packages/types/src/types/` — adding, removing, or changing any content type, field, or enum — you MUST:**
 
-1. Run `pnpm stackwright -- generate-agent-docs` to regenerate AGENTS.md tables in both `/AGENTS.md` and `examples/stackwright-docs/AGENTS.md`
+1. Run `pnpm stackwright -- generate-skills` to regenerate `skills/stackwright-page-authoring/SKILL.md` — the skill is the canonical content-type reference (CI runs `generate-skills --check` and fails on drift). Then run `pnpm stackwright -- generate-agent-docs` to refresh the AGENTS.md pointer blocks in both `/AGENTS.md` and `examples/stackwright-docs/AGENTS.md` (the pointer includes the schema-derived list of valid `type` keys, so it drifts too)
 2. Regenerate JSON schemas: `cd packages/types && pnpm generate-schemas`
 3. Update or add unit tests in `packages/core/test/` for the affected component
 4. Verify E2E tests still pass (`pnpm test:e2e`) — add example usage in `examples/hellostackwrightnext/` for new content types so E2E coverage includes them
 
-The AGENTS.md tables are auto-generated from the live Zod schemas. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the tables are out of sync.
+The AGENTS.md marker blocks are auto-generated. Since Phase 2.3 the content-type block is a POINTER to the `stackwright-page-authoring` skill, not full tables — the skill is where the reference content lives. Do NOT edit the content between the `<!-- stackwright:content-type-table:start/end -->` markers manually — run `generate-agent-docs` instead. CI will fail if the pointer or the generated skill is out of sync.
 
 ## Priority Labels & Product Board
 
@@ -288,7 +296,7 @@ pnpm stackwright -- board
 pnpm stackwright -- board --json
 ```
 
-Agents can call `stackwright_get_board` via MCP for the same data.
+Agents can call `sw_get_board` via MCP for the same data.
 
 The architect sets priority tiers. Contributors and agents should pick work from `priority:now` first, then `priority:next`. When a PR closes an issue, GitHub handles it automatically.
 

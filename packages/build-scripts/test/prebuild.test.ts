@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { runPrebuild } from '../src/prebuild';
+import { getLogSink } from '../src/log';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -623,5 +624,48 @@ content:
     const sitemap = fs.readFileSync(path.join(root, 'public', 'sitemap.xml'), 'utf8');
     expect(sitemap).toContain('https://example.com/public-page');
     expect(sitemap).not.toContain('https://example.com/secret-page');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// logSink propagation (swp-ndvv.13)
+// ---------------------------------------------------------------------------
+
+describe('runPrebuild — logSink propagates to STACKWRIGHT_LOG_STREAM', () => {
+  let root: string;
+  const originalEnv = process.env.STACKWRIGHT_LOG_STREAM;
+
+  beforeEach(() => {
+    root = makeTmpProject();
+  });
+
+  afterEach(() => {
+    if (originalEnv === undefined) {
+      delete process.env.STACKWRIGHT_LOG_STREAM;
+    } else {
+      process.env.STACKWRIGHT_LOG_STREAM = originalEnv;
+    }
+  });
+
+  // The G3 geo gate regression: oss `sw_render_page` calls
+  // `runPrebuild({ projectRoot, logSink: 'stderr' })`, which auto-discovers
+  // Pro prebuild plugins (e.g. @stackwright-pro/openapi) from the calling
+  // project's own node_modules. Those plugins are bundled as a SEPARATE
+  // entry point (tsup `splitting: false`) from whatever entry point calls
+  // `setLogSink()` directly, so a local `setLogSink()` call inside
+  // runPrebuild() alone can never reach them. STACKWRIGHT_LOG_STREAM is
+  // process-global and crosses that boundary; this asserts runPrebuild()
+  // actually sets it, not just its own local sink.
+  it('sets process.env.STACKWRIGHT_LOG_STREAM when options.logSink is given', async () => {
+    delete process.env.STACKWRIGHT_LOG_STREAM;
+    await runPrebuild({ projectRoot: root, logSink: 'stderr' });
+    expect(process.env.STACKWRIGHT_LOG_STREAM).toBe('stderr');
+    expect(getLogSink()).toBe('stderr');
+  });
+
+  it('does not touch STACKWRIGHT_LOG_STREAM when no logSink is given', async () => {
+    delete process.env.STACKWRIGHT_LOG_STREAM;
+    await runPrebuild(root); // string form — no logSink
+    expect(process.env.STACKWRIGHT_LOG_STREAM).toBeUndefined();
   });
 });

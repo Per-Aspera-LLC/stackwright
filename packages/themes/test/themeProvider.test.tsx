@@ -214,6 +214,52 @@ describe('themeToCSSVars', () => {
     expect(vars['--sw-spacing-md']).toBe('1rem');
     expect(vars['--sw-spacing-2xl']).toBe('3rem');
   });
+
+  // -------------------------------------------------------------------
+  // stackwright-819 / swp-rlih — foreground (contrast-color) slots
+  // -------------------------------------------------------------------
+
+  it('derives all 5 foreground CSS vars when no explicit slots are set', () => {
+    const theme = makeTheme();
+    const vars = themeToCSSVars(theme);
+
+    for (const varName of [
+      '--sw-color-primary-foreground',
+      '--sw-color-secondary-foreground',
+      '--sw-color-accent-foreground',
+      '--sw-color-surface-foreground',
+      '--sw-color-bg-foreground',
+    ]) {
+      expect(vars[varName]).toMatch(/^#[0-9a-f]{6}$/i);
+    }
+  });
+
+  it('uses explicit foreground slots over derived defaults when provided', () => {
+    const theme = makeTheme({
+      colors: {
+        ...LIGHT_COLORS,
+        primaryForeground: '#abcdef',
+        backgroundForeground: '#fedcba',
+      },
+    });
+    const vars = themeToCSSVars(theme);
+
+    expect(vars['--sw-color-primary-foreground']).toBe('#abcdef');
+    expect(vars['--sw-color-bg-foreground']).toBe('#fedcba');
+    // Slots that weren't explicitly set are still derived, not left blank.
+    expect(vars['--sw-color-secondary-foreground']).toMatch(/^#[0-9a-f]{6}$/i);
+  });
+
+  it('derives dark-theme foregrounds against darkColors, not the light palette', () => {
+    const theme = makeTheme({ darkColors: DARK_COLORS });
+    // themeToCSSVars operates on whatever `colors` it's handed — simulate
+    // what ThemeProvider does when resolvedColorMode === 'dark'.
+    const darkVars = themeToCSSVars({ ...theme, colors: theme.darkColors! });
+
+    expect(darkVars['--sw-color-primary-foreground']).toMatch(/^#[0-9a-f]{6}$/i);
+    // Sanity: dark palette's own primary made it through untouched.
+    expect(darkVars['--sw-color-primary']).toBe(DARK_COLORS.primary);
+  });
 });
 
 // ---------------------------------------------------------------------------

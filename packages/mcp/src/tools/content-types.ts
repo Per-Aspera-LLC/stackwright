@@ -4,6 +4,7 @@ import type { ContentTypeEntry } from '@stackwright/cli';
 import { z } from 'zod';
 import fs from 'fs';
 import path from 'path';
+import { registerWithAlias } from '../tool-aliases.js';
 
 function formatContentType(ct: ContentTypeEntry): string {
   const lines: string[] = [`  ${ct.name} (${ct.typeName})`];
@@ -14,7 +15,9 @@ function formatContentType(ct: ContentTypeEntry): string {
 }
 
 export function registerContentTypeTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_get_content_types',
     'stackwright_get_content_types',
     'List all available Stackwright content types with their fields. Call this before writing any YAML content to know what keys and types are valid.',
     {},
@@ -37,7 +40,7 @@ export function registerContentTypeTools(server: McpServer): void {
             type: 'text',
             text:
               [contentSection, subSection].join('\n\n') +
-              '\n\nTip: Call stackwright_preview_component with a content type name to see a visual preview screenshot.',
+              '\n\nTip: Call sw_preview_component with a content type name to see a visual preview screenshot.',
           },
         ],
       };
@@ -69,7 +72,9 @@ export function registerContentTypeTools(server: McpServer): void {
     'contact_form_stub',
   ];
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_preview_component',
     'stackwright_preview_component',
     'Show a visual preview screenshot of a Stackwright content type. Returns a PNG image of how the component renders with example data.',
     {

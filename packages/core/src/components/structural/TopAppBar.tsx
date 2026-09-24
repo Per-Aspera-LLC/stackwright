@@ -192,8 +192,12 @@ export default function TopAppBar({
   const headerBgColor = backgroundcolor
     ? resolveColor(backgroundcolor, theme.colors)
     : theme.colors.primary;
+  // headerTextColor MUST always be a real hex value here — it feeds
+  // getBetterTextColor/ColorModeToggle downstream, which do hex contrast
+  // math and would silently misbehave on a raw token string like
+  // "primary-foreground" (stackwright-819 / swp-rlih).
   const headerTextColor = textcolor
-    ? resolveColor(textcolor, theme.colors)
+    ? resolveColor(textcolor, theme.colors, { background: headerBgColor })
     : getBetterTextColor(theme.colors.text, theme.colors.textSecondary, headerBgColor);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {

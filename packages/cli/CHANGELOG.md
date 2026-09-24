@@ -1,5 +1,49 @@
 # @stackwright/cli
 
+## 0.10.2
+
+### Patch Changes
+
+- 35c4979: swp-ndvv: update the `openPr()` "no staged changes" error message to reference the renamed `sw_stage_changes` MCP tool instead of the retired `stackwright_stage_changes` name (missed changeset from the sw*/swp* tool rename in e2259cd — the rename itself only touched `@stackwright/mcp`, but this one string in `@stackwright/cli` was updated alongside it and needs its own release note since it's user-visible CLI output).
+
+## 0.10.1
+
+### Patch Changes
+
+- b00f79a: Wire the `cookies`/`extraHTTPHeaders` runner options (added to `A11yRunnerOptions` in
+  0.10.0, `stackwright-8v2` / `swp-kwv8`) through the two public entry points that were
+  still dropping them on the floor (`swp-0k73`): `testA11y()`'s `TestA11yOptions` now
+  declares `cookies`/`extraHTTPHeaders` and forwards them to `runA11yAudit`, and the
+  `stackwright_test_a11y` MCP tool's schema now exposes both params and forwards them to
+  `testA11y`. Previously the only supported way to authenticate a scan was rewriting each
+  slug through an app's own login route, which makes `requestedUrl` differ from `finalUrl`
+  by construction -- the runner's own redirect classifier then marks every such scan
+  `status: 'redirected'` (never `'audited'`, axe-core never runs) even when the scan
+  landed exactly on the intended route. Passing a persona/auth cookie directly instead
+  means `requestedUrl === finalUrl` for a successful scan, so it is correctly classified
+  `'audited'` and actually gets measured.
+
+## 0.10.0
+
+### Minor Changes
+
+- 053f627: Fix a11y runner login-bounce false-pass (stackwright-8v2 / swp-kwv8): `runA11yAudit`
+  opened a cookie-less browser context per slug x mode and reported `A11yPageResult.url`
+  before navigation, so an auth redirect to /login scanned clean under axe and was
+  reported as an indistinguishable `pass: true`. Every scan now carries `requestedUrl`,
+  `finalUrl`, `redirected`, `redirectedToLogin`, and a `status` (`'audited' | 'redirected'
+| 'error'`) -- `pass` is only meaningful when `status === 'audited'`, and a redirected
+  scan is never reported as a pass. Overall `result.pass` is false whenever any scan
+  redirected unless the caller opts in via the new `allowRedirects: true` option (default
+  false); redirects are auth-coverage evidence, not audit coverage. `A11yViolation` now
+  carries `nodes[]` (axe's per-node `target` selectors + `failureSummary`, capped at 10
+  per violation) so callers can root-cause a failure directly from the DOM instead of
+  hand-writing a diagnostic script. New `cookies`/`extraHTTPHeaders` runner options let a
+  caller authenticate the browser context directly. `stackwright test:a11y` gains a
+  `--allow-redirects` flag and prints redirected/errored scans distinctly (never as a pass).
+- 4ed0649: Extract the AGENTS.md table generator's Zod introspection into a shared agent-docs core (`packages/cli/src/agent-docs/`) and add a `stackwright generate-skills` command that emits the generated `stackwright-page-authoring` code-puppy skill from live schemas (deterministic output, `--check` drift mode wired into CI). The core and skill builders are exported from `@stackwright/cli` so downstream (Pro) emitters can compose extended skills without forking. `generate-agent-docs` output is byte-identical to before.
+- 2184e58: `generate-agent-docs` now emits a short pointer to the generated `stackwright-page-authoring` skill between the AGENTS.md content-type markers instead of the full reference tables (execution-plan Phase 2.3). The pointer keeps a schema-derived list of valid `type` keys so the CI drift check remains live. The interface-contracts table is unchanged (its content is not covered by any skill).
+
 ## 0.9.0
 
 ### Minor Changes

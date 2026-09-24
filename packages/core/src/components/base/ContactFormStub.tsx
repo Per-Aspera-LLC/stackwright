@@ -17,9 +17,11 @@ export function ContactFormStub({
   const theme = useSafeTheme();
   const resolvedColorMode = useSafeColorMode();
 
+  const sectionBackground = resolveBackground(background, theme, resolvedColorMode === 'dark');
   const headingColor = resolveColor(
     heading?.textColor ? heading.textColor : theme.colors.primary,
-    theme.colors
+    theme.colors,
+    { background: sectionBackground }
   );
 
   const mailto = email_subject
@@ -30,7 +32,7 @@ export function ContactFormStub({
     <section
       style={{
         padding: `${theme.spacing['2xl']} ${theme.spacing.xl}`,
-        background: resolveBackground(background, theme, resolvedColorMode === 'dark'),
+        background: sectionBackground,
       }}
     >
       <div

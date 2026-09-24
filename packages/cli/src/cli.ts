@@ -9,6 +9,7 @@ import { registerPrebuild } from './commands/prebuild';
 import { registerTheme } from './commands/theme';
 import { registerInfo } from './commands/info';
 import { registerGenerateAgentDocs } from './commands/generate-agent-docs';
+import { registerGenerateSkills } from './commands/generate-skills';
 import { registerGitOps } from './commands/git-ops';
 import { registerBoard } from './commands/board';
 import { registerCollection } from './commands/collection';
@@ -40,6 +41,7 @@ async function main(): Promise<void> {
   registerTheme(program);
   registerInfo(program);
   registerGenerateAgentDocs(program);
+  registerGenerateSkills(program);
   registerGitOps(program);
   registerBoard(program);
   registerCollection(program);

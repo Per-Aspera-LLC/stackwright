@@ -1,9 +1,12 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { getInfo, scaffold } from '@stackwright/cli';
+import { registerWithAlias } from '../tool-aliases.js';
 
 export function registerProjectTools(server: McpServer): void {
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_get_project_info',
     'stackwright_get_project_info',
     'Get information about a Stackwright project: installed package versions, active theme, and page count.',
     {
@@ -26,7 +29,9 @@ export function registerProjectTools(server: McpServer): void {
     }
   );
 
-  server.tool(
+  registerWithAlias(
+    server,
+    'sw_scaffold_project',
     'stackwright_scaffold_project',
     'Scaffold a new Stackwright Next.js project at the given target directory.',
     {
@@ -36,10 +41,7 @@ export function registerProjectTools(server: McpServer): void {
         .string()
         .optional()
         .describe('Site title (used in stackwright.yml and page metadata)'),
-      theme: z
-        .string()
-        .optional()
-        .describe('Theme ID to use (run stackwright_list_themes to see options)'),
+      theme: z.string().optional().describe('Theme ID to use (run sw_list_themes to see options)'),
       force: z
         .boolean()
         .optional()
