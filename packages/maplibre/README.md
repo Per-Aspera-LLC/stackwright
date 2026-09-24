@@ -69,6 +69,11 @@ pnpm dev
 
 ## Advanced Features
 
+> All the `color`/`fillColor` values below also accept theme tokens
+> (`status-ok`, `brand-primary`, ...) instead of raw hex — see
+> [Colors: tokens everywhere](#colors-tokens-everywhere) below. The hex
+> values here are just the simplest possible example.
+
 ### Polyline Routes
 
 Show flight paths, shipping lanes, or driving directions:
@@ -211,12 +216,12 @@ markers:
   - lat: 37.7749
     lng: -122.4194
     label: "Vessel A"
-    color: "#22c55e"
+    color: "status-ok"
     icon: "circle"   # underway
   - lat: 37.8044
     lng: -122.2712
     label: "Vessel B"
-    color: "#ef4444"
+    color: "status-danger"
     icon: "triangle" # moored
 ```
 
@@ -224,6 +229,54 @@ Shapes are rendered as small SVGs (`MarkerIcon`, exported from this package)
 and kept visually consistent with the shapes `@stackwright-pro/cesium` renders
 for the same `marker.icon` value, so swapping providers doesn't change what a
 marker's status looks like.
+
+## Colors: tokens everywhere
+
+**Every color field this provider accepts — `marker.color`, `layer.style.color`,
+`layer.style.fillColor` — should be a theme token** (`status-ok`, `brand-primary`,
+a bare `ThemeColors` key like `primary`, or an explicit `--sw-color-*`/`var(...)`
+reference), never raw hex. This closes the G3/G7 failure signature where a raw
+`#16a34a` got hand-copied into `colorMap` because "MapLibre can't consume
+tokens" — as of `7.2.0`, it can; the framework resolves them for you, per
+surface:
+
+- **Markers** are real DOM `<svg>` elements, so tokens resolve for free via
+  CSS custom properties: `toCssColor('status-ok')` →
+  `var(--sw-color-status-ok)`, and the browser keeps it live across
+  light/dark theme changes. Literal colors (`#22c55e`) and existing
+  `var(...)` references pass through unchanged.
+- **Layers** (`polyline`/`polygon`/`geojson`) go through maplibre-gl `paint`
+  properties, which need a literal CSS color — `var()` doesn't work there.
+  `resolveTokenColor()` reads the token's `--sw-color-*` custom property via
+  `getComputedStyle` once, at layer-build time, and bakes in the literal
+  value. **Known limitation:** this provider doesn't currently listen for
+  live theme/color-mode changes, so layer colors resolve once per render
+  (effectively once at mount, unless `config.layers` itself changes) rather
+  than reacting to a color-mode toggle the way marker `var()` colors do.
+
+```yaml
+layers:
+  - type: polygon
+    data: [...]
+    style:
+      fillColor: "brand-primary"   # was raw hex before 7.2.0 — now a token
+      color: "brand-primary"
+```
+
+**Unresolvable token?** The map never crashes. A layer with a token that has
+no matching `--sw-color-*` custom property falls back to a visible default
+color, logs `console.error` naming the token and the surface, and shows a
+small red error strip across the top of the map (mirrors
+`@stackwright-pro/cesium`'s `layerErrors` overlay). Markers can't hit this
+failure mode at all — an unresolved `var()` is just invalid CSS, so the SVG
+silently falls back to its initial fill rather than throwing.
+
+Token → custom-property naming exactly mirrors `@stackwright-pro/cesium`'s
+`resolveTokenColor` (`--sw-color-<kebab-case-token>`), and matches what
+`@stackwright/themes`' `ThemeProvider` actually injects at `:root` (the OSS
+12 base/foreground keys) plus whatever a pro plugin's `_theme-tokens.css`
+extends the vocabulary with (`status-ok`, `brand-primary`, etc. — see
+`@stackwright/build-scripts`' `validateColorRefs.ts`).
 
 ## License
 
@@ -246,6 +299,7 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) in the repository root.
 ## Roadmap
 
 - [x] Per-marker shapes for non-color status conveyance (`marker.icon`, swp-ndvv.17)
+- [x] Theme-token color resolution for markers + layers (`colors.ts`, G7 pivot fix)
 - [ ] Custom marker icons (via icon registry)
 - [ ] Clustering for large marker sets
 - [ ] Heatmap layers

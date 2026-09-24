@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { MarkerIcon, normalizeMarkerShape, DEFAULT_MARKER_COLOR } from '../src/marker-icon';
+import { toCssColor } from '../src/colors';
 
 describe('normalizeMarkerShape (swp-ndvv.17)', () => {
   it('passes through each known shape unchanged', () => {
@@ -47,6 +48,26 @@ describe('MarkerIcon', () => {
     expect(
       defaultColorContainer.querySelector(`circle[fill="${DEFAULT_MARKER_COLOR}"]`)
     ).not.toBeNull();
+  });
+
+  it('renders a var(--sw-color-*) fill when the color is resolved via toCssColor first (G7 pivot fix)', () => {
+    // This is exactly the MapLibreProvider call site: MarkerIcon never sees
+    // a raw token, it sees whatever toCssColor() produced.
+    const { container } = render(<MarkerIcon shape="circle" color={toCssColor('status-ok')} />);
+    const filled = container.querySelector('circle[fill="var(--sw-color-status-ok)"]');
+    expect(filled).not.toBeNull();
+  });
+
+  it('renders an existing var() reference through toCssColor unchanged', () => {
+    const { container } = render(
+      <MarkerIcon shape="square" color={toCssColor('var(--sw-color-primary)')} />
+    );
+    expect(container.querySelector('rect[fill="var(--sw-color-primary)"]')).not.toBeNull();
+  });
+
+  it('renders a literal hex color through toCssColor unchanged', () => {
+    const { container } = render(<MarkerIcon shape="diamond" color={toCssColor('#16a34a')} />);
+    expect(container.querySelector('path[fill="#16a34a"]')).not.toBeNull();
   });
 
   it('keeps a white inner accent on every shape for non-hue distinguishability', () => {

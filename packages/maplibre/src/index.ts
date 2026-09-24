@@ -51,6 +51,8 @@ import { MapLibreProvider } from './MapLibreProvider.js';
 export { MapLibreProvider } from './MapLibreProvider.js';
 export { MarkerIcon, normalizeMarkerShape, DEFAULT_MARKER_COLOR } from './marker-icon.js';
 export type { MarkerShape, MarkerIconProps } from './marker-icon.js';
+export { toCssColor, resolveTokenColor, describeColorError, MapLibreColorError } from './colors.js';
+export type { ResolveTokenColorOptions } from './colors.js';
 
 /**
  * Register MapLibreProvider as the active map adapter.

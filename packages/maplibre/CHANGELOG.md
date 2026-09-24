@@ -1,5 +1,15 @@
 # @stackwright/maplibre
 
+## 7.2.0
+
+### Minor Changes
+
+- Resolve theme tokens (`status-ok`, `brand-primary`, `--sw-color-*`, `var(...)`) for both marker colors and layer paint colors, closing the G3/G7 failure signature where a MapLibre pivot forced raw hex into `colorMap`.
+  - Markers (`MapMarker.color`) now go through `toCssColor()`, rewriting a bare token into `var(--sw-color-<kebab>)`; literal colors and existing `var()` references pass through unchanged.
+  - Layers (`polyline`/`polygon`/`geojson` `style.color`/`style.fillColor`) now go through `resolveTokenColor()`, which reads the token's `--sw-color-*` custom property via `getComputedStyle` at layer-build time — maplibre-gl paint properties can't consume `var()`, so this resolves to a literal color instead.
+  - An unresolvable token never crashes the map: layers fall back to a visible default color and report through `console.error` plus a new small red error strip over the map (mirrors `@stackwright-pro/cesium`'s `layerErrors` overlay).
+  - New exports: `toCssColor`, `resolveTokenColor`, `describeColorError`, `MapLibreColorError` from `@stackwright/maplibre`.
+
 ## 7.1.0
 
 ### Minor Changes
